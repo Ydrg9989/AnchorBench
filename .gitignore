@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+*.egg-info/
+.eggs/
+
+# Environment
+.env
+.env.local
+
+# IDE / editor
+.cursor/
+.codex/
+
+# Large/generated data (README: data/processed/ gitignored; keep manifest for reproducibility)
+data/processed/*
+!data/processed/icl_anchor_v0/
+data/processed/icl_anchor_v0/*
+!data/processed/icl_anchor_v0/manifest.json
+
+# Generated results and caches
+results/
+
+# Optional: uncomment to ignore figures (if generated)
+# figures/

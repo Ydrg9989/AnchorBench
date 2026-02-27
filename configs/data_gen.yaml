@@ -1,0 +1,28 @@
+dataset_version: icl_anchor_v0
+
+default_model: openai/gpt-4o-mini
+
+n_templates_per_spec: 3
+n_items_per_template: 10
+demo_shots: 2
+
+anchor_ranges:
+  low_anchor_demo: [1, 50]
+  high_anchor_demo: [5000, 50000]
+  outlier_anchor_demo: [10000000, 1000000000]
+
+format_spec:
+  id: currency_us
+  display_style: currency_us
+  truth_format: plain_2dp
+  description: >
+    Display values use US currency ($1,234.56).
+    Truth is plain digits with two decimals, no commas, no symbol.
+
+paths:
+  spec_file: data/interim/icl_anchor_v0/template_specs.json
+  templates_file: data/interim/icl_anchor_v0/templates.jsonl
+  cache_dir: data/interim/icl_anchor_v0/cache
+  output_file: data/processed/icl_anchor_v0/dataset.jsonl
+  splits_file: data/processed/icl_anchor_v0/splits.json
+  manifest_file: data/processed/icl_anchor_v0/manifest.json

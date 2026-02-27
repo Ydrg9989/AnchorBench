@@ -1,0 +1,57 @@
+# ── Anchoring Evaluation Config ──────────────────────────────────────
+# Run: python scripts/eval/sweep.py --config configs/eval.yaml
+#
+# Greedy runs produce deterministic outputs → IAS ≈ 0 (baseline).
+# Sampling runs produce distributional outputs → IAS reveals anchoring.
+
+dataset_path: data/processed/icl_anchor_v0/dataset.jsonl
+output_dir: results/runs
+
+# ── Decoding presets (each defines seeds + n_samples) ────────────────
+presets:
+  greedy:
+    temperature: 0.0
+    n_samples: 1
+    seeds: [0]
+  sampling:
+    temperature: 0.7
+    top_p: 0.9
+    n_samples: 20
+    seeds: [0, 1, 2]
+
+# ── Run matrix: (model, preset) pairs to evaluate ───────────────────
+# 1B: sampling only (3 runs)
+# 3B: greedy + sampling (4 runs)
+# 8B: greedy + sampling (4 runs)
+# Total: 11 runs
+runs:
+  - model: meta-llama/Llama-3.2-1B-Instruct
+    preset: sampling
+  - model: meta-llama/Llama-3.2-3B-Instruct
+    preset: greedy
+  - model: meta-llama/Llama-3.2-3B-Instruct
+    preset: sampling
+  - model: meta-llama/Llama-3.1-8B-Instruct
+    preset: greedy
+  - model: meta-llama/Llama-3.1-8B-Instruct
+    preset: sampling
+
+# ── Generation ───────────────────────────────────────────────────────
+max_new_tokens: 128
+batch_size: 128
+dtype: auto
+use_chat_template: true
+anchor_collision_tol: 0.01
+
+# ── W&B ──────────────────────────────────────────────────────────────
+wandb:
+  project: llm-anchoring
+  entity: yiderigun-yiderigun-helmholtz-zentrum-hereon
+
+# ── Backward compat (standalone run_inference.py / compute_metrics) ──
+decoding:
+  - name: greedy
+    temperature: 0.0
+  - name: sampling
+    temperature: 0.7
+    top_p: 0.9
