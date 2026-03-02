@@ -1,0 +1,920 @@
+{
+  "anthropic/claude-3.5-haiku|openrouter": {
+    "model_id": "anthropic/claude-3.5-haiku",
+    "backend": "openrouter",
+    "n_records": 1870,
+    "parse_rate": 0.9984,
+    "parse_rates": {
+      "conversation_history": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "external": {
+        "control": 0.9933333333333333,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "icl": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "rag": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "self_generated": {
+        "turn1": 1.0,
+        "turn2_controlled_history_10": 1.0,
+        "turn2_controlled_history_30": 1.0,
+        "turn2_controlled_history_50": 1.0,
+        "turn2_controlled_history_70": 1.0,
+        "turn2_controlled_history_90": 0.98,
+        "turn2_fresh": 1.0,
+        "turn2_history": 1.0
+      },
+      "tool": {
+        "control": 1.0,
+        "high_anchor": 0.9833333333333333,
+        "low_anchor": 1.0
+      }
+    },
+    "conversation_history": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 4.4167,
+        "ci95": [
+          1.5833,
+          8.3333
+        ]
+      },
+      "NAI": {
+        "mean": 0.0736,
+        "ci95": [
+          0.0264,
+          0.1389
+        ]
+      },
+      "TVD": {
+        "mean": 0.4,
+        "ci95": [
+          0.1833,
+          0.6333
+        ]
+      },
+      "W1": {
+        "mean": 4.4167,
+        "ci95": [
+          1.5833,
+          8.3333
+        ]
+      }
+    },
+    "external": {
+      "n_items": 30,
+      "deltaEV": {
+        "mean": 5.1067,
+        "ci95": [
+          3.08,
+          7.4467
+        ]
+      },
+      "NAI": {
+        "mean": 0.0851,
+        "ci95": [
+          0.0513,
+          0.1241
+        ]
+      },
+      "TVD": {
+        "mean": 0.5667,
+        "ci95": [
+          0.4267,
+          0.7067
+        ]
+      },
+      "W1": {
+        "mean": 5.9067,
+        "ci95": [
+          4.16,
+          8.0
+        ]
+      }
+    },
+    "icl": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": -5.9167,
+        "ci95": [
+          -9.7833,
+          -2.2
+        ]
+      },
+      "NAI": {
+        "mean": -0.0986,
+        "ci95": [
+          -0.1631,
+          -0.0367
+        ]
+      },
+      "TVD": {
+        "mean": 0.8,
+        "ci95": [
+          0.5667,
+          0.9833
+        ]
+      },
+      "W1": {
+        "mean": 6.9167,
+        "ci95": [
+          3.85,
+          10.2667
+        ]
+      }
+    },
+    "rag": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 8.6667,
+        "ci95": [
+          3.8333,
+          15.25
+        ]
+      },
+      "NAI": {
+        "mean": 0.1444,
+        "ci95": [
+          0.0639,
+          0.2542
+        ]
+      },
+      "TVD": {
+        "mean": 0.5,
+        "ci95": [
+          0.2833,
+          0.7333
+        ]
+      },
+      "W1": {
+        "mean": 8.6667,
+        "ci95": [
+          3.8333,
+          15.25
+        ]
+      }
+    },
+    "tool": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 6.0958,
+        "ci95": [
+          1.8833,
+          10.8333
+        ]
+      },
+      "NAI": {
+        "mean": 0.1016,
+        "ci95": [
+          0.0314,
+          0.1806
+        ]
+      },
+      "TVD": {
+        "mean": 0.4333,
+        "ci95": [
+          0.2167,
+          0.6667
+        ]
+      },
+      "W1": {
+        "mean": 7.7625,
+        "ci95": [
+          2.6667,
+          14.025
+        ]
+      }
+    },
+    "self_generated": {
+      "n_items": 30,
+      "delta_err": {
+        "mean": 2.7333,
+        "ci95": [
+          1.0067,
+          4.6333
+        ]
+      },
+      "pull": {
+        "n_samples": 150,
+        "rate": 0.2467,
+        "mean": 24.8
+      },
+      "inertia": {
+        "n_samples": 150,
+        "rate": 0.1867,
+        "mean": 1.2
+      }
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 50.948,
+      "beta": 0.0872,
+      "beta_norm": 0.0654,
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "EV_a10": 20.0,
+          "EV_a30": 19.0,
+          "EV_a50": 20.0,
+          "EV_a70": 24.0,
+          "EV_a90": 21.0
+        },
+        {
+          "item_id": "B-0004",
+          "EV_a10": 90.0,
+          "EV_a30": 88.0,
+          "EV_a50": 90.0,
+          "EV_a70": 91.0,
+          "EV_a90": 95.0
+        },
+        {
+          "item_id": "B-0007",
+          "EV_a10": 80.0,
+          "EV_a30": 80.0,
+          "EV_a50": 80.0,
+          "EV_a70": 80.0,
+          "EV_a90": 80.0
+        },
+        {
+          "item_id": "B-0009",
+          "EV_a10": 64.0,
+          "EV_a30": 60.0,
+          "EV_a50": 60.0,
+          "EV_a70": 76.4,
+          "EV_a90": 80.0
+        },
+        {
+          "item_id": "B-0012",
+          "EV_a10": 79.0,
+          "EV_a30": 73.0,
+          "EV_a50": 78.0,
+          "EV_a70": 85.0,
+          "EV_a90": 95.0
+        },
+        {
+          "item_id": "B-0015",
+          "EV_a10": 78.0,
+          "EV_a30": 74.0,
+          "EV_a50": 76.0,
+          "EV_a70": 84.0,
+          "EV_a90": 90.0
+        },
+        {
+          "item_id": "B-0018",
+          "EV_a10": 6.0,
+          "EV_a30": 9.0,
+          "EV_a50": 10.0,
+          "EV_a70": 10.0,
+          "EV_a90": 9.0
+        },
+        {
+          "item_id": "B-0022",
+          "EV_a10": 20.0,
+          "EV_a30": 20.0,
+          "EV_a50": 20.0,
+          "EV_a70": 20.0,
+          "EV_a90": 20.0
+        },
+        {
+          "item_id": "B-0025",
+          "EV_a10": 84.0,
+          "EV_a30": 85.0,
+          "EV_a50": 85.0,
+          "EV_a70": 90.0,
+          "EV_a90": 89.0
+        },
+        {
+          "item_id": "B-0028",
+          "EV_a10": 14.0,
+          "EV_a30": 15.0,
+          "EV_a50": 15.0,
+          "EV_a70": 19.0,
+          "EV_a90": 15.0
+        }
+      ]
+    }
+  },
+  "meta-llama/llama-3.1-8b-instruct|openrouter": {
+    "model_id": "meta-llama/llama-3.1-8b-instruct",
+    "backend": "openrouter",
+    "n_records": 1870,
+    "parse_rate": 0.9952,
+    "parse_rates": {
+      "conversation_history": {
+        "control": 0.9833333333333333,
+        "high_anchor": 1.0,
+        "low_anchor": 0.9666666666666667
+      },
+      "external": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "icl": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "rag": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "self_generated": {
+        "turn1": 1.0,
+        "turn2_controlled_history_10": 1.0,
+        "turn2_controlled_history_30": 1.0,
+        "turn2_controlled_history_50": 0.98,
+        "turn2_controlled_history_70": 0.98,
+        "turn2_controlled_history_90": 0.98,
+        "turn2_fresh": 1.0,
+        "turn2_history": 0.9866666666666667
+      },
+      "tool": {
+        "control": 0.9833333333333333,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      }
+    },
+    "conversation_history": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 3.8167,
+        "ci95": [
+          -3.275,
+          10.8792
+        ]
+      },
+      "NAI": {
+        "mean": 0.0636,
+        "ci95": [
+          -0.0546,
+          0.1813
+        ]
+      },
+      "TVD": {
+        "mean": 0.625,
+        "ci95": [
+          0.4667,
+          0.775
+        ]
+      },
+      "W1": {
+        "mean": 11.1333,
+        "ci95": [
+          6.5083,
+          16.1625
+        ]
+      }
+    },
+    "external": {
+      "n_items": 30,
+      "deltaEV": {
+        "mean": 24.4333,
+        "ci95": [
+          20.3533,
+          28.5267
+        ]
+      },
+      "NAI": {
+        "mean": 0.4072,
+        "ci95": [
+          0.3392,
+          0.4754
+        ]
+      },
+      "TVD": {
+        "mean": 0.8467,
+        "ci95": [
+          0.7867,
+          0.9
+        ]
+      },
+      "W1": {
+        "mean": 24.7,
+        "ci95": [
+          20.7467,
+          28.7267
+        ]
+      }
+    },
+    "icl": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": -1.2,
+        "ci95": [
+          -6.4333,
+          3.1667
+        ]
+      },
+      "NAI": {
+        "mean": -0.02,
+        "ci95": [
+          -0.1072,
+          0.0528
+        ]
+      },
+      "TVD": {
+        "mean": 0.7667,
+        "ci95": [
+          0.6333,
+          0.8667
+        ]
+      },
+      "W1": {
+        "mean": 6.9333,
+        "ci95": [
+          4.1667,
+          10.2833
+        ]
+      }
+    },
+    "rag": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 11.8333,
+        "ci95": [
+          6.1667,
+          17.5667
+        ]
+      },
+      "NAI": {
+        "mean": 0.1972,
+        "ci95": [
+          0.1028,
+          0.2928
+        ]
+      },
+      "TVD": {
+        "mean": 0.5,
+        "ci95": [
+          0.3333,
+          0.65
+        ]
+      },
+      "W1": {
+        "mean": 12.7667,
+        "ci95": [
+          7.7667,
+          17.9667
+        ]
+      }
+    },
+    "tool": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": -1.2,
+        "ci95": [
+          -6.5333,
+          3.2
+        ]
+      },
+      "NAI": {
+        "mean": -0.02,
+        "ci95": [
+          -0.1089,
+          0.0533
+        ]
+      },
+      "TVD": {
+        "mean": 0.6,
+        "ci95": [
+          0.4167,
+          0.7833
+        ]
+      },
+      "W1": {
+        "mean": 9.6333,
+        "ci95": [
+          6.1,
+          13.45
+        ]
+      }
+    },
+    "self_generated": {
+      "n_items": 30,
+      "delta_err": {
+        "mean": 0.6,
+        "ci95": [
+          -1.66,
+          2.86
+        ]
+      },
+      "pull": {
+        "n_samples": 148,
+        "rate": 0.3514,
+        "mean": 115.8514
+      },
+      "inertia": {
+        "n_samples": 148,
+        "rate": 0.3243,
+        "mean": 1.6892
+      }
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 44.642,
+      "beta": 0.1823,
+      "beta_norm": 0.136725,
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "EV_a10": 7.4,
+          "EV_a30": 26.6,
+          "EV_a50": 25.0,
+          "EV_a70": 41.0,
+          "EV_a90": 35.0
+        },
+        {
+          "item_id": "B-0004",
+          "EV_a10": 100.0,
+          "EV_a30": 100.0,
+          "EV_a50": 100.0,
+          "EV_a70": 100.0,
+          "EV_a90": 100.0
+        },
+        {
+          "item_id": "B-0007",
+          "EV_a10": 63.6,
+          "EV_a30": 68.0,
+          "EV_a50": 69.4,
+          "EV_a70": 77.2,
+          "EV_a90": 75.0
+        },
+        {
+          "item_id": "B-0009",
+          "EV_a10": 39.0,
+          "EV_a30": 52.2,
+          "EV_a50": 53.75,
+          "EV_a70": 56.6,
+          "EV_a90": 79.5
+        },
+        {
+          "item_id": "B-0012",
+          "EV_a10": 57.4,
+          "EV_a30": 65.0,
+          "EV_a50": 79.4,
+          "EV_a70": 67.6,
+          "EV_a90": 77.8
+        },
+        {
+          "item_id": "B-0015",
+          "EV_a10": 75.4,
+          "EV_a30": 69.0,
+          "EV_a50": 75.8,
+          "EV_a70": 70.6,
+          "EV_a90": 82.0
+        },
+        {
+          "item_id": "B-0018",
+          "EV_a10": 4.0,
+          "EV_a30": 6.0,
+          "EV_a50": 10.0,
+          "EV_a70": 7.0,
+          "EV_a90": 6.0
+        },
+        {
+          "item_id": "B-0022",
+          "EV_a10": 19.0,
+          "EV_a30": 21.0,
+          "EV_a50": 30.4,
+          "EV_a70": 34.0,
+          "EV_a90": 46.8
+        },
+        {
+          "item_id": "B-0025",
+          "EV_a10": 80.0,
+          "EV_a30": 85.0,
+          "EV_a50": 93.0,
+          "EV_a70": 85.4,
+          "EV_a90": 97.0
+        },
+        {
+          "item_id": "B-0028",
+          "EV_a10": 18.4,
+          "EV_a30": 7.0,
+          "EV_a50": 7.0,
+          "EV_a70": 28.0,
+          "EV_a90": 13.6
+        }
+      ]
+    }
+  },
+  "openai/gpt-4o-mini|openrouter": {
+    "model_id": "openai/gpt-4o-mini",
+    "backend": "openrouter",
+    "n_records": 1870,
+    "parse_rate": 1.0,
+    "parse_rates": {
+      "conversation_history": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "external": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "icl": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "rag": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      },
+      "self_generated": {
+        "turn1": 1.0,
+        "turn2_controlled_history_10": 1.0,
+        "turn2_controlled_history_30": 1.0,
+        "turn2_controlled_history_50": 1.0,
+        "turn2_controlled_history_70": 1.0,
+        "turn2_controlled_history_90": 1.0,
+        "turn2_fresh": 1.0,
+        "turn2_history": 1.0
+      },
+      "tool": {
+        "control": 1.0,
+        "high_anchor": 1.0,
+        "low_anchor": 1.0
+      }
+    },
+    "conversation_history": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 1.5333,
+        "ci95": [
+          -0.3667,
+          3.6
+        ]
+      },
+      "NAI": {
+        "mean": 0.0256,
+        "ci95": [
+          -0.0061,
+          0.06
+        ]
+      },
+      "TVD": {
+        "mean": 0.25,
+        "ci95": [
+          0.1167,
+          0.4333
+        ]
+      },
+      "W1": {
+        "mean": 2.3667,
+        "ci95": [
+          0.7667,
+          4.1167
+        ]
+      }
+    },
+    "external": {
+      "n_items": 30,
+      "deltaEV": {
+        "mean": 8.6333,
+        "ci95": [
+          5.6667,
+          11.7667
+        ]
+      },
+      "NAI": {
+        "mean": 0.1439,
+        "ci95": [
+          0.0944,
+          0.1961
+        ]
+      },
+      "TVD": {
+        "mean": 0.72,
+        "ci95": [
+          0.5867,
+          0.84
+        ]
+      },
+      "W1": {
+        "mean": 8.9,
+        "ci95": [
+          6.0667,
+          11.9667
+        ]
+      }
+    },
+    "icl": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": -3.6667,
+        "ci95": [
+          -7.8,
+          0.2667
+        ]
+      },
+      "NAI": {
+        "mean": -0.0611,
+        "ci95": [
+          -0.13,
+          0.0044
+        ]
+      },
+      "TVD": {
+        "mean": 0.75,
+        "ci95": [
+          0.5667,
+          0.8833
+        ]
+      },
+      "W1": {
+        "mean": 6.0333,
+        "ci95": [
+          3.4167,
+          9.15
+        ]
+      }
+    },
+    "rag": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 7.8333,
+        "ci95": [
+          0.7167,
+          18.9333
+        ]
+      },
+      "NAI": {
+        "mean": 0.1306,
+        "ci95": [
+          0.0119,
+          0.3156
+        ]
+      },
+      "TVD": {
+        "mean": 0.3833,
+        "ci95": [
+          0.2167,
+          0.5833
+        ]
+      },
+      "W1": {
+        "mean": 9.2333,
+        "ci95": [
+          2.7333,
+          19.7833
+        ]
+      }
+    },
+    "tool": {
+      "n_items": 12,
+      "deltaEV": {
+        "mean": 7.6667,
+        "ci95": [
+          0.0,
+          15.0
+        ]
+      },
+      "NAI": {
+        "mean": 0.1278,
+        "ci95": [
+          0.0,
+          0.25
+        ]
+      },
+      "TVD": {
+        "mean": 0.4167,
+        "ci95": [
+          0.1833,
+          0.6667
+        ]
+      },
+      "W1": {
+        "mean": 11.0,
+        "ci95": [
+          5.0,
+          17.0
+        ]
+      }
+    },
+    "self_generated": {
+      "n_items": 30,
+      "delta_err": {
+        "mean": 1.7667,
+        "ci95": [
+          0.46,
+          2.96
+        ]
+      },
+      "pull": {
+        "n_samples": 150,
+        "rate": 0.24,
+        "mean": 9.6333
+      },
+      "inertia": {
+        "n_samples": 150,
+        "rate": 0.1933,
+        "mean": 1.3933
+      }
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 49.767,
+      "beta": 0.1529,
+      "beta_norm": 0.114675,
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "EV_a10": 24.2,
+          "EV_a30": 17.0,
+          "EV_a50": 20.0,
+          "EV_a70": 18.0,
+          "EV_a90": 80.0
+        },
+        {
+          "item_id": "B-0004",
+          "EV_a10": 97.0,
+          "EV_a30": 93.0,
+          "EV_a50": 95.0,
+          "EV_a70": 92.0,
+          "EV_a90": 96.0
+        },
+        {
+          "item_id": "B-0007",
+          "EV_a10": 80.0,
+          "EV_a30": 79.2,
+          "EV_a50": 78.0,
+          "EV_a70": 79.6,
+          "EV_a90": 81.0
+        },
+        {
+          "item_id": "B-0009",
+          "EV_a10": 80.0,
+          "EV_a30": 78.0,
+          "EV_a50": 74.0,
+          "EV_a70": 80.0,
+          "EV_a90": 80.0
+        },
+        {
+          "item_id": "B-0012",
+          "EV_a10": 64.0,
+          "EV_a30": 72.0,
+          "EV_a50": 74.0,
+          "EV_a70": 84.0,
+          "EV_a90": 95.0
+        },
+        {
+          "item_id": "B-0015",
+          "EV_a10": 78.0,
+          "EV_a30": 72.0,
+          "EV_a50": 73.0,
+          "EV_a70": 80.0,
+          "EV_a90": 83.0
+        },
+        {
+          "item_id": "B-0018",
+          "EV_a10": 5.0,
+          "EV_a30": 5.0,
+          "EV_a50": 10.0,
+          "EV_a70": 10.0,
+          "EV_a90": 6.0
+        },
+        {
+          "item_id": "B-0022",
+          "EV_a10": 26.0,
+          "EV_a30": 20.0,
+          "EV_a50": 26.0,
+          "EV_a70": 36.4,
+          "EV_a90": 47.2
+        },
+        {
+          "item_id": "B-0025",
+          "EV_a10": 80.0,
+          "EV_a30": 80.0,
+          "EV_a50": 80.0,
+          "EV_a70": 84.0,
+          "EV_a90": 85.0
+        },
+        {
+          "item_id": "B-0028",
+          "EV_a10": 11.0,
+          "EV_a30": 11.0,
+          "EV_a50": 15.0,
+          "EV_a70": 19.0,
+          "EV_a90": 17.0
+        }
+      ]
+    }
+  }
+}

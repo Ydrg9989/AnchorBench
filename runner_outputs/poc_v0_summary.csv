@@ -1,0 +1,7 @@
+model_id,backend,n_records,parse_rate,ext_mean_shift,ext_shift_ci_lo,ext_shift_ci_hi,ext_mean_dev_high,ext_mean_dev_low,self_mean_delta_err,self_delta_ci_lo,self_delta_ci_hi,ctrl_beta,ctrl_beta_finance,ctrl_beta_health,ctrl_beta_ops
+anthropic/claude-3.5-haiku,openrouter,1150,0.9983,5.1067,3.0,7.4067,-0.7867,5.8933,2.7333,1.0667,4.6267,0.0872,0.141667,0.0855,0.053843
+meta-llama/Llama-3.1-8B-Instruct,hf,1150,0.9757,18.2467,14.2867,22.2733,7.4383,10.8083,-1.1111,-3.7917,1.6361,0.26755,0.171,0.140953,0.505535
+meta-llama/Llama-3.2-1B-Instruct,hf,1150,0.9852,10.0717,5.2967,14.875,9.8689,0.2028,7.905,1.8,14.5617,0.4606,0.402027,0.44525,0.54
+meta-llama/Llama-3.2-3B-Instruct,hf,1150,0.993,19.8133,16.1417,23.1817,20.0067,-0.1933,1.5683,-1.985,4.9217,0.229467,0.146097,0.217,0.322333
+meta-llama/llama-3.1-8b-instruct,openrouter,1150,0.9957,24.4333,20.3533,28.58,9.46,14.9733,0.6,-1.6333,2.8133,0.1823,0.105333,0.230353,0.195492
+openai/gpt-4o-mini,openrouter,1150,1.0,8.6333,5.6667,11.8333,3.4067,5.2267,1.7667,0.4733,2.9933,0.1529,0.165,0.1425,0.154667

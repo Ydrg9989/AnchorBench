@@ -1,0 +1,17 @@
+====== Launching parallel mitigation experiments ======
+Time: Mon Mar  2 01:56:10 PM CET 2026
+GPUs: 4 detected
+  API mitigations launched (PID 4073844)
+  GPU0 (Llama-1B) launched (PID 4073845)
+  GPU1 (Llama-3B) launched (PID 4073847)
+  GPU2 (Llama-8B) launched (PID 4073848)
+  GPU3 (stress tests) launched (PID 4073849)
+
+All jobs launched. PIDs:
+  API: 4073844
+  GPU0: 4073845  GPU1: 4073847  GPU2: 4073848  GPU3: 4073849
+
+Monitor with: tail -f runner_outputs/logs/*.log
+Or check status: ps aux | grep run_mitigation
+
+====== All experiments complete at Mon Mar  2 02:01:29 PM CET 2026 ======

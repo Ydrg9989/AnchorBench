@@ -1,0 +1,692 @@
+{
+  "anthropic/claude-3.5-haiku": {
+    "model_id": "anthropic/claude-3.5-haiku",
+    "n_records": 1150,
+    "parse_rate": 0.9983,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 5.1067,
+      "shift_ci_95": [
+        3.0,
+        7.4067
+      ],
+      "mean_dev_high_minus_control": -0.7867,
+      "mean_dev_control_minus_low": 5.8933
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": 2.7333,
+      "delta_err_ci_95": [
+        1.0667,
+        4.6267
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 50.948,
+      "beta": 0.0872,
+      "field_betas": {
+        "finance": 0.141667,
+        "health": 0.0855,
+        "ops": 0.053843
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 20.0,
+          "mean_a30": 19.0,
+          "mean_a50": 20.0,
+          "mean_a70": 24.0,
+          "mean_a90": 21.0
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 90.0,
+          "mean_a30": 88.0,
+          "mean_a50": 90.0,
+          "mean_a70": 91.0,
+          "mean_a90": 95.0
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 80.0,
+          "mean_a30": 80.0,
+          "mean_a50": 80.0,
+          "mean_a70": 80.0,
+          "mean_a90": 80.0
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 64.0,
+          "mean_a30": 60.0,
+          "mean_a50": 60.0,
+          "mean_a70": 76.4,
+          "mean_a90": 80.0
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 79.0,
+          "mean_a30": 73.0,
+          "mean_a50": 78.0,
+          "mean_a70": 85.0,
+          "mean_a90": 95.0
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 78.0,
+          "mean_a30": 74.0,
+          "mean_a50": 76.0,
+          "mean_a70": 84.0,
+          "mean_a90": 90.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 6.0,
+          "mean_a30": 9.0,
+          "mean_a50": 10.0,
+          "mean_a70": 10.0,
+          "mean_a90": 9.0
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 20.0,
+          "mean_a30": 20.0,
+          "mean_a50": 20.0,
+          "mean_a70": 20.0,
+          "mean_a90": 20.0
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 84.0,
+          "mean_a30": 85.0,
+          "mean_a50": 85.0,
+          "mean_a70": 90.0,
+          "mean_a90": 89.0
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 14.0,
+          "mean_a30": 15.0,
+          "mean_a50": 15.0,
+          "mean_a70": 19.0,
+          "mean_a90": 15.0
+        }
+      ]
+    }
+  },
+  "meta-llama/Llama-3.1-8B-Instruct": {
+    "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+    "n_records": 1150,
+    "parse_rate": 0.9757,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 18.2467,
+      "shift_ci_95": [
+        14.2867,
+        22.2733
+      ],
+      "mean_dev_high_minus_control": 7.4383,
+      "mean_dev_control_minus_low": 10.8083
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": -1.1111,
+      "delta_err_ci_95": [
+        -3.7917,
+        1.6361
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 41.4645,
+      "beta": 0.26755,
+      "field_betas": {
+        "finance": 0.171,
+        "health": 0.140953,
+        "ops": 0.505535
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 34.6,
+          "mean_a30": 36.4,
+          "mean_a50": 38.0,
+          "mean_a70": 35.0,
+          "mean_a90": 37.0
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 100.0,
+          "mean_a30": 100.0,
+          "mean_a50": 100.0,
+          "mean_a70": 98.0,
+          "mean_a90": 100.0
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 39.0,
+          "mean_a30": 50.6,
+          "mean_a50": 64.0,
+          "mean_a70": 69.25,
+          "mean_a90": 79.0
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 40.0,
+          "mean_a30": 51.25,
+          "mean_a50": 72.5,
+          "mean_a70": 65.0,
+          "mean_a90": 46.5
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 60.0,
+          "mean_a30": 52.0,
+          "mean_a50": 71.0,
+          "mean_a70": 76.0,
+          "mean_a90": 87.6
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 64.0,
+          "mean_a30": 59.0,
+          "mean_a50": 61.2,
+          "mean_a70": 65.2,
+          "mean_a90": 71.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 3.4,
+          "mean_a30": 4.0,
+          "mean_a50": 4.0,
+          "mean_a70": 6.0,
+          "mean_a90": 4.0
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 18.4,
+          "mean_a30": 31.5,
+          "mean_a50": 40.5,
+          "mean_a70": 52.8,
+          "mean_a90": 69.0
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 78.0,
+          "mean_a30": 90.0,
+          "mean_a50": 86.4,
+          "mean_a70": 82.0,
+          "mean_a90": 96.0
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 5.0,
+          "mean_a30": 14.0,
+          "mean_a50": 14.4,
+          "mean_a70": 60.0,
+          "mean_a90": 59.6
+        }
+      ]
+    }
+  },
+  "meta-llama/Llama-3.2-1B-Instruct": {
+    "model_id": "meta-llama/Llama-3.2-1B-Instruct",
+    "n_records": 1150,
+    "parse_rate": 0.9852,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 10.0717,
+      "shift_ci_95": [
+        5.2967,
+        14.875
+      ],
+      "mean_dev_high_minus_control": 9.8689,
+      "mean_dev_control_minus_low": 0.2028
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": 7.905,
+      "delta_err_ci_95": [
+        1.8,
+        14.5617
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 45.112,
+      "beta": 0.4606,
+      "field_betas": {
+        "finance": 0.402027,
+        "health": 0.44525,
+        "ops": 0.54
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 58.0,
+          "mean_a30": 65.0,
+          "mean_a50": 68.6,
+          "mean_a70": 75.0,
+          "mean_a90": 79.0
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 60.0,
+          "mean_a30": 50.0,
+          "mean_a50": 82.8,
+          "mean_a70": 83.0,
+          "mean_a90": 95.4
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 37.6,
+          "mean_a30": 55.6,
+          "mean_a50": 86.6,
+          "mean_a70": 84.0,
+          "mean_a90": 91.2
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 56.4,
+          "mean_a30": 84.0,
+          "mean_a50": 77.0,
+          "mean_a70": 84.4,
+          "mean_a90": 88.6
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 57.6,
+          "mean_a30": 66.25,
+          "mean_a50": 82.0,
+          "mean_a70": 81.25,
+          "mean_a90": 89.0
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 70.0,
+          "mean_a30": 52.0,
+          "mean_a50": 74.0,
+          "mean_a70": 81.6,
+          "mean_a90": 91.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 46.2,
+          "mean_a30": 19.4,
+          "mean_a50": 77.6,
+          "mean_a70": 39.0,
+          "mean_a90": 82.2
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 32.2,
+          "mean_a30": 46.0,
+          "mean_a50": 63.8,
+          "mean_a70": 61.4,
+          "mean_a90": 87.4
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 54.0,
+          "mean_a30": 35.2,
+          "mean_a50": 77.0,
+          "mean_a70": 74.0,
+          "mean_a90": 85.2
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 50.2,
+          "mean_a30": 45.0,
+          "mean_a50": 60.0,
+          "mean_a70": 86.4,
+          "mean_a90": 78.0
+        }
+      ]
+    }
+  },
+  "meta-llama/Llama-3.2-3B-Instruct": {
+    "model_id": "meta-llama/Llama-3.2-3B-Instruct",
+    "n_records": 1150,
+    "parse_rate": 0.993,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 19.8133,
+      "shift_ci_95": [
+        16.1417,
+        23.1817
+      ],
+      "mean_dev_high_minus_control": 20.0067,
+      "mean_dev_control_minus_low": -0.1933
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": 1.5683,
+      "delta_err_ci_95": [
+        -1.985,
+        4.9217
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 45.5253,
+      "beta": 0.229467,
+      "field_betas": {
+        "finance": 0.146097,
+        "health": 0.217,
+        "ops": 0.322333
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 34.8,
+          "mean_a30": 31.8,
+          "mean_a50": 42.0,
+          "mean_a70": 44.8,
+          "mean_a90": 69.8
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 70.0,
+          "mean_a30": 90.4,
+          "mean_a50": 86.0,
+          "mean_a70": 87.2,
+          "mean_a90": 97.0
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 63.8,
+          "mean_a30": 66.6,
+          "mean_a50": 64.2,
+          "mean_a70": 70.8,
+          "mean_a90": 70.2
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 59.4,
+          "mean_a30": 60.8,
+          "mean_a50": 65.4,
+          "mean_a70": 68.4,
+          "mean_a90": 67.0
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 65.0,
+          "mean_a30": 66.6,
+          "mean_a50": 53.4,
+          "mean_a70": 64.33,
+          "mean_a90": 68.8
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 54.4,
+          "mean_a30": 55.6,
+          "mean_a50": 58.0,
+          "mean_a70": 63.0,
+          "mean_a90": 67.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 23.0,
+          "mean_a30": 21.0,
+          "mean_a50": 25.0,
+          "mean_a70": 39.0,
+          "mean_a90": 41.0
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 35.0,
+          "mean_a30": 39.0,
+          "mean_a50": 47.2,
+          "mean_a70": 43.4,
+          "mean_a90": 59.0
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 61.0,
+          "mean_a30": 80.0,
+          "mean_a50": 70.8,
+          "mean_a70": 76.0,
+          "mean_a90": 74.8
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 19.2,
+          "mean_a30": 22.6,
+          "mean_a50": 31.0,
+          "mean_a70": 52.4,
+          "mean_a90": 63.0
+        }
+      ]
+    }
+  },
+  "meta-llama/llama-3.1-8b-instruct": {
+    "model_id": "meta-llama/llama-3.1-8b-instruct",
+    "n_records": 1150,
+    "parse_rate": 0.9957,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 24.4333,
+      "shift_ci_95": [
+        20.3533,
+        28.58
+      ],
+      "mean_dev_high_minus_control": 9.46,
+      "mean_dev_control_minus_low": 14.9733
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": 0.6,
+      "delta_err_ci_95": [
+        -1.6333,
+        2.8133
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 44.642,
+      "beta": 0.1823,
+      "field_betas": {
+        "finance": 0.105333,
+        "health": 0.230353,
+        "ops": 0.195492
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 7.4,
+          "mean_a30": 26.6,
+          "mean_a50": 25.0,
+          "mean_a70": 41.0,
+          "mean_a90": 35.0
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 100.0,
+          "mean_a30": 100.0,
+          "mean_a50": 100.0,
+          "mean_a70": 100.0,
+          "mean_a90": 100.0
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 63.6,
+          "mean_a30": 68.0,
+          "mean_a50": 69.4,
+          "mean_a70": 77.2,
+          "mean_a90": 75.0
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 39.0,
+          "mean_a30": 52.2,
+          "mean_a50": 53.75,
+          "mean_a70": 56.6,
+          "mean_a90": 79.5
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 57.4,
+          "mean_a30": 65.0,
+          "mean_a50": 79.4,
+          "mean_a70": 67.6,
+          "mean_a90": 77.8
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 75.4,
+          "mean_a30": 69.0,
+          "mean_a50": 75.8,
+          "mean_a70": 70.6,
+          "mean_a90": 82.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 4.0,
+          "mean_a30": 6.0,
+          "mean_a50": 10.0,
+          "mean_a70": 7.0,
+          "mean_a90": 6.0
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 19.0,
+          "mean_a30": 21.0,
+          "mean_a50": 30.4,
+          "mean_a70": 34.0,
+          "mean_a90": 46.8
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 80.0,
+          "mean_a30": 85.0,
+          "mean_a50": 93.0,
+          "mean_a70": 85.4,
+          "mean_a90": 97.0
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 18.4,
+          "mean_a30": 7.0,
+          "mean_a50": 7.0,
+          "mean_a70": 28.0,
+          "mean_a90": 13.6
+        }
+      ]
+    }
+  },
+  "openai/gpt-4o-mini": {
+    "model_id": "openai/gpt-4o-mini",
+    "n_records": 1150,
+    "parse_rate": 1.0,
+    "external": {
+      "n_items": 30,
+      "mean_shift_ext": 8.6333,
+      "shift_ci_95": [
+        5.6667,
+        11.8333
+      ],
+      "mean_dev_high_minus_control": 3.4067,
+      "mean_dev_control_minus_low": 5.2267
+    },
+    "self_generated": {
+      "n_items": 30,
+      "mean_delta_err": 1.7667,
+      "delta_err_ci_95": [
+        0.4733,
+        2.9933
+      ]
+    },
+    "controlled_history": {
+      "n_items": 10,
+      "alpha": 49.767,
+      "beta": 0.1529,
+      "field_betas": {
+        "finance": 0.165,
+        "health": 0.1425,
+        "ops": 0.154667
+      },
+      "per_item": [
+        {
+          "item_id": "B-0002",
+          "mean_a10": 24.2,
+          "mean_a30": 17.0,
+          "mean_a50": 20.0,
+          "mean_a70": 18.0,
+          "mean_a90": 80.0
+        },
+        {
+          "item_id": "B-0004",
+          "mean_a10": 97.0,
+          "mean_a30": 93.0,
+          "mean_a50": 95.0,
+          "mean_a70": 92.0,
+          "mean_a90": 96.0
+        },
+        {
+          "item_id": "B-0007",
+          "mean_a10": 80.0,
+          "mean_a30": 79.2,
+          "mean_a50": 78.0,
+          "mean_a70": 79.6,
+          "mean_a90": 81.0
+        },
+        {
+          "item_id": "B-0009",
+          "mean_a10": 80.0,
+          "mean_a30": 78.0,
+          "mean_a50": 74.0,
+          "mean_a70": 80.0,
+          "mean_a90": 80.0
+        },
+        {
+          "item_id": "B-0012",
+          "mean_a10": 64.0,
+          "mean_a30": 72.0,
+          "mean_a50": 74.0,
+          "mean_a70": 84.0,
+          "mean_a90": 95.0
+        },
+        {
+          "item_id": "B-0015",
+          "mean_a10": 78.0,
+          "mean_a30": 72.0,
+          "mean_a50": 73.0,
+          "mean_a70": 80.0,
+          "mean_a90": 83.0
+        },
+        {
+          "item_id": "B-0018",
+          "mean_a10": 5.0,
+          "mean_a30": 5.0,
+          "mean_a50": 10.0,
+          "mean_a70": 10.0,
+          "mean_a90": 6.0
+        },
+        {
+          "item_id": "B-0022",
+          "mean_a10": 26.0,
+          "mean_a30": 20.0,
+          "mean_a50": 26.0,
+          "mean_a70": 36.4,
+          "mean_a90": 47.2
+        },
+        {
+          "item_id": "B-0025",
+          "mean_a10": 80.0,
+          "mean_a30": 80.0,
+          "mean_a50": 80.0,
+          "mean_a70": 84.0,
+          "mean_a90": 85.0
+        },
+        {
+          "item_id": "B-0028",
+          "mean_a10": 11.0,
+          "mean_a30": 11.0,
+          "mean_a50": 15.0,
+          "mean_a70": 19.0,
+          "mean_a90": 17.0
+        }
+      ]
+    }
+  }
+}
