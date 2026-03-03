@@ -1,0 +1,45 @@
+\paragraph{Item structure.}
+Each item in \textsc{AnchorBench-v0.2} specifies:
+(i)~a latent signal $\theta \in [15, 85]$,
+(ii)~a gold-standard answer $y^{*}$ derived from $\theta$ with
+  Gaussian noise ($\sigma{=}12$),
+(iii)~low and high anchor values,
+(iv)~prompts for each experimental condition, and
+(v)~metadata (field, domain, template).
+The answer space is constrained to integers in $[0, 100]$,
+representing percentages.
+
+\paragraph{Anchor-delivery suites.}
+We organize items into five suites:
+
+\begin{itemize}
+\item \textbf{External} (30 items): a prompt-embedded anchoring
+  question (\eg ``is the rate higher or lower than $X$\%?'')
+  appears before the estimation instruction.
+
+\item \textbf{ICL} (12 items): the anchor is delivered via 3-shot
+  in-context demonstrations whose answers are biased toward the
+  low or high anchor.
+
+\item \textbf{Conversation history} (12 items): the anchor is the
+  model's own prior answer (turn 1), re-presented in the context
+  of a follow-up question (turn 2).
+
+\item \textbf{RAG} (12 items): anchoring numbers appear in
+  retrieved snippets prepended to the prompt.
+
+\item \textbf{Tool} (12 items): anchoring numbers appear in
+  simulated tool-call outputs.
+\end{itemize}
+
+\noindent Across suites, 30 items belong to the \texttt{external}
+suite and 78 to extension suites (ICL, conversation history, RAG,
+tool).  Three application fields---health, finance,
+operations---contribute 6 domains total.
+
+\paragraph{Conditions.}
+Every external-like item has three conditions:
+\texttt{control} (no anchor), \texttt{low\_anchor}
+(anchor $\leq \theta$), and \texttt{high\_anchor}
+(anchor $\geq \theta$).  The anchor gap is 60 percentage points
+by construction.

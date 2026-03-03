@@ -1,0 +1,215 @@
+We complement the behavioral analysis with a proof-of-concept
+mechanistic investigation that asks \emph{where} in the transformer
+anchoring distortion arises and whether it can be localized to
+specific depth regions.  All analyses use teacher-forced scoring
+(no sampling) on the external suite ($n{=}30$ items), applied to
+the three open-weight Llama models.
+
+\subsection{Methods}
+
+\paragraph{Anchor imprint.}
+For each item we compute the integer output distribution
+$P(y)$ for $y \in \{0,\ldots,100\}$ under the control, low-anchor,
+and high-anchor prompts by extracting logits at the last token
+position and restricting to the single-token integer vocabulary.
+We measure the distributional shift via
+KL$(P_{\text{anchor}} \| P_{\text{control}})$,
+Total Variation Distance (TVD), Wasserstein-1 ($W_1$), and the
+expected-value shift
+$\Delta\text{EV} = \mathbb{E}[Y_{\text{anchor}}]
+  - \mathbb{E}[Y_{\text{control}}]$.
+The EV shift is the distributional counterpart of the behavioral
+\nai: $\text{NAI} = (\Delta\text{EV}_{\text{high}}
+  - \Delta\text{EV}_{\text{low}}) / 60$.
+
+\paragraph{Logit lens.}
+At each transformer layer $l$, we apply the final layer norm and
+language-model head to the residual stream at the last token
+position, yielding a layer-wise integer distribution $P_l(y)$.
+We compute JS$(P_l^{\text{anchor}} \| P_l^{\text{control}})$ at
+every layer to identify the depth at which the anchor begins
+to distort the output distribution.
+
+\paragraph{Residual-stream patching.}
+We perform coarse causal attribution via activation patching:
+\begin{enumerate}
+\item \textit{Clean run:} forward the control prompt, caching
+  hidden states at every layer.
+\item \textit{Patched run:} forward the anchored prompt with
+  hooks that replace the residual stream at the last token
+  position for a contiguous bucket of layers with the cached
+  clean states.
+\end{enumerate}
+Layers are divided into three equal-sized buckets (early, mid,
+late).  The \emph{restoration} metric quantifies how much of the
+anchor-induced divergence is removed:
+\begin{equation}
+  \text{rest}(b) = 1 -
+    \frac{D_{\text{JS}}(\hat{P}^b, P_{\text{ctrl}})}
+         {D_{\text{JS}}(P_{\text{anch}}, P_{\text{ctrl}})},
+  \label{eq:restoration}
+\end{equation}
+where $\hat{P}^b$ is the output distribution after patching
+bucket $b$.  A restoration of 1 means the patch fully removes
+the anchoring distortion.
+
+\subsection{Anchor imprint results}
+
+Table~\ref{tab:imprint} summarizes the distributional anchor
+imprint across models.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\textbf{KL}} &
+   \multicolumn{2}{c}{\textbf{TVD}} &
+   \multicolumn{2}{c}{\textbf{$\Delta$EV}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Model} & Low & High & Low & High & Low & High \\
+\midrule
+Llama 1B & 0.12 & 0.17 & 0.19 & 0.23 & $+$4.8 & $+$9.9 \\
+Llama 3B & 0.62 & 1.70 & 0.36 & 0.66 & $-$3.3 & $+$20.6 \\
+Llama 8B & 0.69 & 0.57 & 0.44 & 0.37 & $-$8.4 & $+$9.9 \\
+\bottomrule
+\end{tabular}
+\caption{Anchor imprint metrics (mean over $n{=}30$ external-suite
+items).  KL = KL$(P_{\text{anchor}} \| P_{\text{control}})$;
+$\Delta$EV = expected-value shift relative to control.  The 3B
+model shows the largest high-anchor imprint (KL~1.70,
+$\Delta$EV~$+$20.6), consistent with its high behavioral \nai
+(0.35).}
+\label{tab:imprint}
+\end{table}
+
+The 3B model shows the strongest distributional distortion under
+the high-anchor condition (KL = 1.70, $\Delta$EV = $+$20.6),
+consistent with its high behavioral \nai of 0.35.
+The 8B model shows a more symmetric pattern (KL 0.69 low / 0.57
+high) with EV shifts in opposite directions ($-$8.4 / $+$9.9),
+as expected from a model that is pulled toward whichever anchor
+is presented.
+The 1B model shows the weakest distributional shift overall,
+aligning with its lower behavioral \nai (0.14).
+Figure~\ref{fig:imprint_scatter} visualizes the per-item
+relationship between distributional divergence and output bias.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{imprint_scatter_combined.pdf}
+\caption{Anchor imprint scatter: KL divergence vs.\ EV shift
+for each item--condition pair.  Each point is one item under
+either the low-anchor or high-anchor condition.
+Larger KL values correlate with larger absolute EV shifts,
+confirming that the anchor's distributional effect drives
+the behavioral output bias.}
+\label{fig:imprint_scatter}
+\end{figure}
+
+\subsection{Logit-lens localization}
+
+Figure~\ref{fig:logit_lens} shows the layer-wise
+JS divergence between anchored and control distributions.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{logit_lens_combined.pdf}
+\caption{Logit lens: JS divergence between anchored and control
+integer distributions as a function of relative depth
+(layer~$l$ / total layers~$L$).
+Shaded regions show 95\% CIs across items.
+In all three models, divergence is near zero in early layers
+and rises sharply in the final third, indicating that the
+anchor distortion is concentrated in late layers.}
+\label{fig:logit_lens}
+\end{figure}
+
+Across all three models, the anchor--control divergence remains
+near zero in early layers and rises sharply in the final third
+of the network.  This ``late-onset'' pattern suggests that the
+anchor does not corrupt early representations; rather, the
+distortion is introduced (or amplified) in the later layers
+that are most directly responsible for mapping representations
+to output tokens.
+
+\subsection{Patching localization}
+
+Table~\ref{tab:patching} and Figure~\ref{fig:patching} report
+the restoration achieved by patching each layer bucket.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+ & \multicolumn{2}{c}{\textbf{Early}} &
+   \multicolumn{2}{c}{\textbf{Mid}} &
+   \multicolumn{2}{c}{\textbf{Late}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+\textbf{Model} & Mean & Std & Mean & Std & Mean & Std \\
+\midrule
+Llama 1B & 0.07 & 0.14 & $-$0.16 & 0.67 & 0.98 & 0.02 \\
+Llama 3B & 0.00 & 0.04 & 0.43 & 0.50 & 0.99 & 0.01 \\
+Llama 8B & 0.04 & 0.12 & 0.38 & 0.26 & 0.99 & 0.01 \\
+\bottomrule
+\end{tabular}
+\caption{Residual-stream patching restoration by layer bucket.
+Replacing the late-third hidden states with clean (control)
+states restores ${\geq}98\%$ of the anchoring divergence across
+all models.  Early layers contribute minimally (${\leq}7\%$).
+Mid-layer restoration is variable, especially for the 1B model.}
+\label{tab:patching}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\linewidth]{patching_combined.pdf}
+\caption{Patching restoration by layer bucket across models.
+Error bars show standard deviation across items and conditions.
+Late-layer patching consistently restores nearly all of the
+anchoring distortion.}
+\label{fig:patching}
+\end{figure}
+
+The causal attribution results are striking in their consistency:
+patching the late third of layers restores ${\geq}98\%$ of the
+anchoring divergence across all three model sizes.  Early-layer
+patching has negligible effect (${\leq}7\%$).  Mid-layer
+restoration is moderate for the 3B and 8B models (0.43 and 0.38)
+but noisy for the 1B model ($-$0.16 $\pm$ 0.67), suggesting that
+the 1B model's anchoring mechanism is more distributed across the
+mid--late boundary.
+
+These results are consistent with the logit-lens findings and
+jointly suggest that anchoring distortion in these models is a
+\emph{late-layer} phenomenon: the anchor token is processed
+through the full context, but the actual shift in the integer
+output distribution occurs predominantly in the layers closest
+to the output head.
+
+\subsection{Limitations of the mechanistic analysis}
+
+\paragraph{External suite only.}
+The patching design requires paired control/anchor prompts of
+similar structure, which is cleanly available only for the
+external suite.  ICL, RAG, and tool suites involve structural
+prompt differences that confound patching.
+
+\paragraph{Coarse granularity.}
+We partition layers into three buckets for robustness across
+model sizes.  This cannot pinpoint individual layers, attention
+heads, or MLP sublayers.  Finer-grained causal tracing
+(\eg per-layer, per-head) is left for future work.
+
+\paragraph{Single-token approximation.}
+The logit-lens and patching analyses score only single-token
+integers.  Multi-token answers (e.g., ``100'') are handled
+correctly in the imprint analysis but not in the layer-wise
+diagnostics.
+
+\paragraph{No attention-head attribution.}
+We do not perform head-level ablation or probing.  Identifying
+specific ``anchor heads'' or circuits requires more targeted
+interventions.
+\todo{Add attention-head ablation or probing in future work.}

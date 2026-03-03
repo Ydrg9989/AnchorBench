@@ -1,0 +1,26 @@
+\paragraph{Cognitive biases in LLMs.}
+Several studies have examined whether LLMs exhibit human-like
+cognitive biases.  \citet{jones2022capturing} proposed a taxonomy
+mapping human heuristics to LLM failure modes.
+\citet{hagendorff2023cognitive} found that GPT-family models
+exhibited anchoring and framing effects that diminished with
+instruction tuning.  \citet{agrawal2024cognitive} systematically
+tested 14 biases across multiple LLMs.
+\todo{Add 2--3 more citations on LLM cognitive biases.}
+
+\paragraph{Anchoring in LLMs.}
+\citet{itzhak2024anchored} distinguished between \emph{instructed}
+and \emph{default} anchoring, showing that models differ in
+susceptibility.  The \texttt{tum-nlp/cognitive-biases-in-llms}
+dataset~\citep{tumnlp2024biases} provides control/treatment pairs
+for multiple biases including anchoring, but uses ordinal scales
+(1--9) rather than continuous numeric estimates.
+\todo{Add citations for ICL-based and RAG-based anchoring studies.}
+
+\paragraph{Mitigation.}
+Chain-of-thought prompting~\citep{wei2022cot} and
+self-consistency~\citep{wang2023selfconsistency} are general
+strategies that may reduce bias.  Contrastive decoding methods such
+as DoLa~\citep{chuang2024dola} operate at the logit level.
+To our knowledge, no prior work has proposed a logit-level
+correction specifically targeting numeric anchoring.

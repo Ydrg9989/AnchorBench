@@ -1,0 +1,179 @@
+\subsection{Baseline anchoring (\nai under B0)}
+
+Table~\ref{tab:baseline_nai} reports the baseline \nai across
+models and suites.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+\textbf{Model} & \textbf{Ext.} & \textbf{ICL} & \textbf{RAG} & \textbf{Tool} & \textbf{Hist.} \\
+\midrule
+Llama-3.2-1B  & 0.14 &  -- & -- & -- & -- \\
+Llama-3.2-3B  & 0.35 &  -- & -- & -- & -- \\
+Llama-3.1-8B\textsuperscript{H}
+              & 0.28 &  -- & -- & -- & -- \\
+\midrule
+GPT-4o-mini   & 0.14 & $-$0.06 & 0.13 & 0.13 & 0.03 \\
+Claude-3.5-Haiku
+              & 0.09 & $-$0.10 & 0.14 & 0.10 & 0.07 \\
+Llama-3.1-8B\textsuperscript{OR}
+              & 0.41 & $-$0.02 & 0.20 & $-$0.02 & 0.06 \\
+\bottomrule
+\end{tabular}
+\caption{Baseline \nai (B0) by model and anchor-delivery suite.
+``Ext.'' = external prompt-embedded anchors.
+\textsuperscript{H} = HuggingFace, \textsuperscript{OR} = OpenRouter.
+``--'' = suite not evaluated for this model/backend combination.
+Higher absolute values indicate stronger anchoring.
+All external-suite values are positive, indicating a pull
+toward the high anchor.}
+\label{tab:baseline_nai}
+\end{table}
+
+All models show positive \nai on the external suite, confirming
+susceptibility to prompt-embedded anchors.
+Llama-3.1-8B (OpenRouter) exhibits the strongest effect
+(\nai = 0.41), while Claude-3.5-Haiku shows the weakest (0.09).
+The ICL suite yields small or negative \nai values, suggesting
+that anchoring via in-context demonstrations is less effective
+than direct prompt embedding---or that models partially
+``see through'' biased demonstrations.
+RAG and tool suites show moderate anchoring
+(\nai $\approx$ 0.10--0.20) for API models.
+
+\subsection{Mitigation effectiveness}
+
+Table~\ref{tab:mitigation_nai} summarizes the \nai under each
+mitigation on the external suite.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+\textbf{Strategy}
+  & \textbf{1B} & \textbf{3B}
+  & \textbf{8B\textsuperscript{H}}
+  & \textbf{8B\textsuperscript{OR}}
+  & \textbf{GPT-4o}
+  & \textbf{Haiku} \\
+\midrule
+B0 (baseline)  & 0.14 & 0.35 & 0.28 & 0.41 & 0.14 & 0.09 \\
+B1 (ignore)    & 0.18 & 0.26 & 0.24 & 0.35 & 0.11 & 0.09 \\
+B2 (warning)   & 0.14 & 0.38 & 0.21 & 0.22 & 0.18 & $-$0.04 \\
+B3 (CoT)       & 0.36 & 0.45 & 0.42 & 0.44 & 0.45 & 0.63 \\
+EFR            & 0.08 & 0.49 & 0.32 & 0.26 & 0.13 & 0.10 \\
+CxDP           & --   & --   & --   & 0.25 & 0.38 & 0.18 \\
+B4 (median)    & 0.31 & 0.33 & 0.32 & 0.38 & 0.16 & 0.08 \\
+PLD            & $-$0.16 & 0.16 & 0.11 & 0.28 & 0.04 & 0.02 \\
+\midrule
+AALC $\alpha{=}0.5$ & 0.14 & 0.21 & 0.24 & -- & -- & -- \\
+AALC $\alpha{=}1.0$ & $-$0.02 & 0.01 & 0.01 & -- & -- & -- \\
+AALC $\alpha{=}1.5$ & $-$0.05 & $-$0.08 & $-$0.09 & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\caption{External-suite \nai by mitigation strategy and model.
+AALC requires logit access and is only applicable to open-weight
+models. ``--'' = not evaluated.
+B3 (CoT) \emph{increases} anchoring across all models.
+AALC at $\alpha{=}1.0$ brings \nai to near zero for all three
+open-weight models.}
+\label{tab:mitigation_nai}
+\end{table}
+
+Three key findings emerge:
+
+\paragraph{Chain-of-thought amplifies anchoring.}
+B3 (CoT) produces the highest \nai values across all models
+(0.36--0.63), substantially exceeding baseline.  Explicit
+step-by-step reasoning appears to give models more opportunity
+to incorporate the anchor into their reasoning chain.
+
+\paragraph{Prompt-level mitigations are inconsistent.}
+B1 and B2 reduce anchoring for some models (Claude-3.5-Haiku,
+Llama-3.1-8B via OpenRouter) but are ineffective or even
+counterproductive for others (Llama-3.2-1B, Llama-3.2-3B).
+
+\paragraph{AALC is the most effective mitigation for open-weight models.}
+At $\alpha{=}1.0$, AALC reduces external-suite \nai from
+0.14/0.35/0.28 to $-$0.02/0.01/0.01 for the 1B/3B/8B models,
+representing near-complete debiasing.
+At $\alpha{=}1.5$, mild over-correction is observed (negative \nai).
+
+\subsection{Dose--response in controlled history}
+
+Figure~\ref{fig:dose_response} shows the relationship between
+the controlled anchor value $a \in \{10, 30, 50, 70, 90\}$ and
+the model's stage-2 expected value (EV) for the conversation-history
+suite.  A positive slope indicates that the model's estimate is
+pulled toward the anchor.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure2_dose_response.png}
+\caption{Dose--response: model EV vs.\ controlled anchor value
+in the conversation-history suite.  A steeper slope indicates
+stronger anchoring by the model's own prior answer.}
+\label{fig:dose_response}
+\end{figure}
+
+\subsection{AALC $\alpha$ sweep}
+
+Figure~\ref{fig:aalc_sweep} shows how \nai varies as a function
+of the AALC correction strength $\alpha$ across suites.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure3_aalc_sweep.png}
+\caption{AALC $\alpha$ sweep: \nai across suites for
+$\alpha \in \{0.5, 1.0, 1.5\}$.  $\alpha{=}1.0$ consistently
+brings \nai near zero; $\alpha{=}1.5$ over-corrects.}
+\label{fig:aalc_sweep}
+\end{figure}
+
+\subsection{Stress tests}
+
+Table~\ref{tab:stress} reports \nai under four stress-test
+conditions for the open-weight models (B0 baseline).
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Test} & \textbf{Description}
+  & \textbf{1B} & \textbf{3B} & \textbf{8B} \\
+\midrule
+T1 & Extreme anchors (5/95) & 0.24 & 0.23 & 0.04 \\
+T2 & Anchor position       & 0.04 & 0.50 & 0.28 \\
+T3 & Verbal-format anchor  & $-$0.11 & 0.42 & 0.30 \\
+T4 & RAG snippet order     & $-$0.07 & 0.03 & 0.27 \\
+\bottomrule
+\end{tabular}
+\caption{Stress-test \nai (B0) for open-weight models.
+$n{=}4$ items per test.  T2 (position) and T3 (verbal format)
+reveal strong sensitivity for Llama-3.2-3B.
+T4 (RAG order) primarily affects the 8B model.}
+\label{tab:stress}
+\end{table}
+
+The 3B model is most sensitive to anchor position (T2: \nai = 0.50)
+and verbal-format anchors (T3: 0.42), while the 8B model is most
+affected by RAG snippet ordering (T4: 0.27).  The 1B model shows
+moderate sensitivity to extreme anchors (T1: 0.24) but is relatively
+robust to position and format variations.
+
+\subsection{NAI vs.\ accuracy}
+
+Figure~\ref{fig:nai_accuracy} visualizes the relationship between
+\nai and task accuracy across models and mitigations.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{figure1_nai_vs_accuracy.png}
+\caption{\nai vs.\ accuracy across model--mitigation pairs.
+\todo{Add interpretation once axis labels are verified.}}
+\label{fig:nai_accuracy}
+\end{figure}

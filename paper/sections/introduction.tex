@@ -1,0 +1,44 @@
+When asked to estimate a quantity, humans systematically shift their
+answers toward arbitrary reference points---a phenomenon known as
+\emph{anchoring bias}~\citep{tversky1974judgment, kahneman2011thinking}.
+As LLMs are increasingly deployed in high-stakes domains such as
+medical triage, financial risk assessment, and operational planning,
+understanding whether they inherit this bias is both scientifically
+interesting and practically important.
+
+Recent work has begun to probe cognitive biases in
+LLMs~\citep{jones2022capturing, hagendorff2023cognitive,
+agrawal2024cognitive}, but existing studies typically (i)~test a single
+anchor-delivery mechanism (usually prompt-embedded), (ii)~evaluate few
+models, and (iii)~lack controlled ground-truth labels that separate
+anchoring from mere accuracy degradation.
+
+We address these gaps with the following contributions:
+
+\begin{enumerate}
+\item \textbf{Controlled benchmark.}  A 108-item dataset
+  (\textsc{AnchorBench-v0.2}) with five anchor-delivery suites
+  (external, ICL, conversation-history, RAG, tool), three
+  application fields (health, finance, operations), and
+  gold-standard reference answers derived from latent signals.
+
+\item \textbf{Multi-model evaluation.}  Systematic measurement of
+  anchoring across six LLMs spanning three families and three scale
+  tiers (1B--8B open-weight; GPT-4o-mini; Claude~3.5~Haiku),
+  using the Normalized Anchoring Index (\nai), Total Variation
+  Distance (\tvd), and Wasserstein-1 (\wone) metrics.
+
+\item \textbf{Mitigation taxonomy and evaluation.}  Nine mitigation
+  strategies organized into prompt-level (B1--B3), structural (EFR,
+  CxDP), post-hoc (B4, PLD), and logit-level (AALC) categories,
+  evaluated with bootstrap confidence intervals and
+  Benjamini--Hochberg correction.
+
+\item \textbf{Stress tests.}  Four robustness probes (anchor
+  magnitude, position, format, RAG-snippet order) revealing
+  model-specific vulnerabilities.
+\end{enumerate}
+
+\noindent This paper reports \emph{proof-of-concept} (PoC) results.
+We plan to scale the benchmark to ${\geq}500$ items, add more
+models, and extend to multi-turn RAG and tool-use settings.

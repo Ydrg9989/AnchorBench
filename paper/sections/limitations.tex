@@ -1,0 +1,32 @@
+\paragraph{PoC scope.}
+This work is a proof of concept.  The benchmark contains 108
+items---sufficient for detecting large effects but too small for
+fine-grained per-domain analysis.  We plan to scale to
+${\geq}500$ items with broader domain coverage.
+
+\paragraph{Model coverage.}
+We evaluate six model configurations across three families.
+Larger models ($\geq$70B), reasoning-specialized models,
+and additional API providers remain untested.
+
+\paragraph{Single language.}
+All items are in English.  Anchoring susceptibility may vary
+across languages.
+
+\paragraph{Synthetic anchors.}
+Our anchors are constructed rather than naturally occurring.
+Real-world anchoring (e.g., from web retrieval or user-provided
+context) may differ in strength and mechanism.
+
+\paragraph{AALC limitations.}
+AALC requires logit access (open-weight models only) and a
+paired control prompt, making it inapplicable to black-box APIs.
+The correction strength $\alpha$ must be tuned per deployment.
+
+\paragraph{Next steps.}
+We plan to: (1)~expand the benchmark to 500+ items with adversarial
+anchor placements; (2)~evaluate on models $\geq$70B and
+reasoning-specialized models; (3)~extend to live RAG and
+tool-use pipelines; (4)~develop AALC variants that do not require
+a paired control prompt; (5)~investigate the mechanism by which
+CoT amplifies anchoring.

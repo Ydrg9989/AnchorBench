@@ -1,0 +1,128 @@
+
+\documentclass{article} % For LaTeX2e
+\usepackage[submission]{colm2026_conference}
+
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{xspace}
+
+\usepackage{lineno}
+
+\definecolor{darkblue}{rgb}{0, 0, 0.5}
+\hypersetup{colorlinks=true, citecolor=darkblue, linkcolor=darkblue, urlcolor=darkblue}
+
+\graphicspath{{figures/}}
+
+% ── Convenience macros ────────────────────────────────────────
+\newcommand{\nai}{\textsc{nai}\xspace}
+\newcommand{\tvd}{\textsc{tvd}\xspace}
+\newcommand{\wone}{$W_1$\xspace}
+\newcommand{\rr}{\textsc{rr}\xspace}
+\newcommand{\etal}{\textit{et al.}\xspace}
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+\title{Anchoring Effects in Large Language Models: \\
+A Controlled Benchmark and Mitigation Study}
+
+\author{Antiquus S.~Hippocampus, Natalia Cerebro \& Amelie P. Amygdale \\
+Department of Computer Science\\
+Cranberry-Lemon University\\
+Pittsburgh, PA 15213, USA \\
+\texttt{\{hippo,brain,jen\}@cs.cranberry-lemon.edu}}
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\begin{document}
+
+\ifcolmsubmission
+\linenumbers
+\fi
+
+\maketitle
+
+% ============================================================
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+\input{sections/introduction}
+
+% ============================================================
+\section{Related work}
+\label{sec:related}
+\input{sections/related}
+
+% ============================================================
+\section{Dataset design}
+\label{sec:dataset}
+\input{sections/dataset}
+
+% ============================================================
+\section{Experimental setup}
+\label{sec:setup}
+\input{sections/setup}
+
+% ============================================================
+\section{Metrics}
+\label{sec:metrics}
+\input{sections/metrics}
+
+% ============================================================
+\section{Mitigation strategies}
+\label{sec:mitigations}
+\input{sections/mitigations}
+
+% ============================================================
+\section{Results}
+\label{sec:results}
+\input{sections/results}
+
+% ============================================================
+\section{Mechanistic interpretability of anchoring}
+\label{sec:mechanistic}
+\input{sections/mechanistic}
+
+% ============================================================
+\section{Limitations and next steps}
+\label{sec:limitations}
+\input{sections/limitations}
+
+% ============================================================
+\section*{Author contributions}
+\todo{Fill in author contributions before submission.}
+
+% ============================================================
+\section*{Acknowledgments}
+\todo{Add acknowledgments and funding information.}
+
+% ============================================================
+\section*{Ethics statement}
+This work studies a failure mode of LLMs that could lead to
+systematically biased outputs in high-stakes applications.
+Our benchmark uses synthetic scenarios in health, finance,
+and operations domains; no real patient, financial, or
+operational data is used.  We release the benchmark to enable
+further research on LLM robustness.
+
+% ============================================================
+\bibliography{references}
+\bibliographystyle{colm2026_conference}
+
+% ============================================================
+\appendix
+\section{Reproducibility}
+\label{app:repro}
+\input{sections/appendix}
+
+\end{document}

@@ -1,0 +1,30 @@
+\paragraph{Normalized Anchoring Index (\nai).}
+For each item $i$ with low-anchor samples $\{y^L_j\}$ and
+high-anchor samples $\{y^H_j\}$, we define
+\begin{equation}
+  \text{NAI}_i = \frac{\bar{y}^H_i - \bar{y}^L_i}{60},
+  \label{eq:nai}
+\end{equation}
+where $\bar{y}$ denotes the sample mean and 60 is the anchor gap.
+$\text{NAI} = 1$ indicates complete susceptibility;
+$\text{NAI} = 0$ indicates no anchoring.
+
+\paragraph{Distributional metrics.}
+We complement \nai with per-item Total Variation Distance (\tvd)
+and Wasserstein-1 distance (\wone) between the low-anchor and
+high-anchor empirical distributions.
+
+\paragraph{Relative Reduction (\rr).}
+For a mitigation $m$ applied to model $k$, we compute
+\begin{equation}
+  \text{RR}_{k,m,i} = 1 - \frac{|\text{NAI}^m_i|}{|\text{NAI}^{B0}_i|},
+  \label{eq:rr}
+\end{equation}
+and report the mean \rr with bootstrap 95\% CIs and
+Benjamini--Hochberg adjusted $p$-values.
+
+\paragraph{Controlled-history slope ($\beta_{\text{norm}}$).}
+For the conversation-history suite, we regress the model's
+stage-2 estimate on the controlled anchor
+$a \in \{10, 30, 50, 70, 90\}$ and normalize the OLS slope:
+$\beta_{\text{norm}} = \beta \cdot 60 / 80$.

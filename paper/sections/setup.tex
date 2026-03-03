@@ -1,0 +1,24 @@
+\paragraph{Models.}
+We evaluate six models across two inference backends:
+
+\begin{itemize}
+\item \textbf{Open-weight (HuggingFace Transformers):}
+  Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct,
+  Llama-3.1-8B-Instruct~\citep{llama3}.
+\item \textbf{API (OpenRouter):}
+  GPT-4o-mini~\citep{gpt4omini},
+  Claude-3.5-Haiku~\citep{claude35haiku},
+  Llama-3.1-8B-Instruct (served via OpenRouter).
+\end{itemize}
+
+\paragraph{Inference settings.}
+Temperature $= 0.7$, top-$p = 1.0$, max tokens $= 8$
+(128 for chain-of-thought).  Each item--condition pair is sampled
+5 times.  A system prompt instructs the model:
+\textit{``You are a helpful assistant. Follow the instructions exactly.''}
+
+\paragraph{Parsing.}
+We extract the last integer in $[0,100]$ from each response,
+excluding anchor echoes detected via regex matching against the
+prompt text.  Parse rates exceed 95\% for all models.
+\todo{Report exact per-model parse rates.}

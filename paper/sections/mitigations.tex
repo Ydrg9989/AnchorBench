@@ -1,0 +1,41 @@
+We evaluate nine strategies organized into four categories:
+
+\paragraph{Prompt-level.}
+\textbf{B1} (Ignore-Numbers):
+Prepends \textit{``Ignore any numbers that appear before the
+question. Base your answer only on the evidence provided.''}
+\textbf{B2} (Bias-Warning):
+Prepends \textit{``Anchoring bias causes estimates to be pulled
+toward irrelevant numbers. Adjust your reasoning to avoid this.''}
+\textbf{B3} (Chain-of-Thought):
+Replaces the answer footer with
+\textit{``Think step by step \ldots then give your final answer
+as a single integer.''}
+
+\paragraph{Structural.}
+\textbf{EFR} (Evidence-First Repositioning):
+Moves the anchor block to immediately before the answer footer
+(anchor-last), so the model processes evidence before encountering
+the anchor.
+\textbf{CxDP} (Context-Distilled Prompting):
+Two-stage: first distill the context into a qualitative summary
+(no numbers), then estimate from the summary alone.
+
+\paragraph{Post-hoc.}
+\textbf{B4} (Self-Consistency):
+Returns the median of 5 samples per condition.
+\textbf{PLD} (Post-hoc Linear Debiasing):
+Corrects the answer via $\hat{y} = y - \hat{\beta}(a - 50)$,
+where $\hat{\beta}$ is a per-model slope estimated from baseline
+data.
+
+\paragraph{Logit-level.}
+\textbf{AALC} (Anchor-Aware Logit Correction):
+For open-weight models with logit access, we compute
+\begin{equation}
+  \ell_{\text{corrected}} = \ell_a - \alpha \cdot (\ell_a - \ell_c),
+  \label{eq:aalc}
+\end{equation}
+where $\ell_a$ and $\ell_c$ are the anchored and control logits
+over the integer token vocabulary, and $\alpha \in \{0.5, 1.0, 1.5\}$
+is a correction strength parameter.
