@@ -44,3 +44,9 @@ analysis/figures/*
 !analysis/figures/.gitkeep
 analysis/tables/*
 !analysis/tables/.gitkeep
+
+# Generated datasets (keep DATASET_CARD and manifests)
+datasets/anchorbench_v1/**/*.jsonl
+datasets/anchorbench_v1/**/artifacts/
+datasets/anchorbench_v1/llm_*/
+datasets/anchorbench_v1/smoke/
