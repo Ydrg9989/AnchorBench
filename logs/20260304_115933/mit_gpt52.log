@@ -1,0 +1,16 @@
+2026-03-04 11:59:33,938 INFO Loading dataset...
+2026-03-04 11:59:33,980 INFO Loaded 600 items with prompt views
+2026-03-04 11:59:33,981 INFO Running B0 (API)...
+2026-03-04 11:59:34,066 INFO [B0] 30 queries to run (async, max_concurrent=20)
+2026-03-04 11:59:47,851 INFO [B0] batch 0-30 done
+2026-03-04 11:59:47,855 INFO [B0] API complete -> results/mitigation/gpt-5.2_20260304_115933/B0_results.jsonl
+2026-03-04 11:59:47,857 INFO Running COUNTERFACTUAL_ENSEMBLE (API)...
+2026-03-04 11:59:47,860 INFO [COUNTERFACTUAL_ENSEMBLE] 30 queries to run (async, max_concurrent=20)
+2026-03-04 12:00:30,260 INFO [COUNTERFACTUAL_ENSEMBLE] batch 0-30 done
+2026-03-04 12:00:30,263 INFO [COUNTERFACTUAL_ENSEMBLE] API complete -> results/mitigation/gpt-5.2_20260304_115933/COUNTERFACTUAL_ENSEMBLE_results.jsonl
+2026-03-04 12:00:30,265 INFO All mitigations done in 56.3s. Output: results/mitigation/gpt-5.2_20260304_115933
+2026-03-04 12:00:30,267 INFO Loaded 60 result records from 2 files
+2026-03-04 12:00:30,358 INFO Summary CSV -> results/mitigation/gpt-5.2_20260304_115933/summary_table.csv
+2026-03-04 12:00:30,639 INFO Saved RR vs utility -> results/mitigation/gpt-5.2_20260304_115933/figures/rr_vs_utility.pdf
+2026-03-04 12:00:31,032 INFO Saved NAI heatmap -> results/mitigation/gpt-5.2_20260304_115933/figures/nai_heatmap.pdf
+2026-03-04 12:00:31,032 INFO LaTeX table -> results/mitigation/gpt-5.2_20260304_115933/tables/mitigation_main.tex

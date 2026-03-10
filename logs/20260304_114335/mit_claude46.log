@@ -1,0 +1,16 @@
+2026-03-04 11:43:43,002 INFO Loading dataset...
+2026-03-04 11:43:43,051 INFO Loaded 600 items with prompt views
+2026-03-04 11:43:43,052 INFO Running B0 (API)...
+2026-03-04 11:43:43,145 INFO [B0] 30 queries to run (async, max_concurrent=20)
+2026-03-04 11:43:51,359 INFO [B0] batch 0-30 done
+2026-03-04 11:43:51,365 INFO [B0] API complete -> results/mitigation/claude-sonnet-4.6_20260304_114342/B0_results.jsonl
+2026-03-04 11:43:51,368 INFO Running COUNTERFACTUAL_ENSEMBLE (API)...
+2026-03-04 11:43:51,374 INFO [COUNTERFACTUAL_ENSEMBLE] 30 queries to run (async, max_concurrent=20)
+2026-03-04 11:44:00,420 INFO [COUNTERFACTUAL_ENSEMBLE] batch 0-30 done
+2026-03-04 11:44:00,428 INFO [COUNTERFACTUAL_ENSEMBLE] API complete -> results/mitigation/claude-sonnet-4.6_20260304_114342/COUNTERFACTUAL_ENSEMBLE_results.jsonl
+2026-03-04 11:44:00,432 INFO All mitigations done in 17.4s. Output: results/mitigation/claude-sonnet-4.6_20260304_114342
+2026-03-04 11:44:00,433 INFO Loaded 60 result records from 2 files
+2026-03-04 11:44:00,435 INFO Summary CSV -> results/mitigation/claude-sonnet-4.6_20260304_114342/summary_table.csv
+2026-03-04 11:44:00,773 INFO Saved RR vs utility -> results/mitigation/claude-sonnet-4.6_20260304_114342/figures/rr_vs_utility.pdf
+2026-03-04 11:44:01,150 INFO Saved NAI heatmap -> results/mitigation/claude-sonnet-4.6_20260304_114342/figures/nai_heatmap.pdf
+2026-03-04 11:44:01,150 INFO LaTeX table -> results/mitigation/claude-sonnet-4.6_20260304_114342/tables/mitigation_main.tex

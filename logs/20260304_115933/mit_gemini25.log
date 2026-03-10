@@ -1,0 +1,16 @@
+2026-03-04 12:00:52,024 INFO Loading dataset...
+2026-03-04 12:00:52,069 INFO Loaded 600 items with prompt views
+2026-03-04 12:00:52,069 INFO Running B0 (API)...
+2026-03-04 12:00:52,152 INFO [B0] 30 queries to run (async, max_concurrent=20)
+2026-03-04 12:01:08,044 INFO [B0] batch 0-30 done
+2026-03-04 12:01:08,048 INFO [B0] API complete -> results/mitigation/gemini-2.5-pro_20260304_120052/B0_results.jsonl
+2026-03-04 12:01:08,049 INFO Running COUNTERFACTUAL_ENSEMBLE (API)...
+2026-03-04 12:01:08,052 INFO [COUNTERFACTUAL_ENSEMBLE] 30 queries to run (async, max_concurrent=20)
+2026-03-04 12:01:45,326 INFO [COUNTERFACTUAL_ENSEMBLE] batch 0-30 done
+2026-03-04 12:01:45,330 INFO [COUNTERFACTUAL_ENSEMBLE] API complete -> results/mitigation/gemini-2.5-pro_20260304_120052/COUNTERFACTUAL_ENSEMBLE_results.jsonl
+2026-03-04 12:01:45,332 INFO All mitigations done in 53.3s. Output: results/mitigation/gemini-2.5-pro_20260304_120052
+2026-03-04 12:01:45,333 INFO Loaded 60 result records from 2 files
+2026-03-04 12:01:45,436 INFO Summary CSV -> results/mitigation/gemini-2.5-pro_20260304_120052/summary_table.csv
+2026-03-04 12:01:45,711 INFO Saved RR vs utility -> results/mitigation/gemini-2.5-pro_20260304_120052/figures/rr_vs_utility.pdf
+2026-03-04 12:01:46,062 INFO Saved NAI heatmap -> results/mitigation/gemini-2.5-pro_20260304_120052/figures/nai_heatmap.pdf
+2026-03-04 12:01:46,062 INFO LaTeX table -> results/mitigation/gemini-2.5-pro_20260304_120052/tables/mitigation_main.tex

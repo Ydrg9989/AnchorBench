@@ -1,41 +1,35 @@
-We evaluate nine strategies organized into four categories:
+The \textsc{AnchorBench} design supports evaluation of
+inference-time mitigation strategies as a downstream use case.
+While mitigation is not the primary contribution of this work,
+we briefly describe six strategies implemented in the evaluation
+framework, organized into prompt-level and multi-pass categories.
 
-\paragraph{Prompt-level.}
+\paragraph{Prompt-level (single-pass).}
 \textbf{B1} (Ignore-Numbers):
-Prepends \textit{``Ignore any numbers that appear before the
-question. Base your answer only on the evidence provided.''}
+Prepends an instruction to ignore contextual numbers.
 \textbf{B2} (Bias-Warning):
-Prepends \textit{``Anchoring bias causes estimates to be pulled
-toward irrelevant numbers. Adjust your reasoning to avoid this.''}
+Prepends a warning about anchoring bias.
 \textbf{B3} (Chain-of-Thought):
-Replaces the answer footer with
-\textit{``Think step by step \ldots then give your final answer
-as a single integer.''}
+Requests step-by-step reasoning before answering.
 
-\paragraph{Structural.}
-\textbf{EFR} (Evidence-First Repositioning):
-Moves the anchor block to immediately before the answer footer
-(anchor-last), so the model processes evidence before encountering
-the anchor.
-\textbf{CxDP} (Context-Distilled Prompting):
-Two-stage: first distill the context into a qualitative summary
-(no numbers), then estimate from the summary alone.
+\paragraph{Multi-pass.}
+\textbf{SELFHELP} (Self-Debiasing):
+The model rewrites the prompt to remove biasing numbers, then
+answers the rewritten prompt.
+\textbf{LATE\_BINDING} (Anchor-Late Reintroduction):
+Pass~1 replaces the anchor with \texttt{[REDACTED]}; Pass~2
+reveals the anchor and asks the model to update only if
+justified.
 
-\paragraph{Post-hoc.}
-\textbf{B4} (Self-Consistency):
-Returns the median of 5 samples per condition.
-\textbf{PLD} (Post-hoc Linear Debiasing):
-Corrects the answer via $\hat{y} = y - \hat{\beta}(a - 50)$,
-where $\hat{\beta}$ is a per-model slope estimated from baseline
-data.
+\paragraph{Baseline.}
+\textbf{B0} (No Mitigation): The unmodified anchored prompt.
 
-\paragraph{Logit-level.}
-\textbf{AALC} (Anchor-Aware Logit Correction):
-For open-weight models with logit access, we compute
-\begin{equation}
-  \ell_{\text{corrected}} = \ell_a - \alpha \cdot (\ell_a - \ell_c),
-  \label{eq:aalc}
-\end{equation}
-where $\ell_a$ and $\ell_c$ are the anchored and control logits
-over the integer token vocabulary, and $\alpha \in \{0.5, 1.0, 1.5\}$
-is a correction strength parameter.
+\paragraph{Preliminary observations.}
+In prior experiments on the v1 benchmark (which used only the
+plausible relevance level), we observed that B2 (Bias-Warning)
+provided the most consistent anchoring reduction across models,
+while B3 (Chain-of-Thought) paradoxically amplified anchoring.
+Full mitigation evaluation on the v2 benchmark with the
+relevance axis is planned as future work and will measure
+whether mitigations reduce irrelevant anchoring without
+suppressing appropriate sensitivity to informative context.

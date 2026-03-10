@@ -1,6 +1,10 @@
-
 \documentclass{article} % For LaTeX2e
 \usepackage[submission]{colm2026_conference}
+
+% Use standard fonts for pdflatex; for LuaLaTeX/XeLaTeX you may switch to fontspec + texgyrepagella
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 
 \usepackage{microtype}
 \usepackage{hyperref}
@@ -8,7 +12,7 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage{multirow}
+\usepackage{amssymb}
 \usepackage{xspace}
 
 \usepackage{lineno}
@@ -20,6 +24,8 @@
 
 % ── Convenience macros ────────────────────────────────────────
 \newcommand{\nai}{\textsc{nai}\xspace}
+\newcommand{\uai}{\textsc{uai}\xspace}
+\newcommand{\tar}{\textsc{tar}\xspace}
 \newcommand{\tvd}{\textsc{tvd}\xspace}
 \newcommand{\wone}{$W_1$\xspace}
 \newcommand{\rr}{\textsc{rr}\xspace}
@@ -28,8 +34,8 @@
 \newcommand{\ie}{i.e.,\xspace}
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
 
-\title{Anchoring Effects in Large Language Models: \\
-A Controlled Benchmark and Mitigation Study}
+\title{AnchorBench: A Theory-Grounded Benchmark for \\
+Anchoring in Large Language Models}
 
 \author{Antiquus S.~Hippocampus, Natalia Cerebro \& Amelie P. Amygdale \\
 Department of Computer Science\\
@@ -64,37 +70,22 @@ Pittsburgh, PA 15213, USA \\
 \input{sections/related}
 
 % ============================================================
-\section{Dataset design}
+\section{Benchmark design}
 \label{sec:dataset}
 \input{sections/dataset}
 
 % ============================================================
-\section{Experimental setup}
-\label{sec:setup}
-\input{sections/setup}
-
-% ============================================================
-\section{Metrics}
+\section{Evaluation framework}
 \label{sec:metrics}
 \input{sections/metrics}
 
 % ============================================================
-\section{Mitigation strategies}
-\label{sec:mitigations}
-\input{sections/mitigations}
-
-% ============================================================
-\section{Results}
+\section{Pilot validation}
 \label{sec:results}
 \input{sections/results}
 
 % ============================================================
-\section{Mechanistic interpretability of anchoring}
-\label{sec:mechanistic}
-\input{sections/mechanistic}
-
-% ============================================================
-\section{Limitations and next steps}
+\section{Limitations and future work}
 \label{sec:limitations}
 \input{sections/limitations}
 
@@ -116,11 +107,28 @@ operational data is used.  We release the benchmark to enable
 further research on LLM robustness.
 
 % ============================================================
-\bibliography{references}
 \bibliographystyle{colm2026_conference}
+\bibliography{references}
 
 % ============================================================
 \appendix
+
+\section{Experimental setup details}
+\label{app:setup}
+\input{sections/setup}
+
+\section{History-suite secondary metrics}
+\label{app:history-secondary}
+\input{sections/history_secondary}
+
+\section{Mitigation strategies}
+\label{app:mitigations}
+\input{sections/mitigations}
+
+\section{Mechanistic analysis}
+\label{app:mechanistic}
+\input{sections/mechanistic}
+
 \section{Reproducibility}
 \label{app:repro}
 \input{sections/appendix}

@@ -1,18 +1,36 @@
-Anchoring bias---the tendency for estimates to gravitate toward
-contextually salient but irrelevant numbers---is well documented in
-human cognition yet poorly characterized in large language models (LLMs).
-We introduce a controlled benchmark of 108 numeric-estimation items
-spanning three anchor-delivery mechanisms (prompt-embedded anchors,
-in-context-learning demonstrations, and retrieval-augmented / tool-call
-contexts), evaluated across six LLMs from three model families
-(Llama~3 1B/3B/8B, GPT-4o-mini, Claude~3.5~Haiku).
-Using a \emph{Normalized Anchoring Index} (\nai), we find that all
-models exhibit statistically significant anchoring on prompt-embedded
-anchors (\nai up to 0.41), with the effect modulated by model scale
-and anchor-delivery channel.
-We evaluate nine mitigation strategies---three prompt-level,
-two structural, two post-hoc, and a novel logit-level
-\emph{Anchor-Aware Logit Correction} (AALC)---finding that
-AALC at $\alpha{=}1.0$ reduces external-suite \nai to near zero
-for open-weight models while preserving output quality.
-\todo{Add final sentence on next steps once mitigation results are finalized.}
+Anchoring---the tendency for numeric estimates to shift toward
+contextually salient reference points---is widely documented in
+both human cognition and large language models (LLMs), yet
+existing LLM evaluations treat anchoring monolithically: they
+test a single delivery mechanism, conflate sensitivity to
+irrelevant numbers with rational use of informative context,
+and lack grounding in the distinct psychological paradigms that
+produce anchoring in humans.
+We introduce \textsc{AnchorBench}, a theory-grounded benchmark
+that maps four established human anchoring paradigms---classic
+external anchoring, self-generated anchoring, numeric priming,
+and ecological anchoring---to five LLM interface channels
+(prompt-embedded, conversation history, in-context learning,
+retrieval-augmented generation, and tool-call outputs).
+Crucially, the benchmark introduces an explicit
+\emph{anchor-relevance axis} that distinguishes transparently
+irrelevant anchors from plausibly informative ones, enabling
+measurement of both raw susceptibility and relevance
+discrimination---a reliability dimension invisible to standard
+accuracy metrics.
+Pilot studies on all five suites (external, history, ICL, RAG,
+and tool) across four models validate the design using a unified
+evaluation framework.
+The Unified Anchor Influence (UAI) metric---which measures
+the fraction of available shift toward the anchor that
+is realized---enables direct comparison across suites
+with different anchor-delivery mechanisms.
+Results show that anchoring susceptibility is
+paradigm-dependent: model rankings on both task accuracy
+and discrimination reverse across suites, and no model
+is consistently best or worst.
+Plausible anchors produce stronger influence than irrelevant
+ones in 18 of 20 model--suite combinations, but the
+magnitude and consistency of discrimination vary
+substantially, confirming the value of multi-paradigm
+evaluation.

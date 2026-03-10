@@ -1,0 +1,34 @@
+{
+  "version": "1.0.0",
+  "benchmark_version": "2.0.0",
+  "generator_version": "d23b394",
+  "seed": 42,
+  "size": "smoke",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-03-07T14:13:32Z",
+  "counts": {
+    "itemspecs": 6,
+    "promptviews": 30,
+    "suites": [
+      "external"
+    ],
+    "domains": [
+      "pricing_wtp"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "anchor_offsets": [
+      15,
+      25,
+      40
+    ],
+    "conditions_per_item": 5
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_v2_smoke_test/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_v2_smoke_test/promptviews.jsonl"
+  }
+}

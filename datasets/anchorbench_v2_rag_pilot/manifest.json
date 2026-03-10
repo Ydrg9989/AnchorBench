@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "benchmark_version": "2.0.0",
+  "suite": "rag_v2",
+  "generator_version": "d23b394",
+  "seed": 42,
+  "size": "pilot",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-03-09T20:04:14Z",
+  "counts": {
+    "itemspecs": 180,
+    "promptviews": 900,
+    "corpus_docs": 1260,
+    "suites": [
+      "rag_v2"
+    ],
+    "domains": [
+      "legal_policy",
+      "market_demographics",
+      "operations_time",
+      "pricing_wtp",
+      "resource_consumption",
+      "transportation_logistics"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 5
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_v2_rag_pilot/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_v2_rag_pilot/promptviews.jsonl",
+    "corpus": "datasets/anchorbench_v2_rag_pilot/anchorbench_corpus_v2.jsonl"
+  }
+}

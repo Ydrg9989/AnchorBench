@@ -29,6 +29,13 @@ class ItemSpec:
     y_star: int = 0
     y_star_components: Dict[str, Any] = field(default_factory=dict)
 
+    # v2 dual gold answers (0 = not set / legacy item)
+    y_star_theta: int = 0
+    y_star_evidence: int = 0
+
+    # v2 difficulty axis ("standard" for legacy, "easy"/"hard" for v2)
+    difficulty: str = "standard"
+
     anchors: Dict[str, Any] = field(default_factory=dict)
     evidence_structured: List[Dict[str, Any]] = field(default_factory=list)
     tags: Dict[str, str] = field(default_factory=dict)
@@ -37,6 +44,8 @@ class ItemSpec:
     rag: Optional[Dict[str, Any]] = None
     # Tool-specific (optional)
     tool: Optional[Dict[str, Any]] = None
+    # History v2 (optional): subset indices, warmup case data for two-stage protocol
+    history: Optional[Dict[str, Any]] = None
 
     # LLM-generated scenario text (None = use template from domains.py)
     scenario_text: Optional[str] = None
@@ -47,7 +56,7 @@ class ItemSpec:
 
     def to_dict(self) -> dict:
         d = asdict(self)
-        for k in ("rag", "tool", "scenario_text"):
+        for k in ("rag", "tool", "history", "scenario_text"):
             if d.get(k) is None:
                 del d[k]
         return d
@@ -64,13 +73,16 @@ class PromptView:
     item_id: str
     suite: str
     domain: str
-    condition: str  # "control" | "low_anchor" | "high_anchor"
+    condition: str  # v1: "control"|"low_anchor"|"high_anchor"
+                    # v2: "control"|"irrelevant_low"|"irrelevant_high"|"plausible_low"|"plausible_high"
 
     prompt_text: str
     prompt_components: Dict[str, str] = field(default_factory=dict)
 
     anchor_string: Optional[str] = None
     anchor_span: Optional[List[int]] = None  # [start, end] char offsets
+    anchor_relevance: str = "none"  # "none" | "irrelevant" | "plausible"
+    anchor_value: Optional[int] = None
 
     prompt_hash: str = ""
     provenance: Dict[str, Any] = field(default_factory=dict)
@@ -83,7 +95,7 @@ class PromptView:
 
     def to_dict(self) -> dict:
         d = asdict(self)
-        for k in ("anchor_span",):
+        for k in ("anchor_span", "anchor_value"):
             if d.get(k) is None:
                 del d[k]
         return d
@@ -99,11 +111,19 @@ class RAGDoc:
 
     doc_id: str
     domain: str
-    doc_type: str  # "evidence" | "distractor" | "anchor_low" | "anchor_high"
+    doc_type: str  # v1: "evidence"|"distractor"|"anchor_low"|"anchor_high"
+                   # v2: "core"|"filler"|"anchor_slot"
     text: str
+    role: str = ""          # v2: "core"|"filler"|"anchor_slot"
+    relevance: str = "none" # v2: "none"|"irrelevant"|"plausible"
+    anchor_value: Optional[int] = None
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        d = asdict(self)
+        for k in ("anchor_value",):
+            if d.get(k) is None:
+                del d[k]
+        return d
 
 
 def compute_prompt_hash(text: str) -> str:

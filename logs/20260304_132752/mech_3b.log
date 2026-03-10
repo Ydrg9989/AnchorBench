@@ -1,0 +1,1030 @@
+2026-03-04 13:27:56,022 INFO Loading model meta-llama/Llama-3.2-3B-Instruct ...
+2026-03-04 13:27:56,390 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
+2026-03-04 13:27:56,649 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 13:27:56,834 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-03-04 13:27:56,974 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-3B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-03-04 13:27:57,146 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-3B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-03-04 13:27:57,926 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-3B-Instruct "HTTP/1.1 200 OK"
+2026-03-04 13:27:58,105 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
+`torch_dtype` is deprecated! Use `dtype` instead!
+/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
+  warn(
+use_kernel_func_from_hub is not available in the installed kernels version. Please upgrade kernels to use this feature.
+2026-03-04 13:28:00,934 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/254 [00:00<?, ?it/s]Loading weights:   0%|          | 1/254 [00:00<00:00, 22310.13it/s, Materializing param=model.embed_tokens.weight]Loading weights:   0%|          | 1/254 [00:00<00:00, 11522.81it/s, Materializing param=model.embed_tokens.weight]Loading weights:   1%|          | 2/254 [00:00<00:13, 18.23it/s, Materializing param=model.embed_tokens.weight]   Loading weights:   1%|          | 2/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.input_layernorm.weight]Loading weights:   1%|          | 2/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.input_layernorm.weight]Loading weights:   1%|          | 3/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.down_proj.weight]  Loading weights:   1%|          | 3/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.down_proj.weight]Loading weights:   2%|▏         | 4/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.gate_proj.weight]Loading weights:   2%|▏         | 4/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.gate_proj.weight]Loading weights:   2%|▏         | 5/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.up_proj.weight]  Loading weights:   2%|▏         | 5/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.mlp.up_proj.weight]Loading weights:   2%|▏         | 6/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.post_attention_layernorm.weight]Loading weights:   2%|▏         | 6/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.post_attention_layernorm.weight]Loading weights:   3%|▎         | 7/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.k_proj.weight]        Loading weights:   3%|▎         | 7/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.k_proj.weight]Loading weights:   3%|▎         | 8/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.o_proj.weight]Loading weights:   3%|▎         | 8/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.o_proj.weight]Loading weights:   4%|▎         | 9/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.q_proj.weight]Loading weights:   4%|▎         | 9/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.q_proj.weight]Loading weights:   4%|▍         | 10/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.v_proj.weight]Loading weights:   4%|▍         | 10/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.0.self_attn.v_proj.weight]Loading weights:   4%|▍         | 11/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.input_layernorm.weight] Loading weights:   4%|▍         | 11/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.input_layernorm.weight]Loading weights:   5%|▍         | 12/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.down_proj.weight]  Loading weights:   5%|▍         | 12/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.down_proj.weight]Loading weights:   5%|▌         | 13/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.gate_proj.weight]Loading weights:   5%|▌         | 13/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.gate_proj.weight]Loading weights:   6%|▌         | 14/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.up_proj.weight]  Loading weights:   6%|▌         | 14/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.mlp.up_proj.weight]Loading weights:   6%|▌         | 15/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.post_attention_layernorm.weight]Loading weights:   6%|▌         | 15/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.post_attention_layernorm.weight]Loading weights:   6%|▋         | 16/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.self_attn.k_proj.weight]        Loading weights:   6%|▋         | 16/254 [00:00<00:13, 18.23it/s, Materializing param=model.layers.1.self_attn.k_proj.weight]Loading weights:   7%|▋         | 17/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.k_proj.weight]Loading weights:   7%|▋         | 17/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.o_proj.weight]Loading weights:   7%|▋         | 17/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.o_proj.weight]Loading weights:   7%|▋         | 18/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.q_proj.weight]Loading weights:   7%|▋         | 18/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.q_proj.weight]Loading weights:   7%|▋         | 19/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.v_proj.weight]Loading weights:   7%|▋         | 19/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.1.self_attn.v_proj.weight]Loading weights:   8%|▊         | 20/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.input_layernorm.weight] Loading weights:   8%|▊         | 20/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.input_layernorm.weight]Loading weights:   8%|▊         | 21/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.down_proj.weight]  Loading weights:   8%|▊         | 21/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.down_proj.weight]Loading weights:   9%|▊         | 22/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.gate_proj.weight]Loading weights:   9%|▊         | 22/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.gate_proj.weight]Loading weights:   9%|▉         | 23/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.up_proj.weight]  Loading weights:   9%|▉         | 23/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.mlp.up_proj.weight]Loading weights:   9%|▉         | 24/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.post_attention_layernorm.weight]Loading weights:   9%|▉         | 24/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.post_attention_layernorm.weight]Loading weights:  10%|▉         | 25/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.k_proj.weight]        Loading weights:  10%|▉         | 25/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.k_proj.weight]Loading weights:  10%|█         | 26/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.o_proj.weight]Loading weights:  10%|█         | 26/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.o_proj.weight]Loading weights:  11%|█         | 27/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.q_proj.weight]Loading weights:  11%|█         | 27/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.q_proj.weight]Loading weights:  11%|█         | 28/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.v_proj.weight]Loading weights:  11%|█         | 28/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.2.self_attn.v_proj.weight]Loading weights:  11%|█▏        | 29/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.input_layernorm.weight] Loading weights:  11%|█▏        | 29/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.input_layernorm.weight]Loading weights:  12%|█▏        | 30/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.down_proj.weight]  Loading weights:  12%|█▏        | 30/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.down_proj.weight]Loading weights:  12%|█▏        | 31/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.gate_proj.weight]Loading weights:  12%|█▏        | 31/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.gate_proj.weight]Loading weights:  13%|█▎        | 32/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.up_proj.weight]  Loading weights:  13%|█▎        | 32/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.mlp.up_proj.weight]Loading weights:  13%|█▎        | 33/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.post_attention_layernorm.weight]Loading weights:  13%|█▎        | 33/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.post_attention_layernorm.weight]Loading weights:  13%|█▎        | 34/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.k_proj.weight]        Loading weights:  13%|█▎        | 34/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.k_proj.weight]Loading weights:  14%|█▍        | 35/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.o_proj.weight]Loading weights:  14%|█▍        | 35/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.o_proj.weight]Loading weights:  14%|█▍        | 36/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  14%|█▍        | 36/254 [00:00<00:02, 91.29it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  15%|█▍        | 37/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  15%|█▍        | 37/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.3.self_attn.v_proj.weight]Loading weights:  15%|█▍        | 37/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.3.self_attn.v_proj.weight]Loading weights:  15%|█▍        | 38/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.input_layernorm.weight] Loading weights:  15%|█▍        | 38/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.input_layernorm.weight]Loading weights:  15%|█▌        | 39/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.down_proj.weight]  Loading weights:  15%|█▌        | 39/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.down_proj.weight]Loading weights:  16%|█▌        | 40/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.gate_proj.weight]Loading weights:  16%|█▌        | 40/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.gate_proj.weight]Loading weights:  16%|█▌        | 41/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.up_proj.weight]  Loading weights:  16%|█▌        | 41/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.mlp.up_proj.weight]Loading weights:  17%|█▋        | 42/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.post_attention_layernorm.weight]Loading weights:  17%|█▋        | 42/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.post_attention_layernorm.weight]Loading weights:  17%|█▋        | 43/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.k_proj.weight]        Loading weights:  17%|█▋        | 43/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.k_proj.weight]Loading weights:  17%|█▋        | 44/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.o_proj.weight]Loading weights:  17%|█▋        | 44/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.o_proj.weight]Loading weights:  18%|█▊        | 45/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.q_proj.weight]Loading weights:  18%|█▊        | 45/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.q_proj.weight]Loading weights:  18%|█▊        | 46/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.v_proj.weight]Loading weights:  18%|█▊        | 46/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.4.self_attn.v_proj.weight]Loading weights:  19%|█▊        | 47/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.input_layernorm.weight] Loading weights:  19%|█▊        | 47/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.input_layernorm.weight]Loading weights:  19%|█▉        | 48/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.down_proj.weight]  Loading weights:  19%|█▉        | 48/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.down_proj.weight]Loading weights:  19%|█▉        | 49/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.gate_proj.weight]Loading weights:  19%|█▉        | 49/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.gate_proj.weight]Loading weights:  20%|█▉        | 50/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.up_proj.weight]  Loading weights:  20%|█▉        | 50/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.mlp.up_proj.weight]Loading weights:  20%|██        | 51/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.post_attention_layernorm.weight]Loading weights:  20%|██        | 51/254 [00:00<00:01, 137.59it/s, Materializing param=model.layers.5.post_attention_layernorm.weight]Loading weights:  20%|██        | 52/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.post_attention_layernorm.weight]Loading weights:  20%|██        | 52/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.k_proj.weight]        Loading weights:  20%|██        | 52/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.k_proj.weight]Loading weights:  21%|██        | 53/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.o_proj.weight]Loading weights:  21%|██        | 53/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.o_proj.weight]Loading weights:  21%|██▏       | 54/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.q_proj.weight]Loading weights:  21%|██▏       | 54/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.q_proj.weight]Loading weights:  22%|██▏       | 55/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.v_proj.weight]Loading weights:  22%|██▏       | 55/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.5.self_attn.v_proj.weight]Loading weights:  22%|██▏       | 56/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.input_layernorm.weight] Loading weights:  22%|██▏       | 56/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.input_layernorm.weight]Loading weights:  22%|██▏       | 57/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.down_proj.weight]  Loading weights:  22%|██▏       | 57/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.down_proj.weight]Loading weights:  23%|██▎       | 58/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.gate_proj.weight]Loading weights:  23%|██▎       | 58/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.gate_proj.weight]Loading weights:  23%|██▎       | 59/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.up_proj.weight]  Loading weights:  23%|██▎       | 59/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.mlp.up_proj.weight]Loading weights:  24%|██▎       | 60/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.post_attention_layernorm.weight]Loading weights:  24%|██▎       | 60/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.post_attention_layernorm.weight]Loading weights:  24%|██▍       | 61/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.k_proj.weight]        Loading weights:  24%|██▍       | 61/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.k_proj.weight]Loading weights:  24%|██▍       | 62/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.o_proj.weight]Loading weights:  24%|██▍       | 62/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.o_proj.weight]Loading weights:  25%|██▍       | 63/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.q_proj.weight]Loading weights:  25%|██▍       | 63/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.q_proj.weight]Loading weights:  25%|██▌       | 64/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.v_proj.weight]Loading weights:  25%|██▌       | 64/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.6.self_attn.v_proj.weight]Loading weights:  26%|██▌       | 65/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.input_layernorm.weight] Loading weights:  26%|██▌       | 65/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.input_layernorm.weight]Loading weights:  26%|██▌       | 66/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.down_proj.weight]  Loading weights:  26%|██▌       | 66/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.down_proj.weight]Loading weights:  26%|██▋       | 67/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.gate_proj.weight]Loading weights:  26%|██▋       | 67/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.gate_proj.weight]Loading weights:  27%|██▋       | 68/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.up_proj.weight]  Loading weights:  27%|██▋       | 68/254 [00:00<00:01, 142.12it/s, Materializing param=model.layers.7.mlp.up_proj.weight]Loading weights:  27%|██▋       | 69/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.mlp.up_proj.weight]Loading weights:  27%|██▋       | 69/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.post_attention_layernorm.weight]Loading weights:  27%|██▋       | 69/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.post_attention_layernorm.weight]Loading weights:  28%|██▊       | 70/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.k_proj.weight]        Loading weights:  28%|██▊       | 70/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.k_proj.weight]Loading weights:  28%|██▊       | 71/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.o_proj.weight]Loading weights:  28%|██▊       | 71/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.o_proj.weight]Loading weights:  28%|██▊       | 72/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.q_proj.weight]Loading weights:  28%|██▊       | 72/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.q_proj.weight]Loading weights:  29%|██▊       | 73/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.v_proj.weight]Loading weights:  29%|██▊       | 73/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.7.self_attn.v_proj.weight]Loading weights:  29%|██▉       | 74/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.input_layernorm.weight] Loading weights:  29%|██▉       | 74/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.input_layernorm.weight]Loading weights:  30%|██▉       | 75/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.down_proj.weight]  Loading weights:  30%|██▉       | 75/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.down_proj.weight]Loading weights:  30%|██▉       | 76/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.gate_proj.weight]Loading weights:  30%|██▉       | 76/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.gate_proj.weight]Loading weights:  30%|███       | 77/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.up_proj.weight]  Loading weights:  30%|███       | 77/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.mlp.up_proj.weight]Loading weights:  31%|███       | 78/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.post_attention_layernorm.weight]Loading weights:  31%|███       | 78/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.post_attention_layernorm.weight]Loading weights:  31%|███       | 79/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.k_proj.weight]        Loading weights:  31%|███       | 79/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.k_proj.weight]Loading weights:  31%|███▏      | 80/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.o_proj.weight]Loading weights:  31%|███▏      | 80/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.o_proj.weight]Loading weights:  32%|███▏      | 81/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.q_proj.weight]Loading weights:  32%|███▏      | 81/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.q_proj.weight]Loading weights:  32%|███▏      | 82/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.v_proj.weight]Loading weights:  32%|███▏      | 82/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.8.self_attn.v_proj.weight]Loading weights:  33%|███▎      | 83/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.input_layernorm.weight] Loading weights:  33%|███▎      | 83/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.input_layernorm.weight]Loading weights:  33%|███▎      | 84/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.down_proj.weight]  Loading weights:  33%|███▎      | 84/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.down_proj.weight]Loading weights:  33%|███▎      | 85/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.gate_proj.weight]Loading weights:  33%|███▎      | 85/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.gate_proj.weight]Loading weights:  34%|███▍      | 86/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.up_proj.weight]  Loading weights:  34%|███▍      | 86/254 [00:00<00:01, 148.11it/s, Materializing param=model.layers.9.mlp.up_proj.weight]Loading weights:  34%|███▍      | 87/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.mlp.up_proj.weight]Loading weights:  34%|███▍      | 87/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.post_attention_layernorm.weight]Loading weights:  34%|███▍      | 87/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.post_attention_layernorm.weight]Loading weights:  35%|███▍      | 88/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.k_proj.weight]        Loading weights:  35%|███▍      | 88/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.k_proj.weight]Loading weights:  35%|███▌      | 89/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.o_proj.weight]Loading weights:  35%|███▌      | 89/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.o_proj.weight]Loading weights:  35%|███▌      | 90/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.q_proj.weight]Loading weights:  35%|███▌      | 90/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.q_proj.weight]Loading weights:  36%|███▌      | 91/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.v_proj.weight]Loading weights:  36%|███▌      | 91/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.9.self_attn.v_proj.weight]Loading weights:  36%|███▌      | 92/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.input_layernorm.weight]Loading weights:  36%|███▌      | 92/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.input_layernorm.weight]Loading weights:  37%|███▋      | 93/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.down_proj.weight]  Loading weights:  37%|███▋      | 93/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.down_proj.weight]Loading weights:  37%|███▋      | 94/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.gate_proj.weight]Loading weights:  37%|███▋      | 94/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.gate_proj.weight]Loading weights:  37%|███▋      | 95/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.up_proj.weight]  Loading weights:  37%|███▋      | 95/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.mlp.up_proj.weight]Loading weights:  38%|███▊      | 96/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.post_attention_layernorm.weight]Loading weights:  38%|███▊      | 96/254 [00:00<00:01, 157.77it/s, Materializing param=model.layers.10.post_attention_layernorm.weight]Loading weights:  38%|███▊      | 97/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.k_proj.weight]        Loading weights:  38%|███▊      | 97/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.k_proj.weight]Loading weights:  39%|███▊      | 98/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.o_proj.weight]Loading weights:  39%|███▊      | 98/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.o_proj.weight]Loading weights:  39%|███▉      | 99/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.q_proj.weight]Loading weights:  39%|███▉      | 99/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.q_proj.weight]Loading weights:  39%|███▉      | 100/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.v_proj.weight]Loading weights:  39%|███▉      | 100/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.10.self_attn.v_proj.weight]Loading weights:  40%|███▉      | 101/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.input_layernorm.weight] Loading weights:  40%|███▉      | 101/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.input_layernorm.weight]Loading weights:  40%|████      | 102/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.down_proj.weight]  Loading weights:  40%|████      | 102/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.down_proj.weight]Loading weights:  41%|████      | 103/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.gate_proj.weight]Loading weights:  41%|████      | 103/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.gate_proj.weight]Loading weights:  41%|████      | 104/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.up_proj.weight]  Loading weights:  41%|████      | 104/254 [00:00<00:00, 157.77it/s, Materializing param=model.layers.11.mlp.up_proj.weight]Loading weights:  41%|████▏     | 105/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.mlp.up_proj.weight]Loading weights:  41%|████▏     | 105/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.post_attention_layernorm.weight]Loading weights:  41%|████▏     | 105/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.post_attention_layernorm.weight]Loading weights:  42%|████▏     | 106/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.k_proj.weight]        Loading weights:  42%|████▏     | 106/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.k_proj.weight]Loading weights:  42%|████▏     | 107/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.o_proj.weight]Loading weights:  42%|████▏     | 107/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.o_proj.weight]Loading weights:  43%|████▎     | 108/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.q_proj.weight]Loading weights:  43%|████▎     | 108/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.q_proj.weight]Loading weights:  43%|████▎     | 109/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.v_proj.weight]Loading weights:  43%|████▎     | 109/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.11.self_attn.v_proj.weight]Loading weights:  43%|████▎     | 110/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.input_layernorm.weight] Loading weights:  43%|████▎     | 110/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.input_layernorm.weight]Loading weights:  44%|████▎     | 111/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.down_proj.weight]  Loading weights:  44%|████▎     | 111/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.down_proj.weight]Loading weights:  44%|████▍     | 112/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.gate_proj.weight]Loading weights:  44%|████▍     | 112/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.gate_proj.weight]Loading weights:  44%|████▍     | 113/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.up_proj.weight]  Loading weights:  44%|████▍     | 113/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.mlp.up_proj.weight]Loading weights:  45%|████▍     | 114/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.post_attention_layernorm.weight]Loading weights:  45%|████▍     | 114/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.post_attention_layernorm.weight]Loading weights:  45%|████▌     | 115/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.k_proj.weight]        Loading weights:  45%|████▌     | 115/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.k_proj.weight]Loading weights:  46%|████▌     | 116/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.o_proj.weight]Loading weights:  46%|████▌     | 116/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.o_proj.weight]Loading weights:  46%|████▌     | 117/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.q_proj.weight]Loading weights:  46%|████▌     | 117/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.q_proj.weight]Loading weights:  46%|████▋     | 118/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.v_proj.weight]Loading weights:  46%|████▋     | 118/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.12.self_attn.v_proj.weight]Loading weights:  47%|████▋     | 119/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.input_layernorm.weight] Loading weights:  47%|████▋     | 119/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.input_layernorm.weight]Loading weights:  47%|████▋     | 120/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.down_proj.weight]  Loading weights:  47%|████▋     | 120/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.down_proj.weight]Loading weights:  48%|████▊     | 121/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.gate_proj.weight]Loading weights:  48%|████▊     | 121/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.gate_proj.weight]Loading weights:  48%|████▊     | 122/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.up_proj.weight]  Loading weights:  48%|████▊     | 122/254 [00:00<00:00, 164.10it/s, Materializing param=model.layers.13.mlp.up_proj.weight]Loading weights:  48%|████▊     | 123/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.mlp.up_proj.weight]Loading weights:  48%|████▊     | 123/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.post_attention_layernorm.weight]Loading weights:  48%|████▊     | 123/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.post_attention_layernorm.weight]Loading weights:  49%|████▉     | 124/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.k_proj.weight]        Loading weights:  49%|████▉     | 124/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.k_proj.weight]Loading weights:  49%|████▉     | 125/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.o_proj.weight]Loading weights:  49%|████▉     | 125/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.o_proj.weight]Loading weights:  50%|████▉     | 126/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.q_proj.weight]Loading weights:  50%|████▉     | 126/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.q_proj.weight]Loading weights:  50%|█████     | 127/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.v_proj.weight]Loading weights:  50%|█████     | 127/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.13.self_attn.v_proj.weight]Loading weights:  50%|█████     | 128/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.input_layernorm.weight] Loading weights:  50%|█████     | 128/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.input_layernorm.weight]Loading weights:  51%|█████     | 129/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.down_proj.weight]  Loading weights:  51%|█████     | 129/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.down_proj.weight]Loading weights:  51%|█████     | 130/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.gate_proj.weight]Loading weights:  51%|█████     | 130/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.gate_proj.weight]Loading weights:  52%|█████▏    | 131/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.up_proj.weight]  Loading weights:  52%|█████▏    | 131/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.mlp.up_proj.weight]Loading weights:  52%|█████▏    | 132/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.post_attention_layernorm.weight]Loading weights:  52%|█████▏    | 132/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.post_attention_layernorm.weight]Loading weights:  52%|█████▏    | 133/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.k_proj.weight]        Loading weights:  52%|█████▏    | 133/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.k_proj.weight]Loading weights:  53%|█████▎    | 134/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.o_proj.weight]Loading weights:  53%|█████▎    | 134/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.o_proj.weight]Loading weights:  53%|█████▎    | 135/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.q_proj.weight]Loading weights:  53%|█████▎    | 135/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.q_proj.weight]Loading weights:  54%|█████▎    | 136/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.v_proj.weight]Loading weights:  54%|█████▎    | 136/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.14.self_attn.v_proj.weight]Loading weights:  54%|█████▍    | 137/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.input_layernorm.weight] Loading weights:  54%|█████▍    | 137/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.input_layernorm.weight]Loading weights:  54%|█████▍    | 138/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.down_proj.weight]  Loading weights:  54%|█████▍    | 138/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.down_proj.weight]Loading weights:  55%|█████▍    | 139/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.gate_proj.weight]Loading weights:  55%|█████▍    | 139/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.gate_proj.weight]Loading weights:  55%|█████▌    | 140/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.up_proj.weight]  Loading weights:  55%|█████▌    | 140/254 [00:00<00:00, 167.81it/s, Materializing param=model.layers.15.mlp.up_proj.weight]Loading weights:  56%|█████▌    | 141/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.mlp.up_proj.weight]Loading weights:  56%|█████▌    | 141/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.post_attention_layernorm.weight]Loading weights:  56%|█████▌    | 141/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.post_attention_layernorm.weight]Loading weights:  56%|█████▌    | 142/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.k_proj.weight]        Loading weights:  56%|█████▌    | 142/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.k_proj.weight]Loading weights:  56%|█████▋    | 143/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.o_proj.weight]Loading weights:  56%|█████▋    | 143/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.o_proj.weight]Loading weights:  57%|█████▋    | 144/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.q_proj.weight]Loading weights:  57%|█████▋    | 144/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.q_proj.weight]Loading weights:  57%|█████▋    | 145/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.v_proj.weight]Loading weights:  57%|█████▋    | 145/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.15.self_attn.v_proj.weight]Loading weights:  57%|█████▋    | 146/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.input_layernorm.weight] Loading weights:  57%|█████▋    | 146/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.input_layernorm.weight]Loading weights:  58%|█████▊    | 147/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.down_proj.weight]  Loading weights:  58%|█████▊    | 147/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.down_proj.weight]Loading weights:  58%|█████▊    | 148/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.gate_proj.weight]Loading weights:  58%|█████▊    | 148/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.gate_proj.weight]Loading weights:  59%|█████▊    | 149/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.up_proj.weight]  Loading weights:  59%|█████▊    | 149/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.mlp.up_proj.weight]Loading weights:  59%|█████▉    | 150/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.post_attention_layernorm.weight]Loading weights:  59%|█████▉    | 150/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.post_attention_layernorm.weight]Loading weights:  59%|█████▉    | 151/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.k_proj.weight]        Loading weights:  59%|█████▉    | 151/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.k_proj.weight]Loading weights:  60%|█████▉    | 152/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.o_proj.weight]Loading weights:  60%|█████▉    | 152/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.o_proj.weight]Loading weights:  60%|██████    | 153/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.q_proj.weight]Loading weights:  60%|██████    | 153/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.q_proj.weight]Loading weights:  61%|██████    | 154/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.v_proj.weight]Loading weights:  61%|██████    | 154/254 [00:00<00:00, 168.05it/s, Materializing param=model.layers.16.self_attn.v_proj.weight]Loading weights:  61%|██████    | 155/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.input_layernorm.weight] Loading weights:  61%|██████    | 155/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.input_layernorm.weight]Loading weights:  61%|██████▏   | 156/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.down_proj.weight]  Loading weights:  61%|██████▏   | 156/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.down_proj.weight]Loading weights:  62%|██████▏   | 157/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.gate_proj.weight]Loading weights:  62%|██████▏   | 157/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.gate_proj.weight]Loading weights:  62%|██████▏   | 158/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.up_proj.weight]  Loading weights:  62%|██████▏   | 158/254 [00:01<00:00, 168.05it/s, Materializing param=model.layers.17.mlp.up_proj.weight]Loading weights:  63%|██████▎   | 159/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.mlp.up_proj.weight]Loading weights:  63%|██████▎   | 159/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.post_attention_layernorm.weight]Loading weights:  63%|██████▎   | 159/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.post_attention_layernorm.weight]Loading weights:  63%|██████▎   | 160/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.k_proj.weight]        Loading weights:  63%|██████▎   | 160/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.k_proj.weight]Loading weights:  63%|██████▎   | 161/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.o_proj.weight]Loading weights:  63%|██████▎   | 161/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.o_proj.weight]Loading weights:  64%|██████▍   | 162/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.q_proj.weight]Loading weights:  64%|██████▍   | 162/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.q_proj.weight]Loading weights:  64%|██████▍   | 163/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.v_proj.weight]Loading weights:  64%|██████▍   | 163/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.17.self_attn.v_proj.weight]Loading weights:  65%|██████▍   | 164/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.input_layernorm.weight] Loading weights:  65%|██████▍   | 164/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.input_layernorm.weight]Loading weights:  65%|██████▍   | 165/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.down_proj.weight]  Loading weights:  65%|██████▍   | 165/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.down_proj.weight]Loading weights:  65%|██████▌   | 166/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.gate_proj.weight]Loading weights:  65%|██████▌   | 166/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.gate_proj.weight]Loading weights:  66%|██████▌   | 167/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.up_proj.weight]  Loading weights:  66%|██████▌   | 167/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.mlp.up_proj.weight]Loading weights:  66%|██████▌   | 168/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.post_attention_layernorm.weight]Loading weights:  66%|██████▌   | 168/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.post_attention_layernorm.weight]Loading weights:  67%|██████▋   | 169/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.k_proj.weight]        Loading weights:  67%|██████▋   | 169/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.k_proj.weight]Loading weights:  67%|██████▋   | 170/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.o_proj.weight]Loading weights:  67%|██████▋   | 170/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.o_proj.weight]Loading weights:  67%|██████▋   | 171/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.q_proj.weight]Loading weights:  67%|██████▋   | 171/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.q_proj.weight]Loading weights:  68%|██████▊   | 172/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.v_proj.weight]Loading weights:  68%|██████▊   | 172/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.18.self_attn.v_proj.weight]Loading weights:  68%|██████▊   | 173/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.input_layernorm.weight] Loading weights:  68%|██████▊   | 173/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.input_layernorm.weight]Loading weights:  69%|██████▊   | 174/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.down_proj.weight]  Loading weights:  69%|██████▊   | 174/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.down_proj.weight]Loading weights:  69%|██████▉   | 175/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.gate_proj.weight]Loading weights:  69%|██████▉   | 175/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.gate_proj.weight]Loading weights:  69%|██████▉   | 176/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.up_proj.weight]  Loading weights:  69%|██████▉   | 176/254 [00:01<00:00, 169.62it/s, Materializing param=model.layers.19.mlp.up_proj.weight]Loading weights:  70%|██████▉   | 177/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.mlp.up_proj.weight]Loading weights:  70%|██████▉   | 177/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.post_attention_layernorm.weight]Loading weights:  70%|██████▉   | 177/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.post_attention_layernorm.weight]Loading weights:  70%|███████   | 178/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.k_proj.weight]        Loading weights:  70%|███████   | 178/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.k_proj.weight]Loading weights:  70%|███████   | 179/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.o_proj.weight]Loading weights:  70%|███████   | 179/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.o_proj.weight]Loading weights:  71%|███████   | 180/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.q_proj.weight]Loading weights:  71%|███████   | 180/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.q_proj.weight]Loading weights:  71%|███████▏  | 181/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.v_proj.weight]Loading weights:  71%|███████▏  | 181/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.19.self_attn.v_proj.weight]Loading weights:  72%|███████▏  | 182/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.input_layernorm.weight] Loading weights:  72%|███████▏  | 182/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.input_layernorm.weight]Loading weights:  72%|███████▏  | 183/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.down_proj.weight]  Loading weights:  72%|███████▏  | 183/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.down_proj.weight]Loading weights:  72%|███████▏  | 184/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.gate_proj.weight]Loading weights:  72%|███████▏  | 184/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.gate_proj.weight]Loading weights:  73%|███████▎  | 185/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.up_proj.weight]  Loading weights:  73%|███████▎  | 185/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.mlp.up_proj.weight]Loading weights:  73%|███████▎  | 186/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.post_attention_layernorm.weight]Loading weights:  73%|███████▎  | 186/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.post_attention_layernorm.weight]Loading weights:  74%|███████▎  | 187/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.k_proj.weight]        Loading weights:  74%|███████▎  | 187/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.k_proj.weight]Loading weights:  74%|███████▍  | 188/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.o_proj.weight]Loading weights:  74%|███████▍  | 188/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.o_proj.weight]Loading weights:  74%|███████▍  | 189/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.q_proj.weight]Loading weights:  74%|███████▍  | 189/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.q_proj.weight]Loading weights:  75%|███████▍  | 190/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.v_proj.weight]Loading weights:  75%|███████▍  | 190/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.20.self_attn.v_proj.weight]Loading weights:  75%|███████▌  | 191/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.input_layernorm.weight] Loading weights:  75%|███████▌  | 191/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.input_layernorm.weight]Loading weights:  76%|███████▌  | 192/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.down_proj.weight]  Loading weights:  76%|███████▌  | 192/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.down_proj.weight]Loading weights:  76%|███████▌  | 193/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.gate_proj.weight]Loading weights:  76%|███████▌  | 193/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.gate_proj.weight]Loading weights:  76%|███████▋  | 194/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.up_proj.weight]  Loading weights:  76%|███████▋  | 194/254 [00:01<00:00, 172.01it/s, Materializing param=model.layers.21.mlp.up_proj.weight]Loading weights:  77%|███████▋  | 195/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.mlp.up_proj.weight]Loading weights:  77%|███████▋  | 195/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.post_attention_layernorm.weight]Loading weights:  77%|███████▋  | 195/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.post_attention_layernorm.weight]Loading weights:  77%|███████▋  | 196/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.k_proj.weight]        Loading weights:  77%|███████▋  | 196/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.k_proj.weight]Loading weights:  78%|███████▊  | 197/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.o_proj.weight]Loading weights:  78%|███████▊  | 197/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.o_proj.weight]Loading weights:  78%|███████▊  | 198/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.q_proj.weight]Loading weights:  78%|███████▊  | 198/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.q_proj.weight]Loading weights:  78%|███████▊  | 199/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.v_proj.weight]Loading weights:  78%|███████▊  | 199/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.21.self_attn.v_proj.weight]Loading weights:  79%|███████▊  | 200/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.input_layernorm.weight] Loading weights:  79%|███████▊  | 200/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.input_layernorm.weight]Loading weights:  79%|███████▉  | 201/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.down_proj.weight]  Loading weights:  79%|███████▉  | 201/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.down_proj.weight]Loading weights:  80%|███████▉  | 202/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.gate_proj.weight]Loading weights:  80%|███████▉  | 202/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.gate_proj.weight]Loading weights:  80%|███████▉  | 203/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.up_proj.weight]  Loading weights:  80%|███████▉  | 203/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.mlp.up_proj.weight]Loading weights:  80%|████████  | 204/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.post_attention_layernorm.weight]Loading weights:  80%|████████  | 204/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.post_attention_layernorm.weight]Loading weights:  81%|████████  | 205/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.k_proj.weight]        Loading weights:  81%|████████  | 205/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.k_proj.weight]Loading weights:  81%|████████  | 206/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.o_proj.weight]Loading weights:  81%|████████  | 206/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.o_proj.weight]Loading weights:  81%|████████▏ | 207/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.q_proj.weight]Loading weights:  81%|████████▏ | 207/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.q_proj.weight]Loading weights:  82%|████████▏ | 208/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.v_proj.weight]Loading weights:  82%|████████▏ | 208/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.22.self_attn.v_proj.weight]Loading weights:  82%|████████▏ | 209/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.input_layernorm.weight] Loading weights:  82%|████████▏ | 209/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.input_layernorm.weight]Loading weights:  83%|████████▎ | 210/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.down_proj.weight]  Loading weights:  83%|████████▎ | 210/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.down_proj.weight]Loading weights:  83%|████████▎ | 211/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.gate_proj.weight]Loading weights:  83%|████████▎ | 211/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.gate_proj.weight]Loading weights:  83%|████████▎ | 212/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.up_proj.weight]  Loading weights:  83%|████████▎ | 212/254 [00:01<00:00, 173.19it/s, Materializing param=model.layers.23.mlp.up_proj.weight]Loading weights:  84%|████████▍ | 213/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.mlp.up_proj.weight]Loading weights:  84%|████████▍ | 213/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.post_attention_layernorm.weight]Loading weights:  84%|████████▍ | 213/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.post_attention_layernorm.weight]Loading weights:  84%|████████▍ | 214/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.k_proj.weight]        Loading weights:  84%|████████▍ | 214/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.k_proj.weight]Loading weights:  85%|████████▍ | 215/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.o_proj.weight]Loading weights:  85%|████████▍ | 215/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.o_proj.weight]Loading weights:  85%|████████▌ | 216/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.q_proj.weight]Loading weights:  85%|████████▌ | 216/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.q_proj.weight]Loading weights:  85%|████████▌ | 217/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.v_proj.weight]Loading weights:  85%|████████▌ | 217/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.23.self_attn.v_proj.weight]Loading weights:  86%|████████▌ | 218/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.input_layernorm.weight] Loading weights:  86%|████████▌ | 218/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.input_layernorm.weight]Loading weights:  86%|████████▌ | 219/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.down_proj.weight]  Loading weights:  86%|████████▌ | 219/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.down_proj.weight]Loading weights:  87%|████████▋ | 220/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.gate_proj.weight]Loading weights:  87%|████████▋ | 220/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.gate_proj.weight]Loading weights:  87%|████████▋ | 221/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.up_proj.weight]  Loading weights:  87%|████████▋ | 221/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.mlp.up_proj.weight]Loading weights:  87%|████████▋ | 222/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.post_attention_layernorm.weight]Loading weights:  87%|████████▋ | 222/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.post_attention_layernorm.weight]Loading weights:  88%|████████▊ | 223/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.k_proj.weight]        Loading weights:  88%|████████▊ | 223/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.k_proj.weight]Loading weights:  88%|████████▊ | 224/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.o_proj.weight]Loading weights:  88%|████████▊ | 224/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.o_proj.weight]Loading weights:  89%|████████▊ | 225/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.q_proj.weight]Loading weights:  89%|████████▊ | 225/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.q_proj.weight]Loading weights:  89%|████████▉ | 226/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.v_proj.weight]Loading weights:  89%|████████▉ | 226/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.24.self_attn.v_proj.weight]Loading weights:  89%|████████▉ | 227/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.input_layernorm.weight] Loading weights:  89%|████████▉ | 227/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.input_layernorm.weight]Loading weights:  90%|████████▉ | 228/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.down_proj.weight]  Loading weights:  90%|████████▉ | 228/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.down_proj.weight]Loading weights:  90%|█████████ | 229/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.gate_proj.weight]Loading weights:  90%|█████████ | 229/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.gate_proj.weight]Loading weights:  91%|█████████ | 230/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.up_proj.weight]  Loading weights:  91%|█████████ | 230/254 [00:01<00:00, 172.33it/s, Materializing param=model.layers.25.mlp.up_proj.weight]Loading weights:  91%|█████████ | 231/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.mlp.up_proj.weight]Loading weights:  91%|█████████ | 231/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.post_attention_layernorm.weight]Loading weights:  91%|█████████ | 231/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.post_attention_layernorm.weight]Loading weights:  91%|█████████▏| 232/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.k_proj.weight]        Loading weights:  91%|█████████▏| 232/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.k_proj.weight]Loading weights:  92%|█████████▏| 233/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.o_proj.weight]Loading weights:  92%|█████████▏| 233/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.o_proj.weight]Loading weights:  92%|█████████▏| 234/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.q_proj.weight]Loading weights:  92%|█████████▏| 234/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.q_proj.weight]Loading weights:  93%|█████████▎| 235/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.v_proj.weight]Loading weights:  93%|█████████▎| 235/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.25.self_attn.v_proj.weight]Loading weights:  93%|█████████▎| 236/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.input_layernorm.weight] Loading weights:  93%|█████████▎| 236/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.input_layernorm.weight]Loading weights:  93%|█████████▎| 237/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.down_proj.weight]  Loading weights:  93%|█████████▎| 237/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.down_proj.weight]Loading weights:  94%|█████████▎| 238/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.gate_proj.weight]Loading weights:  94%|█████████▎| 238/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.gate_proj.weight]Loading weights:  94%|█████████▍| 239/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.up_proj.weight]  Loading weights:  94%|█████████▍| 239/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.mlp.up_proj.weight]Loading weights:  94%|█████████▍| 240/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.post_attention_layernorm.weight]Loading weights:  94%|█████████▍| 240/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.post_attention_layernorm.weight]Loading weights:  95%|█████████▍| 241/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.k_proj.weight]        Loading weights:  95%|█████████▍| 241/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.k_proj.weight]Loading weights:  95%|█████████▌| 242/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.o_proj.weight]Loading weights:  95%|█████████▌| 242/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.o_proj.weight]Loading weights:  96%|█████████▌| 243/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.q_proj.weight]Loading weights:  96%|█████████▌| 243/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.q_proj.weight]Loading weights:  96%|█████████▌| 244/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.v_proj.weight]Loading weights:  96%|█████████▌| 244/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.26.self_attn.v_proj.weight]Loading weights:  96%|█████████▋| 245/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.input_layernorm.weight] Loading weights:  96%|█████████▋| 245/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.input_layernorm.weight]Loading weights:  97%|█████████▋| 246/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.down_proj.weight]  Loading weights:  97%|█████████▋| 246/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.down_proj.weight]Loading weights:  97%|█████████▋| 247/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.gate_proj.weight]Loading weights:  97%|█████████▋| 247/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.gate_proj.weight]Loading weights:  98%|█████████▊| 248/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.up_proj.weight]  Loading weights:  98%|█████████▊| 248/254 [00:01<00:00, 173.28it/s, Materializing param=model.layers.27.mlp.up_proj.weight]Loading weights:  98%|█████████▊| 249/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.mlp.up_proj.weight]Loading weights:  98%|█████████▊| 249/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.post_attention_layernorm.weight]Loading weights:  98%|█████████▊| 249/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.post_attention_layernorm.weight]Loading weights:  98%|█████████▊| 250/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.k_proj.weight]        Loading weights:  98%|█████████▊| 250/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.k_proj.weight]Loading weights:  99%|█████████▉| 251/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.o_proj.weight]Loading weights:  99%|█████████▉| 251/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.o_proj.weight]Loading weights:  99%|█████████▉| 252/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.q_proj.weight]Loading weights:  99%|█████████▉| 252/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.q_proj.weight]Loading weights: 100%|█████████▉| 253/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.v_proj.weight]Loading weights: 100%|█████████▉| 253/254 [00:01<00:00, 173.85it/s, Materializing param=model.layers.27.self_attn.v_proj.weight]Loading weights: 100%|██████████| 254/254 [00:01<00:00, 173.85it/s, Materializing param=model.norm.weight]                      Loading weights: 100%|██████████| 254/254 [00:01<00:00, 173.85it/s, Materializing param=model.norm.weight]Loading weights: 100%|██████████| 254/254 [00:01<00:00, 162.14it/s, Materializing param=model.norm.weight]
+2026-03-04 13:28:03,132 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/generation_config.json "HTTP/1.1 200 OK"
+2026-03-04 13:28:03,275 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+2026-03-04 13:28:03,280 INFO Model loaded: meta-llama/Llama-3.2-3B-Instruct on cuda:0
+2026-03-04 13:28:03,296 INFO int_vocab: 101/101 single-token, 0 multi-token
+2026-03-04 13:28:03,327 INFO Loaded 200 items (suites: {'external': 39, 'history': 40, 'icl': 43, 'rag': 40, 'tool': 38})
+2026-03-04 13:28:03,330 INFO [imprint 1/200] EXT-pricing_wtp-001
+2026-03-04 13:28:03,539 INFO [imprint 2/200] EXT-pricing_wtp-018
+2026-03-04 13:28:03,576 INFO [imprint 3/200] EXT-pricing_wtp-016
+2026-03-04 13:28:03,612 INFO [imprint 4/200] EXT-pricing_wtp-002
+2026-03-04 13:28:03,648 INFO [imprint 5/200] EXT-pricing_wtp-009
+2026-03-04 13:28:03,687 INFO [imprint 6/200] EXT-pricing_wtp-006
+2026-03-04 13:28:03,724 INFO [imprint 7/200] EXT-operations_time-020
+2026-03-04 13:28:03,760 INFO [imprint 8/200] EXT-operations_time-017
+2026-03-04 13:28:03,796 INFO [imprint 9/200] EXT-operations_time-016
+2026-03-04 13:28:03,832 INFO [imprint 10/200] EXT-operations_time-006
+2026-03-04 13:28:03,868 INFO [imprint 11/200] EXT-operations_time-005
+2026-03-04 13:28:03,904 INFO [imprint 12/200] EXT-operations_time-013
+2026-03-04 13:28:03,940 INFO [imprint 13/200] EXT-transportation_logistics-011
+2026-03-04 13:28:03,976 INFO [imprint 14/200] EXT-transportation_logistics-008
+2026-03-04 13:28:04,012 INFO [imprint 15/200] EXT-transportation_logistics-001
+2026-03-04 13:28:04,048 INFO [imprint 16/200] EXT-transportation_logistics-003
+2026-03-04 13:28:04,084 INFO [imprint 17/200] EXT-transportation_logistics-006
+2026-03-04 13:28:04,120 INFO [imprint 18/200] EXT-transportation_logistics-019
+2026-03-04 13:28:04,155 INFO [imprint 19/200] EXT-resource_consumption-001
+2026-03-04 13:28:04,192 INFO [imprint 20/200] EXT-resource_consumption-019
+2026-03-04 13:28:04,228 INFO [imprint 21/200] EXT-resource_consumption-007
+2026-03-04 13:28:04,263 INFO [imprint 22/200] EXT-resource_consumption-009
+2026-03-04 13:28:04,299 INFO [imprint 23/200] EXT-resource_consumption-018
+2026-03-04 13:28:04,336 INFO [imprint 24/200] EXT-resource_consumption-012
+2026-03-04 13:28:04,372 INFO [imprint 25/200] EXT-market_demographics-006
+2026-03-04 13:28:04,408 INFO [imprint 26/200] EXT-market_demographics-003
+2026-03-04 13:28:04,444 INFO [imprint 27/200] EXT-market_demographics-011
+2026-03-04 13:28:04,480 INFO [imprint 28/200] EXT-market_demographics-020
+2026-03-04 13:28:04,516 INFO [imprint 29/200] EXT-market_demographics-001
+2026-03-04 13:28:04,552 INFO [imprint 30/200] EXT-market_demographics-013
+2026-03-04 13:28:04,588 INFO [imprint 31/200] EXT-legal_policy-004
+2026-03-04 13:28:04,624 INFO [imprint 32/200] EXT-legal_policy-002
+2026-03-04 13:28:04,660 INFO [imprint 33/200] EXT-legal_policy-005
+2026-03-04 13:28:04,696 INFO [imprint 34/200] EXT-legal_policy-006
+2026-03-04 13:28:04,733 INFO [imprint 35/200] EXT-legal_policy-016
+2026-03-04 13:28:04,768 INFO [imprint 36/200] EXT-legal_policy-017
+2026-03-04 13:28:04,804 INFO [imprint 37/200] ICL-pricing_wtp-014
+2026-03-04 13:28:04,842 INFO [imprint 38/200] ICL-pricing_wtp-011
+2026-03-04 13:28:04,879 INFO [imprint 39/200] ICL-pricing_wtp-013
+2026-03-04 13:28:04,916 INFO [imprint 40/200] ICL-pricing_wtp-017
+2026-03-04 13:28:04,953 INFO [imprint 41/200] ICL-pricing_wtp-010
+2026-03-04 13:28:04,990 INFO [imprint 42/200] ICL-pricing_wtp-006
+2026-03-04 13:28:05,028 INFO [imprint 43/200] ICL-operations_time-018
+2026-03-04 13:28:05,065 INFO [imprint 44/200] ICL-operations_time-019
+2026-03-04 13:28:05,102 INFO [imprint 45/200] ICL-operations_time-002
+2026-03-04 13:28:05,139 INFO [imprint 46/200] ICL-operations_time-006
+2026-03-04 13:28:05,176 INFO [imprint 47/200] ICL-operations_time-004
+2026-03-04 13:28:05,213 INFO [imprint 48/200] ICL-operations_time-016
+2026-03-04 13:28:05,250 INFO [imprint 49/200] ICL-transportation_logistics-018
+2026-03-04 13:28:05,287 INFO [imprint 50/200] ICL-transportation_logistics-012
+2026-03-04 13:28:05,324 INFO [imprint 51/200] ICL-transportation_logistics-008
+2026-03-04 13:28:05,360 INFO [imprint 52/200] ICL-transportation_logistics-014
+2026-03-04 13:28:05,397 INFO [imprint 53/200] ICL-transportation_logistics-001
+2026-03-04 13:28:05,434 INFO [imprint 54/200] ICL-transportation_logistics-010
+2026-03-04 13:28:05,471 INFO [imprint 55/200] ICL-resource_consumption-005
+2026-03-04 13:28:05,508 INFO [imprint 56/200] ICL-resource_consumption-010
+2026-03-04 13:28:05,545 INFO [imprint 57/200] ICL-resource_consumption-002
+2026-03-04 13:28:05,582 INFO [imprint 58/200] ICL-resource_consumption-016
+2026-03-04 13:28:05,619 INFO [imprint 59/200] ICL-resource_consumption-008
+2026-03-04 13:28:05,655 INFO [imprint 60/200] ICL-resource_consumption-006
+2026-03-04 13:28:05,692 INFO [imprint 61/200] ICL-market_demographics-003
+2026-03-04 13:28:05,729 INFO [imprint 62/200] ICL-market_demographics-007
+2026-03-04 13:28:05,766 INFO [imprint 63/200] ICL-market_demographics-017
+2026-03-04 13:28:05,803 INFO [imprint 64/200] ICL-market_demographics-005
+2026-03-04 13:28:05,840 INFO [imprint 65/200] ICL-market_demographics-018
+2026-03-04 13:28:05,877 INFO [imprint 66/200] ICL-market_demographics-002
+2026-03-04 13:28:05,913 INFO [imprint 67/200] ICL-legal_policy-015
+2026-03-04 13:28:05,951 INFO [imprint 68/200] ICL-legal_policy-004
+2026-03-04 13:28:05,988 INFO [imprint 69/200] ICL-legal_policy-010
+2026-03-04 13:28:06,025 INFO [imprint 70/200] ICL-legal_policy-019
+2026-03-04 13:28:06,061 INFO [imprint 71/200] ICL-legal_policy-009
+2026-03-04 13:28:06,098 INFO [imprint 72/200] ICL-legal_policy-012
+2026-03-04 13:28:06,135 INFO [imprint 73/200] HIST-pricing_wtp-010
+2026-03-04 13:28:06,172 INFO [imprint 74/200] HIST-pricing_wtp-009
+2026-03-04 13:28:06,208 INFO [imprint 75/200] HIST-pricing_wtp-007
+2026-03-04 13:28:06,244 INFO [imprint 76/200] HIST-pricing_wtp-015
+2026-03-04 13:28:06,280 INFO [imprint 77/200] HIST-pricing_wtp-014
+2026-03-04 13:28:06,317 INFO [imprint 78/200] HIST-pricing_wtp-003
+2026-03-04 13:28:06,355 INFO [imprint 79/200] HIST-operations_time-006
+2026-03-04 13:28:06,391 INFO [imprint 80/200] HIST-operations_time-012
+2026-03-04 13:28:06,427 INFO [imprint 81/200] HIST-operations_time-005
+2026-03-04 13:28:06,463 INFO [imprint 82/200] HIST-operations_time-020
+2026-03-04 13:28:06,499 INFO [imprint 83/200] HIST-operations_time-010
+2026-03-04 13:28:06,535 INFO [imprint 84/200] HIST-operations_time-002
+2026-03-04 13:28:06,571 INFO [imprint 85/200] HIST-transportation_logistics-015
+2026-03-04 13:28:06,607 INFO [imprint 86/200] HIST-transportation_logistics-017
+2026-03-04 13:28:06,643 INFO [imprint 87/200] HIST-transportation_logistics-020
+2026-03-04 13:28:06,679 INFO [imprint 88/200] HIST-transportation_logistics-014
+2026-03-04 13:28:06,715 INFO [imprint 89/200] HIST-transportation_logistics-005
+2026-03-04 13:28:06,751 INFO [imprint 90/200] HIST-transportation_logistics-013
+2026-03-04 13:28:06,787 INFO [imprint 91/200] HIST-resource_consumption-007
+2026-03-04 13:28:06,823 INFO [imprint 92/200] HIST-resource_consumption-012
+2026-03-04 13:28:06,860 INFO [imprint 93/200] HIST-resource_consumption-005
+2026-03-04 13:28:06,895 INFO [imprint 94/200] HIST-resource_consumption-002
+2026-03-04 13:28:06,932 INFO [imprint 95/200] HIST-resource_consumption-019
+2026-03-04 13:28:06,968 INFO [imprint 96/200] HIST-resource_consumption-010
+2026-03-04 13:28:07,004 INFO [imprint 97/200] HIST-market_demographics-015
+2026-03-04 13:28:07,040 INFO [imprint 98/200] HIST-market_demographics-008
+2026-03-04 13:28:07,076 INFO [imprint 99/200] HIST-market_demographics-013
+2026-03-04 13:28:07,112 INFO [imprint 100/200] HIST-market_demographics-007
+2026-03-04 13:28:07,148 INFO [imprint 101/200] HIST-market_demographics-012
+2026-03-04 13:28:07,184 INFO [imprint 102/200] HIST-market_demographics-005
+2026-03-04 13:28:07,220 INFO [imprint 103/200] HIST-legal_policy-008
+2026-03-04 13:28:07,256 INFO [imprint 104/200] HIST-legal_policy-004
+2026-03-04 13:28:07,291 INFO [imprint 105/200] HIST-legal_policy-005
+2026-03-04 13:28:07,327 INFO [imprint 106/200] HIST-legal_policy-019
+2026-03-04 13:28:07,363 INFO [imprint 107/200] HIST-legal_policy-002
+2026-03-04 13:28:07,399 INFO [imprint 108/200] HIST-legal_policy-013
+2026-03-04 13:28:07,458 INFO [imprint 109/200] RAG-pricing_wtp-009
+2026-03-04 13:28:07,512 INFO [imprint 110/200] RAG-pricing_wtp-008
+2026-03-04 13:28:07,550 INFO [imprint 111/200] RAG-pricing_wtp-002
+2026-03-04 13:28:07,587 INFO [imprint 112/200] RAG-pricing_wtp-007
+2026-03-04 13:28:07,624 INFO [imprint 113/200] RAG-pricing_wtp-010
+2026-03-04 13:28:07,661 INFO [imprint 114/200] RAG-pricing_wtp-011
+2026-03-04 13:28:07,698 INFO [imprint 115/200] RAG-operations_time-018
+2026-03-04 13:28:07,735 INFO [imprint 116/200] RAG-operations_time-005
+2026-03-04 13:28:07,772 INFO [imprint 117/200] RAG-operations_time-004
+2026-03-04 13:28:07,809 INFO [imprint 118/200] RAG-operations_time-011
+2026-03-04 13:28:07,846 INFO [imprint 119/200] RAG-operations_time-007
+2026-03-04 13:28:07,884 INFO [imprint 120/200] RAG-operations_time-014
+2026-03-04 13:28:07,921 INFO [imprint 121/200] RAG-transportation_logistics-014
+2026-03-04 13:28:07,958 INFO [imprint 122/200] RAG-transportation_logistics-015
+2026-03-04 13:28:07,995 INFO [imprint 123/200] RAG-transportation_logistics-016
+2026-03-04 13:28:08,032 INFO [imprint 124/200] RAG-transportation_logistics-018
+2026-03-04 13:28:08,070 INFO [imprint 125/200] RAG-transportation_logistics-004
+2026-03-04 13:28:08,107 INFO [imprint 126/200] RAG-transportation_logistics-005
+2026-03-04 13:28:08,145 INFO [imprint 127/200] RAG-resource_consumption-005
+2026-03-04 13:28:08,182 INFO [imprint 128/200] RAG-resource_consumption-020
+2026-03-04 13:28:08,219 INFO [imprint 129/200] RAG-resource_consumption-009
+2026-03-04 13:28:08,258 INFO [imprint 130/200] RAG-resource_consumption-018
+2026-03-04 13:28:08,295 INFO [imprint 131/200] RAG-resource_consumption-019
+2026-03-04 13:28:08,332 INFO [imprint 132/200] RAG-resource_consumption-006
+2026-03-04 13:28:08,369 INFO [imprint 133/200] RAG-market_demographics-003
+2026-03-04 13:28:08,406 INFO [imprint 134/200] RAG-market_demographics-014
+2026-03-04 13:28:08,443 INFO [imprint 135/200] RAG-market_demographics-002
+2026-03-04 13:28:08,480 INFO [imprint 136/200] RAG-market_demographics-020
+2026-03-04 13:28:08,517 INFO [imprint 137/200] RAG-market_demographics-009
+2026-03-04 13:28:08,554 INFO [imprint 138/200] RAG-market_demographics-016
+2026-03-04 13:28:08,591 INFO [imprint 139/200] RAG-legal_policy-004
+2026-03-04 13:28:08,628 INFO [imprint 140/200] RAG-legal_policy-015
+2026-03-04 13:28:08,666 INFO [imprint 141/200] RAG-legal_policy-014
+2026-03-04 13:28:08,703 INFO [imprint 142/200] RAG-legal_policy-006
+2026-03-04 13:28:08,740 INFO [imprint 143/200] RAG-legal_policy-009
+2026-03-04 13:28:08,777 INFO [imprint 144/200] RAG-legal_policy-011
+2026-03-04 13:28:08,815 INFO [imprint 145/200] TOOL-pricing_wtp-019
+2026-03-04 13:28:08,851 INFO [imprint 146/200] TOOL-pricing_wtp-016
+2026-03-04 13:28:08,887 INFO [imprint 147/200] TOOL-pricing_wtp-004
+2026-03-04 13:28:08,923 INFO [imprint 148/200] TOOL-pricing_wtp-003
+2026-03-04 13:28:08,959 INFO [imprint 149/200] TOOL-pricing_wtp-013
+2026-03-04 13:28:08,995 INFO [imprint 150/200] TOOL-pricing_wtp-007
+2026-03-04 13:28:09,032 INFO [imprint 151/200] TOOL-operations_time-006
+2026-03-04 13:28:09,068 INFO [imprint 152/200] TOOL-operations_time-008
+2026-03-04 13:28:09,104 INFO [imprint 153/200] TOOL-operations_time-002
+2026-03-04 13:28:09,141 INFO [imprint 154/200] TOOL-operations_time-003
+2026-03-04 13:28:09,177 INFO [imprint 155/200] TOOL-operations_time-009
+2026-03-04 13:28:09,212 INFO [imprint 156/200] TOOL-operations_time-017
+2026-03-04 13:28:09,248 INFO [imprint 157/200] TOOL-transportation_logistics-011
+2026-03-04 13:28:09,285 INFO [imprint 158/200] TOOL-transportation_logistics-006
+2026-03-04 13:28:09,321 INFO [imprint 159/200] TOOL-transportation_logistics-015
+2026-03-04 13:28:09,357 INFO [imprint 160/200] TOOL-transportation_logistics-014
+2026-03-04 13:28:09,393 INFO [imprint 161/200] TOOL-transportation_logistics-013
+2026-03-04 13:28:09,429 INFO [imprint 162/200] TOOL-transportation_logistics-018
+2026-03-04 13:28:09,465 INFO [imprint 163/200] TOOL-resource_consumption-006
+2026-03-04 13:28:09,501 INFO [imprint 164/200] TOOL-resource_consumption-007
+2026-03-04 13:28:09,538 INFO [imprint 165/200] TOOL-resource_consumption-020
+2026-03-04 13:28:09,574 INFO [imprint 166/200] TOOL-resource_consumption-009
+2026-03-04 13:28:09,610 INFO [imprint 167/200] TOOL-resource_consumption-004
+2026-03-04 13:28:09,646 INFO [imprint 168/200] TOOL-resource_consumption-015
+2026-03-04 13:28:09,682 INFO [imprint 169/200] TOOL-market_demographics-013
+2026-03-04 13:28:09,718 INFO [imprint 170/200] TOOL-market_demographics-006
+2026-03-04 13:28:09,754 INFO [imprint 171/200] TOOL-market_demographics-005
+2026-03-04 13:28:09,790 INFO [imprint 172/200] TOOL-market_demographics-016
+2026-03-04 13:28:09,826 INFO [imprint 173/200] TOOL-market_demographics-009
+2026-03-04 13:28:09,862 INFO [imprint 174/200] TOOL-market_demographics-004
+2026-03-04 13:28:09,898 INFO [imprint 175/200] TOOL-legal_policy-015
+2026-03-04 13:28:09,934 INFO [imprint 176/200] TOOL-legal_policy-020
+2026-03-04 13:28:09,970 INFO [imprint 177/200] TOOL-legal_policy-014
+2026-03-04 13:28:10,006 INFO [imprint 178/200] TOOL-legal_policy-017
+2026-03-04 13:28:10,042 INFO [imprint 179/200] TOOL-legal_policy-016
+2026-03-04 13:28:10,078 INFO [imprint 180/200] TOOL-legal_policy-006
+2026-03-04 13:28:10,114 INFO [imprint 181/200] HIST-operations_time-018
+2026-03-04 13:28:10,150 INFO [imprint 182/200] ICL-transportation_logistics-005
+2026-03-04 13:28:10,188 INFO [imprint 183/200] EXT-operations_time-002
+2026-03-04 13:28:10,224 INFO [imprint 184/200] RAG-operations_time-006
+2026-03-04 13:28:10,261 INFO [imprint 185/200] RAG-transportation_logistics-012
+2026-03-04 13:28:10,298 INFO [imprint 186/200] ICL-resource_consumption-009
+2026-03-04 13:28:10,335 INFO [imprint 187/200] ICL-transportation_logistics-003
+2026-03-04 13:28:10,371 INFO [imprint 188/200] TOOL-operations_time-012
+2026-03-04 13:28:10,407 INFO [imprint 189/200] EXT-legal_policy-001
+2026-03-04 13:28:10,443 INFO [imprint 190/200] RAG-pricing_wtp-012
+2026-03-04 13:28:10,481 INFO [imprint 191/200] EXT-market_demographics-007
+2026-03-04 13:28:10,517 INFO [imprint 192/200] ICL-pricing_wtp-019
+2026-03-04 13:28:10,554 INFO [imprint 193/200] ICL-legal_policy-006
+2026-03-04 13:28:10,591 INFO [imprint 194/200] HIST-operations_time-009
+2026-03-04 13:28:10,627 INFO [imprint 195/200] ICL-resource_consumption-014
+2026-03-04 13:28:10,665 INFO [imprint 196/200] HIST-legal_policy-006
+2026-03-04 13:28:10,701 INFO [imprint 197/200] TOOL-legal_policy-001
+2026-03-04 13:28:10,739 INFO [imprint 198/200] RAG-pricing_wtp-014
+2026-03-04 13:28:10,776 INFO [imprint 199/200] HIST-resource_consumption-009
+2026-03-04 13:28:10,812 INFO [imprint 200/200] ICL-transportation_logistics-013
+2026-03-04 13:28:10,849 INFO Imprint metrics -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/imprint_metrics.csv
+2026-03-04 13:28:10,849 INFO Imprint done in 7.5s
+2026-03-04 13:28:10,850 INFO [logit_lens 1/200] EXT-pricing_wtp-001
+2026-03-04 13:28:10,918 INFO [logit_lens 2/200] EXT-pricing_wtp-018
+2026-03-04 13:28:10,985 INFO [logit_lens 3/200] EXT-pricing_wtp-016
+2026-03-04 13:28:11,052 INFO [logit_lens 4/200] EXT-pricing_wtp-002
+2026-03-04 13:28:11,119 INFO [logit_lens 5/200] EXT-pricing_wtp-009
+2026-03-04 13:28:11,188 INFO [logit_lens 6/200] EXT-pricing_wtp-006
+2026-03-04 13:28:11,255 INFO [logit_lens 7/200] EXT-operations_time-020
+2026-03-04 13:28:11,323 INFO [logit_lens 8/200] EXT-operations_time-017
+2026-03-04 13:28:11,391 INFO [logit_lens 9/200] EXT-operations_time-016
+2026-03-04 13:28:11,459 INFO [logit_lens 10/200] EXT-operations_time-006
+2026-03-04 13:28:11,526 INFO [logit_lens 11/200] EXT-operations_time-005
+2026-03-04 13:28:11,593 INFO [logit_lens 12/200] EXT-operations_time-013
+2026-03-04 13:28:11,661 INFO [logit_lens 13/200] EXT-transportation_logistics-011
+2026-03-04 13:28:11,729 INFO [logit_lens 14/200] EXT-transportation_logistics-008
+2026-03-04 13:28:11,796 INFO [logit_lens 15/200] EXT-transportation_logistics-001
+2026-03-04 13:28:11,864 INFO [logit_lens 16/200] EXT-transportation_logistics-003
+2026-03-04 13:28:11,931 INFO [logit_lens 17/200] EXT-transportation_logistics-006
+2026-03-04 13:28:11,998 INFO [logit_lens 18/200] EXT-transportation_logistics-019
+2026-03-04 13:28:12,065 INFO [logit_lens 19/200] EXT-resource_consumption-001
+2026-03-04 13:28:12,133 INFO [logit_lens 20/200] EXT-resource_consumption-019
+2026-03-04 13:28:12,200 INFO [logit_lens 21/200] EXT-resource_consumption-007
+2026-03-04 13:28:12,267 INFO [logit_lens 22/200] EXT-resource_consumption-009
+2026-03-04 13:28:12,334 INFO [logit_lens 23/200] EXT-resource_consumption-018
+2026-03-04 13:28:12,402 INFO [logit_lens 24/200] EXT-resource_consumption-012
+2026-03-04 13:28:12,469 INFO [logit_lens 25/200] EXT-market_demographics-006
+2026-03-04 13:28:12,536 INFO [logit_lens 26/200] EXT-market_demographics-003
+2026-03-04 13:28:12,604 INFO [logit_lens 27/200] EXT-market_demographics-011
+2026-03-04 13:28:12,672 INFO [logit_lens 28/200] EXT-market_demographics-020
+2026-03-04 13:28:12,739 INFO [logit_lens 29/200] EXT-market_demographics-001
+2026-03-04 13:28:12,806 INFO [logit_lens 30/200] EXT-market_demographics-013
+2026-03-04 13:28:12,873 INFO [logit_lens 31/200] EXT-legal_policy-004
+2026-03-04 13:28:12,941 INFO [logit_lens 32/200] EXT-legal_policy-002
+2026-03-04 13:28:13,008 INFO [logit_lens 33/200] EXT-legal_policy-005
+2026-03-04 13:28:13,075 INFO [logit_lens 34/200] EXT-legal_policy-006
+2026-03-04 13:28:13,142 INFO [logit_lens 35/200] EXT-legal_policy-016
+2026-03-04 13:28:13,209 INFO [logit_lens 36/200] EXT-legal_policy-017
+2026-03-04 13:28:13,277 INFO [logit_lens 37/200] ICL-pricing_wtp-014
+2026-03-04 13:28:13,346 INFO [logit_lens 38/200] ICL-pricing_wtp-011
+2026-03-04 13:28:13,414 INFO [logit_lens 39/200] ICL-pricing_wtp-013
+2026-03-04 13:28:13,484 INFO [logit_lens 40/200] ICL-pricing_wtp-017
+2026-03-04 13:28:13,553 INFO [logit_lens 41/200] ICL-pricing_wtp-010
+2026-03-04 13:28:13,623 INFO [logit_lens 42/200] ICL-pricing_wtp-006
+2026-03-04 13:28:13,691 INFO [logit_lens 43/200] ICL-operations_time-018
+2026-03-04 13:28:13,761 INFO [logit_lens 44/200] ICL-operations_time-019
+2026-03-04 13:28:13,830 INFO [logit_lens 45/200] ICL-operations_time-002
+2026-03-04 13:28:13,899 INFO [logit_lens 46/200] ICL-operations_time-006
+2026-03-04 13:28:13,968 INFO [logit_lens 47/200] ICL-operations_time-004
+2026-03-04 13:28:14,037 INFO [logit_lens 48/200] ICL-operations_time-016
+2026-03-04 13:28:14,106 INFO [logit_lens 49/200] ICL-transportation_logistics-018
+2026-03-04 13:28:14,176 INFO [logit_lens 50/200] ICL-transportation_logistics-012
+2026-03-04 13:28:14,251 INFO [logit_lens 51/200] ICL-transportation_logistics-008
+2026-03-04 13:28:14,325 INFO [logit_lens 52/200] ICL-transportation_logistics-014
+2026-03-04 13:28:14,393 INFO [logit_lens 53/200] ICL-transportation_logistics-001
+2026-03-04 13:28:14,463 INFO [logit_lens 54/200] ICL-transportation_logistics-010
+2026-03-04 13:28:14,532 INFO [logit_lens 55/200] ICL-resource_consumption-005
+2026-03-04 13:28:14,603 INFO [logit_lens 56/200] ICL-resource_consumption-010
+2026-03-04 13:28:14,671 INFO [logit_lens 57/200] ICL-resource_consumption-002
+2026-03-04 13:28:14,740 INFO [logit_lens 58/200] ICL-resource_consumption-016
+2026-03-04 13:28:14,808 INFO [logit_lens 59/200] ICL-resource_consumption-008
+2026-03-04 13:28:14,878 INFO [logit_lens 60/200] ICL-resource_consumption-006
+2026-03-04 13:28:14,947 INFO [logit_lens 61/200] ICL-market_demographics-003
+2026-03-04 13:28:15,015 INFO [logit_lens 62/200] ICL-market_demographics-007
+2026-03-04 13:28:15,084 INFO [logit_lens 63/200] ICL-market_demographics-017
+2026-03-04 13:28:15,152 INFO [logit_lens 64/200] ICL-market_demographics-005
+2026-03-04 13:28:15,222 INFO [logit_lens 65/200] ICL-market_demographics-018
+2026-03-04 13:28:15,290 INFO [logit_lens 66/200] ICL-market_demographics-002
+2026-03-04 13:28:15,360 INFO [logit_lens 67/200] ICL-legal_policy-015
+2026-03-04 13:28:15,429 INFO [logit_lens 68/200] ICL-legal_policy-004
+2026-03-04 13:28:15,499 INFO [logit_lens 69/200] ICL-legal_policy-010
+2026-03-04 13:28:15,568 INFO [logit_lens 70/200] ICL-legal_policy-019
+2026-03-04 13:28:15,636 INFO [logit_lens 71/200] ICL-legal_policy-009
+2026-03-04 13:28:15,706 INFO [logit_lens 72/200] ICL-legal_policy-012
+2026-03-04 13:28:15,774 INFO [logit_lens 73/200] HIST-pricing_wtp-010
+2026-03-04 13:28:15,843 INFO [logit_lens 74/200] HIST-pricing_wtp-009
+2026-03-04 13:28:15,910 INFO [logit_lens 75/200] HIST-pricing_wtp-007
+2026-03-04 13:28:15,977 INFO [logit_lens 76/200] HIST-pricing_wtp-015
+2026-03-04 13:28:16,044 INFO [logit_lens 77/200] HIST-pricing_wtp-014
+2026-03-04 13:28:16,112 INFO [logit_lens 78/200] HIST-pricing_wtp-003
+2026-03-04 13:28:16,179 INFO [logit_lens 79/200] HIST-operations_time-006
+2026-03-04 13:28:16,246 INFO [logit_lens 80/200] HIST-operations_time-012
+2026-03-04 13:28:16,313 INFO [logit_lens 81/200] HIST-operations_time-005
+2026-03-04 13:28:16,381 INFO [logit_lens 82/200] HIST-operations_time-020
+2026-03-04 13:28:16,448 INFO [logit_lens 83/200] HIST-operations_time-010
+2026-03-04 13:28:16,515 INFO [logit_lens 84/200] HIST-operations_time-002
+2026-03-04 13:28:16,583 INFO [logit_lens 85/200] HIST-transportation_logistics-015
+2026-03-04 13:28:16,650 INFO [logit_lens 86/200] HIST-transportation_logistics-017
+2026-03-04 13:28:16,717 INFO [logit_lens 87/200] HIST-transportation_logistics-020
+2026-03-04 13:28:16,785 INFO [logit_lens 88/200] HIST-transportation_logistics-014
+2026-03-04 13:28:16,852 INFO [logit_lens 89/200] HIST-transportation_logistics-005
+2026-03-04 13:28:16,920 INFO [logit_lens 90/200] HIST-transportation_logistics-013
+2026-03-04 13:28:16,987 INFO [logit_lens 91/200] HIST-resource_consumption-007
+2026-03-04 13:28:17,054 INFO [logit_lens 92/200] HIST-resource_consumption-012
+2026-03-04 13:28:17,121 INFO [logit_lens 93/200] HIST-resource_consumption-005
+2026-03-04 13:28:17,189 INFO [logit_lens 94/200] HIST-resource_consumption-002
+2026-03-04 13:28:17,256 INFO [logit_lens 95/200] HIST-resource_consumption-019
+2026-03-04 13:28:17,323 INFO [logit_lens 96/200] HIST-resource_consumption-010
+2026-03-04 13:28:17,390 INFO [logit_lens 97/200] HIST-market_demographics-015
+2026-03-04 13:28:17,457 INFO [logit_lens 98/200] HIST-market_demographics-008
+2026-03-04 13:28:17,525 INFO [logit_lens 99/200] HIST-market_demographics-013
+2026-03-04 13:28:17,591 INFO [logit_lens 100/200] HIST-market_demographics-007
+2026-03-04 13:28:17,659 INFO [logit_lens 101/200] HIST-market_demographics-012
+2026-03-04 13:28:17,726 INFO [logit_lens 102/200] HIST-market_demographics-005
+2026-03-04 13:28:17,793 INFO [logit_lens 103/200] HIST-legal_policy-008
+2026-03-04 13:28:17,862 INFO [logit_lens 104/200] HIST-legal_policy-004
+2026-03-04 13:28:17,930 INFO [logit_lens 105/200] HIST-legal_policy-005
+2026-03-04 13:28:17,997 INFO [logit_lens 106/200] HIST-legal_policy-019
+2026-03-04 13:28:18,064 INFO [logit_lens 107/200] HIST-legal_policy-002
+2026-03-04 13:28:18,131 INFO [logit_lens 108/200] HIST-legal_policy-013
+2026-03-04 13:28:18,202 INFO [logit_lens 109/200] RAG-pricing_wtp-009
+2026-03-04 13:28:18,272 INFO [logit_lens 110/200] RAG-pricing_wtp-008
+2026-03-04 13:28:18,342 INFO [logit_lens 111/200] RAG-pricing_wtp-002
+2026-03-04 13:28:18,411 INFO [logit_lens 112/200] RAG-pricing_wtp-007
+2026-03-04 13:28:18,481 INFO [logit_lens 113/200] RAG-pricing_wtp-010
+2026-03-04 13:28:18,552 INFO [logit_lens 114/200] RAG-pricing_wtp-011
+2026-03-04 13:28:18,623 INFO [logit_lens 115/200] RAG-operations_time-018
+2026-03-04 13:28:18,693 INFO [logit_lens 116/200] RAG-operations_time-005
+2026-03-04 13:28:18,763 INFO [logit_lens 117/200] RAG-operations_time-004
+2026-03-04 13:28:18,832 INFO [logit_lens 118/200] RAG-operations_time-011
+2026-03-04 13:28:18,903 INFO [logit_lens 119/200] RAG-operations_time-007
+2026-03-04 13:28:18,972 INFO [logit_lens 120/200] RAG-operations_time-014
+2026-03-04 13:28:19,043 INFO [logit_lens 121/200] RAG-transportation_logistics-014
+2026-03-04 13:28:19,112 INFO [logit_lens 122/200] RAG-transportation_logistics-015
+2026-03-04 13:28:19,183 INFO [logit_lens 123/200] RAG-transportation_logistics-016
+2026-03-04 13:28:19,252 INFO [logit_lens 124/200] RAG-transportation_logistics-018
+2026-03-04 13:28:19,323 INFO [logit_lens 125/200] RAG-transportation_logistics-004
+2026-03-04 13:28:19,393 INFO [logit_lens 126/200] RAG-transportation_logistics-005
+2026-03-04 13:28:19,463 INFO [logit_lens 127/200] RAG-resource_consumption-005
+2026-03-04 13:28:19,532 INFO [logit_lens 128/200] RAG-resource_consumption-020
+2026-03-04 13:28:19,603 INFO [logit_lens 129/200] RAG-resource_consumption-009
+2026-03-04 13:28:19,672 INFO [logit_lens 130/200] RAG-resource_consumption-018
+2026-03-04 13:28:19,742 INFO [logit_lens 131/200] RAG-resource_consumption-019
+2026-03-04 13:28:19,811 INFO [logit_lens 132/200] RAG-resource_consumption-006
+2026-03-04 13:28:19,881 INFO [logit_lens 133/200] RAG-market_demographics-003
+2026-03-04 13:28:19,951 INFO [logit_lens 134/200] RAG-market_demographics-014
+2026-03-04 13:28:20,021 INFO [logit_lens 135/200] RAG-market_demographics-002
+2026-03-04 13:28:20,091 INFO [logit_lens 136/200] RAG-market_demographics-020
+2026-03-04 13:28:20,162 INFO [logit_lens 137/200] RAG-market_demographics-009
+2026-03-04 13:28:20,231 INFO [logit_lens 138/200] RAG-market_demographics-016
+2026-03-04 13:28:20,302 INFO [logit_lens 139/200] RAG-legal_policy-004
+2026-03-04 13:28:20,371 INFO [logit_lens 140/200] RAG-legal_policy-015
+2026-03-04 13:28:20,441 INFO [logit_lens 141/200] RAG-legal_policy-014
+2026-03-04 13:28:20,510 INFO [logit_lens 142/200] RAG-legal_policy-006
+2026-03-04 13:28:20,581 INFO [logit_lens 143/200] RAG-legal_policy-009
+2026-03-04 13:28:20,650 INFO [logit_lens 144/200] RAG-legal_policy-011
+2026-03-04 13:28:20,719 INFO [logit_lens 145/200] TOOL-pricing_wtp-019
+2026-03-04 13:28:20,786 INFO [logit_lens 146/200] TOOL-pricing_wtp-016
+2026-03-04 13:28:20,857 INFO [logit_lens 147/200] TOOL-pricing_wtp-004
+2026-03-04 13:28:20,925 INFO [logit_lens 148/200] TOOL-pricing_wtp-003
+2026-03-04 13:28:20,992 INFO [logit_lens 149/200] TOOL-pricing_wtp-013
+2026-03-04 13:28:21,058 INFO [logit_lens 150/200] TOOL-pricing_wtp-007
+2026-03-04 13:28:21,125 INFO [logit_lens 151/200] TOOL-operations_time-006
+2026-03-04 13:28:21,193 INFO [logit_lens 152/200] TOOL-operations_time-008
+2026-03-04 13:28:21,262 INFO [logit_lens 153/200] TOOL-operations_time-002
+2026-03-04 13:28:21,329 INFO [logit_lens 154/200] TOOL-operations_time-003
+2026-03-04 13:28:21,396 INFO [logit_lens 155/200] TOOL-operations_time-009
+2026-03-04 13:28:21,463 INFO [logit_lens 156/200] TOOL-operations_time-017
+2026-03-04 13:28:21,530 INFO [logit_lens 157/200] TOOL-transportation_logistics-011
+2026-03-04 13:28:21,597 INFO [logit_lens 158/200] TOOL-transportation_logistics-006
+2026-03-04 13:28:21,665 INFO [logit_lens 159/200] TOOL-transportation_logistics-015
+2026-03-04 13:28:21,732 INFO [logit_lens 160/200] TOOL-transportation_logistics-014
+2026-03-04 13:28:21,799 INFO [logit_lens 161/200] TOOL-transportation_logistics-013
+2026-03-04 13:28:21,866 INFO [logit_lens 162/200] TOOL-transportation_logistics-018
+2026-03-04 13:28:21,932 INFO [logit_lens 163/200] TOOL-resource_consumption-006
+2026-03-04 13:28:21,999 INFO [logit_lens 164/200] TOOL-resource_consumption-007
+2026-03-04 13:28:22,066 INFO [logit_lens 165/200] TOOL-resource_consumption-020
+2026-03-04 13:28:22,132 INFO [logit_lens 166/200] TOOL-resource_consumption-009
+2026-03-04 13:28:22,199 INFO [logit_lens 167/200] TOOL-resource_consumption-004
+2026-03-04 13:28:22,266 INFO [logit_lens 168/200] TOOL-resource_consumption-015
+2026-03-04 13:28:22,333 INFO [logit_lens 169/200] TOOL-market_demographics-013
+2026-03-04 13:28:22,400 INFO [logit_lens 170/200] TOOL-market_demographics-006
+2026-03-04 13:28:22,467 INFO [logit_lens 171/200] TOOL-market_demographics-005
+2026-03-04 13:28:22,534 INFO [logit_lens 172/200] TOOL-market_demographics-016
+2026-03-04 13:28:22,601 INFO [logit_lens 173/200] TOOL-market_demographics-009
+2026-03-04 13:28:22,668 INFO [logit_lens 174/200] TOOL-market_demographics-004
+2026-03-04 13:28:22,735 INFO [logit_lens 175/200] TOOL-legal_policy-015
+2026-03-04 13:28:22,802 INFO [logit_lens 176/200] TOOL-legal_policy-020
+2026-03-04 13:28:22,869 INFO [logit_lens 177/200] TOOL-legal_policy-014
+2026-03-04 13:28:22,937 INFO [logit_lens 178/200] TOOL-legal_policy-017
+2026-03-04 13:28:23,004 INFO [logit_lens 179/200] TOOL-legal_policy-016
+2026-03-04 13:28:23,071 INFO [logit_lens 180/200] TOOL-legal_policy-006
+2026-03-04 13:28:23,138 INFO [logit_lens 181/200] HIST-operations_time-018
+2026-03-04 13:28:23,205 INFO [logit_lens 182/200] ICL-transportation_logistics-005
+2026-03-04 13:28:23,274 INFO [logit_lens 183/200] EXT-operations_time-002
+2026-03-04 13:28:23,341 INFO [logit_lens 184/200] RAG-operations_time-006
+2026-03-04 13:28:23,410 INFO [logit_lens 185/200] RAG-transportation_logistics-012
+2026-03-04 13:28:23,481 INFO [logit_lens 186/200] ICL-resource_consumption-009
+2026-03-04 13:28:23,550 INFO [logit_lens 187/200] ICL-transportation_logistics-003
+2026-03-04 13:28:23,619 INFO [logit_lens 188/200] TOOL-operations_time-012
+2026-03-04 13:28:23,686 INFO [logit_lens 189/200] EXT-legal_policy-001
+2026-03-04 13:28:23,753 INFO [logit_lens 190/200] RAG-pricing_wtp-012
+2026-03-04 13:28:23,824 INFO [logit_lens 191/200] EXT-market_demographics-007
+2026-03-04 13:28:23,892 INFO [logit_lens 192/200] ICL-pricing_wtp-019
+2026-03-04 13:28:23,961 INFO [logit_lens 193/200] ICL-legal_policy-006
+2026-03-04 13:28:24,030 INFO [logit_lens 194/200] HIST-operations_time-009
+2026-03-04 13:28:24,097 INFO [logit_lens 195/200] ICL-resource_consumption-014
+2026-03-04 13:28:24,168 INFO [logit_lens 196/200] HIST-legal_policy-006
+2026-03-04 13:28:24,235 INFO [logit_lens 197/200] TOOL-legal_policy-001
+2026-03-04 13:28:24,302 INFO [logit_lens 198/200] RAG-pricing_wtp-014
+2026-03-04 13:28:24,372 INFO [logit_lens 199/200] HIST-resource_consumption-009
+2026-03-04 13:28:24,439 INFO [logit_lens 200/200] ICL-transportation_logistics-013
+2026-03-04 13:28:24,509 INFO Logit lens -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/logit_lens.csv
+2026-03-04 13:28:24,509 INFO Logit lens done in 21.2s
+2026-03-04 13:28:24,509 INFO [patching 1/200] EXT-pricing_wtp-001
+2026-03-04 13:28:24,908 WARNING Patching failed on EXT-pricing_wtp-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:25,297 WARNING Patching failed on EXT-pricing_wtp-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:25,298 INFO [patching 2/200] EXT-pricing_wtp-018
+2026-03-04 13:28:25,683 WARNING Patching failed on EXT-pricing_wtp-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:26,068 WARNING Patching failed on EXT-pricing_wtp-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:26,068 INFO [patching 3/200] EXT-pricing_wtp-016
+2026-03-04 13:28:26,459 WARNING Patching failed on EXT-pricing_wtp-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:26,845 WARNING Patching failed on EXT-pricing_wtp-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:26,846 INFO [patching 4/200] EXT-pricing_wtp-002
+2026-03-04 13:28:27,227 WARNING Patching failed on EXT-pricing_wtp-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:27,609 WARNING Patching failed on EXT-pricing_wtp-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:27,610 INFO [patching 5/200] EXT-pricing_wtp-009
+2026-03-04 13:28:27,999 WARNING Patching failed on EXT-pricing_wtp-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:28,389 WARNING Patching failed on EXT-pricing_wtp-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:28,390 INFO [patching 6/200] EXT-pricing_wtp-006
+2026-03-04 13:28:28,774 WARNING Patching failed on EXT-pricing_wtp-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:29,158 WARNING Patching failed on EXT-pricing_wtp-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:29,159 INFO [patching 7/200] EXT-operations_time-020
+2026-03-04 13:28:29,548 WARNING Patching failed on EXT-operations_time-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:29,938 WARNING Patching failed on EXT-operations_time-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:29,938 INFO [patching 8/200] EXT-operations_time-017
+2026-03-04 13:28:30,325 WARNING Patching failed on EXT-operations_time-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:30,711 WARNING Patching failed on EXT-operations_time-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:30,712 INFO [patching 9/200] EXT-operations_time-016
+2026-03-04 13:28:31,102 WARNING Patching failed on EXT-operations_time-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:31,489 WARNING Patching failed on EXT-operations_time-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:31,490 INFO [patching 10/200] EXT-operations_time-006
+2026-03-04 13:28:31,875 WARNING Patching failed on EXT-operations_time-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:32,260 WARNING Patching failed on EXT-operations_time-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:32,261 INFO [patching 11/200] EXT-operations_time-005
+2026-03-04 13:28:32,644 WARNING Patching failed on EXT-operations_time-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:33,028 WARNING Patching failed on EXT-operations_time-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:33,028 INFO [patching 12/200] EXT-operations_time-013
+2026-03-04 13:28:33,413 WARNING Patching failed on EXT-operations_time-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:33,796 WARNING Patching failed on EXT-operations_time-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:33,797 INFO [patching 13/200] EXT-transportation_logistics-011
+2026-03-04 13:28:34,183 WARNING Patching failed on EXT-transportation_logistics-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:34,570 WARNING Patching failed on EXT-transportation_logistics-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:34,571 INFO [patching 14/200] EXT-transportation_logistics-008
+2026-03-04 13:28:34,959 WARNING Patching failed on EXT-transportation_logistics-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:35,347 WARNING Patching failed on EXT-transportation_logistics-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:35,348 INFO [patching 15/200] EXT-transportation_logistics-001
+2026-03-04 13:28:35,736 WARNING Patching failed on EXT-transportation_logistics-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:36,125 WARNING Patching failed on EXT-transportation_logistics-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:36,126 INFO [patching 16/200] EXT-transportation_logistics-003
+2026-03-04 13:28:36,516 WARNING Patching failed on EXT-transportation_logistics-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:36,903 WARNING Patching failed on EXT-transportation_logistics-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:36,904 INFO [patching 17/200] EXT-transportation_logistics-006
+2026-03-04 13:28:37,290 WARNING Patching failed on EXT-transportation_logistics-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:37,677 WARNING Patching failed on EXT-transportation_logistics-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:37,678 INFO [patching 18/200] EXT-transportation_logistics-019
+2026-03-04 13:28:38,070 WARNING Patching failed on EXT-transportation_logistics-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:38,457 WARNING Patching failed on EXT-transportation_logistics-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:38,458 INFO [patching 19/200] EXT-resource_consumption-001
+2026-03-04 13:28:38,844 WARNING Patching failed on EXT-resource_consumption-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:39,228 WARNING Patching failed on EXT-resource_consumption-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:39,229 INFO [patching 20/200] EXT-resource_consumption-019
+2026-03-04 13:28:39,810 WARNING Patching failed on EXT-resource_consumption-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:40,211 WARNING Patching failed on EXT-resource_consumption-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:40,212 INFO [patching 21/200] EXT-resource_consumption-007
+2026-03-04 13:28:40,598 WARNING Patching failed on EXT-resource_consumption-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:40,984 WARNING Patching failed on EXT-resource_consumption-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:40,985 INFO [patching 22/200] EXT-resource_consumption-009
+2026-03-04 13:28:41,372 WARNING Patching failed on EXT-resource_consumption-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:41,757 WARNING Patching failed on EXT-resource_consumption-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:41,758 INFO [patching 23/200] EXT-resource_consumption-018
+2026-03-04 13:28:42,144 WARNING Patching failed on EXT-resource_consumption-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:42,530 WARNING Patching failed on EXT-resource_consumption-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:42,531 INFO [patching 24/200] EXT-resource_consumption-012
+2026-03-04 13:28:42,922 WARNING Patching failed on EXT-resource_consumption-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:43,311 WARNING Patching failed on EXT-resource_consumption-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:43,312 INFO [patching 25/200] EXT-market_demographics-006
+2026-03-04 13:28:43,701 WARNING Patching failed on EXT-market_demographics-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:44,087 WARNING Patching failed on EXT-market_demographics-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:44,088 INFO [patching 26/200] EXT-market_demographics-003
+2026-03-04 13:28:44,473 WARNING Patching failed on EXT-market_demographics-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:44,857 WARNING Patching failed on EXT-market_demographics-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:44,858 INFO [patching 27/200] EXT-market_demographics-011
+2026-03-04 13:28:45,243 WARNING Patching failed on EXT-market_demographics-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:45,629 WARNING Patching failed on EXT-market_demographics-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:45,630 INFO [patching 28/200] EXT-market_demographics-020
+2026-03-04 13:28:46,015 WARNING Patching failed on EXT-market_demographics-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:46,400 WARNING Patching failed on EXT-market_demographics-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:46,401 INFO [patching 29/200] EXT-market_demographics-001
+2026-03-04 13:28:46,786 WARNING Patching failed on EXT-market_demographics-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:47,171 WARNING Patching failed on EXT-market_demographics-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:47,172 INFO [patching 30/200] EXT-market_demographics-013
+2026-03-04 13:28:47,556 WARNING Patching failed on EXT-market_demographics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:47,944 WARNING Patching failed on EXT-market_demographics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:47,944 INFO [patching 31/200] EXT-legal_policy-004
+2026-03-04 13:28:48,327 WARNING Patching failed on EXT-legal_policy-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:48,711 WARNING Patching failed on EXT-legal_policy-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:48,712 INFO [patching 32/200] EXT-legal_policy-002
+2026-03-04 13:28:49,101 WARNING Patching failed on EXT-legal_policy-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:49,498 WARNING Patching failed on EXT-legal_policy-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:49,499 INFO [patching 33/200] EXT-legal_policy-005
+2026-03-04 13:28:49,892 WARNING Patching failed on EXT-legal_policy-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:50,279 WARNING Patching failed on EXT-legal_policy-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:50,280 INFO [patching 34/200] EXT-legal_policy-006
+2026-03-04 13:28:50,666 WARNING Patching failed on EXT-legal_policy-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:51,054 WARNING Patching failed on EXT-legal_policy-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:51,055 INFO [patching 35/200] EXT-legal_policy-016
+2026-03-04 13:28:51,439 WARNING Patching failed on EXT-legal_policy-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:51,823 WARNING Patching failed on EXT-legal_policy-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:51,824 INFO [patching 36/200] EXT-legal_policy-017
+2026-03-04 13:28:52,207 WARNING Patching failed on EXT-legal_policy-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:52,590 WARNING Patching failed on EXT-legal_policy-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:52,591 INFO [patching 37/200] ICL-pricing_wtp-014
+2026-03-04 13:28:52,983 WARNING Patching failed on ICL-pricing_wtp-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:53,376 WARNING Patching failed on ICL-pricing_wtp-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:53,376 INFO [patching 38/200] ICL-pricing_wtp-011
+2026-03-04 13:28:53,767 WARNING Patching failed on ICL-pricing_wtp-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:54,158 WARNING Patching failed on ICL-pricing_wtp-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:54,159 INFO [patching 39/200] ICL-pricing_wtp-013
+2026-03-04 13:28:54,549 WARNING Patching failed on ICL-pricing_wtp-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:54,940 WARNING Patching failed on ICL-pricing_wtp-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:54,941 INFO [patching 40/200] ICL-pricing_wtp-017
+2026-03-04 13:28:55,332 WARNING Patching failed on ICL-pricing_wtp-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:55,723 WARNING Patching failed on ICL-pricing_wtp-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:55,723 INFO [patching 41/200] ICL-pricing_wtp-010
+2026-03-04 13:28:56,115 WARNING Patching failed on ICL-pricing_wtp-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:56,506 WARNING Patching failed on ICL-pricing_wtp-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:56,507 INFO [patching 42/200] ICL-pricing_wtp-006
+2026-03-04 13:28:56,898 WARNING Patching failed on ICL-pricing_wtp-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:57,290 WARNING Patching failed on ICL-pricing_wtp-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:57,290 INFO [patching 43/200] ICL-operations_time-018
+2026-03-04 13:28:57,681 WARNING Patching failed on ICL-operations_time-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:58,075 WARNING Patching failed on ICL-operations_time-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:58,076 INFO [patching 44/200] ICL-operations_time-019
+2026-03-04 13:28:58,466 WARNING Patching failed on ICL-operations_time-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:58,857 WARNING Patching failed on ICL-operations_time-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:58,858 INFO [patching 45/200] ICL-operations_time-002
+2026-03-04 13:28:59,249 WARNING Patching failed on ICL-operations_time-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:59,640 WARNING Patching failed on ICL-operations_time-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:28:59,640 INFO [patching 46/200] ICL-operations_time-006
+2026-03-04 13:29:00,031 WARNING Patching failed on ICL-operations_time-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:00,423 WARNING Patching failed on ICL-operations_time-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:00,423 INFO [patching 47/200] ICL-operations_time-004
+2026-03-04 13:29:00,815 WARNING Patching failed on ICL-operations_time-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:01,206 WARNING Patching failed on ICL-operations_time-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:01,207 INFO [patching 48/200] ICL-operations_time-016
+2026-03-04 13:29:01,599 WARNING Patching failed on ICL-operations_time-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:01,993 WARNING Patching failed on ICL-operations_time-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:01,993 INFO [patching 49/200] ICL-transportation_logistics-018
+2026-03-04 13:29:02,383 WARNING Patching failed on ICL-transportation_logistics-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:02,774 WARNING Patching failed on ICL-transportation_logistics-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:02,775 INFO [patching 50/200] ICL-transportation_logistics-012
+2026-03-04 13:29:03,165 WARNING Patching failed on ICL-transportation_logistics-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:03,556 WARNING Patching failed on ICL-transportation_logistics-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:03,556 INFO [patching 51/200] ICL-transportation_logistics-008
+2026-03-04 13:29:03,946 WARNING Patching failed on ICL-transportation_logistics-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:04,337 WARNING Patching failed on ICL-transportation_logistics-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:04,338 INFO [patching 52/200] ICL-transportation_logistics-014
+2026-03-04 13:29:04,729 WARNING Patching failed on ICL-transportation_logistics-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:05,120 WARNING Patching failed on ICL-transportation_logistics-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:05,121 INFO [patching 53/200] ICL-transportation_logistics-001
+2026-03-04 13:29:05,511 WARNING Patching failed on ICL-transportation_logistics-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:05,902 WARNING Patching failed on ICL-transportation_logistics-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:05,903 INFO [patching 54/200] ICL-transportation_logistics-010
+2026-03-04 13:29:06,295 WARNING Patching failed on ICL-transportation_logistics-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:06,686 WARNING Patching failed on ICL-transportation_logistics-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:06,687 INFO [patching 55/200] ICL-resource_consumption-005
+2026-03-04 13:29:07,077 WARNING Patching failed on ICL-resource_consumption-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:07,467 WARNING Patching failed on ICL-resource_consumption-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:07,468 INFO [patching 56/200] ICL-resource_consumption-010
+2026-03-04 13:29:07,858 WARNING Patching failed on ICL-resource_consumption-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:08,250 WARNING Patching failed on ICL-resource_consumption-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:08,251 INFO [patching 57/200] ICL-resource_consumption-002
+2026-03-04 13:29:08,641 WARNING Patching failed on ICL-resource_consumption-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:09,032 WARNING Patching failed on ICL-resource_consumption-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:09,032 INFO [patching 58/200] ICL-resource_consumption-016
+2026-03-04 13:29:09,423 WARNING Patching failed on ICL-resource_consumption-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:09,818 WARNING Patching failed on ICL-resource_consumption-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:09,819 INFO [patching 59/200] ICL-resource_consumption-008
+2026-03-04 13:29:10,210 WARNING Patching failed on ICL-resource_consumption-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:10,603 WARNING Patching failed on ICL-resource_consumption-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:10,604 INFO [patching 60/200] ICL-resource_consumption-006
+2026-03-04 13:29:10,994 WARNING Patching failed on ICL-resource_consumption-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:11,386 WARNING Patching failed on ICL-resource_consumption-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:11,387 INFO [patching 61/200] ICL-market_demographics-003
+2026-03-04 13:29:11,785 WARNING Patching failed on ICL-market_demographics-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:12,182 WARNING Patching failed on ICL-market_demographics-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:12,183 INFO [patching 62/200] ICL-market_demographics-007
+2026-03-04 13:29:12,574 WARNING Patching failed on ICL-market_demographics-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:12,966 WARNING Patching failed on ICL-market_demographics-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:12,966 INFO [patching 63/200] ICL-market_demographics-017
+2026-03-04 13:29:13,357 WARNING Patching failed on ICL-market_demographics-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:13,777 WARNING Patching failed on ICL-market_demographics-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:13,778 INFO [patching 64/200] ICL-market_demographics-005
+2026-03-04 13:29:14,167 WARNING Patching failed on ICL-market_demographics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:14,560 WARNING Patching failed on ICL-market_demographics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:14,561 INFO [patching 65/200] ICL-market_demographics-018
+2026-03-04 13:29:14,952 WARNING Patching failed on ICL-market_demographics-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:15,342 WARNING Patching failed on ICL-market_demographics-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:15,343 INFO [patching 66/200] ICL-market_demographics-002
+2026-03-04 13:29:15,745 WARNING Patching failed on ICL-market_demographics-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:16,136 WARNING Patching failed on ICL-market_demographics-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:16,137 INFO [patching 67/200] ICL-legal_policy-015
+2026-03-04 13:29:16,527 WARNING Patching failed on ICL-legal_policy-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:16,918 WARNING Patching failed on ICL-legal_policy-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:16,919 INFO [patching 68/200] ICL-legal_policy-004
+2026-03-04 13:29:17,309 WARNING Patching failed on ICL-legal_policy-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:17,700 WARNING Patching failed on ICL-legal_policy-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:17,700 INFO [patching 69/200] ICL-legal_policy-010
+2026-03-04 13:29:18,093 WARNING Patching failed on ICL-legal_policy-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:18,484 WARNING Patching failed on ICL-legal_policy-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:18,485 INFO [patching 70/200] ICL-legal_policy-019
+2026-03-04 13:29:18,876 WARNING Patching failed on ICL-legal_policy-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:19,267 WARNING Patching failed on ICL-legal_policy-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:19,268 INFO [patching 71/200] ICL-legal_policy-009
+2026-03-04 13:29:19,701 WARNING Patching failed on ICL-legal_policy-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:20,094 WARNING Patching failed on ICL-legal_policy-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:20,095 INFO [patching 72/200] ICL-legal_policy-012
+2026-03-04 13:29:20,488 WARNING Patching failed on ICL-legal_policy-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:20,881 WARNING Patching failed on ICL-legal_policy-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:20,881 INFO [patching 73/200] HIST-pricing_wtp-010
+2026-03-04 13:29:21,285 WARNING Patching failed on HIST-pricing_wtp-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:21,681 WARNING Patching failed on HIST-pricing_wtp-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:21,682 INFO [patching 74/200] HIST-pricing_wtp-009
+2026-03-04 13:29:22,066 WARNING Patching failed on HIST-pricing_wtp-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:22,451 WARNING Patching failed on HIST-pricing_wtp-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:22,452 INFO [patching 75/200] HIST-pricing_wtp-007
+2026-03-04 13:29:22,835 WARNING Patching failed on HIST-pricing_wtp-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:23,218 WARNING Patching failed on HIST-pricing_wtp-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:23,219 INFO [patching 76/200] HIST-pricing_wtp-015
+2026-03-04 13:29:23,604 WARNING Patching failed on HIST-pricing_wtp-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:23,988 WARNING Patching failed on HIST-pricing_wtp-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:23,989 INFO [patching 77/200] HIST-pricing_wtp-014
+2026-03-04 13:29:24,380 WARNING Patching failed on HIST-pricing_wtp-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:24,771 WARNING Patching failed on HIST-pricing_wtp-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:24,772 INFO [patching 78/200] HIST-pricing_wtp-003
+2026-03-04 13:29:25,155 WARNING Patching failed on HIST-pricing_wtp-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:25,538 WARNING Patching failed on HIST-pricing_wtp-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:25,539 INFO [patching 79/200] HIST-operations_time-006
+2026-03-04 13:29:25,921 WARNING Patching failed on HIST-operations_time-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:26,308 WARNING Patching failed on HIST-operations_time-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:26,309 INFO [patching 80/200] HIST-operations_time-012
+2026-03-04 13:29:26,690 WARNING Patching failed on HIST-operations_time-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:27,072 WARNING Patching failed on HIST-operations_time-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:27,073 INFO [patching 81/200] HIST-operations_time-005
+2026-03-04 13:29:27,455 WARNING Patching failed on HIST-operations_time-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:27,840 WARNING Patching failed on HIST-operations_time-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:27,841 INFO [patching 82/200] HIST-operations_time-020
+2026-03-04 13:29:28,223 WARNING Patching failed on HIST-operations_time-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:28,605 WARNING Patching failed on HIST-operations_time-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:28,606 INFO [patching 83/200] HIST-operations_time-010
+2026-03-04 13:29:28,987 WARNING Patching failed on HIST-operations_time-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:29,369 WARNING Patching failed on HIST-operations_time-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:29,369 INFO [patching 84/200] HIST-operations_time-002
+2026-03-04 13:29:29,750 WARNING Patching failed on HIST-operations_time-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:30,133 WARNING Patching failed on HIST-operations_time-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:30,134 INFO [patching 85/200] HIST-transportation_logistics-015
+2026-03-04 13:29:30,516 WARNING Patching failed on HIST-transportation_logistics-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:30,902 WARNING Patching failed on HIST-transportation_logistics-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:30,903 INFO [patching 86/200] HIST-transportation_logistics-017
+2026-03-04 13:29:31,287 WARNING Patching failed on HIST-transportation_logistics-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:31,669 WARNING Patching failed on HIST-transportation_logistics-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:31,670 INFO [patching 87/200] HIST-transportation_logistics-020
+2026-03-04 13:29:32,052 WARNING Patching failed on HIST-transportation_logistics-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:32,437 WARNING Patching failed on HIST-transportation_logistics-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:32,438 INFO [patching 88/200] HIST-transportation_logistics-014
+2026-03-04 13:29:32,821 WARNING Patching failed on HIST-transportation_logistics-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:33,205 WARNING Patching failed on HIST-transportation_logistics-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:33,206 INFO [patching 89/200] HIST-transportation_logistics-005
+2026-03-04 13:29:33,588 WARNING Patching failed on HIST-transportation_logistics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:33,971 WARNING Patching failed on HIST-transportation_logistics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:33,971 INFO [patching 90/200] HIST-transportation_logistics-013
+2026-03-04 13:29:34,353 WARNING Patching failed on HIST-transportation_logistics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:34,735 WARNING Patching failed on HIST-transportation_logistics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:34,736 INFO [patching 91/200] HIST-resource_consumption-007
+2026-03-04 13:29:35,118 WARNING Patching failed on HIST-resource_consumption-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:35,501 WARNING Patching failed on HIST-resource_consumption-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:35,502 INFO [patching 92/200] HIST-resource_consumption-012
+2026-03-04 13:29:35,884 WARNING Patching failed on HIST-resource_consumption-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:36,272 WARNING Patching failed on HIST-resource_consumption-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:36,273 INFO [patching 93/200] HIST-resource_consumption-005
+2026-03-04 13:29:36,659 WARNING Patching failed on HIST-resource_consumption-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:37,043 WARNING Patching failed on HIST-resource_consumption-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:37,044 INFO [patching 94/200] HIST-resource_consumption-002
+2026-03-04 13:29:37,426 WARNING Patching failed on HIST-resource_consumption-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:37,809 WARNING Patching failed on HIST-resource_consumption-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:37,810 INFO [patching 95/200] HIST-resource_consumption-019
+2026-03-04 13:29:38,193 WARNING Patching failed on HIST-resource_consumption-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:38,577 WARNING Patching failed on HIST-resource_consumption-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:38,577 INFO [patching 96/200] HIST-resource_consumption-010
+2026-03-04 13:29:38,959 WARNING Patching failed on HIST-resource_consumption-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:39,342 WARNING Patching failed on HIST-resource_consumption-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:39,343 INFO [patching 97/200] HIST-market_demographics-015
+2026-03-04 13:29:39,725 WARNING Patching failed on HIST-market_demographics-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:40,107 WARNING Patching failed on HIST-market_demographics-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:40,108 INFO [patching 98/200] HIST-market_demographics-008
+2026-03-04 13:29:40,489 WARNING Patching failed on HIST-market_demographics-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:40,871 WARNING Patching failed on HIST-market_demographics-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:40,872 INFO [patching 99/200] HIST-market_demographics-013
+2026-03-04 13:29:41,254 WARNING Patching failed on HIST-market_demographics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:41,642 WARNING Patching failed on HIST-market_demographics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:41,642 INFO [patching 100/200] HIST-market_demographics-007
+2026-03-04 13:29:42,024 WARNING Patching failed on HIST-market_demographics-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:42,417 WARNING Patching failed on HIST-market_demographics-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:42,418 INFO [patching 101/200] HIST-market_demographics-012
+2026-03-04 13:29:42,804 WARNING Patching failed on HIST-market_demographics-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:43,186 WARNING Patching failed on HIST-market_demographics-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:43,187 INFO [patching 102/200] HIST-market_demographics-005
+2026-03-04 13:29:43,569 WARNING Patching failed on HIST-market_demographics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:43,952 WARNING Patching failed on HIST-market_demographics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:43,953 INFO [patching 103/200] HIST-legal_policy-008
+2026-03-04 13:29:44,337 WARNING Patching failed on HIST-legal_policy-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:44,721 WARNING Patching failed on HIST-legal_policy-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:44,721 INFO [patching 104/200] HIST-legal_policy-004
+2026-03-04 13:29:45,104 WARNING Patching failed on HIST-legal_policy-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:45,488 WARNING Patching failed on HIST-legal_policy-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:45,489 INFO [patching 105/200] HIST-legal_policy-005
+2026-03-04 13:29:45,872 WARNING Patching failed on HIST-legal_policy-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:46,259 WARNING Patching failed on HIST-legal_policy-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:46,260 INFO [patching 106/200] HIST-legal_policy-019
+2026-03-04 13:29:46,642 WARNING Patching failed on HIST-legal_policy-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:47,025 WARNING Patching failed on HIST-legal_policy-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:47,026 INFO [patching 107/200] HIST-legal_policy-002
+2026-03-04 13:29:47,408 WARNING Patching failed on HIST-legal_policy-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:47,791 WARNING Patching failed on HIST-legal_policy-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:47,792 INFO [patching 108/200] HIST-legal_policy-013
+2026-03-04 13:29:48,175 WARNING Patching failed on HIST-legal_policy-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:48,557 WARNING Patching failed on HIST-legal_policy-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:48,558 INFO [patching 109/200] RAG-pricing_wtp-009
+2026-03-04 13:29:49,252 WARNING Patching failed on RAG-pricing_wtp-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:49,661 WARNING Patching failed on RAG-pricing_wtp-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:49,662 INFO [patching 110/200] RAG-pricing_wtp-008
+2026-03-04 13:29:50,057 WARNING Patching failed on RAG-pricing_wtp-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:50,453 WARNING Patching failed on RAG-pricing_wtp-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:50,454 INFO [patching 111/200] RAG-pricing_wtp-002
+2026-03-04 13:29:50,848 WARNING Patching failed on RAG-pricing_wtp-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:51,243 WARNING Patching failed on RAG-pricing_wtp-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:51,243 INFO [patching 112/200] RAG-pricing_wtp-007
+2026-03-04 13:29:51,638 WARNING Patching failed on RAG-pricing_wtp-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:52,034 WARNING Patching failed on RAG-pricing_wtp-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:52,035 INFO [patching 113/200] RAG-pricing_wtp-010
+2026-03-04 13:29:52,429 WARNING Patching failed on RAG-pricing_wtp-010/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:52,825 WARNING Patching failed on RAG-pricing_wtp-010/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:52,825 INFO [patching 114/200] RAG-pricing_wtp-011
+2026-03-04 13:29:53,230 WARNING Patching failed on RAG-pricing_wtp-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:53,625 WARNING Patching failed on RAG-pricing_wtp-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:53,626 INFO [patching 115/200] RAG-operations_time-018
+2026-03-04 13:29:54,018 WARNING Patching failed on RAG-operations_time-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:54,411 WARNING Patching failed on RAG-operations_time-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:54,412 INFO [patching 116/200] RAG-operations_time-005
+2026-03-04 13:29:54,804 WARNING Patching failed on RAG-operations_time-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:55,196 WARNING Patching failed on RAG-operations_time-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:55,197 INFO [patching 117/200] RAG-operations_time-004
+2026-03-04 13:29:55,590 WARNING Patching failed on RAG-operations_time-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:55,984 WARNING Patching failed on RAG-operations_time-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:55,985 INFO [patching 118/200] RAG-operations_time-011
+2026-03-04 13:29:56,377 WARNING Patching failed on RAG-operations_time-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:56,769 WARNING Patching failed on RAG-operations_time-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:56,770 INFO [patching 119/200] RAG-operations_time-007
+2026-03-04 13:29:57,161 WARNING Patching failed on RAG-operations_time-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:57,554 WARNING Patching failed on RAG-operations_time-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:57,554 INFO [patching 120/200] RAG-operations_time-014
+2026-03-04 13:29:57,948 WARNING Patching failed on RAG-operations_time-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:58,340 WARNING Patching failed on RAG-operations_time-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:58,341 INFO [patching 121/200] RAG-transportation_logistics-014
+2026-03-04 13:29:58,734 WARNING Patching failed on RAG-transportation_logistics-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:59,128 WARNING Patching failed on RAG-transportation_logistics-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:59,128 INFO [patching 122/200] RAG-transportation_logistics-015
+2026-03-04 13:29:59,520 WARNING Patching failed on RAG-transportation_logistics-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:59,914 WARNING Patching failed on RAG-transportation_logistics-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:29:59,915 INFO [patching 123/200] RAG-transportation_logistics-016
+2026-03-04 13:30:00,307 WARNING Patching failed on RAG-transportation_logistics-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:00,701 WARNING Patching failed on RAG-transportation_logistics-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:00,702 INFO [patching 124/200] RAG-transportation_logistics-018
+2026-03-04 13:30:01,095 WARNING Patching failed on RAG-transportation_logistics-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:01,489 WARNING Patching failed on RAG-transportation_logistics-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:01,490 INFO [patching 125/200] RAG-transportation_logistics-004
+2026-03-04 13:30:01,883 WARNING Patching failed on RAG-transportation_logistics-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:02,276 WARNING Patching failed on RAG-transportation_logistics-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:02,277 INFO [patching 126/200] RAG-transportation_logistics-005
+2026-03-04 13:30:02,669 WARNING Patching failed on RAG-transportation_logistics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:03,062 WARNING Patching failed on RAG-transportation_logistics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:03,063 INFO [patching 127/200] RAG-resource_consumption-005
+2026-03-04 13:30:03,455 WARNING Patching failed on RAG-resource_consumption-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:03,847 WARNING Patching failed on RAG-resource_consumption-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:03,848 INFO [patching 128/200] RAG-resource_consumption-020
+2026-03-04 13:30:04,239 WARNING Patching failed on RAG-resource_consumption-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:04,631 WARNING Patching failed on RAG-resource_consumption-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:04,632 INFO [patching 129/200] RAG-resource_consumption-009
+2026-03-04 13:30:05,023 WARNING Patching failed on RAG-resource_consumption-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:05,416 WARNING Patching failed on RAG-resource_consumption-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:05,417 INFO [patching 130/200] RAG-resource_consumption-018
+2026-03-04 13:30:05,808 WARNING Patching failed on RAG-resource_consumption-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:06,200 WARNING Patching failed on RAG-resource_consumption-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:06,201 INFO [patching 131/200] RAG-resource_consumption-019
+2026-03-04 13:30:06,592 WARNING Patching failed on RAG-resource_consumption-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:06,985 WARNING Patching failed on RAG-resource_consumption-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:06,986 INFO [patching 132/200] RAG-resource_consumption-006
+2026-03-04 13:30:07,377 WARNING Patching failed on RAG-resource_consumption-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:07,769 WARNING Patching failed on RAG-resource_consumption-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:07,770 INFO [patching 133/200] RAG-market_demographics-003
+2026-03-04 13:30:08,163 WARNING Patching failed on RAG-market_demographics-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:08,555 WARNING Patching failed on RAG-market_demographics-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:08,556 INFO [patching 134/200] RAG-market_demographics-014
+2026-03-04 13:30:08,947 WARNING Patching failed on RAG-market_demographics-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:09,339 WARNING Patching failed on RAG-market_demographics-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:09,340 INFO [patching 135/200] RAG-market_demographics-002
+2026-03-04 13:30:09,732 WARNING Patching failed on RAG-market_demographics-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:10,124 WARNING Patching failed on RAG-market_demographics-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:10,125 INFO [patching 136/200] RAG-market_demographics-020
+2026-03-04 13:30:10,516 WARNING Patching failed on RAG-market_demographics-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:10,908 WARNING Patching failed on RAG-market_demographics-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:10,909 INFO [patching 137/200] RAG-market_demographics-009
+2026-03-04 13:30:11,301 WARNING Patching failed on RAG-market_demographics-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:11,695 WARNING Patching failed on RAG-market_demographics-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:11,696 INFO [patching 138/200] RAG-market_demographics-016
+2026-03-04 13:30:12,089 WARNING Patching failed on RAG-market_demographics-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:12,483 WARNING Patching failed on RAG-market_demographics-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:12,483 INFO [patching 139/200] RAG-legal_policy-004
+2026-03-04 13:30:12,877 WARNING Patching failed on RAG-legal_policy-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:13,272 WARNING Patching failed on RAG-legal_policy-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:13,273 INFO [patching 140/200] RAG-legal_policy-015
+2026-03-04 13:30:13,668 WARNING Patching failed on RAG-legal_policy-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:14,063 WARNING Patching failed on RAG-legal_policy-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:14,064 INFO [patching 141/200] RAG-legal_policy-014
+2026-03-04 13:30:14,458 WARNING Patching failed on RAG-legal_policy-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:14,852 WARNING Patching failed on RAG-legal_policy-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:14,852 INFO [patching 142/200] RAG-legal_policy-006
+2026-03-04 13:30:15,244 WARNING Patching failed on RAG-legal_policy-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:15,637 WARNING Patching failed on RAG-legal_policy-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:15,638 INFO [patching 143/200] RAG-legal_policy-009
+2026-03-04 13:30:16,030 WARNING Patching failed on RAG-legal_policy-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:16,424 WARNING Patching failed on RAG-legal_policy-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:16,424 INFO [patching 144/200] RAG-legal_policy-011
+2026-03-04 13:30:16,816 WARNING Patching failed on RAG-legal_policy-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:17,208 WARNING Patching failed on RAG-legal_policy-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:17,209 INFO [patching 145/200] TOOL-pricing_wtp-019
+2026-03-04 13:30:17,593 WARNING Patching failed on TOOL-pricing_wtp-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:17,981 WARNING Patching failed on TOOL-pricing_wtp-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:17,982 INFO [patching 146/200] TOOL-pricing_wtp-016
+2026-03-04 13:30:18,366 WARNING Patching failed on TOOL-pricing_wtp-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:18,750 WARNING Patching failed on TOOL-pricing_wtp-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:18,751 INFO [patching 147/200] TOOL-pricing_wtp-004
+2026-03-04 13:30:19,136 WARNING Patching failed on TOOL-pricing_wtp-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:19,522 WARNING Patching failed on TOOL-pricing_wtp-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:19,523 INFO [patching 148/200] TOOL-pricing_wtp-003
+2026-03-04 13:30:19,907 WARNING Patching failed on TOOL-pricing_wtp-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:20,293 WARNING Patching failed on TOOL-pricing_wtp-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:20,294 INFO [patching 149/200] TOOL-pricing_wtp-013
+2026-03-04 13:30:20,679 WARNING Patching failed on TOOL-pricing_wtp-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:21,064 WARNING Patching failed on TOOL-pricing_wtp-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:21,065 INFO [patching 150/200] TOOL-pricing_wtp-007
+2026-03-04 13:30:21,451 WARNING Patching failed on TOOL-pricing_wtp-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:21,838 WARNING Patching failed on TOOL-pricing_wtp-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:21,838 INFO [patching 151/200] TOOL-operations_time-006
+2026-03-04 13:30:22,225 WARNING Patching failed on TOOL-operations_time-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:22,612 WARNING Patching failed on TOOL-operations_time-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:22,612 INFO [patching 152/200] TOOL-operations_time-008
+2026-03-04 13:30:22,999 WARNING Patching failed on TOOL-operations_time-008/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:23,386 WARNING Patching failed on TOOL-operations_time-008/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:23,387 INFO [patching 153/200] TOOL-operations_time-002
+2026-03-04 13:30:23,775 WARNING Patching failed on TOOL-operations_time-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:24,162 WARNING Patching failed on TOOL-operations_time-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:24,162 INFO [patching 154/200] TOOL-operations_time-003
+2026-03-04 13:30:24,548 WARNING Patching failed on TOOL-operations_time-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:24,934 WARNING Patching failed on TOOL-operations_time-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:24,934 INFO [patching 155/200] TOOL-operations_time-009
+2026-03-04 13:30:25,320 WARNING Patching failed on TOOL-operations_time-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:25,706 WARNING Patching failed on TOOL-operations_time-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:25,707 INFO [patching 156/200] TOOL-operations_time-017
+2026-03-04 13:30:26,092 WARNING Patching failed on TOOL-operations_time-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:26,481 WARNING Patching failed on TOOL-operations_time-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:26,481 INFO [patching 157/200] TOOL-transportation_logistics-011
+2026-03-04 13:30:26,864 WARNING Patching failed on TOOL-transportation_logistics-011/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:27,247 WARNING Patching failed on TOOL-transportation_logistics-011/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:27,247 INFO [patching 158/200] TOOL-transportation_logistics-006
+2026-03-04 13:30:27,796 WARNING Patching failed on TOOL-transportation_logistics-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:28,219 WARNING Patching failed on TOOL-transportation_logistics-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:28,220 INFO [patching 159/200] TOOL-transportation_logistics-015
+2026-03-04 13:30:28,604 WARNING Patching failed on TOOL-transportation_logistics-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:28,987 WARNING Patching failed on TOOL-transportation_logistics-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:28,988 INFO [patching 160/200] TOOL-transportation_logistics-014
+2026-03-04 13:30:29,373 WARNING Patching failed on TOOL-transportation_logistics-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:29,758 WARNING Patching failed on TOOL-transportation_logistics-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:29,759 INFO [patching 161/200] TOOL-transportation_logistics-013
+2026-03-04 13:30:30,143 WARNING Patching failed on TOOL-transportation_logistics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:30,527 WARNING Patching failed on TOOL-transportation_logistics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:30,528 INFO [patching 162/200] TOOL-transportation_logistics-018
+2026-03-04 13:30:30,913 WARNING Patching failed on TOOL-transportation_logistics-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:31,299 WARNING Patching failed on TOOL-transportation_logistics-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:31,300 INFO [patching 163/200] TOOL-resource_consumption-006
+2026-03-04 13:30:31,684 WARNING Patching failed on TOOL-resource_consumption-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:32,069 WARNING Patching failed on TOOL-resource_consumption-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:32,070 INFO [patching 164/200] TOOL-resource_consumption-007
+2026-03-04 13:30:32,454 WARNING Patching failed on TOOL-resource_consumption-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:32,837 WARNING Patching failed on TOOL-resource_consumption-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:32,838 INFO [patching 165/200] TOOL-resource_consumption-020
+2026-03-04 13:30:33,221 WARNING Patching failed on TOOL-resource_consumption-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:33,606 WARNING Patching failed on TOOL-resource_consumption-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:33,607 INFO [patching 166/200] TOOL-resource_consumption-009
+2026-03-04 13:30:33,991 WARNING Patching failed on TOOL-resource_consumption-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:34,374 WARNING Patching failed on TOOL-resource_consumption-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:34,375 INFO [patching 167/200] TOOL-resource_consumption-004
+2026-03-04 13:30:34,759 WARNING Patching failed on TOOL-resource_consumption-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:35,143 WARNING Patching failed on TOOL-resource_consumption-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:35,144 INFO [patching 168/200] TOOL-resource_consumption-015
+2026-03-04 13:30:35,526 WARNING Patching failed on TOOL-resource_consumption-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:35,910 WARNING Patching failed on TOOL-resource_consumption-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:35,911 INFO [patching 169/200] TOOL-market_demographics-013
+2026-03-04 13:30:36,295 WARNING Patching failed on TOOL-market_demographics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:36,678 WARNING Patching failed on TOOL-market_demographics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:36,679 INFO [patching 170/200] TOOL-market_demographics-006
+2026-03-04 13:30:37,063 WARNING Patching failed on TOOL-market_demographics-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:37,448 WARNING Patching failed on TOOL-market_demographics-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:37,448 INFO [patching 171/200] TOOL-market_demographics-005
+2026-03-04 13:30:37,831 WARNING Patching failed on TOOL-market_demographics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:38,214 WARNING Patching failed on TOOL-market_demographics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:38,215 INFO [patching 172/200] TOOL-market_demographics-016
+2026-03-04 13:30:38,599 WARNING Patching failed on TOOL-market_demographics-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:38,984 WARNING Patching failed on TOOL-market_demographics-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:38,985 INFO [patching 173/200] TOOL-market_demographics-009
+2026-03-04 13:30:39,368 WARNING Patching failed on TOOL-market_demographics-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:39,751 WARNING Patching failed on TOOL-market_demographics-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:39,752 INFO [patching 174/200] TOOL-market_demographics-004
+2026-03-04 13:30:40,136 WARNING Patching failed on TOOL-market_demographics-004/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:40,521 WARNING Patching failed on TOOL-market_demographics-004/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:40,522 INFO [patching 175/200] TOOL-legal_policy-015
+2026-03-04 13:30:40,906 WARNING Patching failed on TOOL-legal_policy-015/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:41,292 WARNING Patching failed on TOOL-legal_policy-015/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:41,292 INFO [patching 176/200] TOOL-legal_policy-020
+2026-03-04 13:30:41,677 WARNING Patching failed on TOOL-legal_policy-020/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:42,062 WARNING Patching failed on TOOL-legal_policy-020/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:42,063 INFO [patching 177/200] TOOL-legal_policy-014
+2026-03-04 13:30:42,448 WARNING Patching failed on TOOL-legal_policy-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:42,833 WARNING Patching failed on TOOL-legal_policy-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:42,833 INFO [patching 178/200] TOOL-legal_policy-017
+2026-03-04 13:30:43,218 WARNING Patching failed on TOOL-legal_policy-017/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:43,604 WARNING Patching failed on TOOL-legal_policy-017/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:43,604 INFO [patching 179/200] TOOL-legal_policy-016
+2026-03-04 13:30:43,988 WARNING Patching failed on TOOL-legal_policy-016/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:44,373 WARNING Patching failed on TOOL-legal_policy-016/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:44,374 INFO [patching 180/200] TOOL-legal_policy-006
+2026-03-04 13:30:44,764 WARNING Patching failed on TOOL-legal_policy-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:45,148 WARNING Patching failed on TOOL-legal_policy-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:45,149 INFO [patching 181/200] HIST-operations_time-018
+2026-03-04 13:30:45,530 WARNING Patching failed on HIST-operations_time-018/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:45,913 WARNING Patching failed on HIST-operations_time-018/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:45,914 INFO [patching 182/200] ICL-transportation_logistics-005
+2026-03-04 13:30:46,305 WARNING Patching failed on ICL-transportation_logistics-005/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:46,695 WARNING Patching failed on ICL-transportation_logistics-005/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:46,696 INFO [patching 183/200] EXT-operations_time-002
+2026-03-04 13:30:47,081 WARNING Patching failed on EXT-operations_time-002/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:47,466 WARNING Patching failed on EXT-operations_time-002/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:47,467 INFO [patching 184/200] RAG-operations_time-006
+2026-03-04 13:30:47,861 WARNING Patching failed on RAG-operations_time-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:48,257 WARNING Patching failed on RAG-operations_time-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:48,258 INFO [patching 185/200] RAG-transportation_logistics-012
+2026-03-04 13:30:48,653 WARNING Patching failed on RAG-transportation_logistics-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:49,049 WARNING Patching failed on RAG-transportation_logistics-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:49,050 INFO [patching 186/200] ICL-resource_consumption-009
+2026-03-04 13:30:49,443 WARNING Patching failed on ICL-resource_consumption-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:49,837 WARNING Patching failed on ICL-resource_consumption-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:49,838 INFO [patching 187/200] ICL-transportation_logistics-003
+2026-03-04 13:30:50,232 WARNING Patching failed on ICL-transportation_logistics-003/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:50,626 WARNING Patching failed on ICL-transportation_logistics-003/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:50,627 INFO [patching 188/200] TOOL-operations_time-012
+2026-03-04 13:30:51,014 WARNING Patching failed on TOOL-operations_time-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:51,400 WARNING Patching failed on TOOL-operations_time-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:51,401 INFO [patching 189/200] EXT-legal_policy-001
+2026-03-04 13:30:51,784 WARNING Patching failed on EXT-legal_policy-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:52,167 WARNING Patching failed on EXT-legal_policy-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:52,167 INFO [patching 190/200] RAG-pricing_wtp-012
+2026-03-04 13:30:52,562 WARNING Patching failed on RAG-pricing_wtp-012/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:52,958 WARNING Patching failed on RAG-pricing_wtp-012/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:52,958 INFO [patching 191/200] EXT-market_demographics-007
+2026-03-04 13:30:53,344 WARNING Patching failed on EXT-market_demographics-007/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:53,730 WARNING Patching failed on EXT-market_demographics-007/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:53,731 INFO [patching 192/200] ICL-pricing_wtp-019
+2026-03-04 13:30:54,120 WARNING Patching failed on ICL-pricing_wtp-019/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:54,513 WARNING Patching failed on ICL-pricing_wtp-019/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:54,513 INFO [patching 193/200] ICL-legal_policy-006
+2026-03-04 13:30:54,904 WARNING Patching failed on ICL-legal_policy-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:55,294 WARNING Patching failed on ICL-legal_policy-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:55,295 INFO [patching 194/200] HIST-operations_time-009
+2026-03-04 13:30:55,678 WARNING Patching failed on HIST-operations_time-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:56,062 WARNING Patching failed on HIST-operations_time-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:56,063 INFO [patching 195/200] ICL-resource_consumption-014
+2026-03-04 13:30:56,453 WARNING Patching failed on ICL-resource_consumption-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:56,844 WARNING Patching failed on ICL-resource_consumption-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:56,844 INFO [patching 196/200] HIST-legal_policy-006
+2026-03-04 13:30:57,227 WARNING Patching failed on HIST-legal_policy-006/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:57,610 WARNING Patching failed on HIST-legal_policy-006/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:57,610 INFO [patching 197/200] TOOL-legal_policy-001
+2026-03-04 13:30:57,997 WARNING Patching failed on TOOL-legal_policy-001/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:58,382 WARNING Patching failed on TOOL-legal_policy-001/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:58,382 INFO [patching 198/200] RAG-pricing_wtp-014
+2026-03-04 13:30:58,777 WARNING Patching failed on RAG-pricing_wtp-014/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:59,172 WARNING Patching failed on RAG-pricing_wtp-014/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:59,173 INFO [patching 199/200] HIST-resource_consumption-009
+2026-03-04 13:30:59,555 WARNING Patching failed on HIST-resource_consumption-009/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:59,938 WARNING Patching failed on HIST-resource_consumption-009/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:30:59,938 INFO [patching 200/200] ICL-transportation_logistics-013
+2026-03-04 13:31:00,328 WARNING Patching failed on ICL-transportation_logistics-013/low_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:31:00,718 WARNING Patching failed on ICL-transportation_logistics-013/high_anchor: Can't call numpy() on Tensor that requires grad. Use tensor.detach().numpy() instead.
+2026-03-04 13:31:00,719 INFO Layer sweep -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/layerwise_effect.csv
+2026-03-04 13:31:00,719 INFO Head sweep -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/top_heads.csv
+2026-03-04 13:31:00,719 INFO Patching done in 177.4s
+2026-03-04 13:31:00,900 INFO Saved CAE plot -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/figures/cae_vs_layer.pdf
+2026-03-04 13:31:00,976 INFO Saved logit lens plot -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/figures/logit_lens.pdf
+2026-03-04 13:31:00,978 INFO LaTeX table -> results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756/tables/mechinterp_main.tex
+2026-03-04 13:31:00,978 INFO All mechinterp done in 177.6s. Output: results/mechinterp/Llama-3.2-3B-Instruct_20260304_132756

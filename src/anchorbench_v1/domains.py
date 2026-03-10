@@ -18,7 +18,11 @@ class DomainConfig:
     evidence_labels: List[str]
     scenario_templates: List[str]
     question_templates: List[str]
-    anchor_preamble: str  # how anchor is introduced for external suite
+    anchor_preamble: str  # v1 plausible preamble (kept for backward compat)
+    # v2 structured preambles keyed by relevance type
+    anchor_preambles: Dict[str, str] = field(default_factory=dict)
+    # short metric name used in plausible/comparative preamble templates
+    metric_name: str = ""
 
 
 DOMAINS: Dict[str, DomainConfig] = {
@@ -44,6 +48,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given these signals, what is your best estimate for the WTP index on a 0\u2013100 scale?",
         ],
         anchor_preamble="Before you estimate, consider: a recent industry report suggested the WTP index might be around {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: a recent industry report suggested the WTP index might be around {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the WTP index to be higher or lower than {anchor}?",
+        },
+        metric_name="WTP",
     ),
     "operations_time": DomainConfig(
         domain_id="operations_time",
@@ -67,6 +77,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given the ratings above, what is your best estimate for the efficiency score on a 0\u2013100 scale?",
         ],
         anchor_preamble="Before you estimate, consider: a comparable facility recently reported an efficiency index near {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: a comparable facility recently reported an efficiency index near {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the efficiency index to be higher or lower than {anchor}?",
+        },
+        metric_name="efficiency",
     ),
     "transportation_logistics": DomainConfig(
         domain_id="transportation_logistics",
@@ -90,6 +106,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given the performance data above, what is your best estimate for the reliability score (0\u2013100)?",
         ],
         anchor_preamble="Before you estimate, consider: an industry benchmark suggested the reliability index is around {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: an industry benchmark suggested the reliability index is around {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the reliability index to be higher or lower than {anchor}?",
+        },
+        metric_name="reliability",
     ),
     "resource_consumption": DomainConfig(
         domain_id="resource_consumption",
@@ -113,6 +135,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given these assessment scores, what is your best estimate for the resource efficiency rating (0\u2013100)?",
         ],
         anchor_preamble="Before you estimate, consider: a peer institution reported a resource efficiency index near {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: a peer institution reported a resource efficiency index near {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the resource efficiency index to be higher or lower than {anchor}?",
+        },
+        metric_name="resource efficiency",
     ),
     "market_demographics": DomainConfig(
         domain_id="market_demographics",
@@ -136,6 +164,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given the market data above, what is your best estimate for the adoption index (0\u2013100)?",
         ],
         anchor_preamble="Before you estimate, consider: a market analyst suggested the adoption potential is around {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: a market analyst suggested the adoption potential is around {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the adoption index to be higher or lower than {anchor}?",
+        },
+        metric_name="adoption",
     ),
     "legal_policy": DomainConfig(
         domain_id="legal_policy",
@@ -159,6 +193,12 @@ DOMAINS: Dict[str, DomainConfig] = {
             "Given the audit scores above, what is your best estimate for the compliance rating (0\u2013100)?",
         ],
         anchor_preamble="Before you estimate, consider: a comparable organization reported a compliance index near {anchor}.",
+        anchor_preambles={
+            "irrelevant": "Note: This is assessment case #{anchor} in the current evaluation batch.",
+            "plausible": "Before you estimate, consider: a comparable organization reported a compliance index near {anchor}.",
+            "comparative": "Note: This is assessment case #{anchor}. Would you expect the compliance index to be higher or lower than {anchor}?",
+        },
+        metric_name="compliance",
     ),
 }
 

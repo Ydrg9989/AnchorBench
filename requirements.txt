@@ -1,0 +1,8 @@
+torch>=2.1
+transformers>=4.36
+numpy
+scipy
+matplotlib
+pyyaml
+jaxtyping
+aiohttp

@@ -1,44 +1,107 @@
-When asked to estimate a quantity, humans systematically shift their
-answers toward arbitrary reference points---a phenomenon known as
-\emph{anchoring bias}~\citep{tversky1974judgment, kahneman2011thinking}.
-As LLMs are increasingly deployed in high-stakes domains such as
-medical triage, financial risk assessment, and operational planning,
-understanding whether they inherit this bias is both scientifically
-interesting and practically important.
+% ── Paragraph 1: Why anchoring matters as a reliability issue ──
+When LLMs are deployed for numeric estimation in high-stakes
+domains---medical triage scores, financial risk indices,
+operational efficiency ratings---their outputs must be robust
+to irrelevant contextual numbers.
+Anchoring, the systematic tendency to shift estimates toward
+salient reference points~\citep{tversky1974judgment}, is among
+the most robust biases documented in human
+judgment~\citep{kahneman2011thinking, chapman1999anchoring}.
+Recent work has confirmed that LLMs exhibit analogous behavior:
+model estimates shift toward numbers embedded in prompts,
+conversation history, and retrieved
+context~\citep{jones2022capturing, hagendorff2023humanlike,
+echterhoff-etal-2024-cognitive, huang2025anchoring,
+lou2024anchoring}.
+Unlike generic accuracy degradation, anchoring is particularly
+insidious because biased outputs can appear confident and
+well-reasoned, making the failure mode difficult to detect
+without controlled evaluation.
 
-Recent work has begun to probe cognitive biases in
-LLMs~\citep{jones2022capturing, hagendorff2023cognitive,
-agrawal2024cognitive}, but existing studies typically (i)~test a single
-anchor-delivery mechanism (usually prompt-embedded), (ii)~evaluate few
-models, and (iii)~lack controlled ground-truth labels that separate
-anchoring from mere accuracy degradation.
+% ── Paragraph 2: Why current evidence is insufficient ──────────
+However, existing LLM anchoring evaluations are fragmented and
+insufficient for systematic benchmarking.
+Most studies test only prompt-embedded anchors, ignoring the
+multiple interfaces through which anchors reach real LLM
+systems---conversation history, few-shot demonstrations,
+retrieved documents, and tool outputs.
+More fundamentally, current evaluations treat \emph{all} numeric
+sensitivity as uniformly undesirable, conflating irrational
+susceptibility to irrelevant numbers with potentially rational
+use of informative context.
+A model that appropriately adjusts its estimate given a credible
+prior is behaving differently from one that shifts toward an
+arbitrary case~ID---yet existing metrics cannot distinguish
+these behaviors.
+Finally, few studies ground their designs in the cognitive
+science literature, which identifies multiple distinct anchoring
+mechanisms~\citep{epley2001putting, mussweiler1999hypothesis,
+chapman1999anchoring} that may map onto different LLM failure
+modes.
+In short, prior work establishes \emph{that} LLMs can anchor
+but leaves open \emph{when} and \emph{through which interface}
+anchoring arises, and whether sensitivity tracks the
+normative relevance of the anchor.
 
-We address these gaps with the following contributions:
+% ── Paragraph 3: Our benchmark idea and theory grounding ───────
+We introduce \textsc{AnchorBench}, a benchmark that addresses
+these limitations through two key design choices.
+First, we map four established human anchoring paradigms---classic
+external anchoring~\citep{tversky1974judgment}, self-generated
+anchoring via insufficient
+adjustment~\citep{epley2001putting}, numeric priming through
+selective accessibility~\citep{mussweiler1999hypothesis}, and
+ecological anchoring in realistic information environments---to
+five LLM interface channels (prompt-embedded, conversation
+history, in-context learning, retrieval-augmented generation,
+and tool-call outputs).
+Second, we introduce an explicit \emph{anchor-relevance axis}
+with four levels (none, irrelevant, plausible, informative)
+that operationalizes the normative status of each anchor.
+This axis enables the benchmark to measure not just how much a
+model's estimates shift, but whether the model discriminates
+between anchors it should ignore and anchors that carry genuine
+evidential weight.
 
+% ── Paragraph 4: Contributions ─────────────────────────────────
+Our contributions are:
 \begin{enumerate}
-\item \textbf{Controlled benchmark.}  A 108-item dataset
-  (\textsc{AnchorBench-v0.2}) with five anchor-delivery suites
-  (external, ICL, conversation-history, RAG, tool), three
-  application fields (health, finance, operations), and
-  gold-standard reference answers derived from latent signals.
+\item \textbf{Theory-grounded benchmark design.}
+  A systematic mapping from four human anchoring paradigms to
+  five LLM interface channels, with an anchor-relevance axis
+  that separates susceptibility from discrimination
+  (\S\ref{sec:dataset}).
 
-\item \textbf{Multi-model evaluation.}  Systematic measurement of
-  anchoring across six LLMs spanning three families and three scale
-  tiers (1B--8B open-weight; GPT-4o-mini; Claude~3.5~Haiku),
-  using the Normalized Anchoring Index (\nai), Total Variation
-  Distance (\tvd), and Wasserstein-1 (\wone) metrics.
+\item \textbf{Evidence-first task construction.}
+  Each benchmark item presents structured numeric evidence
+  from which a gold answer
+  ($y^{*}_{\text{evidence}}$) is derivable, ensuring that
+  anchoring is measured against a well-defined rational
+  baseline (\S\ref{sec:gold-rule}).
 
-\item \textbf{Mitigation taxonomy and evaluation.}  Nine mitigation
-  strategies organized into prompt-level (B1--B3), structural (EFR,
-  CxDP), post-hoc (B4, PLD), and logit-level (AALC) categories,
-  evaluated with bootstrap confidence intervals and
-  Benjamini--Hochberg correction.
+\item \textbf{Unified evaluation framework.}
+  A single set of metrics---Unified Anchor Influence (UAI),
+  Toward-Anchor Rate (TAR), and discrimination gap
+  (Disc$_{\Delta}$)---that enables direct comparison across
+  suites with different anchor-delivery mechanisms, replacing
+  suite-specific metrics with a coherent framework
+  (\S\ref{sec:metrics}).
 
-\item \textbf{Stress tests.}  Four robustness probes (anchor
-  magnitude, position, format, RAG-snippet order) revealing
-  model-specific vulnerabilities.
+\item \textbf{Five-suite pilot validation.}
+  Pilot studies on the external suite (90~items, 4~models),
+  the history suite (60~items, two-stage self-generated
+  protocol), the ICL suite (180~items, metadata priming in
+  few-shot demonstrations), the RAG suite (180~items,
+  three-document corpus design), and the tool suite
+  (180~items, structured tool outputs via chat template)
+  demonstrate that anchoring susceptibility is
+  paradigm-dependent: model rankings on both accuracy
+  and discrimination reverse across suites, and plausible
+  anchors produce stronger influence than irrelevant ones in
+  18 of 20 model--suite combinations
+  (\S\ref{sec:results}).
 \end{enumerate}
 
-\noindent This paper reports \emph{proof-of-concept} (PoC) results.
-We plan to scale the benchmark to ${\geq}500$ items, add more
-models, and extend to multi-turn RAG and tool-use settings.
+\noindent We release the benchmark, generation pipeline, and
+evaluation code to support reproducible research on LLM
+anchoring.

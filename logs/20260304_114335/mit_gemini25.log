@@ -1,0 +1,34 @@
+2026-03-04 11:44:01,866 INFO Loading dataset...
+2026-03-04 11:44:01,916 INFO Loaded 600 items with prompt views
+2026-03-04 11:44:01,916 INFO Running B0 (API)...
+2026-03-04 11:44:02,010 INFO [B0] 30 queries to run (async, max_concurrent=20)
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/data/yiderigun/LLM_anchoring/src/mitigation_eval/cli.py", line 212, in <module>
+    main()
+  File "/data/yiderigun/LLM_anchoring/src/mitigation_eval/cli.py", line 81, in main
+    _cmd_run(args)
+  File "/data/yiderigun/LLM_anchoring/src/mitigation_eval/cli.py", line 152, in _cmd_run
+    asyncio.run(run_mitigation_api(
+  File "/data/yiderigun/LLM_env/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_anchoring/src/mitigation_eval/runner.py", line 371, in run_mitigation_api
+    answer, ok = parse_answer_int(raw, m.get("modified_prompt", ""))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_anchoring/src/mitigation_eval/runner.py", line 36, in parse_answer_int
+    text = raw_text.strip()
+           ^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'strip'
+2026-03-04 11:44:17,076 ERROR Unclosed client session
+client_session: <aiohttp.client.ClientSession object at 0x7fff84574590>
+2026-03-04 11:44:17,077 ERROR Unclosed connector
+connections: ['deque([(<aiohttp.client_proto.ResponseHandler object at 0x7fff81b004b0>, 2611256.93836316), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84573cb0>, 2611256.980823593), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84572900>, 2611257.043024991), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00360>, 2611257.120066791), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00750>, 2611257.161644551), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84572f90>, 2611257.163999423), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b01080>, 2611257.302268919), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00ad0>, 2611257.342949779), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84573e00>, 2611258.029348239), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00c90>, 2611258.207913342), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84572510>, 2611258.421875934), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00f30>, 2611258.471718), (<aiohttp.client_proto.ResponseHandler object at 0x7fff845738c0>, 2611258.508196145), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00600>, 2611258.603082757), (<aiohttp.client_proto.ResponseHandler object at 0x7fff84572cf0>, 2611258.621521785), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b009f0>, 2611258.633964336), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00830>, 2611258.924181694), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00de0>, 2611258.953493886), (<aiohttp.client_proto.ResponseHandler object at 0x7fff845734d0>, 2611259.263359966), (<aiohttp.client_proto.ResponseHandler object at 0x7fff81b00210>, 2611269.299764701)])']
+connector: <aiohttp.connector.TCPConnector object at 0x7fff845742d0>
