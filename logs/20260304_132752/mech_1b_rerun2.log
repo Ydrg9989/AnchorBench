@@ -1,631 +1,0 @@
-2026-03-04 13:39:43,213 INFO Loading model meta-llama/Llama-3.2-1B-Instruct ...
-2026-03-04 13:39:43,408 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-2026-03-04 13:39:43,554 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
-2026-03-04 13:39:43,694 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
-2026-03-04 13:39:43,845 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-1B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
-2026-03-04 13:39:43,985 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-1B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
-2026-03-04 13:39:44,762 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.2-1B-Instruct "HTTP/1.1 200 OK"
-2026-03-04 13:39:44,928 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-`torch_dtype` is deprecated! Use `dtype` instead!
-/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
-  warn(
-use_kernel_func_from_hub is not available in the installed kernels version. Please upgrade kernels to use this feature.
-2026-03-04 13:39:45,942 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/146 [00:00<?, ?it/s]Loading weights:   1%|          | 1/146 [00:00<00:00, 20460.02it/s, Materializing param=model.embed_tokens.weight]Loading weights:   1%|          | 1/146 [00:00<00:00, 8630.26it/s, Materializing param=model.embed_tokens.weight] Loading weights:   1%|▏         | 2/146 [00:00<00:04, 29.33it/s, Materializing param=model.layers.0.input_layernorm.weight]Loading weights:   1%|▏         | 2/146 [00:00<00:04, 29.19it/s, Materializing param=model.layers.0.input_layernorm.weight]Loading weights:   2%|▏         | 3/146 [00:00<00:03, 43.33it/s, Materializing param=model.layers.0.mlp.down_proj.weight]  Loading weights:   2%|▏         | 3/146 [00:00<00:03, 43.23it/s, Materializing param=model.layers.0.mlp.down_proj.weight]Loading weights:   3%|▎         | 4/146 [00:00<00:02, 51.25it/s, Materializing param=model.layers.0.mlp.gate_proj.weight]Loading weights:   3%|▎         | 4/146 [00:00<00:02, 51.10it/s, Materializing param=model.layers.0.mlp.gate_proj.weight]Loading weights:   3%|▎         | 5/146 [00:00<00:02, 52.10it/s, Materializing param=model.layers.0.mlp.up_proj.weight]  Loading weights:   3%|▎         | 5/146 [00:00<00:02, 51.77it/s, Materializing param=model.layers.0.mlp.up_proj.weight]Loading weights:   4%|▍         | 6/146 [00:00<00:02, 61.88it/s, Materializing param=model.layers.0.post_attention_layernorm.weight]Loading weights:   4%|▍         | 6/146 [00:00<00:02, 61.78it/s, Materializing param=model.layers.0.post_attention_layernorm.weight]Loading weights:   5%|▍         | 7/146 [00:00<00:01, 71.86it/s, Materializing param=model.layers.0.self_attn.k_proj.weight]        Loading weights:   5%|▍         | 7/146 [00:00<00:01, 71.75it/s, Materializing param=model.layers.0.self_attn.k_proj.weight]Loading weights:   5%|▌         | 8/146 [00:00<00:01, 81.34it/s, Materializing param=model.layers.0.self_attn.o_proj.weight]Loading weights:   5%|▌         | 8/146 [00:00<00:01, 81.23it/s, Materializing param=model.layers.0.self_attn.o_proj.weight]Loading weights:   6%|▌         | 9/146 [00:00<00:01, 90.81it/s, Materializing param=model.layers.0.self_attn.q_proj.weight]Loading weights:   6%|▌         | 9/146 [00:00<00:01, 90.69it/s, Materializing param=model.layers.0.self_attn.q_proj.weight]Loading weights:   7%|▋         | 10/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.0.self_attn.q_proj.weight]Loading weights:   7%|▋         | 10/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.0.self_attn.v_proj.weight]Loading weights:   7%|▋         | 10/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.0.self_attn.v_proj.weight]Loading weights:   8%|▊         | 11/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.input_layernorm.weight] Loading weights:   8%|▊         | 11/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.input_layernorm.weight]Loading weights:   8%|▊         | 12/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.down_proj.weight]  Loading weights:   8%|▊         | 12/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.down_proj.weight]Loading weights:   9%|▉         | 13/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.gate_proj.weight]Loading weights:   9%|▉         | 13/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.gate_proj.weight]Loading weights:  10%|▉         | 14/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.up_proj.weight]  Loading weights:  10%|▉         | 14/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.mlp.up_proj.weight]Loading weights:  10%|█         | 15/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.post_attention_layernorm.weight]Loading weights:  10%|█         | 15/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.post_attention_layernorm.weight]Loading weights:  11%|█         | 16/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.k_proj.weight]        Loading weights:  11%|█         | 16/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.k_proj.weight]Loading weights:  12%|█▏        | 17/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.o_proj.weight]Loading weights:  12%|█▏        | 17/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.o_proj.weight]Loading weights:  12%|█▏        | 18/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.q_proj.weight]Loading weights:  12%|█▏        | 18/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.q_proj.weight]Loading weights:  13%|█▎        | 19/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.v_proj.weight]Loading weights:  13%|█▎        | 19/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.1.self_attn.v_proj.weight]Loading weights:  14%|█▎        | 20/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.input_layernorm.weight] Loading weights:  14%|█▎        | 20/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.input_layernorm.weight]Loading weights:  14%|█▍        | 21/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.down_proj.weight]  Loading weights:  14%|█▍        | 21/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.down_proj.weight]Loading weights:  15%|█▌        | 22/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.gate_proj.weight]Loading weights:  15%|█▌        | 22/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.gate_proj.weight]Loading weights:  16%|█▌        | 23/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.up_proj.weight]  Loading weights:  16%|█▌        | 23/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.mlp.up_proj.weight]Loading weights:  16%|█▋        | 24/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.post_attention_layernorm.weight]Loading weights:  16%|█▋        | 24/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.post_attention_layernorm.weight]Loading weights:  17%|█▋        | 25/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.k_proj.weight]        Loading weights:  17%|█▋        | 25/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.k_proj.weight]Loading weights:  18%|█▊        | 26/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.o_proj.weight]Loading weights:  18%|█▊        | 26/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.o_proj.weight]Loading weights:  18%|█▊        | 27/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.q_proj.weight]Loading weights:  18%|█▊        | 27/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.q_proj.weight]Loading weights:  19%|█▉        | 28/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.v_proj.weight]Loading weights:  19%|█▉        | 28/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.2.self_attn.v_proj.weight]Loading weights:  20%|█▉        | 29/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.input_layernorm.weight] Loading weights:  20%|█▉        | 29/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.input_layernorm.weight]Loading weights:  21%|██        | 30/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.down_proj.weight]  Loading weights:  21%|██        | 30/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.down_proj.weight]Loading weights:  21%|██        | 31/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.gate_proj.weight]Loading weights:  21%|██        | 31/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.gate_proj.weight]Loading weights:  22%|██▏       | 32/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.up_proj.weight]  Loading weights:  22%|██▏       | 32/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.mlp.up_proj.weight]Loading weights:  23%|██▎       | 33/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.post_attention_layernorm.weight]Loading weights:  23%|██▎       | 33/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.post_attention_layernorm.weight]Loading weights:  23%|██▎       | 34/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.k_proj.weight]        Loading weights:  23%|██▎       | 34/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.k_proj.weight]Loading weights:  24%|██▍       | 35/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.o_proj.weight]Loading weights:  24%|██▍       | 35/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.o_proj.weight]Loading weights:  25%|██▍       | 36/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  25%|██▍       | 36/146 [00:00<00:01, 98.28it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  25%|██▌       | 37/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.3.self_attn.q_proj.weight]Loading weights:  25%|██▌       | 37/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.3.self_attn.v_proj.weight]Loading weights:  25%|██▌       | 37/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.3.self_attn.v_proj.weight]Loading weights:  26%|██▌       | 38/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.input_layernorm.weight] Loading weights:  26%|██▌       | 38/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.input_layernorm.weight]Loading weights:  27%|██▋       | 39/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.down_proj.weight]  Loading weights:  27%|██▋       | 39/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.down_proj.weight]Loading weights:  27%|██▋       | 40/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.gate_proj.weight]Loading weights:  27%|██▋       | 40/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.gate_proj.weight]Loading weights:  28%|██▊       | 41/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.up_proj.weight]  Loading weights:  28%|██▊       | 41/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.mlp.up_proj.weight]Loading weights:  29%|██▉       | 42/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.post_attention_layernorm.weight]Loading weights:  29%|██▉       | 42/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.post_attention_layernorm.weight]Loading weights:  29%|██▉       | 43/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.k_proj.weight]        Loading weights:  29%|██▉       | 43/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.k_proj.weight]Loading weights:  30%|███       | 44/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.o_proj.weight]Loading weights:  30%|███       | 44/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.o_proj.weight]Loading weights:  31%|███       | 45/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.q_proj.weight]Loading weights:  31%|███       | 45/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.q_proj.weight]Loading weights:  32%|███▏      | 46/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.v_proj.weight]Loading weights:  32%|███▏      | 46/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.4.self_attn.v_proj.weight]Loading weights:  32%|███▏      | 47/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.input_layernorm.weight] Loading weights:  32%|███▏      | 47/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.input_layernorm.weight]Loading weights:  33%|███▎      | 48/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.down_proj.weight]  Loading weights:  33%|███▎      | 48/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.down_proj.weight]Loading weights:  34%|███▎      | 49/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.gate_proj.weight]Loading weights:  34%|███▎      | 49/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.gate_proj.weight]Loading weights:  34%|███▍      | 50/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.up_proj.weight]  Loading weights:  34%|███▍      | 50/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.mlp.up_proj.weight]Loading weights:  35%|███▍      | 51/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.post_attention_layernorm.weight]Loading weights:  35%|███▍      | 51/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.post_attention_layernorm.weight]Loading weights:  36%|███▌      | 52/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.k_proj.weight]        Loading weights:  36%|███▌      | 52/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.k_proj.weight]Loading weights:  36%|███▋      | 53/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.o_proj.weight]Loading weights:  36%|███▋      | 53/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.o_proj.weight]Loading weights:  37%|███▋      | 54/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.q_proj.weight]Loading weights:  37%|███▋      | 54/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.q_proj.weight]Loading weights:  38%|███▊      | 55/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.v_proj.weight]Loading weights:  38%|███▊      | 55/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.5.self_attn.v_proj.weight]Loading weights:  38%|███▊      | 56/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.input_layernorm.weight] Loading weights:  38%|███▊      | 56/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.input_layernorm.weight]Loading weights:  39%|███▉      | 57/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.down_proj.weight]  Loading weights:  39%|███▉      | 57/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.down_proj.weight]Loading weights:  40%|███▉      | 58/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.gate_proj.weight]Loading weights:  40%|███▉      | 58/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.gate_proj.weight]Loading weights:  40%|████      | 59/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.up_proj.weight]  Loading weights:  40%|████      | 59/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.mlp.up_proj.weight]Loading weights:  41%|████      | 60/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.post_attention_layernorm.weight]Loading weights:  41%|████      | 60/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.post_attention_layernorm.weight]Loading weights:  42%|████▏     | 61/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.self_attn.k_proj.weight]        Loading weights:  42%|████▏     | 61/146 [00:00<00:00, 197.85it/s, Materializing param=model.layers.6.self_attn.k_proj.weight]Loading weights:  42%|████▏     | 62/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.k_proj.weight]Loading weights:  42%|████▏     | 62/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.o_proj.weight]Loading weights:  42%|████▏     | 62/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.o_proj.weight]Loading weights:  43%|████▎     | 63/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.q_proj.weight]Loading weights:  43%|████▎     | 63/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.q_proj.weight]Loading weights:  44%|████▍     | 64/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.v_proj.weight]Loading weights:  44%|████▍     | 64/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.6.self_attn.v_proj.weight]Loading weights:  45%|████▍     | 65/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.input_layernorm.weight] Loading weights:  45%|████▍     | 65/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.input_layernorm.weight]Loading weights:  45%|████▌     | 66/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.down_proj.weight]  Loading weights:  45%|████▌     | 66/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.down_proj.weight]Loading weights:  46%|████▌     | 67/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.gate_proj.weight]Loading weights:  46%|████▌     | 67/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.gate_proj.weight]Loading weights:  47%|████▋     | 68/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.up_proj.weight]  Loading weights:  47%|████▋     | 68/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.mlp.up_proj.weight]Loading weights:  47%|████▋     | 69/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.post_attention_layernorm.weight]Loading weights:  47%|████▋     | 69/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.post_attention_layernorm.weight]Loading weights:  48%|████▊     | 70/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.k_proj.weight]        Loading weights:  48%|████▊     | 70/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.k_proj.weight]Loading weights:  49%|████▊     | 71/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.o_proj.weight]Loading weights:  49%|████▊     | 71/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.o_proj.weight]Loading weights:  49%|████▉     | 72/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.q_proj.weight]Loading weights:  49%|████▉     | 72/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.q_proj.weight]Loading weights:  50%|█████     | 73/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.v_proj.weight]Loading weights:  50%|█████     | 73/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.7.self_attn.v_proj.weight]Loading weights:  51%|█████     | 74/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.input_layernorm.weight] Loading weights:  51%|█████     | 74/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.input_layernorm.weight]Loading weights:  51%|█████▏    | 75/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.down_proj.weight]  Loading weights:  51%|█████▏    | 75/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.down_proj.weight]Loading weights:  52%|█████▏    | 76/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.gate_proj.weight]Loading weights:  52%|█████▏    | 76/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.gate_proj.weight]Loading weights:  53%|█████▎    | 77/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.up_proj.weight]  Loading weights:  53%|█████▎    | 77/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.mlp.up_proj.weight]Loading weights:  53%|█████▎    | 78/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.post_attention_layernorm.weight]Loading weights:  53%|█████▎    | 78/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.post_attention_layernorm.weight]Loading weights:  54%|█████▍    | 79/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.k_proj.weight]        Loading weights:  54%|█████▍    | 79/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.k_proj.weight]Loading weights:  55%|█████▍    | 80/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.o_proj.weight]Loading weights:  55%|█████▍    | 80/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.o_proj.weight]Loading weights:  55%|█████▌    | 81/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.q_proj.weight]Loading weights:  55%|█████▌    | 81/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.q_proj.weight]Loading weights:  56%|█████▌    | 82/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.v_proj.weight]Loading weights:  56%|█████▌    | 82/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.8.self_attn.v_proj.weight]Loading weights:  57%|█████▋    | 83/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.input_layernorm.weight] Loading weights:  57%|█████▋    | 83/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.input_layernorm.weight]Loading weights:  58%|█████▊    | 84/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.down_proj.weight]  Loading weights:  58%|█████▊    | 84/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.down_proj.weight]Loading weights:  58%|█████▊    | 85/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.gate_proj.weight]Loading weights:  58%|█████▊    | 85/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.gate_proj.weight]Loading weights:  59%|█████▉    | 86/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.up_proj.weight]  Loading weights:  59%|█████▉    | 86/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.mlp.up_proj.weight]Loading weights:  60%|█████▉    | 87/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.post_attention_layernorm.weight]Loading weights:  60%|█████▉    | 87/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.post_attention_layernorm.weight]Loading weights:  60%|██████    | 88/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.self_attn.k_proj.weight]        Loading weights:  60%|██████    | 88/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.self_attn.k_proj.weight]Loading weights:  61%|██████    | 89/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.self_attn.o_proj.weight]Loading weights:  61%|██████    | 89/146 [00:00<00:00, 221.12it/s, Materializing param=model.layers.9.self_attn.o_proj.weight]Loading weights:  62%|██████▏   | 90/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.9.self_attn.o_proj.weight]Loading weights:  62%|██████▏   | 90/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.9.self_attn.q_proj.weight]Loading weights:  62%|██████▏   | 90/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.9.self_attn.q_proj.weight]Loading weights:  62%|██████▏   | 91/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.9.self_attn.v_proj.weight]Loading weights:  62%|██████▏   | 91/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.9.self_attn.v_proj.weight]Loading weights:  63%|██████▎   | 92/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.input_layernorm.weight]Loading weights:  63%|██████▎   | 92/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.input_layernorm.weight]Loading weights:  64%|██████▎   | 93/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.down_proj.weight]  Loading weights:  64%|██████▎   | 93/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.down_proj.weight]Loading weights:  64%|██████▍   | 94/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.gate_proj.weight]Loading weights:  64%|██████▍   | 94/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.gate_proj.weight]Loading weights:  65%|██████▌   | 95/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.up_proj.weight]  Loading weights:  65%|██████▌   | 95/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.mlp.up_proj.weight]Loading weights:  66%|██████▌   | 96/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.post_attention_layernorm.weight]Loading weights:  66%|██████▌   | 96/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.post_attention_layernorm.weight]Loading weights:  66%|██████▋   | 97/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.k_proj.weight]        Loading weights:  66%|██████▋   | 97/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.k_proj.weight]Loading weights:  67%|██████▋   | 98/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.o_proj.weight]Loading weights:  67%|██████▋   | 98/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.o_proj.weight]Loading weights:  68%|██████▊   | 99/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.q_proj.weight]Loading weights:  68%|██████▊   | 99/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.q_proj.weight]Loading weights:  68%|██████▊   | 100/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.v_proj.weight]Loading weights:  68%|██████▊   | 100/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.10.self_attn.v_proj.weight]Loading weights:  69%|██████▉   | 101/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.input_layernorm.weight] Loading weights:  69%|██████▉   | 101/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.input_layernorm.weight]Loading weights:  70%|██████▉   | 102/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.down_proj.weight]  Loading weights:  70%|██████▉   | 102/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.down_proj.weight]Loading weights:  71%|███████   | 103/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.gate_proj.weight]Loading weights:  71%|███████   | 103/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.gate_proj.weight]Loading weights:  71%|███████   | 104/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.up_proj.weight]  Loading weights:  71%|███████   | 104/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.mlp.up_proj.weight]Loading weights:  72%|███████▏  | 105/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.post_attention_layernorm.weight]Loading weights:  72%|███████▏  | 105/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.post_attention_layernorm.weight]Loading weights:  73%|███████▎  | 106/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.k_proj.weight]        Loading weights:  73%|███████▎  | 106/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.k_proj.weight]Loading weights:  73%|███████▎  | 107/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.o_proj.weight]Loading weights:  73%|███████▎  | 107/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.o_proj.weight]Loading weights:  74%|███████▍  | 108/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.q_proj.weight]Loading weights:  74%|███████▍  | 108/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.q_proj.weight]Loading weights:  75%|███████▍  | 109/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.v_proj.weight]Loading weights:  75%|███████▍  | 109/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.11.self_attn.v_proj.weight]Loading weights:  75%|███████▌  | 110/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.input_layernorm.weight] Loading weights:  75%|███████▌  | 110/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.input_layernorm.weight]Loading weights:  76%|███████▌  | 111/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.down_proj.weight]  Loading weights:  76%|███████▌  | 111/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.down_proj.weight]Loading weights:  77%|███████▋  | 112/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.gate_proj.weight]Loading weights:  77%|███████▋  | 112/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.gate_proj.weight]Loading weights:  77%|███████▋  | 113/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.up_proj.weight]  Loading weights:  77%|███████▋  | 113/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.mlp.up_proj.weight]Loading weights:  78%|███████▊  | 114/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.post_attention_layernorm.weight]Loading weights:  78%|███████▊  | 114/146 [00:00<00:00, 243.73it/s, Materializing param=model.layers.12.post_attention_layernorm.weight]Loading weights:  79%|███████▉  | 115/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.post_attention_layernorm.weight]Loading weights:  79%|███████▉  | 115/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.k_proj.weight]        Loading weights:  79%|███████▉  | 115/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.k_proj.weight]Loading weights:  79%|███████▉  | 116/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.o_proj.weight]Loading weights:  79%|███████▉  | 116/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.o_proj.weight]Loading weights:  80%|████████  | 117/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.q_proj.weight]Loading weights:  80%|████████  | 117/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.q_proj.weight]Loading weights:  81%|████████  | 118/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.v_proj.weight]Loading weights:  81%|████████  | 118/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.12.self_attn.v_proj.weight]Loading weights:  82%|████████▏ | 119/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.input_layernorm.weight] Loading weights:  82%|████████▏ | 119/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.input_layernorm.weight]Loading weights:  82%|████████▏ | 120/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.down_proj.weight]  Loading weights:  82%|████████▏ | 120/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.down_proj.weight]Loading weights:  83%|████████▎ | 121/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.gate_proj.weight]Loading weights:  83%|████████▎ | 121/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.gate_proj.weight]Loading weights:  84%|████████▎ | 122/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.up_proj.weight]  Loading weights:  84%|████████▎ | 122/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.mlp.up_proj.weight]Loading weights:  84%|████████▍ | 123/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.post_attention_layernorm.weight]Loading weights:  84%|████████▍ | 123/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.post_attention_layernorm.weight]Loading weights:  85%|████████▍ | 124/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.k_proj.weight]        Loading weights:  85%|████████▍ | 124/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.k_proj.weight]Loading weights:  86%|████████▌ | 125/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.o_proj.weight]Loading weights:  86%|████████▌ | 125/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.o_proj.weight]Loading weights:  86%|████████▋ | 126/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.q_proj.weight]Loading weights:  86%|████████▋ | 126/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.q_proj.weight]Loading weights:  87%|████████▋ | 127/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.v_proj.weight]Loading weights:  87%|████████▋ | 127/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.13.self_attn.v_proj.weight]Loading weights:  88%|████████▊ | 128/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.input_layernorm.weight] Loading weights:  88%|████████▊ | 128/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.input_layernorm.weight]Loading weights:  88%|████████▊ | 129/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.down_proj.weight]  Loading weights:  88%|████████▊ | 129/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.down_proj.weight]Loading weights:  89%|████████▉ | 130/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.gate_proj.weight]Loading weights:  89%|████████▉ | 130/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.gate_proj.weight]Loading weights:  90%|████████▉ | 131/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.up_proj.weight]  Loading weights:  90%|████████▉ | 131/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.mlp.up_proj.weight]Loading weights:  90%|█████████ | 132/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.post_attention_layernorm.weight]Loading weights:  90%|█████████ | 132/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.post_attention_layernorm.weight]Loading weights:  91%|█████████ | 133/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.k_proj.weight]        Loading weights:  91%|█████████ | 133/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.k_proj.weight]Loading weights:  92%|█████████▏| 134/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.o_proj.weight]Loading weights:  92%|█████████▏| 134/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.o_proj.weight]Loading weights:  92%|█████████▏| 135/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.q_proj.weight]Loading weights:  92%|█████████▏| 135/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.q_proj.weight]Loading weights:  93%|█████████▎| 136/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.v_proj.weight]Loading weights:  93%|█████████▎| 136/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.14.self_attn.v_proj.weight]Loading weights:  94%|█████████▍| 137/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.input_layernorm.weight] Loading weights:  94%|█████████▍| 137/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.input_layernorm.weight]Loading weights:  95%|█████████▍| 138/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.down_proj.weight]  Loading weights:  95%|█████████▍| 138/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.down_proj.weight]Loading weights:  95%|█████████▌| 139/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.gate_proj.weight]Loading weights:  95%|█████████▌| 139/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.gate_proj.weight]Loading weights:  96%|█████████▌| 140/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.up_proj.weight]  Loading weights:  96%|█████████▌| 140/146 [00:00<00:00, 245.43it/s, Materializing param=model.layers.15.mlp.up_proj.weight]Loading weights:  97%|█████████▋| 141/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.mlp.up_proj.weight]Loading weights:  97%|█████████▋| 141/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.post_attention_layernorm.weight]Loading weights:  97%|█████████▋| 141/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.post_attention_layernorm.weight]Loading weights:  97%|█████████▋| 142/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.k_proj.weight]        Loading weights:  97%|█████████▋| 142/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.k_proj.weight]Loading weights:  98%|█████████▊| 143/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.o_proj.weight]Loading weights:  98%|█████████▊| 143/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.o_proj.weight]Loading weights:  99%|█████████▊| 144/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.q_proj.weight]Loading weights:  99%|█████████▊| 144/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.q_proj.weight]Loading weights:  99%|█████████▉| 145/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.v_proj.weight]Loading weights:  99%|█████████▉| 145/146 [00:00<00:00, 249.53it/s, Materializing param=model.layers.15.self_attn.v_proj.weight]Loading weights: 100%|██████████| 146/146 [00:00<00:00, 249.53it/s, Materializing param=model.norm.weight]                      Loading weights: 100%|██████████| 146/146 [00:00<00:00, 249.53it/s, Materializing param=model.norm.weight]Loading weights: 100%|██████████| 146/146 [00:00<00:00, 238.83it/s, Materializing param=model.norm.weight]
-2026-03-04 13:39:47,150 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/generation_config.json "HTTP/1.1 200 OK"
-2026-03-04 13:39:47,291 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
-2026-03-04 13:39:47,295 INFO Model loaded: meta-llama/Llama-3.2-1B-Instruct on cuda:0
-2026-03-04 13:39:47,313 INFO int_vocab: 101/101 single-token, 0 multi-token
-2026-03-04 13:39:47,357 INFO Loaded 200 items (suites: {'external': 39, 'history': 40, 'icl': 43, 'rag': 40, 'tool': 38})
-2026-03-04 13:39:47,361 INFO [imprint 1/200] EXT-pricing_wtp-001
-2026-03-04 13:39:47,684 INFO [imprint 2/200] EXT-pricing_wtp-018
-2026-03-04 13:39:47,719 INFO [imprint 3/200] EXT-pricing_wtp-016
-2026-03-04 13:39:47,755 INFO [imprint 4/200] EXT-pricing_wtp-002
-2026-03-04 13:39:47,790 INFO [imprint 5/200] EXT-pricing_wtp-009
-2026-03-04 13:39:47,825 INFO [imprint 6/200] EXT-pricing_wtp-006
-2026-03-04 13:39:47,860 INFO [imprint 7/200] EXT-operations_time-020
-2026-03-04 13:39:47,895 INFO [imprint 8/200] EXT-operations_time-017
-2026-03-04 13:39:47,930 INFO [imprint 9/200] EXT-operations_time-016
-2026-03-04 13:39:47,965 INFO [imprint 10/200] EXT-operations_time-006
-2026-03-04 13:39:48,000 INFO [imprint 11/200] EXT-operations_time-005
-2026-03-04 13:39:48,036 INFO [imprint 12/200] EXT-operations_time-013
-2026-03-04 13:39:48,071 INFO [imprint 13/200] EXT-transportation_logistics-011
-2026-03-04 13:39:48,106 INFO [imprint 14/200] EXT-transportation_logistics-008
-2026-03-04 13:39:48,141 INFO [imprint 15/200] EXT-transportation_logistics-001
-2026-03-04 13:39:48,176 INFO [imprint 16/200] EXT-transportation_logistics-003
-2026-03-04 13:39:48,211 INFO [imprint 17/200] EXT-transportation_logistics-006
-2026-03-04 13:39:48,246 INFO [imprint 18/200] EXT-transportation_logistics-019
-2026-03-04 13:39:48,281 INFO [imprint 19/200] EXT-resource_consumption-001
-2026-03-04 13:39:48,316 INFO [imprint 20/200] EXT-resource_consumption-019
-2026-03-04 13:39:48,351 INFO [imprint 21/200] EXT-resource_consumption-007
-2026-03-04 13:39:48,386 INFO [imprint 22/200] EXT-resource_consumption-009
-2026-03-04 13:39:48,420 INFO [imprint 23/200] EXT-resource_consumption-018
-2026-03-04 13:39:48,456 INFO [imprint 24/200] EXT-resource_consumption-012
-2026-03-04 13:39:48,491 INFO [imprint 25/200] EXT-market_demographics-006
-2026-03-04 13:39:48,526 INFO [imprint 26/200] EXT-market_demographics-003
-2026-03-04 13:39:48,561 INFO [imprint 27/200] EXT-market_demographics-011
-2026-03-04 13:39:48,596 INFO [imprint 28/200] EXT-market_demographics-020
-2026-03-04 13:39:48,631 INFO [imprint 29/200] EXT-market_demographics-001
-2026-03-04 13:39:48,666 INFO [imprint 30/200] EXT-market_demographics-013
-2026-03-04 13:39:48,702 INFO [imprint 31/200] EXT-legal_policy-004
-2026-03-04 13:39:48,737 INFO [imprint 32/200] EXT-legal_policy-002
-2026-03-04 13:39:48,772 INFO [imprint 33/200] EXT-legal_policy-005
-2026-03-04 13:39:48,807 INFO [imprint 34/200] EXT-legal_policy-006
-2026-03-04 13:39:48,842 INFO [imprint 35/200] EXT-legal_policy-016
-2026-03-04 13:39:48,877 INFO [imprint 36/200] EXT-legal_policy-017
-2026-03-04 13:39:48,912 INFO [imprint 37/200] ICL-pricing_wtp-014
-2026-03-04 13:39:48,948 INFO [imprint 38/200] ICL-pricing_wtp-011
-2026-03-04 13:39:48,984 INFO [imprint 39/200] ICL-pricing_wtp-013
-2026-03-04 13:39:49,019 INFO [imprint 40/200] ICL-pricing_wtp-017
-2026-03-04 13:39:49,055 INFO [imprint 41/200] ICL-pricing_wtp-010
-2026-03-04 13:39:49,090 INFO [imprint 42/200] ICL-pricing_wtp-006
-2026-03-04 13:39:49,126 INFO [imprint 43/200] ICL-operations_time-018
-2026-03-04 13:39:49,161 INFO [imprint 44/200] ICL-operations_time-019
-2026-03-04 13:39:49,197 INFO [imprint 45/200] ICL-operations_time-002
-2026-03-04 13:39:49,232 INFO [imprint 46/200] ICL-operations_time-006
-2026-03-04 13:39:49,267 INFO [imprint 47/200] ICL-operations_time-004
-2026-03-04 13:39:49,303 INFO [imprint 48/200] ICL-operations_time-016
-2026-03-04 13:39:49,338 INFO [imprint 49/200] ICL-transportation_logistics-018
-2026-03-04 13:39:49,374 INFO [imprint 50/200] ICL-transportation_logistics-012
-2026-03-04 13:39:49,409 INFO [imprint 51/200] ICL-transportation_logistics-008
-2026-03-04 13:39:49,445 INFO [imprint 52/200] ICL-transportation_logistics-014
-2026-03-04 13:39:49,480 INFO [imprint 53/200] ICL-transportation_logistics-001
-2026-03-04 13:39:49,516 INFO [imprint 54/200] ICL-transportation_logistics-010
-2026-03-04 13:39:49,555 INFO [imprint 55/200] ICL-resource_consumption-005
-2026-03-04 13:39:49,590 INFO [imprint 56/200] ICL-resource_consumption-010
-2026-03-04 13:39:49,626 INFO [imprint 57/200] ICL-resource_consumption-002
-2026-03-04 13:39:49,661 INFO [imprint 58/200] ICL-resource_consumption-016
-2026-03-04 13:39:49,697 INFO [imprint 59/200] ICL-resource_consumption-008
-2026-03-04 13:39:49,732 INFO [imprint 60/200] ICL-resource_consumption-006
-2026-03-04 13:39:49,768 INFO [imprint 61/200] ICL-market_demographics-003
-2026-03-04 13:39:49,803 INFO [imprint 62/200] ICL-market_demographics-007
-2026-03-04 13:39:49,838 INFO [imprint 63/200] ICL-market_demographics-017
-2026-03-04 13:39:49,874 INFO [imprint 64/200] ICL-market_demographics-005
-2026-03-04 13:39:49,909 INFO [imprint 65/200] ICL-market_demographics-018
-2026-03-04 13:39:49,944 INFO [imprint 66/200] ICL-market_demographics-002
-2026-03-04 13:39:49,980 INFO [imprint 67/200] ICL-legal_policy-015
-2026-03-04 13:39:50,015 INFO [imprint 68/200] ICL-legal_policy-004
-2026-03-04 13:39:50,051 INFO [imprint 69/200] ICL-legal_policy-010
-2026-03-04 13:39:50,086 INFO [imprint 70/200] ICL-legal_policy-019
-2026-03-04 13:39:50,122 INFO [imprint 71/200] ICL-legal_policy-009
-2026-03-04 13:39:50,157 INFO [imprint 72/200] ICL-legal_policy-012
-2026-03-04 13:39:50,192 INFO [imprint 73/200] HIST-pricing_wtp-010
-2026-03-04 13:39:50,228 INFO [imprint 74/200] HIST-pricing_wtp-009
-2026-03-04 13:39:50,263 INFO [imprint 75/200] HIST-pricing_wtp-007
-2026-03-04 13:39:50,298 INFO [imprint 76/200] HIST-pricing_wtp-015
-2026-03-04 13:39:50,333 INFO [imprint 77/200] HIST-pricing_wtp-014
-2026-03-04 13:39:50,368 INFO [imprint 78/200] HIST-pricing_wtp-003
-2026-03-04 13:39:50,403 INFO [imprint 79/200] HIST-operations_time-006
-2026-03-04 13:39:50,442 INFO [imprint 80/200] HIST-operations_time-012
-2026-03-04 13:39:50,477 INFO [imprint 81/200] HIST-operations_time-005
-2026-03-04 13:39:50,513 INFO [imprint 82/200] HIST-operations_time-020
-2026-03-04 13:39:50,548 INFO [imprint 83/200] HIST-operations_time-010
-2026-03-04 13:39:50,583 INFO [imprint 84/200] HIST-operations_time-002
-2026-03-04 13:39:50,618 INFO [imprint 85/200] HIST-transportation_logistics-015
-2026-03-04 13:39:50,653 INFO [imprint 86/200] HIST-transportation_logistics-017
-2026-03-04 13:39:50,688 INFO [imprint 87/200] HIST-transportation_logistics-020
-2026-03-04 13:39:50,724 INFO [imprint 88/200] HIST-transportation_logistics-014
-2026-03-04 13:39:50,759 INFO [imprint 89/200] HIST-transportation_logistics-005
-2026-03-04 13:39:50,794 INFO [imprint 90/200] HIST-transportation_logistics-013
-2026-03-04 13:39:50,829 INFO [imprint 91/200] HIST-resource_consumption-007
-2026-03-04 13:39:50,864 INFO [imprint 92/200] HIST-resource_consumption-012
-2026-03-04 13:39:50,899 INFO [imprint 93/200] HIST-resource_consumption-005
-2026-03-04 13:39:50,934 INFO [imprint 94/200] HIST-resource_consumption-002
-2026-03-04 13:39:50,969 INFO [imprint 95/200] HIST-resource_consumption-019
-2026-03-04 13:39:51,004 INFO [imprint 96/200] HIST-resource_consumption-010
-2026-03-04 13:39:51,040 INFO [imprint 97/200] HIST-market_demographics-015
-2026-03-04 13:39:51,075 INFO [imprint 98/200] HIST-market_demographics-008
-2026-03-04 13:39:51,110 INFO [imprint 99/200] HIST-market_demographics-013
-2026-03-04 13:39:51,145 INFO [imprint 100/200] HIST-market_demographics-007
-2026-03-04 13:39:51,180 INFO [imprint 101/200] HIST-market_demographics-012
-2026-03-04 13:39:51,215 INFO [imprint 102/200] HIST-market_demographics-005
-2026-03-04 13:39:51,250 INFO [imprint 103/200] HIST-legal_policy-008
-2026-03-04 13:39:51,285 INFO [imprint 104/200] HIST-legal_policy-004
-2026-03-04 13:39:51,320 INFO [imprint 105/200] HIST-legal_policy-005
-2026-03-04 13:39:51,359 INFO [imprint 106/200] HIST-legal_policy-019
-2026-03-04 13:39:51,394 INFO [imprint 107/200] HIST-legal_policy-002
-2026-03-04 13:39:51,429 INFO [imprint 108/200] HIST-legal_policy-013
-2026-03-04 13:39:51,464 INFO [imprint 109/200] RAG-pricing_wtp-009
-2026-03-04 13:39:51,501 INFO [imprint 110/200] RAG-pricing_wtp-008
-2026-03-04 13:39:51,537 INFO [imprint 111/200] RAG-pricing_wtp-002
-2026-03-04 13:39:51,573 INFO [imprint 112/200] RAG-pricing_wtp-007
-2026-03-04 13:39:51,609 INFO [imprint 113/200] RAG-pricing_wtp-010
-2026-03-04 13:39:51,644 INFO [imprint 114/200] RAG-pricing_wtp-011
-2026-03-04 13:39:51,680 INFO [imprint 115/200] RAG-operations_time-018
-2026-03-04 13:39:51,716 INFO [imprint 116/200] RAG-operations_time-005
-2026-03-04 13:39:51,752 INFO [imprint 117/200] RAG-operations_time-004
-2026-03-04 13:39:51,787 INFO [imprint 118/200] RAG-operations_time-011
-2026-03-04 13:39:51,823 INFO [imprint 119/200] RAG-operations_time-007
-2026-03-04 13:39:51,859 INFO [imprint 120/200] RAG-operations_time-014
-2026-03-04 13:39:51,894 INFO [imprint 121/200] RAG-transportation_logistics-014
-2026-03-04 13:39:51,930 INFO [imprint 122/200] RAG-transportation_logistics-015
-2026-03-04 13:39:51,966 INFO [imprint 123/200] RAG-transportation_logistics-016
-2026-03-04 13:39:52,002 INFO [imprint 124/200] RAG-transportation_logistics-018
-2026-03-04 13:39:52,037 INFO [imprint 125/200] RAG-transportation_logistics-004
-2026-03-04 13:39:52,073 INFO [imprint 126/200] RAG-transportation_logistics-005
-2026-03-04 13:39:52,109 INFO [imprint 127/200] RAG-resource_consumption-005
-2026-03-04 13:39:52,145 INFO [imprint 128/200] RAG-resource_consumption-020
-2026-03-04 13:39:52,181 INFO [imprint 129/200] RAG-resource_consumption-009
-2026-03-04 13:39:52,216 INFO [imprint 130/200] RAG-resource_consumption-018
-2026-03-04 13:39:52,252 INFO [imprint 131/200] RAG-resource_consumption-019
-2026-03-04 13:39:52,287 INFO [imprint 132/200] RAG-resource_consumption-006
-2026-03-04 13:39:52,324 INFO [imprint 133/200] RAG-market_demographics-003
-2026-03-04 13:39:52,360 INFO [imprint 134/200] RAG-market_demographics-014
-2026-03-04 13:39:52,395 INFO [imprint 135/200] RAG-market_demographics-002
-2026-03-04 13:39:52,431 INFO [imprint 136/200] RAG-market_demographics-020
-2026-03-04 13:39:52,466 INFO [imprint 137/200] RAG-market_demographics-009
-2026-03-04 13:39:52,501 INFO [imprint 138/200] RAG-market_demographics-016
-2026-03-04 13:39:52,537 INFO [imprint 139/200] RAG-legal_policy-004
-2026-03-04 13:39:52,572 INFO [imprint 140/200] RAG-legal_policy-015
-2026-03-04 13:39:52,608 INFO [imprint 141/200] RAG-legal_policy-014
-2026-03-04 13:39:52,644 INFO [imprint 142/200] RAG-legal_policy-006
-2026-03-04 13:39:52,679 INFO [imprint 143/200] RAG-legal_policy-009
-2026-03-04 13:39:52,714 INFO [imprint 144/200] RAG-legal_policy-011
-2026-03-04 13:39:52,750 INFO [imprint 145/200] TOOL-pricing_wtp-019
-2026-03-04 13:39:52,784 INFO [imprint 146/200] TOOL-pricing_wtp-016
-2026-03-04 13:39:52,819 INFO [imprint 147/200] TOOL-pricing_wtp-004
-2026-03-04 13:39:52,853 INFO [imprint 148/200] TOOL-pricing_wtp-003
-2026-03-04 13:39:52,888 INFO [imprint 149/200] TOOL-pricing_wtp-013
-2026-03-04 13:39:52,922 INFO [imprint 150/200] TOOL-pricing_wtp-007
-2026-03-04 13:39:52,957 INFO [imprint 151/200] TOOL-operations_time-006
-2026-03-04 13:39:52,992 INFO [imprint 152/200] TOOL-operations_time-008
-2026-03-04 13:39:53,026 INFO [imprint 153/200] TOOL-operations_time-002
-2026-03-04 13:39:53,061 INFO [imprint 154/200] TOOL-operations_time-003
-2026-03-04 13:39:53,095 INFO [imprint 155/200] TOOL-operations_time-009
-2026-03-04 13:39:53,130 INFO [imprint 156/200] TOOL-operations_time-017
-2026-03-04 13:39:53,167 INFO [imprint 157/200] TOOL-transportation_logistics-011
-2026-03-04 13:39:53,202 INFO [imprint 158/200] TOOL-transportation_logistics-006
-2026-03-04 13:39:53,237 INFO [imprint 159/200] TOOL-transportation_logistics-015
-2026-03-04 13:39:53,272 INFO [imprint 160/200] TOOL-transportation_logistics-014
-2026-03-04 13:39:53,307 INFO [imprint 161/200] TOOL-transportation_logistics-013
-2026-03-04 13:39:53,342 INFO [imprint 162/200] TOOL-transportation_logistics-018
-2026-03-04 13:39:53,377 INFO [imprint 163/200] TOOL-resource_consumption-006
-2026-03-04 13:39:53,413 INFO [imprint 164/200] TOOL-resource_consumption-007
-2026-03-04 13:39:53,448 INFO [imprint 165/200] TOOL-resource_consumption-020
-2026-03-04 13:39:53,483 INFO [imprint 166/200] TOOL-resource_consumption-009
-2026-03-04 13:39:53,518 INFO [imprint 167/200] TOOL-resource_consumption-004
-2026-03-04 13:39:53,552 INFO [imprint 168/200] TOOL-resource_consumption-015
-2026-03-04 13:39:53,587 INFO [imprint 169/200] TOOL-market_demographics-013
-2026-03-04 13:39:53,622 INFO [imprint 170/200] TOOL-market_demographics-006
-2026-03-04 13:39:53,657 INFO [imprint 171/200] TOOL-market_demographics-005
-2026-03-04 13:39:53,692 INFO [imprint 172/200] TOOL-market_demographics-016
-2026-03-04 13:39:53,727 INFO [imprint 173/200] TOOL-market_demographics-009
-2026-03-04 13:39:53,762 INFO [imprint 174/200] TOOL-market_demographics-004
-2026-03-04 13:39:53,797 INFO [imprint 175/200] TOOL-legal_policy-015
-2026-03-04 13:39:53,832 INFO [imprint 176/200] TOOL-legal_policy-020
-2026-03-04 13:39:53,867 INFO [imprint 177/200] TOOL-legal_policy-014
-2026-03-04 13:39:53,901 INFO [imprint 178/200] TOOL-legal_policy-017
-2026-03-04 13:39:53,936 INFO [imprint 179/200] TOOL-legal_policy-016
-2026-03-04 13:39:53,971 INFO [imprint 180/200] TOOL-legal_policy-006
-2026-03-04 13:39:54,006 INFO [imprint 181/200] HIST-operations_time-018
-2026-03-04 13:39:54,042 INFO [imprint 182/200] ICL-transportation_logistics-005
-2026-03-04 13:39:54,077 INFO [imprint 183/200] EXT-operations_time-002
-2026-03-04 13:39:54,112 INFO [imprint 184/200] RAG-operations_time-006
-2026-03-04 13:39:54,148 INFO [imprint 185/200] RAG-transportation_logistics-012
-2026-03-04 13:39:54,184 INFO [imprint 186/200] ICL-resource_consumption-009
-2026-03-04 13:39:54,219 INFO [imprint 187/200] ICL-transportation_logistics-003
-2026-03-04 13:39:54,254 INFO [imprint 188/200] TOOL-operations_time-012
-2026-03-04 13:39:54,289 INFO [imprint 189/200] EXT-legal_policy-001
-2026-03-04 13:39:54,324 INFO [imprint 190/200] RAG-pricing_wtp-012
-2026-03-04 13:39:54,360 INFO [imprint 191/200] EXT-market_demographics-007
-2026-03-04 13:39:54,395 INFO [imprint 192/200] ICL-pricing_wtp-019
-2026-03-04 13:39:54,430 INFO [imprint 193/200] ICL-legal_policy-006
-2026-03-04 13:39:54,466 INFO [imprint 194/200] HIST-operations_time-009
-2026-03-04 13:39:54,501 INFO [imprint 195/200] ICL-resource_consumption-014
-2026-03-04 13:39:54,537 INFO [imprint 196/200] HIST-legal_policy-006
-2026-03-04 13:39:54,572 INFO [imprint 197/200] TOOL-legal_policy-001
-2026-03-04 13:39:54,607 INFO [imprint 198/200] RAG-pricing_wtp-014
-2026-03-04 13:39:54,642 INFO [imprint 199/200] HIST-resource_consumption-009
-2026-03-04 13:39:54,677 INFO [imprint 200/200] ICL-transportation_logistics-013
-2026-03-04 13:39:54,713 INFO Imprint metrics -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/imprint_metrics.csv
-2026-03-04 13:39:54,713 INFO Imprint done in 7.4s
-2026-03-04 13:39:54,714 INFO [logit_lens 1/200] EXT-pricing_wtp-001
-2026-03-04 13:39:54,766 INFO [logit_lens 2/200] EXT-pricing_wtp-018
-2026-03-04 13:39:54,818 INFO [logit_lens 3/200] EXT-pricing_wtp-016
-2026-03-04 13:39:54,869 INFO [logit_lens 4/200] EXT-pricing_wtp-002
-2026-03-04 13:39:54,908 INFO [logit_lens 5/200] EXT-pricing_wtp-009
-2026-03-04 13:39:54,943 INFO [logit_lens 6/200] EXT-pricing_wtp-006
-2026-03-04 13:39:54,978 INFO [logit_lens 7/200] EXT-operations_time-020
-2026-03-04 13:39:55,013 INFO [logit_lens 8/200] EXT-operations_time-017
-2026-03-04 13:39:55,048 INFO [logit_lens 9/200] EXT-operations_time-016
-2026-03-04 13:39:55,083 INFO [logit_lens 10/200] EXT-operations_time-006
-2026-03-04 13:39:55,118 INFO [logit_lens 11/200] EXT-operations_time-005
-2026-03-04 13:39:55,153 INFO [logit_lens 12/200] EXT-operations_time-013
-2026-03-04 13:39:55,187 INFO [logit_lens 13/200] EXT-transportation_logistics-011
-2026-03-04 13:39:55,222 INFO [logit_lens 14/200] EXT-transportation_logistics-008
-2026-03-04 13:39:55,257 INFO [logit_lens 15/200] EXT-transportation_logistics-001
-2026-03-04 13:39:55,292 INFO [logit_lens 16/200] EXT-transportation_logistics-003
-2026-03-04 13:39:55,327 INFO [logit_lens 17/200] EXT-transportation_logistics-006
-2026-03-04 13:39:55,362 INFO [logit_lens 18/200] EXT-transportation_logistics-019
-2026-03-04 13:39:55,397 INFO [logit_lens 19/200] EXT-resource_consumption-001
-2026-03-04 13:39:55,432 INFO [logit_lens 20/200] EXT-resource_consumption-019
-2026-03-04 13:39:55,467 INFO [logit_lens 21/200] EXT-resource_consumption-007
-2026-03-04 13:39:55,502 INFO [logit_lens 22/200] EXT-resource_consumption-009
-2026-03-04 13:39:55,537 INFO [logit_lens 23/200] EXT-resource_consumption-018
-2026-03-04 13:39:55,571 INFO [logit_lens 24/200] EXT-resource_consumption-012
-2026-03-04 13:39:55,606 INFO [logit_lens 25/200] EXT-market_demographics-006
-2026-03-04 13:39:55,641 INFO [logit_lens 26/200] EXT-market_demographics-003
-2026-03-04 13:39:55,676 INFO [logit_lens 27/200] EXT-market_demographics-011
-2026-03-04 13:39:55,711 INFO [logit_lens 28/200] EXT-market_demographics-020
-2026-03-04 13:39:55,747 INFO [logit_lens 29/200] EXT-market_demographics-001
-2026-03-04 13:39:55,782 INFO [logit_lens 30/200] EXT-market_demographics-013
-2026-03-04 13:39:55,817 INFO [logit_lens 31/200] EXT-legal_policy-004
-2026-03-04 13:39:55,851 INFO [logit_lens 32/200] EXT-legal_policy-002
-2026-03-04 13:39:55,886 INFO [logit_lens 33/200] EXT-legal_policy-005
-2026-03-04 13:39:55,921 INFO [logit_lens 34/200] EXT-legal_policy-006
-2026-03-04 13:39:55,957 INFO [logit_lens 35/200] EXT-legal_policy-016
-2026-03-04 13:39:55,992 INFO [logit_lens 36/200] EXT-legal_policy-017
-2026-03-04 13:39:56,027 INFO [logit_lens 37/200] ICL-pricing_wtp-014
-2026-03-04 13:39:56,336 INFO [logit_lens 38/200] ICL-pricing_wtp-011
-2026-03-04 13:39:56,372 INFO [logit_lens 39/200] ICL-pricing_wtp-013
-2026-03-04 13:39:56,406 INFO [logit_lens 40/200] ICL-pricing_wtp-017
-2026-03-04 13:39:56,441 INFO [logit_lens 41/200] ICL-pricing_wtp-010
-2026-03-04 13:39:56,476 INFO [logit_lens 42/200] ICL-pricing_wtp-006
-2026-03-04 13:39:56,511 INFO [logit_lens 43/200] ICL-operations_time-018
-2026-03-04 13:39:56,546 INFO [logit_lens 44/200] ICL-operations_time-019
-2026-03-04 13:39:56,581 INFO [logit_lens 45/200] ICL-operations_time-002
-2026-03-04 13:39:56,615 INFO [logit_lens 46/200] ICL-operations_time-006
-2026-03-04 13:39:56,650 INFO [logit_lens 47/200] ICL-operations_time-004
-2026-03-04 13:39:56,685 INFO [logit_lens 48/200] ICL-operations_time-016
-2026-03-04 13:39:56,720 INFO [logit_lens 49/200] ICL-transportation_logistics-018
-2026-03-04 13:39:56,755 INFO [logit_lens 50/200] ICL-transportation_logistics-012
-2026-03-04 13:39:56,790 INFO [logit_lens 51/200] ICL-transportation_logistics-008
-2026-03-04 13:39:56,825 INFO [logit_lens 52/200] ICL-transportation_logistics-014
-2026-03-04 13:39:56,859 INFO [logit_lens 53/200] ICL-transportation_logistics-001
-2026-03-04 13:39:56,894 INFO [logit_lens 54/200] ICL-transportation_logistics-010
-2026-03-04 13:39:56,929 INFO [logit_lens 55/200] ICL-resource_consumption-005
-2026-03-04 13:39:56,964 INFO [logit_lens 56/200] ICL-resource_consumption-010
-2026-03-04 13:39:56,999 INFO [logit_lens 57/200] ICL-resource_consumption-002
-2026-03-04 13:39:57,034 INFO [logit_lens 58/200] ICL-resource_consumption-016
-2026-03-04 13:39:57,069 INFO [logit_lens 59/200] ICL-resource_consumption-008
-2026-03-04 13:39:57,103 INFO [logit_lens 60/200] ICL-resource_consumption-006
-2026-03-04 13:39:57,138 INFO [logit_lens 61/200] ICL-market_demographics-003
-2026-03-04 13:39:57,174 INFO [logit_lens 62/200] ICL-market_demographics-007
-2026-03-04 13:39:57,209 INFO [logit_lens 63/200] ICL-market_demographics-017
-2026-03-04 13:39:57,244 INFO [logit_lens 64/200] ICL-market_demographics-005
-2026-03-04 13:39:57,279 INFO [logit_lens 65/200] ICL-market_demographics-018
-2026-03-04 13:39:57,313 INFO [logit_lens 66/200] ICL-market_demographics-002
-2026-03-04 13:39:57,348 INFO [logit_lens 67/200] ICL-legal_policy-015
-2026-03-04 13:39:57,383 INFO [logit_lens 68/200] ICL-legal_policy-004
-2026-03-04 13:39:57,418 INFO [logit_lens 69/200] ICL-legal_policy-010
-2026-03-04 13:39:57,453 INFO [logit_lens 70/200] ICL-legal_policy-019
-2026-03-04 13:39:57,487 INFO [logit_lens 71/200] ICL-legal_policy-009
-2026-03-04 13:39:57,522 INFO [logit_lens 72/200] ICL-legal_policy-012
-2026-03-04 13:39:57,557 INFO [logit_lens 73/200] HIST-pricing_wtp-010
-2026-03-04 13:39:57,592 INFO [logit_lens 74/200] HIST-pricing_wtp-009
-2026-03-04 13:39:57,626 INFO [logit_lens 75/200] HIST-pricing_wtp-007
-2026-03-04 13:39:57,661 INFO [logit_lens 76/200] HIST-pricing_wtp-015
-2026-03-04 13:39:57,696 INFO [logit_lens 77/200] HIST-pricing_wtp-014
-2026-03-04 13:39:57,731 INFO [logit_lens 78/200] HIST-pricing_wtp-003
-2026-03-04 13:39:57,766 INFO [logit_lens 79/200] HIST-operations_time-006
-2026-03-04 13:39:57,800 INFO [logit_lens 80/200] HIST-operations_time-012
-2026-03-04 13:39:57,835 INFO [logit_lens 81/200] HIST-operations_time-005
-2026-03-04 13:39:57,870 INFO [logit_lens 82/200] HIST-operations_time-020
-2026-03-04 13:39:57,905 INFO [logit_lens 83/200] HIST-operations_time-010
-2026-03-04 13:39:57,939 INFO [logit_lens 84/200] HIST-operations_time-002
-2026-03-04 13:39:57,975 INFO [logit_lens 85/200] HIST-transportation_logistics-015
-2026-03-04 13:39:58,010 INFO [logit_lens 86/200] HIST-transportation_logistics-017
-2026-03-04 13:39:58,044 INFO [logit_lens 87/200] HIST-transportation_logistics-020
-2026-03-04 13:39:58,079 INFO [logit_lens 88/200] HIST-transportation_logistics-014
-2026-03-04 13:39:58,114 INFO [logit_lens 89/200] HIST-transportation_logistics-005
-2026-03-04 13:39:58,149 INFO [logit_lens 90/200] HIST-transportation_logistics-013
-2026-03-04 13:39:58,183 INFO [logit_lens 91/200] HIST-resource_consumption-007
-2026-03-04 13:39:58,218 INFO [logit_lens 92/200] HIST-resource_consumption-012
-2026-03-04 13:39:58,253 INFO [logit_lens 93/200] HIST-resource_consumption-005
-2026-03-04 13:39:58,287 INFO [logit_lens 94/200] HIST-resource_consumption-002
-2026-03-04 13:39:58,322 INFO [logit_lens 95/200] HIST-resource_consumption-019
-2026-03-04 13:39:58,357 INFO [logit_lens 96/200] HIST-resource_consumption-010
-2026-03-04 13:39:58,391 INFO [logit_lens 97/200] HIST-market_demographics-015
-2026-03-04 13:39:58,426 INFO [logit_lens 98/200] HIST-market_demographics-008
-2026-03-04 13:39:58,461 INFO [logit_lens 99/200] HIST-market_demographics-013
-2026-03-04 13:39:58,495 INFO [logit_lens 100/200] HIST-market_demographics-007
-2026-03-04 13:39:58,530 INFO [logit_lens 101/200] HIST-market_demographics-012
-2026-03-04 13:39:58,565 INFO [logit_lens 102/200] HIST-market_demographics-005
-2026-03-04 13:39:58,600 INFO [logit_lens 103/200] HIST-legal_policy-008
-2026-03-04 13:39:58,634 INFO [logit_lens 104/200] HIST-legal_policy-004
-2026-03-04 13:39:58,669 INFO [logit_lens 105/200] HIST-legal_policy-005
-2026-03-04 13:39:58,704 INFO [logit_lens 106/200] HIST-legal_policy-019
-2026-03-04 13:39:58,738 INFO [logit_lens 107/200] HIST-legal_policy-002
-2026-03-04 13:39:58,773 INFO [logit_lens 108/200] HIST-legal_policy-013
-2026-03-04 13:39:58,808 INFO [logit_lens 109/200] RAG-pricing_wtp-009
-2026-03-04 13:39:58,843 INFO [logit_lens 110/200] RAG-pricing_wtp-008
-2026-03-04 13:39:58,878 INFO [logit_lens 111/200] RAG-pricing_wtp-002
-2026-03-04 13:39:58,913 INFO [logit_lens 112/200] RAG-pricing_wtp-007
-2026-03-04 13:39:58,948 INFO [logit_lens 113/200] RAG-pricing_wtp-010
-2026-03-04 13:39:58,984 INFO [logit_lens 114/200] RAG-pricing_wtp-011
-2026-03-04 13:39:59,019 INFO [logit_lens 115/200] RAG-operations_time-018
-2026-03-04 13:39:59,054 INFO [logit_lens 116/200] RAG-operations_time-005
-2026-03-04 13:39:59,089 INFO [logit_lens 117/200] RAG-operations_time-004
-2026-03-04 13:39:59,124 INFO [logit_lens 118/200] RAG-operations_time-011
-2026-03-04 13:39:59,159 INFO [logit_lens 119/200] RAG-operations_time-007
-2026-03-04 13:39:59,194 INFO [logit_lens 120/200] RAG-operations_time-014
-2026-03-04 13:39:59,229 INFO [logit_lens 121/200] RAG-transportation_logistics-014
-2026-03-04 13:39:59,264 INFO [logit_lens 122/200] RAG-transportation_logistics-015
-2026-03-04 13:39:59,299 INFO [logit_lens 123/200] RAG-transportation_logistics-016
-2026-03-04 13:39:59,334 INFO [logit_lens 124/200] RAG-transportation_logistics-018
-2026-03-04 13:39:59,369 INFO [logit_lens 125/200] RAG-transportation_logistics-004
-2026-03-04 13:39:59,404 INFO [logit_lens 126/200] RAG-transportation_logistics-005
-2026-03-04 13:39:59,439 INFO [logit_lens 127/200] RAG-resource_consumption-005
-2026-03-04 13:39:59,474 INFO [logit_lens 128/200] RAG-resource_consumption-020
-2026-03-04 13:39:59,509 INFO [logit_lens 129/200] RAG-resource_consumption-009
-2026-03-04 13:39:59,545 INFO [logit_lens 130/200] RAG-resource_consumption-018
-2026-03-04 13:39:59,580 INFO [logit_lens 131/200] RAG-resource_consumption-019
-2026-03-04 13:39:59,615 INFO [logit_lens 132/200] RAG-resource_consumption-006
-2026-03-04 13:39:59,651 INFO [logit_lens 133/200] RAG-market_demographics-003
-2026-03-04 13:39:59,686 INFO [logit_lens 134/200] RAG-market_demographics-014
-2026-03-04 13:39:59,721 INFO [logit_lens 135/200] RAG-market_demographics-002
-2026-03-04 13:39:59,757 INFO [logit_lens 136/200] RAG-market_demographics-020
-2026-03-04 13:39:59,792 INFO [logit_lens 137/200] RAG-market_demographics-009
-2026-03-04 13:39:59,827 INFO [logit_lens 138/200] RAG-market_demographics-016
-2026-03-04 13:39:59,863 INFO [logit_lens 139/200] RAG-legal_policy-004
-2026-03-04 13:39:59,898 INFO [logit_lens 140/200] RAG-legal_policy-015
-2026-03-04 13:39:59,933 INFO [logit_lens 141/200] RAG-legal_policy-014
-2026-03-04 13:39:59,969 INFO [logit_lens 142/200] RAG-legal_policy-006
-2026-03-04 13:40:00,004 INFO [logit_lens 143/200] RAG-legal_policy-009
-2026-03-04 13:40:00,039 INFO [logit_lens 144/200] RAG-legal_policy-011
-2026-03-04 13:40:00,074 INFO [logit_lens 145/200] TOOL-pricing_wtp-019
-2026-03-04 13:40:00,109 INFO [logit_lens 146/200] TOOL-pricing_wtp-016
-2026-03-04 13:40:00,144 INFO [logit_lens 147/200] TOOL-pricing_wtp-004
-2026-03-04 13:40:00,179 INFO [logit_lens 148/200] TOOL-pricing_wtp-003
-2026-03-04 13:40:00,213 INFO [logit_lens 149/200] TOOL-pricing_wtp-013
-2026-03-04 13:40:00,248 INFO [logit_lens 150/200] TOOL-pricing_wtp-007
-2026-03-04 13:40:00,283 INFO [logit_lens 151/200] TOOL-operations_time-006
-2026-03-04 13:40:00,318 INFO [logit_lens 152/200] TOOL-operations_time-008
-2026-03-04 13:40:00,353 INFO [logit_lens 153/200] TOOL-operations_time-002
-2026-03-04 13:40:00,388 INFO [logit_lens 154/200] TOOL-operations_time-003
-2026-03-04 13:40:00,422 INFO [logit_lens 155/200] TOOL-operations_time-009
-2026-03-04 13:40:00,457 INFO [logit_lens 156/200] TOOL-operations_time-017
-2026-03-04 13:40:00,492 INFO [logit_lens 157/200] TOOL-transportation_logistics-011
-2026-03-04 13:40:00,527 INFO [logit_lens 158/200] TOOL-transportation_logistics-006
-2026-03-04 13:40:00,561 INFO [logit_lens 159/200] TOOL-transportation_logistics-015
-2026-03-04 13:40:00,596 INFO [logit_lens 160/200] TOOL-transportation_logistics-014
-2026-03-04 13:40:00,631 INFO [logit_lens 161/200] TOOL-transportation_logistics-013
-2026-03-04 13:40:00,666 INFO [logit_lens 162/200] TOOL-transportation_logistics-018
-2026-03-04 13:40:00,700 INFO [logit_lens 163/200] TOOL-resource_consumption-006
-2026-03-04 13:40:00,735 INFO [logit_lens 164/200] TOOL-resource_consumption-007
-2026-03-04 13:40:00,770 INFO [logit_lens 165/200] TOOL-resource_consumption-020
-2026-03-04 13:40:00,805 INFO [logit_lens 166/200] TOOL-resource_consumption-009
-2026-03-04 13:40:00,840 INFO [logit_lens 167/200] TOOL-resource_consumption-004
-2026-03-04 13:40:00,875 INFO [logit_lens 168/200] TOOL-resource_consumption-015
-2026-03-04 13:40:00,910 INFO [logit_lens 169/200] TOOL-market_demographics-013
-2026-03-04 13:40:00,944 INFO [logit_lens 170/200] TOOL-market_demographics-006
-2026-03-04 13:40:00,979 INFO [logit_lens 171/200] TOOL-market_demographics-005
-2026-03-04 13:40:01,014 INFO [logit_lens 172/200] TOOL-market_demographics-016
-2026-03-04 13:40:01,049 INFO [logit_lens 173/200] TOOL-market_demographics-009
-2026-03-04 13:40:01,083 INFO [logit_lens 174/200] TOOL-market_demographics-004
-2026-03-04 13:40:01,118 INFO [logit_lens 175/200] TOOL-legal_policy-015
-2026-03-04 13:40:01,153 INFO [logit_lens 176/200] TOOL-legal_policy-020
-2026-03-04 13:40:01,188 INFO [logit_lens 177/200] TOOL-legal_policy-014
-2026-03-04 13:40:01,223 INFO [logit_lens 178/200] TOOL-legal_policy-017
-2026-03-04 13:40:01,257 INFO [logit_lens 179/200] TOOL-legal_policy-016
-2026-03-04 13:40:01,292 INFO [logit_lens 180/200] TOOL-legal_policy-006
-2026-03-04 13:40:01,327 INFO [logit_lens 181/200] HIST-operations_time-018
-2026-03-04 13:40:01,362 INFO [logit_lens 182/200] ICL-transportation_logistics-005
-2026-03-04 13:40:01,397 INFO [logit_lens 183/200] EXT-operations_time-002
-2026-03-04 13:40:01,432 INFO [logit_lens 184/200] RAG-operations_time-006
-2026-03-04 13:40:01,467 INFO [logit_lens 185/200] RAG-transportation_logistics-012
-2026-03-04 13:40:01,503 INFO [logit_lens 186/200] ICL-resource_consumption-009
-2026-03-04 13:40:01,538 INFO [logit_lens 187/200] ICL-transportation_logistics-003
-2026-03-04 13:40:01,573 INFO [logit_lens 188/200] TOOL-operations_time-012
-2026-03-04 13:40:01,608 INFO [logit_lens 189/200] EXT-legal_policy-001
-2026-03-04 13:40:01,643 INFO [logit_lens 190/200] RAG-pricing_wtp-012
-2026-03-04 13:40:01,678 INFO [logit_lens 191/200] EXT-market_demographics-007
-2026-03-04 13:40:01,713 INFO [logit_lens 192/200] ICL-pricing_wtp-019
-2026-03-04 13:40:01,748 INFO [logit_lens 193/200] ICL-legal_policy-006
-2026-03-04 13:40:01,783 INFO [logit_lens 194/200] HIST-operations_time-009
-2026-03-04 13:40:01,818 INFO [logit_lens 195/200] ICL-resource_consumption-014
-2026-03-04 13:40:01,854 INFO [logit_lens 196/200] HIST-legal_policy-006
-2026-03-04 13:40:01,889 INFO [logit_lens 197/200] TOOL-legal_policy-001
-2026-03-04 13:40:01,924 INFO [logit_lens 198/200] RAG-pricing_wtp-014
-2026-03-04 13:40:01,959 INFO [logit_lens 199/200] HIST-resource_consumption-009
-2026-03-04 13:40:01,994 INFO [logit_lens 200/200] ICL-transportation_logistics-013
-2026-03-04 13:40:02,029 INFO Logit lens -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/logit_lens.csv
-2026-03-04 13:40:02,029 INFO Logit lens done in 14.7s
-2026-03-04 13:40:02,030 INFO [patching 1/200] EXT-pricing_wtp-001
-2026-03-04 13:40:05,768 INFO [patching 2/200] EXT-pricing_wtp-018
-2026-03-04 13:40:09,481 INFO [patching 3/200] EXT-pricing_wtp-016
-2026-03-04 13:40:13,175 INFO [patching 4/200] EXT-pricing_wtp-002
-2026-03-04 13:40:16,887 INFO [patching 5/200] EXT-pricing_wtp-009
-2026-03-04 13:40:20,596 INFO [patching 6/200] EXT-pricing_wtp-006
-2026-03-04 13:40:24,340 INFO [patching 7/200] EXT-operations_time-020
-2026-03-04 13:40:28,070 INFO [patching 8/200] EXT-operations_time-017
-2026-03-04 13:40:31,790 INFO [patching 9/200] EXT-operations_time-016
-2026-03-04 13:40:35,529 INFO [patching 10/200] EXT-operations_time-006
-2026-03-04 13:40:39,271 INFO [patching 11/200] EXT-operations_time-005
-2026-03-04 13:40:43,002 INFO [patching 12/200] EXT-operations_time-013
-2026-03-04 13:40:46,734 INFO [patching 13/200] EXT-transportation_logistics-011
-2026-03-04 13:40:50,482 INFO [patching 14/200] EXT-transportation_logistics-008
-2026-03-04 13:40:54,214 INFO [patching 15/200] EXT-transportation_logistics-001
-2026-03-04 13:40:57,953 INFO [patching 16/200] EXT-transportation_logistics-003
-2026-03-04 13:41:01,701 INFO [patching 17/200] EXT-transportation_logistics-006
-2026-03-04 13:41:05,603 INFO [patching 18/200] EXT-transportation_logistics-019
-2026-03-04 13:41:09,322 INFO [patching 19/200] EXT-resource_consumption-001
-2026-03-04 13:41:13,047 INFO [patching 20/200] EXT-resource_consumption-019
-2026-03-04 13:41:16,775 INFO [patching 21/200] EXT-resource_consumption-007
-2026-03-04 13:41:20,484 INFO [patching 22/200] EXT-resource_consumption-009
-2026-03-04 13:41:24,208 INFO [patching 23/200] EXT-resource_consumption-018
-2026-03-04 13:41:29,977 INFO [patching 24/200] EXT-resource_consumption-012
-2026-03-04 13:41:33,686 INFO [patching 25/200] EXT-market_demographics-006
-2026-03-04 13:41:37,396 INFO [patching 26/200] EXT-market_demographics-003
-2026-03-04 13:41:41,122 INFO [patching 27/200] EXT-market_demographics-011
-2026-03-04 13:41:44,917 INFO [patching 28/200] EXT-market_demographics-020
-2026-03-04 13:41:48,625 INFO [patching 29/200] EXT-market_demographics-001
-2026-03-04 13:41:52,344 INFO [patching 30/200] EXT-market_demographics-013
-2026-03-04 13:41:56,120 INFO [patching 31/200] EXT-legal_policy-004
-2026-03-04 13:41:59,828 INFO [patching 32/200] EXT-legal_policy-002
-2026-03-04 13:42:03,542 INFO [patching 33/200] EXT-legal_policy-005
-2026-03-04 13:42:07,275 INFO [patching 34/200] EXT-legal_policy-006
-2026-03-04 13:42:10,988 INFO [patching 35/200] EXT-legal_policy-016
-2026-03-04 13:42:14,885 INFO [patching 36/200] EXT-legal_policy-017
-2026-03-04 13:42:18,610 INFO [patching 37/200] ICL-pricing_wtp-014
-2026-03-04 13:42:22,364 INFO [patching 38/200] ICL-pricing_wtp-011
-2026-03-04 13:42:26,097 INFO [patching 39/200] ICL-pricing_wtp-013
-2026-03-04 13:42:29,843 INFO [patching 40/200] ICL-pricing_wtp-017
-2026-03-04 13:42:33,572 INFO [patching 41/200] ICL-pricing_wtp-010
-2026-03-04 13:42:37,308 INFO [patching 42/200] ICL-pricing_wtp-006
-2026-03-04 13:42:41,040 INFO [patching 43/200] ICL-operations_time-018
-2026-03-04 13:42:44,838 INFO [patching 44/200] ICL-operations_time-019
-2026-03-04 13:42:48,562 INFO [patching 45/200] ICL-operations_time-002
-2026-03-04 13:42:52,286 INFO [patching 46/200] ICL-operations_time-006
-2026-03-04 13:42:56,005 INFO [patching 47/200] ICL-operations_time-004
-2026-03-04 13:42:59,733 INFO [patching 48/200] ICL-operations_time-016
-2026-03-04 13:43:03,458 INFO [patching 49/200] ICL-transportation_logistics-018
-2026-03-04 13:43:07,179 INFO [patching 50/200] ICL-transportation_logistics-012
-2026-03-04 13:43:10,896 INFO [patching 51/200] ICL-transportation_logistics-008
-2026-03-04 13:43:14,619 INFO [patching 52/200] ICL-transportation_logistics-014
-2026-03-04 13:43:18,345 INFO [patching 53/200] ICL-transportation_logistics-001
-2026-03-04 13:43:22,071 INFO [patching 54/200] ICL-transportation_logistics-010
-2026-03-04 13:43:25,810 INFO [patching 55/200] ICL-resource_consumption-005
-2026-03-04 13:43:29,583 INFO [patching 56/200] ICL-resource_consumption-010
-2026-03-04 13:43:33,298 INFO [patching 57/200] ICL-resource_consumption-002
-2026-03-04 13:43:37,018 INFO [patching 58/200] ICL-resource_consumption-016
-2026-03-04 13:43:40,749 INFO [patching 59/200] ICL-resource_consumption-008
-2026-03-04 13:43:44,470 INFO [patching 60/200] ICL-resource_consumption-006
-2026-03-04 13:43:48,224 INFO [patching 61/200] ICL-market_demographics-003
-2026-03-04 13:43:51,980 INFO [patching 62/200] ICL-market_demographics-007
-2026-03-04 13:43:55,707 INFO [patching 63/200] ICL-market_demographics-017
-2026-03-04 13:43:59,434 INFO [patching 64/200] ICL-market_demographics-005
-2026-03-04 13:44:03,238 INFO [patching 65/200] ICL-market_demographics-018
-2026-03-04 13:44:06,965 INFO [patching 66/200] ICL-market_demographics-002
-2026-03-04 13:44:10,689 INFO [patching 67/200] ICL-legal_policy-015
-2026-03-04 13:44:14,417 INFO [patching 68/200] ICL-legal_policy-004
-2026-03-04 13:44:18,139 INFO [patching 69/200] ICL-legal_policy-010
-2026-03-04 13:44:21,855 INFO [patching 70/200] ICL-legal_policy-019
-2026-03-04 13:44:25,603 INFO [patching 71/200] ICL-legal_policy-009
-2026-03-04 13:44:29,341 INFO [patching 72/200] ICL-legal_policy-012
-2026-03-04 13:44:33,067 INFO [patching 73/200] HIST-pricing_wtp-010
-2026-03-04 13:44:36,788 INFO [patching 74/200] HIST-pricing_wtp-009
-2026-03-04 13:44:40,505 INFO [patching 75/200] HIST-pricing_wtp-007
-2026-03-04 13:44:44,232 INFO [patching 76/200] HIST-pricing_wtp-015
-2026-03-04 13:44:47,950 INFO [patching 77/200] HIST-pricing_wtp-014
-2026-03-04 13:44:51,666 INFO [patching 78/200] HIST-pricing_wtp-003
-2026-03-04 13:44:55,378 INFO [patching 79/200] HIST-operations_time-006
-2026-03-04 13:44:59,101 INFO [patching 80/200] HIST-operations_time-012
-2026-03-04 13:45:02,824 INFO [patching 81/200] HIST-operations_time-005
-2026-03-04 13:45:06,556 INFO [patching 82/200] HIST-operations_time-020
-2026-03-04 13:45:10,278 INFO [patching 83/200] HIST-operations_time-010
-2026-03-04 13:45:13,999 INFO [patching 84/200] HIST-operations_time-002
-2026-03-04 13:45:17,716 INFO [patching 85/200] HIST-transportation_logistics-015
-2026-03-04 13:45:21,416 INFO [patching 86/200] HIST-transportation_logistics-017
-2026-03-04 13:45:25,134 INFO [patching 87/200] HIST-transportation_logistics-020
-2026-03-04 13:45:28,853 INFO [patching 88/200] HIST-transportation_logistics-014
-2026-03-04 13:45:32,574 INFO [patching 89/200] HIST-transportation_logistics-005
-2026-03-04 13:45:36,292 INFO [patching 90/200] HIST-transportation_logistics-013
-2026-03-04 13:45:40,005 INFO [patching 91/200] HIST-resource_consumption-007
-2026-03-04 13:45:43,793 INFO [patching 92/200] HIST-resource_consumption-012
-2026-03-04 13:45:47,513 INFO [patching 93/200] HIST-resource_consumption-005
-2026-03-04 13:45:51,232 INFO [patching 94/200] HIST-resource_consumption-002
-2026-03-04 13:45:54,951 INFO [patching 95/200] HIST-resource_consumption-019
-2026-03-04 13:45:58,755 INFO [patching 96/200] HIST-resource_consumption-010
-2026-03-04 13:46:02,464 INFO [patching 97/200] HIST-market_demographics-015
-2026-03-04 13:46:06,171 INFO [patching 98/200] HIST-market_demographics-008
-2026-03-04 13:46:09,886 INFO [patching 99/200] HIST-market_demographics-013
-2026-03-04 13:46:13,597 INFO [patching 100/200] HIST-market_demographics-007
-2026-03-04 13:46:17,303 INFO [patching 101/200] HIST-market_demographics-012
-2026-03-04 13:46:21,018 INFO [patching 102/200] HIST-market_demographics-005
-2026-03-04 13:46:24,731 INFO [patching 103/200] HIST-legal_policy-008
-2026-03-04 13:46:28,450 INFO [patching 104/200] HIST-legal_policy-004
-2026-03-04 13:46:32,162 INFO [patching 105/200] HIST-legal_policy-005
-2026-03-04 13:46:35,879 INFO [patching 106/200] HIST-legal_policy-019
-2026-03-04 13:46:39,591 INFO [patching 107/200] HIST-legal_policy-002
-2026-03-04 13:46:43,295 INFO [patching 108/200] HIST-legal_policy-013
-2026-03-04 13:46:47,003 INFO [patching 109/200] RAG-pricing_wtp-009
-2026-03-04 13:46:50,754 INFO [patching 110/200] RAG-pricing_wtp-008
-2026-03-04 13:46:54,568 INFO [patching 111/200] RAG-pricing_wtp-002
-2026-03-04 13:46:58,343 INFO [patching 112/200] RAG-pricing_wtp-007
-2026-03-04 13:47:02,091 INFO [patching 113/200] RAG-pricing_wtp-010
-2026-03-04 13:47:05,836 INFO [patching 114/200] RAG-pricing_wtp-011
-2026-03-04 13:47:09,585 INFO [patching 115/200] RAG-operations_time-018
-2026-03-04 13:47:13,331 INFO [patching 116/200] RAG-operations_time-005
-2026-03-04 13:47:17,195 INFO [patching 117/200] RAG-operations_time-004
-2026-03-04 13:47:20,955 INFO [patching 118/200] RAG-operations_time-011
-2026-03-04 13:47:24,689 INFO [patching 119/200] RAG-operations_time-007
-2026-03-04 13:47:28,433 INFO [patching 120/200] RAG-operations_time-014
-2026-03-04 13:47:32,178 INFO [patching 121/200] RAG-transportation_logistics-014
-2026-03-04 13:47:35,922 INFO [patching 122/200] RAG-transportation_logistics-015
-2026-03-04 13:47:39,810 INFO [patching 123/200] RAG-transportation_logistics-016
-2026-03-04 13:47:43,571 INFO [patching 124/200] RAG-transportation_logistics-018
-2026-03-04 13:47:47,321 INFO [patching 125/200] RAG-transportation_logistics-004
-2026-03-04 13:47:51,058 INFO [patching 126/200] RAG-transportation_logistics-005
-2026-03-04 13:47:54,783 INFO [patching 127/200] RAG-resource_consumption-005
-2026-03-04 13:47:58,578 INFO [patching 128/200] RAG-resource_consumption-020
-2026-03-04 13:48:02,304 INFO [patching 129/200] RAG-resource_consumption-009
-2026-03-04 13:48:06,040 INFO [patching 130/200] RAG-resource_consumption-018
-2026-03-04 13:48:09,774 INFO [patching 131/200] RAG-resource_consumption-019
-2026-03-04 13:48:13,513 INFO [patching 132/200] RAG-resource_consumption-006
-2026-03-04 13:48:17,247 INFO [patching 133/200] RAG-market_demographics-003
-2026-03-04 13:48:20,972 INFO [patching 134/200] RAG-market_demographics-014
-2026-03-04 13:48:24,698 INFO [patching 135/200] RAG-market_demographics-002
-2026-03-04 13:48:28,460 INFO [patching 136/200] RAG-market_demographics-020
-2026-03-04 13:48:32,201 INFO [patching 137/200] RAG-market_demographics-009
-2026-03-04 13:48:35,929 INFO [patching 138/200] RAG-market_demographics-016
-2026-03-04 13:48:39,661 INFO [patching 139/200] RAG-legal_policy-004
-2026-03-04 13:48:43,400 INFO [patching 140/200] RAG-legal_policy-015
-2026-03-04 13:48:47,134 INFO [patching 141/200] RAG-legal_policy-014
-2026-03-04 13:48:50,858 INFO [patching 142/200] RAG-legal_policy-006
-2026-03-04 13:48:54,586 INFO [patching 143/200] RAG-legal_policy-009
-2026-03-04 13:48:58,319 INFO [patching 144/200] RAG-legal_policy-011
-2026-03-04 13:49:02,046 INFO [patching 145/200] TOOL-pricing_wtp-019
-2026-03-04 13:49:05,742 INFO [patching 146/200] TOOL-pricing_wtp-016
-2026-03-04 13:49:09,442 INFO [patching 147/200] TOOL-pricing_wtp-004
-2026-03-04 13:49:13,138 INFO [patching 148/200] TOOL-pricing_wtp-003
-2026-03-04 13:49:16,833 INFO [patching 149/200] TOOL-pricing_wtp-013
-2026-03-04 13:49:20,531 INFO [patching 150/200] TOOL-pricing_wtp-007
-2026-03-04 13:49:24,226 INFO [patching 151/200] TOOL-operations_time-006
-2026-03-04 13:49:27,931 INFO [patching 152/200] TOOL-operations_time-008
-2026-03-04 13:49:31,629 INFO [patching 153/200] TOOL-operations_time-002
-2026-03-04 13:49:35,327 INFO [patching 154/200] TOOL-operations_time-003
-2026-03-04 13:49:39,098 INFO [patching 155/200] TOOL-operations_time-009
-2026-03-04 13:49:42,795 INFO [patching 156/200] TOOL-operations_time-017
-2026-03-04 13:49:46,505 INFO [patching 157/200] TOOL-transportation_logistics-011
-2026-03-04 13:49:50,208 INFO [patching 158/200] TOOL-transportation_logistics-006
-2026-03-04 13:49:53,909 INFO [patching 159/200] TOOL-transportation_logistics-015
-2026-03-04 13:49:57,602 INFO [patching 160/200] TOOL-transportation_logistics-014
-2026-03-04 13:50:01,468 INFO [patching 161/200] TOOL-transportation_logistics-013
-2026-03-04 13:50:05,178 INFO [patching 162/200] TOOL-transportation_logistics-018
-2026-03-04 13:50:08,897 INFO [patching 163/200] TOOL-resource_consumption-006
-2026-03-04 13:50:12,616 INFO [patching 164/200] TOOL-resource_consumption-007
-2026-03-04 13:50:16,326 INFO [patching 165/200] TOOL-resource_consumption-020
-2026-03-04 13:50:20,036 INFO [patching 166/200] TOOL-resource_consumption-009
-2026-03-04 13:50:23,733 INFO [patching 167/200] TOOL-resource_consumption-004
-2026-03-04 13:50:27,470 INFO [patching 168/200] TOOL-resource_consumption-015
-2026-03-04 13:50:31,179 INFO [patching 169/200] TOOL-market_demographics-013
-2026-03-04 13:50:34,887 INFO [patching 170/200] TOOL-market_demographics-006
-2026-03-04 13:50:38,583 INFO [patching 171/200] TOOL-market_demographics-005
-2026-03-04 13:50:42,281 INFO [patching 172/200] TOOL-market_demographics-016
-2026-03-04 13:50:46,101 INFO [patching 173/200] TOOL-market_demographics-009
-2026-03-04 13:50:49,838 INFO [patching 174/200] TOOL-market_demographics-004
-2026-03-04 13:50:53,545 INFO [patching 175/200] TOOL-legal_policy-015
-2026-03-04 13:50:57,240 INFO [patching 176/200] TOOL-legal_policy-020
-2026-03-04 13:51:00,937 INFO [patching 177/200] TOOL-legal_policy-014
-2026-03-04 13:51:04,632 INFO [patching 178/200] TOOL-legal_policy-017
-2026-03-04 13:51:08,322 INFO [patching 179/200] TOOL-legal_policy-016
-2026-03-04 13:51:12,018 INFO [patching 180/200] TOOL-legal_policy-006
-2026-03-04 13:51:15,715 INFO [patching 181/200] HIST-operations_time-018
-2026-03-04 13:51:19,452 INFO [patching 182/200] ICL-transportation_logistics-005
-2026-03-04 13:51:23,203 INFO [patching 183/200] EXT-operations_time-002
-2026-03-04 13:51:26,942 INFO [patching 184/200] RAG-operations_time-006
-2026-03-04 13:51:30,678 INFO [patching 185/200] RAG-transportation_logistics-012
-2026-03-04 13:51:34,476 INFO [patching 186/200] ICL-resource_consumption-009
-2026-03-04 13:51:38,200 INFO [patching 187/200] ICL-transportation_logistics-003
-2026-03-04 13:51:41,917 INFO [patching 188/200] TOOL-operations_time-012
-2026-03-04 13:51:45,612 INFO [patching 189/200] EXT-legal_policy-001
-2026-03-04 13:51:49,307 INFO [patching 190/200] RAG-pricing_wtp-012
-2026-03-04 13:51:53,046 INFO [patching 191/200] EXT-market_demographics-007
-2026-03-04 13:51:56,748 INFO [patching 192/200] ICL-pricing_wtp-019
-2026-03-04 13:52:00,458 INFO [patching 193/200] ICL-legal_policy-006
-2026-03-04 13:52:04,163 INFO [patching 194/200] HIST-operations_time-009
-2026-03-04 13:52:07,854 INFO [patching 195/200] ICL-resource_consumption-014
-2026-03-04 13:52:11,567 INFO [patching 196/200] HIST-legal_policy-006
-2026-03-04 13:52:15,466 INFO [patching 197/200] TOOL-legal_policy-001
-2026-03-04 13:52:19,159 INFO [patching 198/200] RAG-pricing_wtp-014
-2026-03-04 13:52:22,926 INFO [patching 199/200] HIST-resource_consumption-009
-2026-03-04 13:52:26,679 INFO [patching 200/200] ICL-transportation_logistics-013
-2026-03-04 13:52:30,422 INFO Layer sweep -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/layerwise_effect.csv
-2026-03-04 13:52:30,422 INFO Head sweep -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/top_heads.csv
-2026-03-04 13:52:30,422 INFO Patching done in 763.1s
-2026-03-04 13:52:30,591 INFO Saved CAE plot -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/figures/cae_vs_layer.pdf
-2026-03-04 13:52:30,902 INFO Saved top heads plot -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/figures/top_heads.pdf
-2026-03-04 13:52:30,973 INFO Saved logit lens plot -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/figures/logit_lens.pdf
-2026-03-04 13:52:30,974 INFO LaTeX table -> results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943/tables/mechinterp_main.tex
-2026-03-04 13:52:30,974 INFO All mechinterp done in 763.6s. Output: results/mechinterp/Llama-3.2-1B-Instruct_20260304_133943

@@ -1,0 +1,15 @@
+{
+  "python.defaultInterpreterPath": "${env:CONDA_PREFIX}/bin/python",
+  "python.terminal.activateEnvironment": true,
+  "[latex]": {
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "same"
+  },
+  "[tex]": {
+    "editor.wordWrap": "on",
+    "editor.wrappingIndent": "same"
+  },
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+  "latex-workshop.view.pdf.internal.synctex.keybinding": "ctrl-click"
+}

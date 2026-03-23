@@ -1,0 +1,247 @@
+Found 46 result files in results/full_benchmark
+  external   Qwen-1.5B        results/full_benchmark/external/Qwen_Qwen2.5-1.5B-Instruct/results.jsonl
+  external   Qwen-3B          results/full_benchmark/external/Qwen_Qwen2.5-3B-Instruct/results.jsonl
+  external   Qwen-7B          results/full_benchmark/external/Qwen_Qwen2.5-7B-Instruct/results.jsonl
+  external   OLMo-32B         results/full_benchmark/external/allenai_OLMo-2-0325-32B-Instruct/results.jsonl
+  external   OLMo-13B         results/full_benchmark/external/allenai_OLMo-2-1124-13B-Instruct/results.jsonl
+  external   Gemma-1B         results/full_benchmark/external/google_gemma-3-1b-it/results.jsonl
+  external   Gemma-4B         results/full_benchmark/external/google_gemma-3-4b-it/results.jsonl
+  external   Llama-8B         results/full_benchmark/external/meta-llama_Llama-3.1-8B-Instruct/results.jsonl
+  external   Llama-1B         results/full_benchmark/external/meta-llama_Llama-3.2-1B-Instruct/results.jsonl
+  external   Llama-3B         results/full_benchmark/external/meta-llama_Llama-3.2-3B-Instruct/results.jsonl
+  icl        Qwen-1.5B        results/full_benchmark/icl/Qwen_Qwen2.5-1.5B-Instruct/results.jsonl
+  icl        Qwen-3B          results/full_benchmark/icl/Qwen_Qwen2.5-3B-Instruct/results.jsonl
+  icl        Qwen-7B          results/full_benchmark/icl/Qwen_Qwen2.5-7B-Instruct/results.jsonl
+  icl        OLMo-32B         results/full_benchmark/icl/allenai_OLMo-2-0325-32B-Instruct/results.jsonl
+  icl        OLMo-13B         results/full_benchmark/icl/allenai_OLMo-2-1124-13B-Instruct/results.jsonl
+  icl        Gemma-1B         results/full_benchmark/icl/google_gemma-3-1b-it/results.jsonl
+  icl        Gemma-4B         results/full_benchmark/icl/google_gemma-3-4b-it/results.jsonl
+  icl        Llama-8B         results/full_benchmark/icl/meta-llama_Llama-3.1-8B-Instruct/results.jsonl
+  icl        Llama-1B         results/full_benchmark/icl/meta-llama_Llama-3.2-1B-Instruct/results.jsonl
+  icl        Llama-3B         results/full_benchmark/icl/meta-llama_Llama-3.2-3B-Instruct/results.jsonl
+  rag        Qwen-1.5B        results/full_benchmark/rag/Qwen_Qwen2.5-1.5B-Instruct/results.jsonl
+  rag        Qwen-3B          results/full_benchmark/rag/Qwen_Qwen2.5-3B-Instruct/results.jsonl
+  rag        Qwen-7B          results/full_benchmark/rag/Qwen_Qwen2.5-7B-Instruct/results.jsonl
+  rag        OLMo-32B         results/full_benchmark/rag/allenai_OLMo-2-0325-32B-Instruct/results.jsonl
+  rag        OLMo-13B         results/full_benchmark/rag/allenai_OLMo-2-1124-13B-Instruct/results.jsonl
+  rag        Gemma-1B         results/full_benchmark/rag/google_gemma-3-1b-it/results.jsonl
+  rag        Gemma-4B         results/full_benchmark/rag/google_gemma-3-4b-it/results.jsonl
+  rag        Llama-8B         results/full_benchmark/rag/meta-llama_Llama-3.1-8B-Instruct/results.jsonl
+  rag        Llama-1B         results/full_benchmark/rag/meta-llama_Llama-3.2-1B-Instruct/results.jsonl
+  rag        Llama-3B         results/full_benchmark/rag/meta-llama_Llama-3.2-3B-Instruct/results.jsonl
+  tool       Qwen-1.5B        results/full_benchmark/tool/Qwen_Qwen2.5-1.5B-Instruct/results.jsonl
+  tool       Qwen-3B          results/full_benchmark/tool/Qwen_Qwen2.5-3B-Instruct/results.jsonl
+  tool       Qwen-7B          results/full_benchmark/tool/Qwen_Qwen2.5-7B-Instruct/results.jsonl
+  tool       Llama-8B         results/full_benchmark/tool/meta-llama_Llama-3.1-8B-Instruct/results.jsonl
+  tool       Llama-1B         results/full_benchmark/tool/meta-llama_Llama-3.2-1B-Instruct/results.jsonl
+  tool       Llama-3B         results/full_benchmark/tool/meta-llama_Llama-3.2-3B-Instruct/results.jsonl
+  history    Qwen-1.5B        results/full_benchmark/history/Qwen_Qwen2.5-1.5B-Instruct/results.jsonl
+  history    Qwen-3B          results/full_benchmark/history/Qwen_Qwen2.5-3B-Instruct/results.jsonl
+  history    Qwen-7B          results/full_benchmark/history/Qwen_Qwen2.5-7B-Instruct/results.jsonl
+  history    OLMo-32B         results/full_benchmark/history/allenai_OLMo-2-0325-32B-Instruct/results.jsonl
+  history    OLMo-13B         results/full_benchmark/history/allenai_OLMo-2-1124-13B-Instruct/results.jsonl
+  history    Gemma-1B         results/full_benchmark/history/google_gemma-3-1b-it/results.jsonl
+  history    Gemma-4B         results/full_benchmark/history/google_gemma-3-4b-it/results.jsonl
+  history    Llama-8B         results/full_benchmark/history/meta-llama_Llama-3.1-8B-Instruct/results.jsonl
+  history    Llama-1B         results/full_benchmark/history/meta-llama_Llama-3.2-1B-Instruct/results.jsonl
+  history    Llama-3B         results/full_benchmark/history/meta-llama_Llama-3.2-3B-Instruct/results.jsonl
+
+
+=========================================================================================================
+  External Suite — Unified Metrics
+=========================================================================================================
+Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls  TAR_irr  TAR_pls   Disc_Δ   Parse
+-------------------------------------------------------------------------------------------
+OLMo-32B          1800  14.02    47.2%    0.042    0.495    0.108    0.660    0.453  100.0%
+Llama-1B          1800  16.53    49.4%    0.109    0.446    0.369    0.560    0.338  100.0%
+Gemma-4B          1800  12.79    62.8%    0.200    0.393    0.518    0.644    0.193  100.0%
+Llama-8B          1800   5.99    81.7%    0.077    0.333    0.271    0.699    0.257  100.0%
+Qwen-7B           1800   7.01    77.5%   -0.010    0.315    0.135    0.689    0.326  100.0%
+Qwen-3B           1800   9.72    62.3%    0.003    0.313    0.226    0.630    0.310   99.0%
+Llama-3B          1800   7.97    72.5%    0.121    0.294    0.349    0.606    0.173  100.0%
+Qwen-1.5B         1800  19.67    29.4%   -0.002    0.274    0.167    0.583    0.276  100.0%
+OLMo-13B          1800   6.55    83.3%    0.044    0.211    0.299    0.482    0.167  100.0%
+Gemma-1B          1800  14.61    40.1%    0.004    0.178    0.198    0.465    0.174   99.9%
+
+
+=========================================================================================================
+  Icl Suite — Unified Metrics
+=========================================================================================================
+Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls  TAR_irr  TAR_pls   Disc_Δ   Parse
+-------------------------------------------------------------------------------------------
+Llama-8B          1800   6.89    78.3%   -0.015    0.087    0.427    0.562    0.102   99.9%
+Llama-1B          1800  13.23    62.8%    0.028    0.082    0.404    0.501    0.055  100.0%
+Llama-3B          1800   7.14    79.2%   -0.006    0.026    0.393    0.438    0.033  100.0%
+Qwen-7B           1800   5.77    86.4%   -0.001    0.016    0.208    0.286    0.017  100.0%
+Gemma-1B          1800  10.72    55.3%   -0.025   -0.041    0.160    0.315   -0.017  100.0%
+Qwen-3B           1800   6.71    78.3%    0.004   -0.042    0.163    0.222   -0.046  100.0%
+Qwen-1.5B         1800   9.09    63.9%   -0.076   -0.054    0.210    0.211    0.022  100.0%
+OLMo-13B          1800  10.72    55.8%    0.030   -0.055    0.193    0.299   -0.085  100.0%
+OLMo-32B          1800   7.51    76.1%   -0.020   -0.056    0.118    0.163   -0.036  100.0%
+Gemma-4B          1800  13.84    36.7%    0.020   -0.060    0.290    0.411   -0.080  100.0%
+
+
+=========================================================================================================
+  Rag Suite — Unified Metrics
+=========================================================================================================
+Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls  TAR_irr  TAR_pls   Disc_Δ   Parse
+-------------------------------------------------------------------------------------------
+OLMo-32B          1800  10.11    61.9%   -0.030    0.529    0.057    0.614    0.559  100.0%
+Qwen-1.5B         1800  21.80    18.3%    0.086    0.254    0.161    0.512    0.168  100.0%
+Qwen-7B           1800  10.78    57.2%   -0.010    0.193    0.099    0.508    0.203  100.0%
+Llama-1B          1800  11.58    64.7%    0.022    0.189    0.219    0.372    0.167  100.0%
+Qwen-3B           1800   8.64    69.9%    0.017    0.109    0.162    0.379    0.092   99.7%
+Llama-3B          1800   9.31    75.8%    0.069    0.102    0.317    0.394    0.033  100.0%
+Llama-8B          1800   5.74    83.3%   -0.027    0.072    0.297    0.407    0.099  100.0%
+OLMo-13B          1800   6.08    84.4%    0.092    0.065    0.275    0.346   -0.028  100.0%
+Gemma-1B          1800  15.41    37.5%    0.019    0.027    0.108    0.212    0.008  100.0%
+Gemma-4B          1800  12.95    41.1%    0.020   -0.065    0.174    0.253   -0.086  100.0%
+
+
+=========================================================================================================
+  Tool Suite — Unified Metrics
+=========================================================================================================
+Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls  TAR_irr  TAR_pls   Disc_Δ   Parse
+-------------------------------------------------------------------------------------------
+Qwen-1.5B         1800  19.17    60.0%    0.241    0.774    0.267    0.746    0.534   99.7%
+Llama-8B          1800  10.41    77.8%    0.314    0.551    0.280    0.679    0.237   96.9%
+Llama-3B          1800   4.06    88.9%    0.031    0.228    0.219    0.394    0.198   99.2%
+Qwen-7B           1800   0.61    98.9%   -0.023    0.171    0.062    0.431    0.194  100.0%
+Llama-1B          1800   9.43    66.1%   -0.001    0.101    0.003    0.142    0.102   99.7%
+Qwen-3B           1800   2.68    93.5%   -0.019    0.098    0.207    0.314    0.117   99.3%
+
+
+=========================================================================================================
+  History Suite — Unified Metrics
+=========================================================================================================
+Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls  TAR_irr  TAR_pls   Disc_Δ   Parse
+-------------------------------------------------------------------------------------------
+Qwen-1.5B         1800   5.26    85.6%   -0.043    0.862    0.347    0.801    0.905  100.0%
+Llama-1B          1800  17.59    48.6%    0.358    0.752    0.637    0.663    0.394   99.9%
+Llama-3B          1800   9.10    72.2%    0.111    0.482    0.456    0.633    0.371  100.0%
+Gemma-4B          1800   9.80    75.8%    0.075    0.318    0.503    0.561    0.243  100.0%
+Llama-8B          1800   6.86    82.2%    0.117    0.308    0.372    0.467    0.191  100.0%
+Gemma-1B          1800  14.65    38.7%   -0.232    0.158    0.430    0.426    0.390   99.9%
+Qwen-7B           1800   3.83    91.1%   -0.043    0.148    0.339    0.447    0.191  100.0%
+OLMo-32B          1800   4.52    86.9%   -0.078    0.126    0.326    0.358    0.204  100.0%
+Qwen-3B           1800   3.98    87.8%   -0.021    0.114    0.306    0.442    0.135  100.0%
+OLMo-13B          1800   5.16    87.8%    0.001    0.104    0.311    0.407    0.104   99.9%
+
+
+=========================================================================================================
+  Cross-suite Summary (all suites, all models)
+=========================================================================================================
+Suite      Model                N  MAE_c  Acc10_c  UAI_irr  UAI_pls   Disc_Δ   Parse
+------------------------------------------------------------------------------------
+External   Gemma-1B          1800  14.61    40.1%    0.004    0.178    0.174   99.9%
+External   Gemma-4B          1800  12.79    62.8%    0.200    0.393    0.193  100.0%
+External   Llama-1B          1800  16.53    49.4%    0.109    0.446    0.338  100.0%
+External   Llama-3B          1800   7.97    72.5%    0.121    0.294    0.173  100.0%
+External   Llama-8B          1800   5.99    81.7%    0.077    0.333    0.257  100.0%
+External   OLMo-13B          1800   6.55    83.3%    0.044    0.211    0.167  100.0%
+External   OLMo-32B          1800  14.02    47.2%    0.042    0.495    0.453  100.0%
+External   Qwen-1.5B         1800  19.67    29.4%   -0.002    0.274    0.276  100.0%
+External   Qwen-3B           1800   9.72    62.3%    0.003    0.313    0.310   99.0%
+External   Qwen-7B           1800   7.01    77.5%   -0.010    0.315    0.326  100.0%
+History    Gemma-1B          1800  14.65    38.7%   -0.232    0.158    0.390   99.9%
+History    Gemma-4B          1800   9.80    75.8%    0.075    0.318    0.243  100.0%
+History    Llama-1B          1800  17.59    48.6%    0.358    0.752    0.394   99.9%
+History    Llama-3B          1800   9.10    72.2%    0.111    0.482    0.371  100.0%
+History    Llama-8B          1800   6.86    82.2%    0.117    0.308    0.191  100.0%
+History    OLMo-13B          1800   5.16    87.8%    0.001    0.104    0.104   99.9%
+History    OLMo-32B          1800   4.52    86.9%   -0.078    0.126    0.204  100.0%
+History    Qwen-1.5B         1800   5.26    85.6%   -0.043    0.862    0.905  100.0%
+History    Qwen-3B           1800   3.98    87.8%   -0.021    0.114    0.135  100.0%
+History    Qwen-7B           1800   3.83    91.1%   -0.043    0.148    0.191  100.0%
+Icl        Gemma-1B          1800  10.72    55.3%   -0.025   -0.041   -0.017  100.0%
+Icl        Gemma-4B          1800  13.84    36.7%    0.020   -0.060   -0.080  100.0%
+Icl        Llama-1B          1800  13.23    62.8%    0.028    0.082    0.055  100.0%
+Icl        Llama-3B          1800   7.14    79.2%   -0.006    0.026    0.033  100.0%
+Icl        Llama-8B          1800   6.89    78.3%   -0.015    0.087    0.102   99.9%
+Icl        OLMo-13B          1800  10.72    55.8%    0.030   -0.055   -0.085  100.0%
+Icl        OLMo-32B          1800   7.51    76.1%   -0.020   -0.056   -0.036  100.0%
+Icl        Qwen-1.5B         1800   9.09    63.9%   -0.076   -0.054    0.022  100.0%
+Icl        Qwen-3B           1800   6.71    78.3%    0.004   -0.042   -0.046  100.0%
+Icl        Qwen-7B           1800   5.77    86.4%   -0.001    0.016    0.017  100.0%
+Rag        Gemma-1B          1800  15.41    37.5%    0.019    0.027    0.008  100.0%
+Rag        Gemma-4B          1800  12.95    41.1%    0.020   -0.065   -0.086  100.0%
+Rag        Llama-1B          1800  11.58    64.7%    0.022    0.189    0.167  100.0%
+Rag        Llama-3B          1800   9.31    75.8%    0.069    0.102    0.033  100.0%
+Rag        Llama-8B          1800   5.74    83.3%   -0.027    0.072    0.099  100.0%
+Rag        OLMo-13B          1800   6.08    84.4%    0.092    0.065   -0.028  100.0%
+Rag        OLMo-32B          1800  10.11    61.9%   -0.030    0.529    0.559  100.0%
+Rag        Qwen-1.5B         1800  21.80    18.3%    0.086    0.254    0.168  100.0%
+Rag        Qwen-3B           1800   8.64    69.9%    0.017    0.109    0.092   99.7%
+Rag        Qwen-7B           1800  10.78    57.2%   -0.010    0.193    0.203  100.0%
+Tool       Llama-1B          1800   9.43    66.1%   -0.001    0.101    0.102   99.7%
+Tool       Llama-3B          1800   4.06    88.9%    0.031    0.228    0.198   99.2%
+Tool       Llama-8B          1800  10.41    77.8%    0.314    0.551    0.237   96.9%
+Tool       Qwen-1.5B         1800  19.17    60.0%    0.241    0.774    0.534   99.7%
+Tool       Qwen-3B           1800   2.68    93.5%   -0.019    0.098    0.117   99.3%
+Tool       Qwen-7B           1800   0.61    98.9%   -0.023    0.171    0.194  100.0%
+
+===================================================================================================================
+  LaTeX table rows with CIs (copy-paste into paper)
+===================================================================================================================
+
+% --- External suite ---
+Gemma-1B         & 14.61 [13.57, 15.66] & 40.1\% & 0.00 & 0.18*** & 0.20 & 0.47 & 0.17*** & 99.9\% \\
+Gemma-4B         & 12.79 [11.14, 14.54] & 62.8\% & 0.20*** & 0.39*** & 0.52 & 0.64 & 0.19*** & 100.0\% \\
+Llama-1B         & 16.53 [14.80, 18.24] & 49.4\% & 0.11*** & 0.45*** & 0.37 & 0.56 & 0.34*** & 100.0\% \\
+Llama-3B         & 7.97 [6.79, 9.19] & 72.5\% & 0.12** & 0.29*** & 0.35 & 0.61 & 0.17*** & 100.0\% \\
+Llama-8B         & 5.99 [4.82, 7.35] & 81.7\% & 0.08** & 0.33*** & 0.27 & 0.70 & 0.26*** & 100.0\% \\
+OLMo-13B         & 6.55 [5.27, 7.95] & 83.3\% & 0.04 & 0.21*** & 0.30 & 0.48 & 0.17*** & 100.0\% \\
+OLMo-32B         & 14.02 [12.89, 15.26] & 47.2\% & 0.04* & 0.49*** & 0.11 & 0.66 & 0.45*** & 100.0\% \\
+Qwen-1.5B        & 19.67 [18.30, 21.03] & 29.4\% & -0.00 & 0.27*** & 0.17 & 0.58 & 0.28*** & 100.0\% \\
+Qwen-3B          & 9.72 [8.88, 10.58] & 62.3\% & 0.00* & 0.31*** & 0.23 & 0.63 & 0.31*** & 99.0\% \\
+Qwen-7B          & 7.01 [6.32, 7.74] & 77.5\% & -0.01 & 0.32*** & 0.13 & 0.69 & 0.33*** & 100.0\% \\
+
+% --- Icl suite ---
+Gemma-1B         & 10.72 [9.89, 11.62] & 55.3\% & -0.02 & -0.04 & 0.16 & 0.32 & -0.02 & 100.0\% \\
+Gemma-4B         & 13.84 [12.99, 14.64] & 36.7\% & 0.02* & -0.06 & 0.29 & 0.41 & -0.08* & 100.0\% \\
+Llama-1B         & 13.23 [11.69, 14.76] & 62.8\% & 0.03** & 0.08*** & 0.40 & 0.50 & 0.05* & 100.0\% \\
+Llama-3B         & 7.14 [5.98, 8.36] & 79.2\% & -0.01 & 0.03 & 0.39 & 0.44 & 0.03 & 100.0\% \\
+Llama-8B         & 6.89 [5.93, 7.95] & 78.3\% & -0.01 & 0.09*** & 0.43 & 0.56 & 0.10*** & 99.9\% \\
+OLMo-13B         & 10.72 [9.83, 11.59] & 55.8\% & 0.03 & -0.06 & 0.19 & 0.30 & -0.08 & 100.0\% \\
+OLMo-32B         & 7.51 [6.80, 8.23] & 76.1\% & -0.02 & -0.06*** & 0.12 & 0.16 & -0.04** & 100.0\% \\
+Qwen-1.5B        & 9.09 [8.29, 9.88] & 63.9\% & -0.08 & -0.05 & 0.21 & 0.21 & 0.02 & 100.0\% \\
+Qwen-3B          & 6.71 [6.04, 7.41] & 78.3\% & 0.00 & -0.04** & 0.16 & 0.22 & -0.05** & 100.0\% \\
+Qwen-7B          & 5.77 [5.24, 6.31] & 86.4\% & -0.00 & 0.02 & 0.21 & 0.29 & 0.02 & 100.0\% \\
+
+% --- Rag suite ---
+Gemma-1B         & 15.41 [14.29, 16.55] & 37.5\% & 0.02 & 0.03 & 0.11 & 0.21 & 0.01 & 100.0\% \\
+Gemma-4B         & 12.95 [12.13, 13.74] & 41.1\% & 0.02 & -0.07*** & 0.17 & 0.25 & -0.09*** & 100.0\% \\
+Llama-1B         & 11.58 [10.24, 13.01] & 64.7\% & 0.02 & 0.19*** & 0.22 & 0.37 & 0.17** & 100.0\% \\
+Llama-3B         & 9.31 [7.77, 10.85] & 75.8\% & 0.07* & 0.10*** & 0.32 & 0.39 & 0.03* & 100.0\% \\
+Llama-8B         & 5.74 [4.61, 6.89] & 83.3\% & -0.03 & 0.07*** & 0.30 & 0.41 & 0.10*** & 100.0\% \\
+OLMo-13B         & 6.08 [4.98, 7.32] & 84.4\% & 0.09 & 0.06** & 0.28 & 0.35 & -0.03 & 100.0\% \\
+OLMo-32B         & 10.11 [9.26, 11.00] & 61.9\% & -0.03 & 0.53*** & 0.06 & 0.61 & 0.56*** & 100.0\% \\
+Qwen-1.5B        & 21.80 [20.61, 23.11] & 18.3\% & 0.09*** & 0.25*** & 0.16 & 0.51 & 0.17*** & 100.0\% \\
+Qwen-3B          & 8.64 [7.73, 9.55] & 69.9\% & 0.02 & 0.11*** & 0.16 & 0.38 & 0.09*** & 99.7\% \\
+Qwen-7B          & 10.78 [9.94, 11.66] & 57.2\% & -0.01 & 0.19*** & 0.10 & 0.51 & 0.20*** & 100.0\% \\
+
+% --- Tool suite ---
+Llama-1B         & 9.43 [8.63, 10.30] & 66.1\% & -0.00 & 0.10*** & 0.00 & 0.14 & 0.10*** & 99.7\% \\
+Llama-3B         & 4.06 [3.06, 5.10] & 88.9\% & 0.03 & 0.23*** & 0.22 & 0.39 & 0.20*** & 99.2\% \\
+Llama-8B         & 10.41 [8.47, 12.53] & 77.8\% & 0.31*** & 0.55*** & 0.28 & 0.68 & 0.24*** & 96.9\% \\
+Qwen-1.5B        & 19.17 [16.69, 21.68] & 60.0\% & 0.24*** & 0.77*** & 0.27 & 0.75 & 0.53*** & 99.7\% \\
+Qwen-3B          & 2.68 [1.78, 3.63] & 93.5\% & -0.02 & 0.10*** & 0.21 & 0.31 & 0.12*** & 99.3\% \\
+Qwen-7B          & 0.61 [0.28, 1.03] & 98.9\% & -0.02 & 0.17*** & 0.06 & 0.43 & 0.19*** & 100.0\% \\
+
+% --- History suite ---
+Gemma-1B         & 14.65 [13.66, 15.61] & 38.7\% & -0.23** & 0.16*** & 0.43 & 0.43 & 0.39*** & 99.9\% \\
+Gemma-4B         & 9.80 [8.28, 11.49] & 75.8\% & 0.07*** & 0.32*** & 0.50 & 0.56 & 0.24*** & 100.0\% \\
+Llama-1B         & 17.59 [15.82, 19.46] & 48.6\% & 0.36*** & 0.75*** & 0.64 & 0.66 & 0.39*** & 99.9\% \\
+Llama-3B         & 9.10 [7.71, 10.61] & 72.2\% & 0.11*** & 0.48*** & 0.46 & 0.63 & 0.37*** & 100.0\% \\
+Llama-8B         & 6.86 [5.43, 8.39] & 82.2\% & 0.12*** & 0.31*** & 0.37 & 0.47 & 0.19*** & 100.0\% \\
+OLMo-13B         & 5.16 [4.33, 6.07] & 87.8\% & 0.00** & 0.10*** & 0.31 & 0.41 & 0.10*** & 99.9\% \\
+OLMo-32B         & 4.52 [3.80, 5.33] & 86.9\% & -0.08 & 0.13*** & 0.33 & 0.36 & 0.20*** & 100.0\% \\
+Qwen-1.5B        & 5.26 [4.67, 5.89] & 85.6\% & -0.04 & 0.86*** & 0.35 & 0.80 & 0.90*** & 100.0\% \\
+Qwen-3B          & 3.98 [3.12, 4.95] & 87.8\% & -0.02** & 0.11*** & 0.31 & 0.44 & 0.13*** & 100.0\% \\
+Qwen-7B          & 3.83 [3.30, 4.40] & 91.1\% & -0.04* & 0.15*** & 0.34 & 0.45 & 0.19*** & 100.0\% \\
+
+===================================================================================================================
+  Per-offset breakdown (anchor distance analysis)
+===================================================================================================================
+
+  Master JSON written to results/full_benchmark/unified_all_suites.json

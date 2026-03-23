@@ -1,0 +1,122 @@
+[
+  {
+    "model": "Qwen-1.5B",
+    "suite": "history",
+    "std_mae_ctrl": 5.49,
+    "ts_mae_ctrl": 24.87,
+    "std_uai_irr": 0.041,
+    "std_uai_pls": 0.9273,
+    "std_disc": 0.8864,
+    "matched_uai_irr": 0.5512,
+    "matched_uai_pls": 0.8213,
+    "matched_disc": 0.2701
+  },
+  {
+    "model": "Qwen-3B",
+    "suite": "history",
+    "std_mae_ctrl": 3.65,
+    "ts_mae_ctrl": 17.67,
+    "std_uai_irr": 0.0235,
+    "std_uai_pls": 0.2052,
+    "std_disc": 0.1817,
+    "matched_uai_irr": 0.1804,
+    "matched_uai_pls": 0.6894,
+    "matched_disc": 0.509
+  },
+  {
+    "model": "Qwen-7B",
+    "suite": "history",
+    "std_mae_ctrl": 3.77,
+    "ts_mae_ctrl": 10.33,
+    "std_uai_irr": -0.0092,
+    "std_uai_pls": 0.1714,
+    "std_disc": 0.1806,
+    "matched_uai_irr": -0.3354,
+    "matched_uai_pls": 0.6311,
+    "matched_disc": 0.9665
+  },
+  {
+    "model": "OLMo-32B",
+    "suite": "history",
+    "std_mae_ctrl": 4.13,
+    "ts_mae_ctrl": 8.51,
+    "std_uai_irr": -0.0439,
+    "std_uai_pls": 0.0735,
+    "std_disc": 0.1174,
+    "matched_uai_irr": -0.0968,
+    "matched_uai_pls": 0.5894,
+    "matched_disc": 0.6862
+  },
+  {
+    "model": "OLMo-13B",
+    "suite": "history",
+    "std_mae_ctrl": 5.4,
+    "ts_mae_ctrl": 9.86,
+    "std_uai_irr": -0.1346,
+    "std_uai_pls": 0.1555,
+    "std_disc": 0.29,
+    "matched_uai_irr": -0.298,
+    "matched_uai_pls": 0.5184,
+    "matched_disc": 0.8164
+  },
+  {
+    "model": "Gemma-1B",
+    "suite": "history",
+    "std_mae_ctrl": 14.71,
+    "ts_mae_ctrl": 27.45,
+    "std_uai_irr": -0.062,
+    "std_uai_pls": 0.1506,
+    "std_disc": 0.2126,
+    "matched_uai_irr": 0.6988,
+    "matched_uai_pls": 0.7902,
+    "matched_disc": 0.0914
+  },
+  {
+    "model": "Gemma-4B",
+    "suite": "history",
+    "std_mae_ctrl": 12.03,
+    "ts_mae_ctrl": 17.32,
+    "std_uai_irr": 0.198,
+    "std_uai_pls": 0.4341,
+    "std_disc": 0.2362,
+    "matched_uai_irr": 0.1146,
+    "matched_uai_pls": 0.6801,
+    "matched_disc": 0.5656
+  },
+  {
+    "model": "Llama-8B",
+    "suite": "history",
+    "std_mae_ctrl": 7.02,
+    "ts_mae_ctrl": 8.05,
+    "std_uai_irr": 0.2098,
+    "std_uai_pls": 0.2899,
+    "std_disc": 0.08,
+    "matched_uai_irr": 0.0736,
+    "matched_uai_pls": 0.3998,
+    "matched_disc": 0.3262
+  },
+  {
+    "model": "Llama-1B",
+    "suite": "history",
+    "std_mae_ctrl": 15.71,
+    "ts_mae_ctrl": 20.87,
+    "std_uai_irr": 0.5151,
+    "std_uai_pls": 0.53,
+    "std_disc": 0.0149,
+    "matched_uai_irr": 0.4928,
+    "matched_uai_pls": 0.8779,
+    "matched_disc": 0.3851
+  },
+  {
+    "model": "Llama-3B",
+    "suite": "history",
+    "std_mae_ctrl": 9.46,
+    "ts_mae_ctrl": 15.42,
+    "std_uai_irr": 0.1237,
+    "std_uai_pls": 0.34,
+    "std_disc": 0.2163,
+    "matched_uai_irr": 0.3067,
+    "matched_uai_pls": 0.5031,
+    "matched_disc": 0.1964
+  }
+]

@@ -1,0 +1,13 @@
+================================================================
+ Tool suite — 4 models in parallel (GPUs 0–3)
+ Logs: logs/tool_missing_4gpu_20260317_081847/
+ Started: 20260317_081847
+================================================================
+PIDs: gemma4b=1090666 gemma1b=1090667 olmo13b=1090668 olmo32b=1090669
+Waiting for all jobs...
+
+================================================================
+ Done. Check tool results:
+   wc -l results/full_benchmark/tool/*/results.jsonl
+ Then: bash scripts/run_with_env.sh python scripts/eval/recompute_all_unified.py --results_dir results/full_benchmark
+================================================================

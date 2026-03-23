@@ -2,101 +2,160 @@
 """Recompute all AnchorBench metrics using the unified framework.
 
 Reads existing results.jsonl files (NO re-running of inference) and
-produces a single comparison table across External, History, and RAG.
+produces a single comparison table across all suites and models.
+
+Auto-discovers results from the directory structure:
+  <results_dir>/<suite>/<model_slug>/results.jsonl
+  <results_dir>/<suite>/<model_slug>/<model_slug>/results.jsonl  (icl/tool)
 
 Usage:
-    python scripts/eval/recompute_all_unified.py
+    PYTHONPATH=src python scripts/eval/recompute_all_unified.py \
+        --results_dir results/full_benchmark
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
-from unified_metrics import load_records, compute_unified_metrics, print_summary
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-RESULTS_ROOT = Path(__file__).resolve().parents[2] / "results"
+from anchorbench_eval.io import load_records
+from anchorbench_eval.metrics import (
+    compute_by_difficulty,
+    compute_by_offset,
+    compute_extended_metrics,
+    compute_unified_metrics,
+    print_summary,
+)
+
+SUITES = ("external", "icl", "rag", "tool", "tool_agentic", "tool_read", "history")
 
 MODEL_SHORT = {
-    "Qwen/Qwen2.5-7B-Instruct": "Qwen2.5-7B",
-    "Qwen/Qwen2.5-3B-Instruct": "Qwen2.5-3B",
-    "meta-llama/Llama-3.1-8B-Instruct": "Llama-3.1-8B",
-    "meta-llama/Llama-3.2-3B-Instruct": "Llama-3.2-3B",
+    "meta-llama_Llama-3.2-1B-Instruct": "Llama-1B",
+    "meta-llama_Llama-3.2-3B-Instruct": "Llama-3B",
+    "meta-llama_Llama-3.1-8B-Instruct": "Llama-8B",
+    "Qwen_Qwen2.5-1.5B-Instruct": "Qwen-1.5B",
+    "Qwen_Qwen2.5-3B-Instruct": "Qwen-3B",
+    "Qwen_Qwen2.5-7B-Instruct": "Qwen-7B",
+    "google_gemma-3-1b-it": "Gemma-1B",
+    "google_gemma-3-4b-it": "Gemma-4B",
+    "allenai_OLMo-2-1124-13B-Instruct": "OLMo-13B",
+    "allenai_OLMo-2-0325-32B-Instruct": "OLMo-32B",
+    "openai_gpt-4o-mini": "GPT-4o-mini",
+    "openai_gpt-5.4-mini": "GPT-5.4-mini",
+    "google_gemini-2.5-flash": "Gemini-2.5-Flash",
+    "anthropic_claude-haiku-4.5": "Claude-H4.5",
+    "x-ai_grok-3-mini-beta": "Grok-3-mini",
 }
 
-RUNS = [
-    # (suite_label, model_short, results_path)
-    ("External", "Qwen2.5-7B",  RESULTS_ROOT / "external_v2_pilot_Qwen25_7B_512/results.jsonl"),
-    ("External", "Qwen2.5-3B",  RESULTS_ROOT / "external_v2_pilot_Qwen25_3B_512/results.jsonl"),
-    ("External", "Llama-3.1-8B", RESULTS_ROOT / "external_v2_pilot_Llama31_8B_512/results.jsonl"),
-    ("External", "Llama-3.2-3B", RESULTS_ROOT / "external_v2_pilot_Llama32_3B_512/results.jsonl"),
 
-    ("History",  "Qwen2.5-7B",  RESULTS_ROOT / "history_v2_pilot_Qwen25_7B_512/results.jsonl"),
-    ("History",  "Qwen2.5-3B",  RESULTS_ROOT / "history_v2_pilot_Qwen25_3B_512/results.jsonl"),
-    ("History",  "Llama-3.1-8B", RESULTS_ROOT / "history_v2_pilot_Llama31_8B_512/results.jsonl"),
-    ("History",  "Llama-3.2-3B", RESULTS_ROOT / "history_v2_pilot_Llama32_3B_512/results.jsonl"),
+def discover_results(results_dir: Path) -> list[tuple[str, str, str, Path]]:
+    """Find all results.jsonl files and extract (suite, model_slug, short_name, path)."""
+    found = []
+    for suite in SUITES:
+        suite_dir = results_dir / suite
+        if not suite_dir.is_dir():
+            continue
 
-    ("RAG",      "Qwen2.5-7B",  RESULTS_ROOT / "rag_v2_pilot/Qwen_Qwen2.5-7B-Instruct/results.jsonl"),
-    ("RAG",      "Qwen2.5-3B",  RESULTS_ROOT / "rag_v2_pilot/Qwen_Qwen2.5-3B-Instruct/results.jsonl"),
-    ("RAG",      "Llama-3.1-8B", RESULTS_ROOT / "rag_v2_pilot/meta-llama_Llama-3.1-8B-Instruct/results.jsonl"),
-    ("RAG",      "Llama-3.2-3B", RESULTS_ROOT / "rag_v2_pilot/meta-llama_Llama-3.2-3B-Instruct/results.jsonl"),
-]
+        for p in sorted(suite_dir.rglob("results.jsonl")):
+            rel = p.relative_to(suite_dir)
+            parts = list(rel.parts)
+
+            if len(parts) == 1:
+                model_slug = suite_dir.name
+                if model_slug in SUITES:
+                    continue
+            elif len(parts) == 2:
+                model_slug = parts[0]
+            elif len(parts) == 3:
+                model_slug = parts[0]
+            else:
+                continue
+
+            short = MODEL_SHORT.get(model_slug, model_slug)
+            found.append((suite, model_slug, short, p))
+
+    return found
 
 
-def fmt(v, decimals=2):
+def fmt(v: float | None, decimals: int = 2) -> str:
     if v is None:
         return "---"
     return f"{v:.{decimals}f}"
 
 
-def fmt_pct(v):
+def fmt_pct(v: float | None) -> str:
     if v is None:
         return "---"
-    return f"{v*100:.1f}%"
+    return f"{v * 100:.1f}%"
 
 
-def main():
+def main() -> None:
+    p = argparse.ArgumentParser(
+        description="Recompute unified metrics from existing results",
+    )
+    p.add_argument(
+        "--results_dir", type=Path,
+        default=Path(__file__).resolve().parents[2] / "results" / "full_benchmark",
+    )
+    p.add_argument("--epsilon", type=float, default=3.0)
+    args = p.parse_args()
+
+    runs = discover_results(args.results_dir)
+    if not runs:
+        print(f"No results found in {args.results_dir}")
+        print("Expected structure: <results_dir>/<suite>/<model_slug>/results.jsonl")
+        sys.exit(1)
+
+    print(f"Found {len(runs)} result files in {args.results_dir}")
+    for suite, slug, short, path in runs:
+        print(f"  {suite:<10} {short:<16} {path}")
+    print()
+
     all_results = []
-    missing = []
-
-    for suite, model, path in RUNS:
-        if not path.exists():
-            missing.append((suite, model, str(path)))
-            continue
+    for suite, slug, short, path in runs:
         records = load_records(path)
-        metrics = compute_unified_metrics(records)
-        metrics["suite"] = suite
-        metrics["model"] = model
+        if not records:
+            print(f"  WARNING: empty {path}")
+            continue
+        metrics = compute_extended_metrics(records, epsilon=args.epsilon)
+        metrics["suite"] = suite.capitalize()
+        metrics["model"] = short
+        metrics["model_slug"] = slug
+        metrics["n_records"] = len(records)
+
+        metrics["by_offset"] = compute_by_offset(records, epsilon=args.epsilon)
+        metrics["by_difficulty"] = compute_by_difficulty(records, epsilon=args.epsilon)
+
         all_results.append(metrics)
 
-        # Write unified summary next to the original
         out_path = path.parent / "unified_summary.json"
         with open(out_path, "w") as f:
-            json.dump(metrics, f, indent=2)
+            json.dump(metrics, f, indent=2, default=str)
 
-    if missing:
-        print("WARNING: Missing result files:")
-        for s, m, p in missing:
-            print(f"  {s} / {m}: {p}")
-        print()
-
-    # --- Print per-suite tables ---
-    for suite in ("External", "History", "RAG"):
-        rows = [r for r in all_results if r["suite"] == suite]
+    # Per-suite tables
+    for suite_name in ("External", "Icl", "Rag", "Tool", "History"):
+        rows = [r for r in all_results if r["suite"] == suite_name]
         if not rows:
             continue
+        rows.sort(key=lambda r: r.get("uai_plaus") or 0, reverse=True)
 
-        print(f"\n{'='*90}")
-        print(f"  {suite} Suite — Unified Metrics")
-        print(f"{'='*90}")
-        header = f"{'Model':<16} {'MAE_c':>6} {'Acc10_c':>8} {'UAI_irr':>8} {'UAI_pls':>8} {'TAR_irr':>8} {'TAR_pls':>8} {'Disc_Δ':>8} {'Parse':>7}"
+        print(f"\n{'=' * 105}")
+        print(f"  {suite_name} Suite — Unified Metrics")
+        print(f"{'=' * 105}")
+        header = (
+            f"{'Model':<16} {'N':>5} {'MAE_c':>6} {'Acc10_c':>8} {'UAI_irr':>8} "
+            f"{'UAI_pls':>8} {'TAR_irr':>8} {'TAR_pls':>8} {'Disc_Δ':>8} {'Parse':>7}"
+        )
         print(header)
         print("-" * len(header))
         for r in rows:
             print(
                 f"{r['model']:<16} "
+                f"{r['n_records']:>5} "
                 f"{fmt(r['mae_control']):>6} "
                 f"{fmt_pct(r['acc10_control']):>8} "
                 f"{fmt(r['uai_irr'], 3):>8} "
@@ -106,59 +165,110 @@ def main():
                 f"{fmt(r['disc_delta'], 3):>8} "
                 f"{fmt_pct(r['parse_rate']):>7}"
             )
-
-        # History appendix metrics
-        if suite == "History":
-            print(f"\n  History secondary (appendix): ACR / RR (plausible conditions)")
-            print(f"  {'Model':<16} {'ACR':>8} {'RR':>8}")
-            print(f"  {'-'*34}")
-            for r in rows:
-                print(f"  {r['model']:<16} {fmt(r.get('acr_mean'), 3):>8} {fmt(r.get('rr_mean'), 3):>8}")
         print()
 
-    # --- LaTeX tables ---
-    print("\n" + "="*90)
-    print("  LaTeX table rows (copy-paste into paper)")
-    print("="*90)
-
-    for suite in ("External", "History", "RAG"):
-        rows = [r for r in all_results if r["suite"] == suite]
-        if not rows:
-            continue
-        print(f"\n% --- {suite} suite ---")
-        for r in rows:
-            model = r["model"]
-            mae = fmt(r["mae_control"])
-            acc = f"{r['acc10_control']*100:.1f}\\%" if r["acc10_control"] is not None else "---"
-            ui = fmt(r["uai_irr"], 2)
-            up = fmt(r["uai_plaus"], 2)
-            ti = fmt(r["tar_irr"], 2)
-            tp = fmt(r["tar_plaus"], 2)
-            dd = fmt(r["disc_delta"], 2)
-            print(f"{model:<16} & {mae} & {acc} & {ui} & {up} & {ti} & {tp} & {dd} \\\\")
-
-    # --- Cross-suite comparison summary ---
-    print("\n" + "="*90)
-    print("  Cross-suite summary (all suites, all models)")
-    print("="*90)
-    header = f"{'Suite':<10} {'Model':<16} {'MAE_c':>6} {'Acc10_c':>8} {'UAI_irr':>8} {'UAI_pls':>8} {'Disc_Δ':>8}"
+    # Cross-suite summary
+    print("\n" + "=" * 105)
+    print("  Cross-suite Summary (all suites, all models)")
+    print("=" * 105)
+    header = (
+        f"{'Suite':<10} {'Model':<16} {'N':>5} {'MAE_c':>6} {'Acc10_c':>8} "
+        f"{'UAI_irr':>8} {'UAI_pls':>8} {'Disc_Δ':>8} {'Parse':>7}"
+    )
     print(header)
     print("-" * len(header))
-    for r in all_results:
+    for r in sorted(all_results, key=lambda r: (r["suite"], r["model"])):
         print(
             f"{r['suite']:<10} "
             f"{r['model']:<16} "
+            f"{r['n_records']:>5} "
             f"{fmt(r['mae_control']):>6} "
             f"{fmt_pct(r['acc10_control']):>8} "
             f"{fmt(r['uai_irr'], 3):>8} "
             f"{fmt(r['uai_plaus'], 3):>8} "
-            f"{fmt(r['disc_delta'], 3):>8}"
+            f"{fmt(r['disc_delta'], 3):>8} "
+            f"{fmt_pct(r['parse_rate']):>7}"
         )
 
-    # Save master JSON
-    out = RESULTS_ROOT / "unified_all_suites.json"
+    # LaTeX table with CIs and significance markers
+    print("\n" + "=" * 115)
+    print("  LaTeX table rows with CIs (copy-paste into paper)")
+    print("=" * 115)
+
+    def fmt_ci(r: dict, key: str, decimals: int = 2) -> str:
+        """Format a metric with CI: '0.42 [0.31, 0.53]'."""
+        val = r.get(key)
+        ci = r.get(f"{key}_ci")
+        if val is None:
+            return "---"
+        v = f"{val:.{decimals}f}"
+        if ci and ci.get("lo") is not None:
+            return f"{v} [{ci['lo']:.{decimals}f}, {ci['hi']:.{decimals}f}]"
+        return v
+
+    def sig_marker(r: dict, key: str) -> str:
+        """Return significance marker based on BH-corrected p-value."""
+        p = r.get(f"{key}_bh", r.get(key))
+        if p is None or (isinstance(p, float) and (p != p)):
+            return ""
+        if p < 0.001:
+            return "***"
+        if p < 0.01:
+            return "**"
+        if p < 0.05:
+            return "*"
+        return ""
+
+    for suite_name in ("External", "Icl", "Rag", "Tool", "Tool_agentic", "Tool_read", "History"):
+        rows = [r for r in all_results if r["suite"] == suite_name]
+        if not rows:
+            continue
+        rows.sort(key=lambda r: r["model"])
+        print(f"\n% --- {suite_name} suite ---")
+        for r in rows:
+            model = r["model"]
+            mae = fmt_ci(r, "mae_control")
+            acc = (
+                f"{r['acc10_control'] * 100:.1f}\\%"
+                if r["acc10_control"] is not None
+                else "---"
+            )
+            ui = fmt(r["uai_irr"], 2) + sig_marker(r, "p_irr_vs_zero")
+            up = fmt(r["uai_plaus"], 2) + sig_marker(r, "p_plaus_vs_zero")
+            ti = fmt(r["tar_irr"], 2)
+            tp = fmt(r["tar_plaus"], 2)
+            dd = fmt(r["disc_delta"], 2) + sig_marker(r, "p_plaus_vs_irr")
+            pr = (
+                f"{r['parse_rate'] * 100:.1f}\\%"
+                if r["parse_rate"] is not None
+                else "---"
+            )
+            print(
+                f"{model:<16} & {mae} & {acc} & {ui} & {up} & {ti} & {tp} & {dd} & {pr} \\\\"
+            )
+
+    # Per-offset breakdown table
+    print("\n" + "=" * 115)
+    print("  Per-offset breakdown (anchor distance analysis)")
+    print("=" * 115)
+    for r in all_results:
+        by_off = r.get("by_offset", {})
+        if not by_off:
+            continue
+        print(f"\n  {r['suite']} / {r['model']}:")
+        print(f"    {'Offset':>8} {'UAI_irr':>8} {'UAI_pls':>8} {'TAR_irr':>8} {'TAR_pls':>8} {'N':>5}")
+        for offset in sorted(by_off.keys(), key=int):
+            m = by_off[offset]
+            print(
+                f"    {offset:>8} {fmt(m.get('uai_irr'), 3):>8} {fmt(m.get('uai_plaus'), 3):>8} "
+                f"{fmt(m.get('tar_irr'), 3):>8} {fmt(m.get('tar_plaus'), 3):>8} {m.get('n_items', 0):>5}"
+            )
+
+    # Write master JSON
+    out = args.results_dir / "unified_all_suites.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w") as f:
-        json.dump(all_results, f, indent=2)
+        json.dump(all_results, f, indent=2, default=str)
     print(f"\n  Master JSON written to {out}")
 
 

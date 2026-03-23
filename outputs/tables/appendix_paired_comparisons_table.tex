@@ -1,0 +1,14 @@
+\begin{tabular}{llrrrrrrl}
+\toprule
+claim & comparison & effect_size & ci_lo & ci_hi & p_raw & p_adj_bh & n_units & notes \\
+\midrule
+Plausible anchors usually > irrelevant & External: UAI_plaus - UAI_irr (paired by model) & 0.188200 & 0.124654 & 0.249333 & 0.001953 & 0.007812 & 10.000000 & Wilcoxon signed-rank across models within suite. \\
+Plausible anchors usually > irrelevant & History: UAI_plaus - UAI_irr (paired by model) & 0.241610 & 0.130305 & 0.400100 & 0.001953 & 0.007812 & 10.000000 & Wilcoxon signed-rank across models within suite. \\
+Plausible anchors usually > irrelevant & Icl: UAI_plaus - UAI_irr (paired by model) & -0.001850 & -0.035783 & 0.040582 & 0.556641 & 0.556641 & 10.000000 & Wilcoxon signed-rank across models within suite. \\
+Plausible anchors usually > irrelevant & Rag: UAI_plaus - UAI_irr (paired by model) & 0.119270 & 0.040490 & 0.208714 & 0.027344 & 0.043750 & 10.000000 & Wilcoxon signed-rank across models within suite. \\
+Plausible anchors usually > irrelevant & Tool: UAI_plaus - UAI_irr (paired by model) & 0.143144 & 0.049177 & 0.270471 & 0.011719 & 0.023438 & 9.000000 & Wilcoxon signed-rank across models within suite. \\
+Tool partly reflects protocol compliance & Tool Parse - mean(Parse of External/History/ICL/RAG), paired by model & -0.121542 & -0.309756 & -0.008558 & 0.039062 & 0.052083 & 10.000000 & Negative effect implies lower parse/protocol compliance in Tool. \\
+Requested paired comparison & History - ICL DiscDelta (paired by model) & 0.243470 & 0.112598 & 0.407943 & 0.003906 & 0.010417 & 10.000000 & Item-level pairing across suites not available; model-level pairing used. \\
+Requested paired comparison & Tool - mean(other suites) DiscDelta (paired by model) & -0.007650 & -0.083328 & 0.080708 & 0.496094 & 0.556641 & 9.000000 & Model-level pairing used. \\
+\bottomrule
+\end{tabular}

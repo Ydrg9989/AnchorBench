@@ -6,10 +6,9 @@ import asyncio
 import json
 import logging
 import re
-import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import IO, Any
 
 import numpy as np
 
@@ -30,7 +29,6 @@ log = logging.getLogger(__name__)
 
 _INT_PAT = re.compile(r"(?<![\d.])-?\d+(?!\d)(?!\.\d)")
 
-# Prefer numbers that look like a final answer (e.g. "is 79", "Answer: 79", "= 79")
 _COT_NUM_PAT = re.compile(
     r"(?:is|=|:\s*)\s*(\d{1,3})\s*(?:[.\s\n]|$)",
     re.IGNORECASE,
@@ -47,7 +45,8 @@ class LLMFallbackExtractor:
     """Loads a small HF model once for fallback answer extraction."""
 
     def __init__(self, model_id: str = "meta-llama/Llama-3.2-1B-Instruct",
-                 device: str = "auto", dtype: str = "bfloat16"):
+                 device: str = "auto", dtype: str = "bfloat16") -> None:
+        """Initialize the fallback extractor with a small causal LM."""
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -127,14 +126,11 @@ def parse_answer_int(raw_text: str, prompt_text: str = "") -> tuple[int | None, 
     if len(unique) == 1:
         return unique[0], True
 
-    # CoT-style: prefer the last number that looks like a conclusion ("is 79", "Answer: 79", "= 79")
-    # so we don't take a divisor from "... / 4" when the real answer appeared earlier
     cot_matches = [int(m.group(1)) for m in _COT_NUM_PAT.finditer(text)]
     cot_valid = [v for v in cot_matches if 0 <= v <= 100]
     if cot_valid:
         return cot_valid[-1], True
 
-    # Try last-line heuristic: many models put the final answer on the last line
     last_line = text.strip().split("\n")[-1].strip()
     last_line_ints = [int(m.group()) for m in _INT_PAT.finditer(last_line)]
     last_line_valid = [c for c in last_line_ints if 0 <= c <= 100]
@@ -188,6 +184,7 @@ def load_promptviews(path: Path) -> dict[str, dict[str, dict]]:
 
 
 def load_itemspecs(path: Path) -> dict[str, dict]:
+    """Load itemspecs.jsonl -> {item_id: spec_dict}."""
     specs: dict[str, dict] = {}
     with open(path, encoding="utf-8") as f:
         for line in f:
@@ -214,7 +211,8 @@ class HFRunner:
     """Local HuggingFace model runner."""
 
     def __init__(self, model_id: str, device: str = "auto",
-                 device_map: str | None = None, dtype: str = "bfloat16"):
+                 device_map: str | None = None, dtype: str = "bfloat16") -> None:
+        """Load a HuggingFace causal LM for local inference."""
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -235,6 +233,7 @@ class HFRunner:
 
     def generate(self, prompt: str, max_tokens: int = 8,
                  temperature: float = 0.0) -> str:
+        """Generate a single completion from a user prompt string."""
         import torch
         messages = [{"role": "user", "content": prompt}]
         text = self.tokenizer.apply_chat_template(
@@ -283,6 +282,7 @@ class HFRunner:
 
     def generate_batch(self, prompts: list[str], max_tokens: int = 8,
                        temperature: float = 0.0, batch_size: int = 16) -> list[str]:
+        """Generate completions for a list of prompts in batches."""
         import torch
         results = []
         for i in range(0, len(prompts), batch_size):
@@ -775,11 +775,12 @@ def _prepare_items(
 
 
 def _write_result(
-    fh, model_id: str, item: dict, condition: str, mitigation: str,
+    fh: IO[str], model_id: str, item: dict, condition: str, mitigation: str,
     answer: int | None, parsed_ok: bool, raw_text: str,
     extra: dict | None = None,
     parse_strategy: str = "regex",
 ) -> None:
+    """Serialize a single evaluation result as a JSONL line to the output file."""
     record = {
         "model_id": model_id,
         "item_id": item["item_id"],

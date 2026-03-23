@@ -1,0 +1,26 @@
+================================================================
+ Model:     google/gemma-3-4b-it
+ GPU:       1 (TP=1)
+ Tokens:    512
+ GPU Mem:   0.85
+ Model Len: 4096
+ Output:    results/full_benchmark/*/google_gemma-3-4b-it/
+ Views:     promptviews_core.jsonl
+ Started:   20260316_180055
+================================================================
+
+[18:00:55] ▶ external | google/gemma-3-4b-it | GPU 1
+  Data:    datasets/anchorbench_external_core
+  Output:  results/full_benchmark/external/google_gemma-3-4b-it
+INFO Loaded 360 items (1800 prompts)
+INFO Loading model google/gemma-3-4b-it (vllm backend)...
+INFO 03-16 18:01:05 [utils.py:238] non-default args: {'trust_remote_code': True, 'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.85, 'disable_log_stats': True, 'model': 'google/gemma-3-4b-it'}
+WARNING 03-16 18:01:05 [envs.py:1710] Unknown vLLM environment variable detected: VLLM_USE_V1
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 03-16 18:01:06 [model.py:531] Resolved architecture: Gemma3ForConditionalGeneration
+INFO 03-16 18:01:06 [model.py:1554] Using max model len 4096
+INFO 03-16 18:01:06 [scheduler.py:231] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 03-16 18:01:06 [vllm.py:747] Asynchronous scheduling is enabled.
+WARNING 03-16 18:01:07 [cuda.py:293] Forcing --disable_chunked_mm_input for models with multimodal-bidirectional attention.
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.

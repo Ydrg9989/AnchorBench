@@ -1,3 +1,3 @@
-"""AnchorBench v1.0 — Numeric anchoring benchmark for LLMs."""
+"""AnchorBench v1 — Numeric anchoring benchmark for LLMs."""
 
-__version__ = "1.0.0"
+__version__ = "2.1.0"

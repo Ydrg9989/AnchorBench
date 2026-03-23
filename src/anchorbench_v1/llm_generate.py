@@ -7,7 +7,7 @@ Usage:
 
 from __future__ import annotations
 
-import hashlib
+
 from typing import Any, Dict, List, Optional, Tuple
 
 from .config import get_role_config
@@ -17,6 +17,7 @@ _client: Optional[OpenRouterClient] = None
 
 
 def _get_client(artifact_dir: Optional[str] = None) -> OpenRouterClient:
+    """Return the singleton OpenRouterClient, creating it on first call."""
     global _client
     if _client is None:
         _client = OpenRouterClient(

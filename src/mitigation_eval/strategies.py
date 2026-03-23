@@ -166,7 +166,6 @@ def parse_cot_answer(raw_text: str) -> tuple[int | None, bool]:
     if not raw_text:
         return None, False
 
-    # Try last non-empty line first (most reliable for "answer on its own line")
     lines = [ln.strip() for ln in raw_text.strip().split("\n") if ln.strip()]
     if lines:
         last_line = lines[-1]
@@ -175,7 +174,6 @@ def parse_cot_answer(raw_text: str) -> tuple[int | None, bool]:
         if len(last_valid) == 1:
             return last_valid[0], True
 
-    # Fall back to last valid integer in the full text
     all_ints = [int(m.group()) for m in _INT_PAT.finditer(raw_text)]
     valid = [i for i in all_ints if 0 <= i <= 100]
     if not valid:

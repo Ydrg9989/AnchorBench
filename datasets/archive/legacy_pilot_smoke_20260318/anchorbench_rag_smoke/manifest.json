@@ -1,0 +1,58 @@
+{
+  "version": "2.1.0",
+  "suite": "rag",
+  "generator_version": "a337b4d",
+  "seed": 42,
+  "size": "smoke",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-03-18T12:07:54Z",
+  "counts": {
+    "itemspecs": 6,
+    "promptviews": 102,
+    "promptviews_core": 30,
+    "promptviews_ablation": 72,
+    "suites": [
+      "rag"
+    ],
+    "domains": [
+      "pricing_wtp"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 17,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": [
+      "irrelevant_high_nodiscl",
+      "irrelevant_high_order_first",
+      "irrelevant_high_order_last",
+      "irrelevant_low_nodiscl",
+      "irrelevant_low_order_first",
+      "irrelevant_low_order_last",
+      "plausible_high_authority",
+      "plausible_high_order_first",
+      "plausible_high_order_last",
+      "plausible_low_authority",
+      "plausible_low_order_first",
+      "plausible_low_order_last"
+    ],
+    "corpus_docs": 66
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_rag_smoke/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_rag_smoke/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_rag_smoke/promptviews_core.jsonl",
+    "promptviews_ablation": "datasets/anchorbench_rag_smoke/promptviews_ablation.jsonl",
+    "corpus": "datasets/anchorbench_rag_smoke/anchorbench_corpus.jsonl"
+  },
+  "validation_passed": true
+}

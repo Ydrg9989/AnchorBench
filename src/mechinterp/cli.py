@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import logging
 import subprocess
@@ -12,6 +11,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
@@ -99,7 +99,10 @@ def _load_items(
     return items
 
 
-def _run_imprint(model, tokenizer, int_vocab, items, out_dir: Path) -> None:
+def _run_imprint(
+    model: Any, tokenizer: Any, int_vocab: dict[int, list[int]],
+    items: list[dict], out_dir: Path,
+) -> None:
     """Compute distributional anchor imprint for all items."""
     csv_path = out_dir / "imprint_metrics.csv"
     fieldnames = [
@@ -143,7 +146,8 @@ def _run_imprint(model, tokenizer, int_vocab, items, out_dir: Path) -> None:
 
 
 def _run_patching(
-    model, tokenizer, int_vocab, items, out_dir: Path,
+    model: Any, tokenizer: Any, int_vocab: dict[int, list[int]],
+    items: list[dict], out_dir: Path,
     do_heads: bool, top_k_layers: int,
 ) -> None:
     """Layer sweep and optional head sweep patching."""
@@ -234,7 +238,10 @@ def _run_patching(
         log.info("Head sweep -> %s", head_csv)
 
 
-def _run_logit_lens(model, tokenizer, int_vocab, items, out_dir: Path) -> None:
+def _run_logit_lens(
+    model: Any, tokenizer: Any, int_vocab: dict[int, list[int]],
+    items: list[dict], out_dir: Path,
+) -> None:
     """Logit lens sweep for all items."""
     csv_path = out_dir / "logit_lens.csv"
     fields = ["item_id", "suite", "domain", "condition", "layer", "js_divergence"]
@@ -274,7 +281,8 @@ def _run_logit_lens(model, tokenizer, int_vocab, items, out_dir: Path) -> None:
     log.info("Logit lens -> %s", csv_path)
 
 
-def main():
+def main() -> None:
+    """Parse CLI arguments and dispatch to the appropriate sub-command."""
     parser = argparse.ArgumentParser(description="Mechanistic interpretability pipeline")
     sub = parser.add_subparsers(dest="command", help="sub-command")
 
@@ -322,7 +330,8 @@ def main():
         _cmd_aggregate(args)
 
 
-def _cmd_run(args):
+def _cmd_run(args: argparse.Namespace) -> None:
+    """Load model, run imprint / logit-lens / patching, and write artifacts."""
     model_short = args.model_id.split("/")[-1]
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = args.out_dir / f"{model_short}_{date_str}"
@@ -397,7 +406,7 @@ def _generate_artifacts(out_dir: Path, model_name: str) -> None:
                                tab_dir / "mechinterp_main.tex")
 
 
-def _cmd_aggregate(args):
+def _cmd_aggregate(args: argparse.Namespace) -> None:
     """Discover result dirs and regenerate all figures/tables."""
     base = args.auto_discover
     if not base or not base.exists():

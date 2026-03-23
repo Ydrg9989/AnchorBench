@@ -1,0 +1,21 @@
+================================================================
+ Model:     Qwen/Qwen2.5-1.5B-Instruct
+ GPU:       0 (TP=1)
+ Tokens:    512
+ GPU Mem:   0.95
+ Model Len: 4096
+ Output:    results/full_benchmark/*/Qwen_Qwen2.5-1.5B-Instruct/
+ Views:     promptviews_core.jsonl
+ Started:   20260316_172233
+================================================================
+[17:22:33] SKIP external — already complete (1800 lines)
+[17:22:33] SKIP icl — already complete (1800 lines)
+[17:22:33] SKIP rag — already complete (1800 lines)
+[17:22:33] SKIP tool — already complete (1800 lines)
+[17:22:33] SKIP history — already complete (1800 lines)
+
+================================================================
+ ALL SUITES COMPLETE: Qwen/Qwen2.5-1.5B-Instruct
+ Total time: 0 minutes
+ Results:    results/full_benchmark/*/Qwen_Qwen2.5-1.5B-Instruct/
+================================================================

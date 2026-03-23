@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
-# Tmux-based experiment orchestrator for 4x H100 (~93.6GB each) + OpenRouter API
-# Usage: bash scripts/run_all.sh [--smoke|--full]
-# Monitor: tmux attach -t anchoring
+# Tmux-based experiment orchestrator for 4x H100 (~93.6GB each) + OpenRouter API.
+#
+# Launches parallel mechinterp and mitigation experiments across GPUs and API
+# models inside a tmux session. Each window runs one GPU/API workload.
+#
+# Usage:
+#   bash scripts/run_all.sh [--smoke|--full]
+#
+# Monitor:
+#   tmux attach -t anchoring
+#
+# Environment:
+#   Requires tmux, CUDA GPUs (0-2), .env with OPENROUTER_API_KEY (for API
+#   models), and the AnchorBench v1 dataset at datasets/anchorbench_v1/.
 set -euo pipefail
 
 SESSION="anchoring"

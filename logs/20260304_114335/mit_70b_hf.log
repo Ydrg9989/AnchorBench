@@ -1,42 +1,0 @@
-2026-03-04 11:43:35,967 INFO Loading dataset...
-2026-03-04 11:43:36,021 INFO Loaded 600 items with prompt views
-2026-03-04 11:43:36,021 INFO Loading HF model meta-llama/Llama-3.3-70B-Instruct...
-2026-03-04 11:43:40,029 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-2026-03-04 11:43:40,173 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
-2026-03-04 11:43:40,317 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/main/tokenizer_config.json "HTTP/1.1 200 OK"
-2026-03-04 11:43:40,457 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
-2026-03-04 11:43:40,601 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
-2026-03-04 11:43:42,291 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct "HTTP/1.1 200 OK"
-2026-03-04 11:43:42,479 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-`torch_dtype` is deprecated! Use `dtype` instead!
-/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/io/image.py:13: UserWarning: Failed to load image Python extension: '/data/yiderigun/LLM_env/lib/python3.11/site-packages/torchvision/image.so: undefined symbol: _ZN3c1017RegisterOperatorsD1Ev'If you don't plan on using image functionality from `torchvision.io`, you can ignore this warning. Otherwise, there might be something wrong with your environment. Did you have `libjpeg` or `libpng` installed before building `torchvision` from source?
-  warn(
-use_kernel_func_from_hub is not available in the installed kernels version. Please upgrade kernels to use this feature.
-2026-03-04 11:43:45,200 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/main/config.json "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,349 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/revision/main "HTTP/1.1 200 OK"
-Fetching 30 files:   0%|          | 0/30 [00:00<?, ?it/s]2026-03-04 11:43:45,502 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00001-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,544 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00003-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,555 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00006-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,558 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00004-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,562 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00002-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,565 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00007-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,577 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00008-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,582 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00005-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:43:45,654 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,704 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,707 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,710 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,715 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,717 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,720 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:43:45,728 INFO HTTP Request: GET https://huggingface.co/api/models/meta-llama/Llama-3.3-70B-Instruct/xet-read-token/6f6073b423013f6a7d4d9f39144961bfbfbc386b "HTTP/1.1 200 OK"
-2026-03-04 11:48:27,174 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00009-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:48:37,509 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00010-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:49:14,319 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00011-of-00030.safetensors "HTTP/1.1 302 Found"
-Fetching 30 files:   3%|▎         | 1/30 [05:35<2:42:06, 335.39s/it]2026-03-04 11:49:20,902 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00012-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:49:21,032 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00013-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:49:29,797 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00014-of-00030.safetensors "HTTP/1.1 302 Found"
-2026-03-04 11:49:34,850 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00015-of-00030.safetensors "HTTP/1.1 302 Found"
-Fetching 30 files:   7%|▋         | 2/30 [05:55<1:09:58, 149.95s/it]2026-03-04 11:49:41,182 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00016-of-00030.safetensors "HTTP/1.1 302 Found"
-Fetching 30 files:  30%|███       | 9/30 [09:11<16:01, 45.77s/it]   2026-03-04 11:52:57,614 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00017-of-00030.safetensors "HTTP/1.1 302 Found"
-Fetching 30 files:  33%|███▎      | 10/30 [09:12<13:02, 39.12s/it]2026-03-04 11:52:58,534 INFO HTTP Request: HEAD https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct/resolve/6f6073b423013f6a7d4d9f39144961bfbfbc386b/model-00018-of-00030.safetensors "HTTP/1.1 302 Found"

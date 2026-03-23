@@ -19,6 +19,7 @@ def kl_divergence(p: np.ndarray, q: np.ndarray) -> float:
 
 
 def symmetric_kl(p: np.ndarray, q: np.ndarray) -> float:
+    """Symmetric KL divergence: 0.5 * (KL(p||q) + KL(q||p))."""
     return 0.5 * (kl_divergence(p, q) + kl_divergence(q, p))
 
 
@@ -48,6 +49,7 @@ def expected_value(p: np.ndarray) -> float:
 
 
 def delta_ev(p_anch: np.ndarray, p_ctrl: np.ndarray) -> float:
+    """Shift in expected value: E[Y|anchor] - E[Y|control]."""
     return expected_value(p_anch) - expected_value(p_ctrl)
 
 

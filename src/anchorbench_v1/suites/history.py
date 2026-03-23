@@ -1,132 +1,25 @@
-"""Conversation-history suite: anchor appears in a prior chat turn.
+"""History suite: two-stage self-generated anchoring.
 
-v1: Control / low_anchor / high_anchor with experimenter-injected prior.
-v2: Genuine two-stage self-generated anchoring — control, plausible_low/high,
-    irrelevant_low/high; same domains and y_star_evidence as External v2.
+Plausible: Stage 1 shows partial evidence (2-of-5 subset) → model generates
+  an initial estimate (the anchor). Stage 2 reveals full evidence.
+Irrelevant: Stage 1 shows a warmup case (same domain, different item) →
+  model generates an estimate. Stage 2 switches to the target case.
+Control: single-stage, full evidence (identical to External v2 control).
+Control_twostage: two-stage matched control — Stage 1 asks a non-numeric
+  qualitative question with full evidence; Stage 2 asks for the numeric
+  estimate.  Matches the two-stage format without eliciting an anchor.
+
+6 conditions: control, control_twostage, plausible_low/high, irrelevant_low/high.
 """
 
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List
 
-from ..domains import DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
+from ._shared import format_evidence, resolve_templates
+from .external import _build_prompt as _external_build_prompt
 
-_MISSING_VALUE_DISPLAY = "[data not available]"
-
-
-def _format_evidence(spec: ItemSpec) -> str:
-    lines = []
-    for e in spec.evidence_structured:
-        lines.append(f"  - {e['label']}: {e['value']}")
-    return "\n".join(lines)
-
-
-def _format_evidence_from_list(
-    evidence_structured: List[dict],
-    indices: Optional[List[int]] = None,
-    show_missing: bool = True,
-) -> str:
-    """Format evidence list; if indices given, only those entries (for partial view)."""
-    if indices is not None:
-        evidence_structured = [
-            e for i, e in enumerate(evidence_structured) if i in indices
-        ]
-    lines = []
-    for e in evidence_structured:
-        if show_missing and e.get("missing"):
-            lines.append(f"  - {e['label']}: {_MISSING_VALUE_DISPLAY}")
-        else:
-            val = e.get("value")
-            lines.append(
-                f"  - {e['label']}: {val}"
-                if val is not None
-                else f"  - {e['label']}: {_MISSING_VALUE_DISPLAY}"
-            )
-    return "\n".join(lines)
-
-
-def _build_history_block(anchor_value: int, domain_id: str) -> str:
-    dcfg = DOMAINS[domain_id]
-    return (
-        f"Chat history:\n"
-        f"User: What is your initial sense of the {dcfg.display_name.lower()} index?\n"
-        f"Assistant: Based on a quick review, I would initially estimate "
-        f"around {anchor_value}.\n"
-        f"User: Thanks. Now consider the detailed evidence below."
-    )
-
-
-def _build_prompt(
-    spec: ItemSpec,
-    condition: str,
-    anchor_value: Optional[int],
-) -> PromptView:
-    dcfg = DOMAINS[spec.domain]
-    tidx = int(spec.template_family.split("_")[-1])
-    scenario = spec.scenario_text or dcfg.scenario_templates[tidx % len(dcfg.scenario_templates)]
-    question = dcfg.question_templates[tidx % len(dcfg.question_templates)]
-    evidence_block = _format_evidence(spec)
-
-    components = {
-        "scenario": scenario,
-        "evidence": evidence_block,
-        "question": question,
-        "answer_format": ANSWER_FORMAT_INSTRUCTION,
-    }
-
-    target_block = (
-        f"{scenario}\n\nEvidence:\n{evidence_block}\n\n"
-        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-    )
-
-    anchor_string = None
-    anchor_span = None
-
-    if condition == "control":
-        prompt_text = target_block
-    else:
-        history_block = _build_history_block(anchor_value, spec.domain)
-        components["history"] = history_block
-        prompt_text = f"{history_block}\n\n{target_block}"
-        anchor_string = str(anchor_value)
-        start = prompt_text.find(f"around {anchor_value}.")
-        if start >= 0:
-            start += len("around ")
-            anchor_span = [start, start + len(str(anchor_value))]
-
-    return PromptView(
-        item_id=spec.item_id,
-        suite=spec.suite,
-        domain=spec.domain,
-        condition=condition,
-        prompt_text=prompt_text,
-        prompt_components=components,
-        anchor_string=anchor_string,
-        anchor_span=anchor_span,
-    )
-
-
-def render_history(spec: ItemSpec) -> List[PromptView]:
-    """Render control / low_anchor / high_anchor for a history-suite item (v1)."""
-    return [
-        _build_prompt(spec, "control", None),
-        _build_prompt(spec, "low_anchor", spec.anchors["low"]),
-        _build_prompt(spec, "high_anchor", spec.anchors["high"]),
-    ]
-
-
-# ── History v2: two-stage self-generated anchoring ───────────────────
-
-HISTORY_V2_CONDITIONS = [
-    "control",
-    "plausible_low",
-    "plausible_high",
-    "irrelevant_low",
-    "irrelevant_high",
-]
-
-# Explicit prompt protocol wording (plan: same case vs new case)
 STAGE2_PLAUSIBLE_PREAMBLE = (
     "This is the same case. Full evidence is now available:\n\n"
 )
@@ -141,145 +34,130 @@ STAGE2_PLAUSIBLE_QUESTION = (
     "Given this complete evidence, provide your revised estimate (0-100)."
 )
 
+STAGE1_NEUTRAL_QUESTION = (
+    "Summarize the key factors relevant to this assessment."
+)
+STAGE2_NEUTRAL_PREAMBLE = (
+    "Thank you. Now, based on the same evidence, provide a numeric estimate.\n\n"
+)
 
-def _control_promptview_v2(spec: ItemSpec) -> PromptView:
-    """Control: single-stage, full evidence, same stem as External v2."""
-    from .external import _format_evidence_v2, _build_prompt_v2
-    # Reuse External v2 control-style build (no anchor)
-    return _build_prompt_v2(spec, "control", "none", None)
 
-
-def _plausible_promptview_v2(
-    spec: ItemSpec,
-    condition: str,
-    direction: str,
-) -> PromptView:
-    """Plausible low/high: two-stage; Stage 1 = partial evidence, Stage 2 = same case full evidence."""
-    dcfg = DOMAINS[spec.domain]
-    tidx = int(spec.template_family.split("_")[-1])
-    scenario = (
-        spec.scenario_text
-        or dcfg.scenario_templates[tidx % len(dcfg.scenario_templates)]
-    )
-    question = dcfg.question_templates[tidx % len(dcfg.question_templates)]
-    full_evidence = _format_evidence_from_list(
-        spec.evidence_structured, indices=None, show_missing=True
-    )
+def _plausible_promptview(spec: ItemSpec, condition: str, direction: str) -> PromptView:
+    """Plausible: two-stage; Stage 1 = partial evidence, Stage 2 = same case full."""
+    scenario, question, _, _ = resolve_templates(spec)
+    full_evidence = format_evidence(spec.evidence_structured)
 
     hist = spec.history or {}
-    indices = hist.get("subset_indices_low" if direction == "low" else "subset_indices_high", [0, 1])
-    partial_evidence = _format_evidence_from_list(
-        spec.evidence_structured, indices=indices, show_missing=True
-    )
+    key = "subset_indices_low" if direction == "low" else "subset_indices_high"
+    indices = hist.get(key, [0, 1])
+    partial_evidence = format_evidence(spec.evidence_structured, indices=indices)
 
-    stage1_user_message = (
+    stage1 = (
         f"{scenario}\n\n"
         f"Preliminary evidence (partial):\n{partial_evidence}\n\n"
         f"{STAGE1_PLAUSIBLE_QUESTION}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
-    stage2_user_message = (
+    stage2 = (
         f"{STAGE2_PLAUSIBLE_PREAMBLE}"
         f"Evidence:\n{full_evidence}\n\n"
         f"{STAGE2_PLAUSIBLE_QUESTION}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
-    prompt_text_flat = f"{stage1_user_message}\n\n---\n\n{stage2_user_message}"
 
-    components = {
-        "scenario": scenario,
-        "evidence": full_evidence,
-        "question": question,
-        "answer_format": ANSWER_FORMAT_INSTRUCTION,
-        "stage1_user_message": stage1_user_message,
-        "stage2_user_message": stage2_user_message,
-    }
     return PromptView(
-        item_id=spec.item_id,
-        suite=spec.suite,
-        domain=spec.domain,
+        item_id=spec.item_id, suite=spec.suite, domain=spec.domain,
         condition=condition,
-        prompt_text=prompt_text_flat,
-        prompt_components=components,
-        anchor_string=None,
-        anchor_span=None,
+        prompt_text=f"{stage1}\n\n---\n\n{stage2}",
+        prompt_components={
+            "scenario": scenario, "evidence": full_evidence,
+            "question": question, "answer_format": ANSWER_FORMAT_INSTRUCTION,
+            "stage1_user_message": stage1, "stage2_user_message": stage2,
+        },
         anchor_relevance="plausible",
-        anchor_value=None,
     )
 
 
-def _irrelevant_promptview_v2(
-    spec: ItemSpec,
-    condition: str,
-    direction: str,
-) -> PromptView:
-    """Irrelevant low/high: two-stage; Stage 1 = warmup case (same domain), Stage 2 = new case + full evidence."""
-    dcfg = DOMAINS[spec.domain]
-    tidx = int(spec.template_family.split("_")[-1])
-    target_scenario = (
-        spec.scenario_text
-        or dcfg.scenario_templates[tidx % len(dcfg.scenario_templates)]
-    )
-    target_question = dcfg.question_templates[tidx % len(dcfg.question_templates)]
-    target_evidence = _format_evidence_from_list(
-        spec.evidence_structured, indices=None, show_missing=True
-    )
+def _irrelevant_promptview(spec: ItemSpec, condition: str, direction: str) -> PromptView:
+    """Irrelevant: two-stage; Stage 1 = warmup case, Stage 2 = new target case."""
+    scenario, question, _, dcfg = resolve_templates(spec)
+    target_evidence = format_evidence(spec.evidence_structured)
 
     hist = spec.history or {}
     warmup = hist.get("warmup_low" if direction == "low" else "warmup_high", {})
-    w_evidence = warmup.get("evidence_structured", [])
     w_tidx = warmup.get("scenario_template_idx", 0)
     warmup_scenario = dcfg.scenario_templates[w_tidx % len(dcfg.scenario_templates)]
     warmup_question = dcfg.question_templates[w_tidx % len(dcfg.question_templates)]
-    warmup_evidence = _format_evidence_from_list(
-        w_evidence, indices=None, show_missing=False
-    )
+    warmup_evidence = format_evidence(warmup.get("evidence_structured", []), show_missing=False)
 
-    stage1_user_message = (
+    stage1 = (
         f"{warmup_scenario}\n\n"
         f"Evidence:\n{warmup_evidence}\n\n"
         f"{warmup_question}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
-    stage2_user_message = (
+    stage2 = (
         f"{STAGE2_IRRELEVANT_PREAMBLE}"
-        f"{target_scenario}\n\n"
+        f"{scenario}\n\n"
         f"Evidence:\n{target_evidence}\n\n"
-        f"{target_question}\n{ANSWER_FORMAT_INSTRUCTION}"
+        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
-    prompt_text_flat = f"{stage1_user_message}\n\n---\n\n{stage2_user_message}"
 
-    components = {
-        "scenario": target_scenario,
-        "evidence": target_evidence,
-        "question": target_question,
-        "answer_format": ANSWER_FORMAT_INSTRUCTION,
-        "stage1_user_message": stage1_user_message,
-        "stage2_user_message": stage2_user_message,
-    }
     return PromptView(
-        item_id=spec.item_id,
-        suite=spec.suite,
-        domain=spec.domain,
+        item_id=spec.item_id, suite=spec.suite, domain=spec.domain,
         condition=condition,
-        prompt_text=prompt_text_flat,
-        prompt_components=components,
-        anchor_string=None,
-        anchor_span=None,
+        prompt_text=f"{stage1}\n\n---\n\n{stage2}",
+        prompt_components={
+            "scenario": scenario, "evidence": target_evidence,
+            "question": question, "answer_format": ANSWER_FORMAT_INSTRUCTION,
+            "stage1_user_message": stage1, "stage2_user_message": stage2,
+        },
         anchor_relevance="irrelevant",
-        anchor_value=None,
     )
 
 
-def render_history_v2(spec: ItemSpec) -> List[PromptView]:
-    """Render 5 conditions for History v2: control, plausible_low/high, irrelevant_low/high.
+def _neutral_twostage_promptview(spec: ItemSpec) -> PromptView:
+    """Matched two-stage control: Stage 1 = qualitative (no numeric answer),
+    Stage 2 = numeric estimate with same evidence.  Preserves the two-stage
+    conversational structure without eliciting a self-generated anchor."""
+    scenario, question, _, _ = resolve_templates(spec)
+    full_evidence = format_evidence(spec.evidence_structured)
 
-    Control is single-stage; others are two-stage (stage1_user_message, stage2_user_message
-    in prompt_components). Same domains and y_star_evidence as External v2.
+    stage1 = (
+        f"{scenario}\n\n"
+        f"Evidence:\n{full_evidence}\n\n"
+        f"{STAGE1_NEUTRAL_QUESTION}"
+    )
+    stage2 = (
+        f"{STAGE2_NEUTRAL_PREAMBLE}"
+        f"Evidence:\n{full_evidence}\n\n"
+        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+
+    return PromptView(
+        item_id=spec.item_id, suite=spec.suite, domain=spec.domain,
+        condition="control_twostage",
+        prompt_text=f"{stage1}\n\n---\n\n{stage2}",
+        prompt_components={
+            "scenario": scenario, "evidence": full_evidence,
+            "question": question, "answer_format": ANSWER_FORMAT_INSTRUCTION,
+            "stage1_user_message": stage1, "stage2_user_message": stage2,
+        },
+        anchor_relevance="none",
+    )
+
+
+def render_history(spec: ItemSpec) -> List[PromptView]:
+    """Render 6 conditions for History.
+
+    control          — single-stage (same as External control)
+    control_twostage — two-stage matched neutral control (qualitative Stage 1)
+    plausible/irrelevant — two-stage with different Stage 1 content
     """
-    if spec.suite != "history_v2" or not spec.history:
+    if spec.suite != "history" or not spec.history:
         return []
-    views: List[PromptView] = []
-    views.append(_control_promptview_v2(spec))
-    views.append(_plausible_promptview_v2(spec, "plausible_low", "low"))
-    views.append(_plausible_promptview_v2(spec, "plausible_high", "high"))
-    views.append(_irrelevant_promptview_v2(spec, "irrelevant_low", "low"))
-    views.append(_irrelevant_promptview_v2(spec, "irrelevant_high", "high"))
-    return views
+    return [
+        _external_build_prompt(spec, "control", "none", None),
+        _neutral_twostage_promptview(spec),
+        _plausible_promptview(spec, "plausible_low", "low"),
+        _plausible_promptview(spec, "plausible_high", "high"),
+        _irrelevant_promptview(spec, "irrelevant_low", "low"),
+        _irrelevant_promptview(spec, "irrelevant_high", "high"),
+    ]

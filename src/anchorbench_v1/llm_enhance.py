@@ -35,6 +35,7 @@ _SYSTEM_PROMPT = (
 
 
 def _make_prompt(spec: ItemSpec, variation_idx: int) -> str:
+    """Build the user prompt for scenario generation from a spec's domain."""
     dcfg = DOMAINS[spec.domain]
     return (
         f"Domain: {dcfg.display_name}\n"

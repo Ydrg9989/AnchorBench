@@ -29,6 +29,8 @@ _RETRYABLE = {429, 500, 502, 503, 504}
 
 
 class OpenRouterClient:
+    """Thin OpenRouter API wrapper with retry, batching, and provenance logging."""
+
     def __init__(
         self,
         api_key: Optional[str] = None,
@@ -120,6 +122,7 @@ class OpenRouterClient:
     def _request_with_retry(
         self, payload: dict, prompt_hash: str
     ) -> Tuple[str, dict]:
+        """Execute a single API request with exponential-backoff retry."""
         last_exc = None
         for attempt in range(self.max_retries + 1):
             try:
@@ -156,7 +159,8 @@ class OpenRouterClient:
             f"OpenRouter request failed after {self.max_retries + 1} attempts: {last_exc}"
         )
 
-    def _save_artifact(self, prompt_hash: str, payload: dict, response: dict):
+    def _save_artifact(self, prompt_hash: str, payload: dict, response: dict) -> None:
+        """Persist request/response pair to the artifact directory."""
         if not self.artifact_dir:
             return
         self.artifact_dir.mkdir(parents=True, exist_ok=True)

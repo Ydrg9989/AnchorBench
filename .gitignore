@@ -17,33 +17,8 @@ venv/
 .cursor/
 .codex/
 
-# Large/generated data (README: data/processed/ gitignored; keep manifest for reproducibility)
-data/processed/*
-!data/processed/icl_anchor_v0/
-data/processed/icl_anchor_v0/*
-!data/processed/icl_anchor_v0/manifest.json
-
-# Generated results and caches
+# Generated results (can be reproduced from datasets + scripts)
 results/
-
-# Optional: uncomment to ignore figures (if generated)
-# figures/
-
-# AnchorBench v1 generated data (keep .gitkeep and manifests)
-benchmark/data/*
-!benchmark/data/.gitkeep
-!benchmark/data/manifest.json
-
-# Experiment raw outputs (keep .gitkeep and manifests)
-experiments/outputs/*
-!experiments/outputs/.gitkeep
-!experiments/outputs/manifest.json
-
-# Analysis generated artifacts (keep .gitkeep)
-analysis/figures/*
-!analysis/figures/.gitkeep
-analysis/tables/*
-!analysis/tables/.gitkeep
 
 # Generated datasets (keep DATASET_CARD and manifests)
 datasets/anchorbench_v1/**/*.jsonl

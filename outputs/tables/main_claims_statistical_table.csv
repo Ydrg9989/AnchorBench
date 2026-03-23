@@ -1,0 +1,12 @@
+claim,comparison,effect_size,ci_lo,ci_hi,p_raw,p_adj_bh,n_units,notes
+Interface-dependent anchoring,Range of suite mean DiscDelta,0.24347000000000002,0.1579140625,0.4208939583333333,,,50.0,Effect-size CI from bootstrap over model-suite rows; no single omnibus p-value reported.
+Plausible anchors usually > irrelevant,External: UAI_plaus - UAI_irr (paired by model),0.18819999999999998,0.12465425,0.2493334999999999,0.001953125,0.0078125,10.0,Wilcoxon signed-rank across models within suite.
+Plausible anchors usually > irrelevant,History: UAI_plaus - UAI_irr (paired by model),0.24161000000000005,0.13030475,0.4000999999999999,0.001953125,0.0078125,10.0,Wilcoxon signed-rank across models within suite.
+Plausible anchors usually > irrelevant,Icl: UAI_plaus - UAI_irr (paired by model),-0.0018500000000000016,-0.035783499999999996,0.040582249999999986,0.556640625,0.556640625,10.0,Wilcoxon signed-rank across models within suite.
+Plausible anchors usually > irrelevant,Rag: UAI_plaus - UAI_irr (paired by model),0.11926999999999999,0.040490000000000005,0.20871449999999994,0.02734375,0.04375,10.0,Wilcoxon signed-rank across models within suite.
+Plausible anchors usually > irrelevant,Tool: UAI_plaus - UAI_irr (paired by model),0.14314444444444444,0.04917694444444445,0.270471111111111,0.01171875,0.0234375,9.0,Wilcoxon signed-rank across models within suite.
+Accuracy and robustness dissociate,Correlation: Acc10_c vs DiscDelta (all model-suite pairs),0.12244053373222055,-0.1467896080434397,0.3508342328447769,,,49.0,Bootstrap CI for Pearson correlation; inferential p-value omitted for conservative reporting.
+Tool partly reflects protocol compliance,"Tool Parse - mean(Parse of External/History/ICL/RAG), paired by model",-0.12154249999999997,-0.30975574999999994,-0.008558187500000031,0.0390625,0.052083333333333336,10.0,Negative effect implies lower parse/protocol compliance in Tool.
+Requested paired comparison,History - ICL DiscDelta (paired by model),0.24347,0.1125975,0.40794300000000006,0.00390625,0.010416666666666666,10.0,Item-level pairing across suites not available; model-level pairing used.
+Requested paired comparison,Tool - mean(other suites) DiscDelta (paired by model),-0.007649999999999994,-0.08332847222222223,0.08070812499999994,0.49609375,0.556640625,9.0,Model-level pairing used.
+Requested paired comparison,Tool-Read vs Tool-Agentic,,,,,,,Blocked: tool_read/tool_agentic source-of-truth runs not found under results/full_benchmark.

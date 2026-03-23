@@ -1,0 +1,47 @@
+{
+  "version": "2.1.0",
+  "suite": "icl_dist",
+  "generator_version": "a337b4d",
+  "seed": 42,
+  "size": "pilot",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-03-20T10:22:21Z",
+  "counts": {
+    "itemspecs": 180,
+    "promptviews": 900,
+    "promptviews_core": 900,
+    "promptviews_ablation": 0,
+    "suites": [
+      "icl_dist"
+    ],
+    "domains": [
+      "legal_policy",
+      "market_demographics",
+      "operations_time",
+      "pricing_wtp",
+      "resource_consumption",
+      "transportation_logistics"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 5,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": []
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_icl_dist_pilot/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_icl_dist_pilot/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_icl_dist_pilot/promptviews_core.jsonl"
+  },
+  "validation_passed": true
+}

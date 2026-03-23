@@ -1,0 +1,123 @@
+================================================================
+ Model:     allenai/OLMo-2-0325-32B-Instruct
+ GPU:       3 (TP=1)
+ Tokens:    512
+ GPU Mem:   0.88
+ Model Len: 4096
+ Output:    results/full_benchmark/*/allenai_OLMo-2-0325-32B-Instruct/
+ Views:     promptviews_core.jsonl
+ Started:   20260317_081847
+================================================================
+[08:18:47] SKIP external — already complete (1800 lines)
+[08:18:47] SKIP icl — already complete (1800 lines)
+[08:18:47] SKIP rag — already complete (1800 lines)
+
+[08:18:47] ▶ tool | allenai/OLMo-2-0325-32B-Instruct | GPU 3
+  Data:    datasets/anchorbench_tool_core
+  Output:  results/full_benchmark/tool
+INFO Loaded 360 items (1800 prompts)
+INFO Loading model allenai/OLMo-2-0325-32B-Instruct (vllm backend)...
+INFO 03-17 08:18:57 [utils.py:238] non-default args: {'trust_remote_code': True, 'dtype': 'bfloat16', 'max_model_len': 4096, 'gpu_memory_utilization': 0.88, 'disable_log_stats': True, 'model': 'allenai/OLMo-2-0325-32B-Instruct'}
+WARNING 03-17 08:18:57 [envs.py:1710] Unknown vLLM environment variable detected: VLLM_USE_V1
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+WARNING The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+WARNING The argument `trust_remote_code` is to be used with Auto classes. It has no effect here and is ignored.
+INFO 03-17 08:18:59 [model.py:531] Resolved architecture: Olmo2ForCausalLM
+INFO 03-17 08:18:59 [model.py:1554] Using max model len 4096
+INFO 03-17 08:18:59 [scheduler.py:231] Chunked prefill is enabled with max_num_batched_tokens=16384.
+INFO 03-17 08:18:59 [vllm.py:747] Asynchronous scheduling is enabled.
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:00 [core.py:101] Initializing a V1 LLM engine (v0.17.1) with config: model='allenai/OLMo-2-0325-32B-Instruct', speculative_config=None, tokenizer='allenai/OLMo-2-0325-32B-Instruct', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, disable_custom_all_reduce=False, quantization=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False), seed=0, served_model_name=allenai/OLMo-2-0325-32B-Instruct, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'level': None, 'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'splitting_ops': ['vllm::unified_attention', 'vllm::unified_attention_with_output', 'vllm::unified_mla_attention', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::linear_attention', 'vllm::plamo2_mamba_mixer', 'vllm::gdn_attention_core', 'vllm::kda_attention', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'compile_sizes': [], 'compile_ranges_split_points': [16384], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128, 136, 144, 152, 160, 168, 176, 184, 192, 200, 208, 216, 224, 232, 240, 248, 256, 272, 288, 304, 320, 336, 352, 368, 384, 400, 416, 432, 448, 464, 480, 496, 512], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False}, 'max_cudagraph_capture_size': 512, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': True, 'static_all_moe_layers': []}
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:02 [parallel_state.py:1393] world_size=1 rank=0 local_rank=0 distributed_init_method=tcp://10.81.3.30:39641 backend=nccl
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:02 [parallel_state.py:1715] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:02 [base.py:106] Offloader set to NoopOffloader
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:02 [gpu_model_runner.py:4281] Starting to load model allenai/OLMo-2-0325-32B-Instruct...
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:03 [cuda.py:405] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:03 [flash_attn.py:587] Using FlashAttention version 3
+(EngineCore_DP0 pid=1091934) <frozen importlib._bootstrap_external>:1241: FutureWarning: The cuda.cudart module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.runtime module instead.
+(EngineCore_DP0 pid=1091934) <frozen importlib._bootstrap_external>:1241: FutureWarning: The cuda.nvrtc module is deprecated and will be removed in a future release, please switch to use the cuda.bindings.nvrtc module instead.
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:   0% Completed | 0/14 [00:00<?, ?it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:   7% Completed | 1/14 [00:00<00:09,  1.35it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  14% Completed | 2/14 [00:01<00:09,  1.27it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  21% Completed | 3/14 [00:02<00:08,  1.28it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  29% Completed | 4/14 [00:03<00:07,  1.28it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  36% Completed | 5/14 [00:03<00:06,  1.29it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  43% Completed | 6/14 [00:04<00:06,  1.30it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  50% Completed | 7/14 [00:05<00:05,  1.31it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  57% Completed | 8/14 [00:06<00:04,  1.32it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  64% Completed | 9/14 [00:06<00:03,  1.32it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  71% Completed | 10/14 [00:07<00:03,  1.32it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  79% Completed | 11/14 [00:08<00:02,  1.35it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  86% Completed | 12/14 [00:08<00:01,  1.43it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards:  93% Completed | 13/14 [00:09<00:00,  1.49it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards: 100% Completed | 14/14 [00:09<00:00,  1.89it/s]
+(EngineCore_DP0 pid=1091934) Loading safetensors checkpoint shards: 100% Completed | 14/14 [00:09<00:00,  1.44it/s]
+(EngineCore_DP0 pid=1091934) 
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:15 [default_loader.py:293] Loading weights took 9.77 seconds
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:15 [gpu_model_runner.py:4364] Model loading took 60.04 GiB memory and 12.023831 seconds
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:18 [decorators.py:465] Directly load AOT compilation from path /home/yiderigun/.cache/vllm/torch_compile_cache/torch_aot_compile/ed6c330dda78bd337afa4b9a92a7ea07f2883f54b4cc3fbe681dd8b25eb5ac88/rank_0_0/model
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:18 [backends.py:916] Using cache directory: /home/yiderigun/.cache/vllm/torch_compile_cache/bc94114b07/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:18 [backends.py:976] Dynamo bytecode transform time: 3.21 s
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:23 [backends.py:266] Directly load the compiled graph(s) for compile range (1, 16384) from the cache, took 3.883 s
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:23 [monitor.py:35] torch.compile takes 7.79 s in total
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:24 [gpu_worker.py:424] Available KV cache memory: 18.71 GiB
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:24 [kv_cache_utils.py:1314] GPU KV cache size: 76,624 tokens
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:24 [kv_cache_utils.py:1319] Maximum concurrency for 4,096 tokens per request: 18.71x
+(EngineCore_DP0 pid=1091934) 2026-03-17 08:19:24,143 - INFO - autotuner.py:256 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+(EngineCore_DP0 pid=1091934) 2026-03-17 08:19:24,159 - INFO - autotuner.py:262 - flashinfer.jit: [Autotuner]: Autotuning process ends
+(EngineCore_DP0 pid=1091934) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   2%|▏         | 1/51 [00:02<01:43,  2.07s/it]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:02<00:44,  1.10it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   6%|▌         | 3/51 [00:02<00:26,  1.84it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:02<00:18,  2.50it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:02<00:10,  4.26it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:02<00:07,  5.94it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:02<00:05,  7.41it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:03<00:04,  8.68it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:03<00:03,  9.82it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:03<00:03, 10.66it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  35%|███▌      | 18/51 [00:03<00:04,  6.77it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  39%|███▉      | 20/51 [00:04<00:03,  8.09it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:04<00:03,  9.32it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  47%|████▋     | 24/51 [00:04<00:02, 10.46it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  51%|█████     | 26/51 [00:04<00:02, 11.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:04<00:01, 11.90it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  59%|█████▉    | 30/51 [00:04<00:01, 12.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  63%|██████▎   | 32/51 [00:04<00:01, 13.16it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:05<00:01, 13.58it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  71%|███████   | 36/51 [00:05<00:01, 14.01it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:05<00:00, 14.31it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  78%|███████▊  | 40/51 [00:05<00:00, 14.52it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:05<00:00, 14.78it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  86%|████████▋ | 44/51 [00:05<00:00, 12.08it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:06<00:00, 10.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  94%|█████████▍| 48/51 [00:06<00:00,  7.43it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:06<00:00,  8.84it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:06<00:00,  7.59it/s]
+(EngineCore_DP0 pid=1091934) Capturing CUDA graphs (decode, FULL):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   2%|▏         | 1/51 [00:00<00:05,  9.80it/s]Capturing CUDA graphs (decode, FULL):   6%|▌         | 3/51 [00:00<00:04, 10.95it/s]Capturing CUDA graphs (decode, FULL):  10%|▉         | 5/51 [00:00<00:03, 11.77it/s]Capturing CUDA graphs (decode, FULL):  14%|█▎        | 7/51 [00:00<00:03, 12.37it/s]Capturing CUDA graphs (decode, FULL):  18%|█▊        | 9/51 [00:00<00:03, 12.80it/s]Capturing CUDA graphs (decode, FULL):  22%|██▏       | 11/51 [00:00<00:02, 13.34it/s]Capturing CUDA graphs (decode, FULL):  25%|██▌       | 13/51 [00:01<00:02, 13.96it/s]Capturing CUDA graphs (decode, FULL):  29%|██▉       | 15/51 [00:01<00:02, 14.68it/s]Capturing CUDA graphs (decode, FULL):  33%|███▎      | 17/51 [00:01<00:02, 15.25it/s]Capturing CUDA graphs (decode, FULL):  37%|███▋      | 19/51 [00:01<00:02, 15.77it/s]Capturing CUDA graphs (decode, FULL):  41%|████      | 21/51 [00:01<00:01, 16.44it/s]Capturing CUDA graphs (decode, FULL):  45%|████▌     | 23/51 [00:01<00:01, 17.16it/s]Capturing CUDA graphs (decode, FULL):  49%|████▉     | 25/51 [00:01<00:01, 17.66it/s]Capturing CUDA graphs (decode, FULL):  53%|█████▎    | 27/51 [00:01<00:01, 14.06it/s]Capturing CUDA graphs (decode, FULL):  57%|█████▋    | 29/51 [00:02<00:02,  9.48it/s]Capturing CUDA graphs (decode, FULL):  63%|██████▎   | 32/51 [00:02<00:01, 12.19it/s]Capturing CUDA graphs (decode, FULL):  69%|██████▊   | 35/51 [00:02<00:01, 14.38it/s]Capturing CUDA graphs (decode, FULL):  75%|███████▍  | 38/51 [00:02<00:00, 16.44it/s]Capturing CUDA graphs (decode, FULL):  78%|███████▊  | 40/51 [00:02<00:00, 14.68it/s]Capturing CUDA graphs (decode, FULL):  82%|████████▏ | 42/51 [00:02<00:00, 15.60it/s]Capturing CUDA graphs (decode, FULL):  88%|████████▊ | 45/51 [00:03<00:00, 16.65it/s]Capturing CUDA graphs (decode, FULL):  92%|█████████▏| 47/51 [00:03<00:00, 17.31it/s]Capturing CUDA graphs (decode, FULL):  98%|█████████▊| 50/51 [00:03<00:00, 19.18it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 51/51 [00:03<00:00, 15.08it/s]
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:34 [gpu_model_runner.py:5386] Graph capturing finished in 11 secs, took -3.01 GiB
+(EngineCore_DP0 pid=1091934) INFO 03-17 08:19:34 [core.py:282] init engine (profile, create kv cache, warmup model) took 19.11 seconds
+INFO 03-17 08:19:35 [llm.py:388] Supported tasks: ['generate']
+INFO Loaded vLLM model allenai/OLMo-2-0325-32B-Instruct (tp=1, gpu_util=0.88)
+INFO Running batched tool inference: 1800 prompts, batch_size=96
+Traceback (most recent call last):
+  File "/data/yiderigun/LLM_anchoring/src/anchorbench_eval/backends.py", line 332, in generate_batch_tool
+    t = self._tokenizer.apply_chat_template(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1667, in apply_chat_template
+    rendered_chat, generation_indices = render_jinja_template(
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/transformers/utils/chat_template_utils.py", line 539, in render_jinja_template
+    rendered_chat = compiled_template.render(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "<template>", line 6, in top-level template code
+TypeError: can only concatenate str (not "NoneType") to str
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/data/yiderigun/LLM_anchoring/scripts/eval/run_tool.py", line 160, in <module>
+    main()
+  File "/data/yiderigun/LLM_anchoring/scripts/eval/run_tool.py", line 129, in main
+    raw_outputs = backend.generate_batch_tool(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_anchoring/src/anchorbench_eval/backends.py", line 337, in generate_batch_tool
+    t = self._tokenizer.apply_chat_template(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/transformers/tokenization_utils_base.py", line 1667, in apply_chat_template
+    rendered_chat, generation_indices = render_jinja_template(
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/transformers/utils/chat_template_utils.py", line 539, in render_jinja_template
+    rendered_chat = compiled_template.render(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/data/yiderigun/LLM_env/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "<template>", line 6, in top-level template code
+TypeError: can only concatenate str (not "NoneType") to str
+ERROR 03-17 08:19:36 [core_client.py:691] Engine core proc EngineCore_DP0 died unexpectedly, shutting down client.
+[08:19:37] ✓ tool DONE (0m)
+[08:19:37] SKIP history — already complete (1800 lines)
+
+================================================================
+ ALL SUITES COMPLETE: allenai/OLMo-2-0325-32B-Instruct
+ Total time: 0 minutes
+ Results:    results/full_benchmark/*/allenai_OLMo-2-0325-32B-Instruct/
+================================================================

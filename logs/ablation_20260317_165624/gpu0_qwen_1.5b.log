@@ -1,0 +1,3 @@
+[16:56:26] ▶ ablation external | Qwen/Qwen2.5-1.5B-Instruct | GPU 0 | views=promptviews_ablation.jsonl
+INFO Loaded 0 items (0 prompts)
+ERROR No items found (need 5 conditions per item)

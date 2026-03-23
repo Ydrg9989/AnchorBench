@@ -2,10 +2,10 @@
 """Export raw_text from a results.jsonl to a readable file for sanity checking.
 
 Usage:
-    python scripts/export_raw_texts.py results/external_v2_pilot_Qwen25_7B_512/results.jsonl
-    # Writes results/external_v2_pilot_Qwen25_7B_512/raw_texts_export.txt
+    python scripts/export_raw_texts.py results/external_pilot_Qwen25_7B_512/results.jsonl
+    # Writes results/external_pilot_Qwen25_7B_512/raw_texts_export.txt
 
-    python scripts/export_raw_texts.py results/external_v2_pilot_Llama31_8B_512/results.jsonl --out results/external_v2_pilot_Llama31_8B_512/raw_texts_export.txt
+    python scripts/export_raw_texts.py results/external_pilot_Llama31_8B_512/results.jsonl --out results/external_pilot_Llama31_8B_512/raw_texts_export.txt
 """
 
 from __future__ import annotations

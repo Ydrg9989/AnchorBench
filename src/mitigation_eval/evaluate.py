@@ -18,6 +18,7 @@ BOOT_SEED = 42
 
 def _bootstrap_ci(values: list[float], n_boot: int = N_BOOT,
                    seed: int = BOOT_SEED) -> tuple[float, float]:
+    """Return (lo, hi) 95% bootstrap confidence interval for the mean."""
     rng = np.random.RandomState(seed)
     arr = np.asarray(values, dtype=np.float64)
     n = len(arr)
@@ -28,6 +29,7 @@ def _bootstrap_ci(values: list[float], n_boot: int = N_BOOT,
 
 
 def load_results(paths: list[Path]) -> list[dict]:
+    """Load and concatenate JSONL result records from multiple files."""
     records = []
     for p in paths:
         if not p.exists():
@@ -119,6 +121,7 @@ def compute_reduction_rates(
 
 
 def write_summary_csv(metrics: list[dict], out_path: Path) -> None:
+    """Write metrics list to a CSV summary file."""
     if not metrics:
         return
     fields = list(metrics[0].keys())

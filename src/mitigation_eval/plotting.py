@@ -97,6 +97,7 @@ def plot_nai_heatmap(csv_path: Path, out_path: Path) -> None:
 
 
 def _load_csv(path: Path) -> list[dict]:
+    """Read a CSV file and return rows as list of dicts."""
     if not path.exists():
         log.warning("CSV not found: %s", path)
         return []

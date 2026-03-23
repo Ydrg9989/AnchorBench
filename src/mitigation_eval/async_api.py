@@ -82,6 +82,10 @@ class AsyncOpenRouterClient:
                                 "usage": usage,
                                 "status": 200,
                             }
+                        elif resp.status in (401, 403):
+                            text = await resp.text()
+                            log.error("API auth error %d: %s", resp.status, text[:200])
+                            raise RuntimeError(f"API authentication failed ({resp.status}): {text[:200]}")
                         elif resp.status in (429, 500, 502, 503, 504):
                             wait = min(self.base_wait * 2 ** attempt, 60.0)
                             log.warning("API %d, retrying in %.1fs", resp.status, wait)

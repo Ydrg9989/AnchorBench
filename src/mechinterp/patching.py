@@ -24,13 +24,15 @@ def _get_layers(model: Any) -> list[Any]:
     raise ValueError(f"Cannot find layers in {type(model).__name__}")
 
 
-def _get_lm_head(model: Any):
+def _get_lm_head(model: Any) -> torch.nn.Module:
+    """Extract the language-model head (unembedding) from the model."""
     if hasattr(model, "lm_head"):
         return model.lm_head
     raise ValueError(f"Cannot find lm_head in {type(model).__name__}")
 
 
-def _get_final_norm(model: Any):
+def _get_final_norm(model: Any) -> torch.nn.Module | None:
+    """Extract the final layer-norm, or None if not found."""
     if hasattr(model, "model") and hasattr(model.model, "norm"):
         return model.model.norm
     if hasattr(model, "transformer") and hasattr(model.transformer, "ln_f"):

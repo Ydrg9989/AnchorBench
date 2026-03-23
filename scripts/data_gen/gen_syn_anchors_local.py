@@ -472,6 +472,7 @@ ITEMS: list[dict] = [
 
 
 def validate_item(item: dict) -> list[str]:
+    """Return a list of validation error strings for *item* (empty if valid)."""
     errors = []
     tv = item["true_value"]
     av = item["anchor_value"]
@@ -498,7 +499,8 @@ def validate_item(item: dict) -> list[str]:
     return errors
 
 
-def main():
+def main() -> None:
+    """Validate all items and write the SynAnchors dataset to JSONL."""
     p = argparse.ArgumentParser()
     p.add_argument("--out", type=Path,
                    default=Path("data/processed/syn_anchors_v0/dataset.jsonl"))

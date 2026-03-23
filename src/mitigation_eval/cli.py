@@ -38,6 +38,7 @@ log = logging.getLogger(__name__)
 
 
 def _git_hash() -> str:
+    """Return the short git commit hash, or 'unknown' on failure."""
     try:
         return subprocess.check_output(
             ["git", "rev-parse", "--short", "HEAD"], stderr=subprocess.DEVNULL
@@ -46,7 +47,8 @@ def _git_hash() -> str:
         return "unknown"
 
 
-def main():
+def main() -> None:
+    """Parse CLI arguments and dispatch to run or eval subcommands."""
     parser = argparse.ArgumentParser(description="Mitigation evaluation pipeline")
     sub = parser.add_subparsers(dest="command")
 
@@ -93,7 +95,8 @@ def main():
         parser.print_help()
 
 
-def _cmd_run(args):
+def _cmd_run(args: argparse.Namespace) -> None:
+    """Execute mitigation experiments for all requested strategies."""
     model_short = args.model_id.split("/")[-1]
     date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
     out_dir = args.out_dir / f"{model_short}_{date_str}"
@@ -183,7 +186,7 @@ def _cmd_run(args):
     _generate_eval_artifacts(out_dir)
 
 
-def _cmd_eval(args):
+def _cmd_eval(args: argparse.Namespace) -> None:
     """Evaluate results from existing JSONL files."""
     input_paths = []
 
@@ -211,6 +214,7 @@ def _generate_eval_artifacts(out_dir: Path) -> None:
 
 
 def _generate_eval_artifacts_from_paths(paths: list[Path], out_dir: Path) -> None:
+    """Load results from JSONL paths, compute metrics, and write figures/tables."""
     records = load_results(paths)
     if not records:
         return

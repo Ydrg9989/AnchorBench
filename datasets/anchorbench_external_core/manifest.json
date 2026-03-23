@@ -1,0 +1,53 @@
+{
+  "version": "2.1.0",
+  "suite": "external",
+  "generator_version": "a337b4d",
+  "seed": 42,
+  "size": "core",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-03-20T10:23:07Z",
+  "counts": {
+    "itemspecs": 360,
+    "promptviews": 3240,
+    "promptviews_core": 1800,
+    "promptviews_ablation": 1440,
+    "suites": [
+      "external"
+    ],
+    "domains": [
+      "legal_policy",
+      "market_demographics",
+      "operations_time",
+      "pricing_wtp",
+      "resource_consumption",
+      "transportation_logistics"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 9,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": [
+      "authority_high",
+      "authority_low",
+      "placebo_high",
+      "placebo_low"
+    ]
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_external_core/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_external_core/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_external_core/promptviews_core.jsonl",
+    "promptviews_ablation": "datasets/anchorbench_external_core/promptviews_ablation.jsonl"
+  },
+  "validation_passed": true
+}

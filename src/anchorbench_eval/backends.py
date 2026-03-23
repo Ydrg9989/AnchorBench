@@ -1,0 +1,412 @@
+"""Backend abstractions for AnchorBench evaluation.
+
+HFBackend   — local HuggingFace Transformers inference
+VLLMBackend — vLLM inference (PagedAttention, high GPU utilization)
+APIBackend  — async OpenRouter / OpenAI-compatible API inference
+
+All support generate(), generate_batch(), and generate_for_extraction().
+HFBackend and VLLMBackend also support generate_chat() and generate_batch_tool().
+"""
+
+from __future__ import annotations
+
+import asyncio
+import json
+import logging
+from typing import Any, Protocol, runtime_checkable
+
+log = logging.getLogger(__name__)
+
+
+@runtime_checkable
+class Backend(Protocol):
+    """Minimal interface that HFBackend and APIBackend both satisfy."""
+
+    model_id: str
+    supports_structured: bool
+
+    def generate(
+        self, prompt: str, *, max_tokens: int = 512,
+        temperature: float = 0.0, structured: bool = False,
+    ) -> str: ...
+
+    def generate_for_extraction(
+        self, raw_output: str, extraction_prompt: str,
+    ) -> str: ...
+
+
+class HFBackend:
+    """Local HuggingFace model backend."""
+
+    def __init__(
+        self,
+        model_id: str,
+        device: str = "auto",
+        device_map: str | None = None,
+        dtype: str = "bfloat16",
+    ) -> None:
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+
+        self.model_id = model_id
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_id, trust_remote_code=True,
+        )
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        self.tokenizer.padding_side = "left"
+
+        torch_dtype = getattr(torch, dtype, "auto")
+        dm = device_map if device_map else device
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_id,
+            torch_dtype=torch_dtype,
+            device_map=dm,
+            trust_remote_code=True,
+        )
+        self.model.eval()
+        self._torch = torch
+        log.info("Loaded HF model %s on %s", model_id, self.model.device)
+
+        self._outlines_available = False
+        try:
+            import outlines  # noqa: F401
+            self._outlines_available = True
+        except ImportError:
+            pass
+
+    @property
+    def supports_structured(self) -> bool:
+        return self._outlines_available
+
+    def _encode_and_generate(
+        self, text: str, max_tokens: int, temperature: float,
+    ) -> str:
+        enc = self.tokenizer(
+            text, return_tensors="pt", add_special_tokens=False,
+        )
+        enc = {k: v.to(self.model.device) for k, v in enc.items()}
+        prompt_len = enc["input_ids"].shape[1]
+
+        gen_kwargs: dict[str, Any] = {
+            "max_new_tokens": max_tokens,
+            "do_sample": temperature > 0,
+        }
+        if temperature > 0:
+            gen_kwargs["temperature"] = temperature
+            gen_kwargs["top_p"] = 1.0
+
+        with self._torch.no_grad():
+            out = self.model.generate(
+                **enc, **gen_kwargs,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
+        return self.tokenizer.decode(
+            out[0, prompt_len:], skip_special_tokens=True,
+        )
+
+    def generate(
+        self, prompt: str, *, max_tokens: int = 512,
+        temperature: float = 0.0, structured: bool = False,
+    ) -> str:
+        messages = [{"role": "user", "content": prompt}]
+        text = self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
+        return self._encode_and_generate(text, max_tokens, temperature)
+
+    def generate_chat(
+        self, messages: list[dict], *, max_tokens: int = 512,
+        temperature: float = 0.0,
+    ) -> str:
+        text = self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
+        return self._encode_and_generate(text, max_tokens, temperature)
+
+    def generate_batch(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        results: list[str] = []
+        for i in range(0, len(prompts), batch_size):
+            batch = prompts[i : i + batch_size]
+            texts = []
+            for p in batch:
+                messages = [{"role": "user", "content": p}]
+                texts.append(
+                    self.tokenizer.apply_chat_template(
+                        messages, tokenize=False, add_generation_prompt=True,
+                    )
+                )
+            enc = self.tokenizer(
+                texts, return_tensors="pt", padding=True,
+                truncation=True, add_special_tokens=False,
+            )
+            enc = {k: v.to(self.model.device) for k, v in enc.items()}
+            prompt_len = enc["input_ids"].shape[1]
+
+            gen_kwargs: dict[str, Any] = {
+                "max_new_tokens": max_tokens,
+                "do_sample": temperature > 0,
+            }
+            if temperature > 0:
+                gen_kwargs["temperature"] = temperature
+
+            with self._torch.no_grad():
+                out = self.model.generate(
+                    **enc, **gen_kwargs,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                )
+            decoded = self.tokenizer.batch_decode(
+                out[:, prompt_len:], skip_special_tokens=True,
+            )
+            results.extend(decoded)
+        return results
+
+    def generate_batch_tool(
+        self,
+        messages_list: list[list[dict]],
+        tools: list[dict] | None = None,
+        max_tokens: int = 64,
+        temperature: float = 0.0,
+        batch_size: int = 16,
+    ) -> list[str]:
+        texts = []
+        for messages in messages_list:
+            try:
+                t = self.tokenizer.apply_chat_template(
+                    messages, tools=tools,
+                    tokenize=False, add_generation_prompt=True,
+                )
+            except TypeError:
+                t = self.tokenizer.apply_chat_template(
+                    messages, tokenize=False, add_generation_prompt=True,
+                )
+            texts.append(t)
+
+        results: list[str] = []
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            enc = self.tokenizer(
+                batch, return_tensors="pt", padding=True,
+                truncation=True, add_special_tokens=False,
+            )
+            enc = {k: v.to(self.model.device) for k, v in enc.items()}
+            prompt_len = enc["input_ids"].shape[1]
+
+            gen_kwargs: dict[str, Any] = {
+                "max_new_tokens": max_tokens,
+                "do_sample": temperature > 0,
+            }
+            if temperature > 0:
+                gen_kwargs["temperature"] = temperature
+
+            with self._torch.no_grad():
+                out = self.model.generate(
+                    **enc, **gen_kwargs,
+                    pad_token_id=self.tokenizer.eos_token_id,
+                )
+            decoded = self.tokenizer.batch_decode(
+                out[:, prompt_len:], skip_special_tokens=True,
+            )
+            results.extend(decoded)
+        return results
+
+    def generate_for_extraction(
+        self, raw_output: str, extraction_prompt: str,
+    ) -> str:
+        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
+
+
+class VLLMBackend:
+    """vLLM backend for high-throughput inference with full GPU utilization.
+
+    Uses PagedAttention and continuous batching. Same chat/tool formatting as
+    HFBackend (via Transformers tokenizer). Optional tensor parallelism for
+    large models.
+    """
+
+    def __init__(
+        self,
+        model_id: str,
+        *,
+        tensor_parallel_size: int = 1,
+        gpu_memory_utilization: float = 0.9,
+        max_model_len: int | None = 4096,
+        dtype: str = "bfloat16",
+        trust_remote_code: bool = True,
+    ) -> None:
+        from transformers import AutoTokenizer
+        from vllm import LLM, SamplingParams
+
+        self.model_id = model_id
+        self._tensor_parallel_size = tensor_parallel_size
+        self._gpu_memory_utilization = gpu_memory_utilization
+        self._max_model_len = max_model_len or 4096
+        self._dtype = dtype
+        self._trust_remote_code = trust_remote_code
+
+        # Tokenizer for chat/tool template (same as HF for consistency)
+        self._tokenizer = AutoTokenizer.from_pretrained(
+            model_id, trust_remote_code=trust_remote_code,
+        )
+        if self._tokenizer.pad_token is None:
+            self._tokenizer.pad_token = self._tokenizer.eos_token
+
+        # vLLM engine
+        self._llm = LLM(
+            model=model_id,
+            tensor_parallel_size=tensor_parallel_size,
+            gpu_memory_utilization=gpu_memory_utilization,
+            max_model_len=self._max_model_len,
+            trust_remote_code=trust_remote_code,
+            dtype=dtype,
+        )
+        log.info(
+            "Loaded vLLM model %s (tp=%s, gpu_util=%.2f)",
+            model_id, tensor_parallel_size, gpu_memory_utilization,
+        )
+
+        self._sampling_params = SamplingParams(
+            temperature=0.0, max_tokens=512,
+        )
+
+    @property
+    def supports_structured(self) -> bool:
+        return False
+
+    def _sampling(self, max_tokens: int, temperature: float = 0.0) -> Any:
+        from vllm import SamplingParams
+        return SamplingParams(
+            temperature=temperature,
+            max_tokens=max_tokens,
+        )
+
+    def _prompt_for_user(self, prompt: str) -> str:
+        messages = [{"role": "user", "content": prompt}]
+        return self._tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
+
+    def generate(
+        self, prompt: str, *, max_tokens: int = 512,
+        temperature: float = 0.0, structured: bool = False,
+    ) -> str:
+        text = self._prompt_for_user(prompt)
+        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
+        outputs = self._llm.generate([text], sampling)
+        return outputs[0].outputs[0].text
+
+    def generate_chat(
+        self, messages: list[dict], *, max_tokens: int = 512,
+        temperature: float = 0.0,
+    ) -> str:
+        text = self._tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
+        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
+        outputs = self._llm.generate([text], sampling)
+        return outputs[0].outputs[0].text
+
+    def generate_batch(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        prompt_strings = [self._prompt_for_user(p) for p in prompts]
+        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
+        outputs = self._llm.generate(prompt_strings, sampling)
+        return [o.outputs[0].text for o in outputs]
+
+    def generate_batch_tool(
+        self,
+        messages_list: list[list[dict]],
+        tools: list[dict] | None = None,
+        max_tokens: int = 64,
+        temperature: float = 0.0,
+        batch_size: int = 16,
+    ) -> list[str]:
+        texts = []
+        for messages in messages_list:
+            try:
+                t = self._tokenizer.apply_chat_template(
+                    messages, tools=tools,
+                    tokenize=False, add_generation_prompt=True,
+                )
+            except TypeError:
+                t = self._tokenizer.apply_chat_template(
+                    messages, tokenize=False, add_generation_prompt=True,
+                )
+            texts.append(t)
+        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
+        outputs = self._llm.generate(texts, sampling)
+        return [o.outputs[0].text for o in outputs]
+
+    def generate_for_extraction(
+        self, raw_output: str, extraction_prompt: str,
+    ) -> str:
+        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
+
+
+class APIBackend:
+    """Async OpenRouter / OpenAI-compatible API backend."""
+
+    def __init__(
+        self,
+        model_id: str,
+        api_key: str | None = None,
+        max_concurrent: int = 20,
+    ) -> None:
+        from mitigation_eval.async_api import AsyncOpenRouterClient
+
+        self.model_id = model_id
+        self._client = AsyncOpenRouterClient(
+            api_key=api_key, max_concurrent=max_concurrent,
+        )
+
+    @property
+    def supports_structured(self) -> bool:
+        return True
+
+    def generate(
+        self, prompt: str, *, max_tokens: int = 512,
+        temperature: float = 0.0, structured: bool = False,
+    ) -> str:
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self._client.query_batch(
+                self.model_id, [prompt],
+                max_tokens=max_tokens, temperature=temperature,
+            )
+        )
+        return results[0].get("raw_text", "")
+
+    def generate_batch_async(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0,
+    ) -> list[str]:
+        loop = asyncio.get_event_loop()
+        results = loop.run_until_complete(
+            self._client.query_batch(
+                self.model_id, prompts,
+                max_tokens=max_tokens, temperature=temperature,
+            )
+        )
+        return [r.get("raw_text", "") for r in results]
+
+    def generate_batch(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        """Batch generation via async API (batch_size ignored; all concurrent)."""
+        return self.generate_batch_async(
+            prompts, max_tokens=max_tokens, temperature=temperature,
+        )
+
+    def generate_for_extraction(
+        self, raw_output: str, extraction_prompt: str,
+    ) -> str:
+        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
+
+    async def close(self) -> None:
+        await self._client.close()

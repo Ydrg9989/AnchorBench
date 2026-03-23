@@ -32,7 +32,8 @@ def check_models(live_ids: set[str] | None = None) -> list[str]:
     return errors
 
 
-def main():
+def main() -> None:
+    """CLI entry point for model registry validation."""
     parser = argparse.ArgumentParser(description="AnchorBench model registry")
     parser.add_argument(
         "--check",
