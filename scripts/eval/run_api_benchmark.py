@@ -41,17 +41,12 @@ from anchorbench_eval.evaluator import (
     write_and_summarize,
 )
 from anchorbench_eval.io import load_itemspecs, load_promptviews
+from anchorbench_eval.constants import SUITE_DATASETS as _CORE, VARIANT_DATASETS
 from mitigation_eval.async_api import AsyncOpenRouterClient
 
 log = logging.getLogger(__name__)
 
-SUITE_DATASETS = {
-    "external": "datasets/anchorbench_external_core",
-    "history": "datasets/anchorbench_history_core",
-    "icl": "datasets/anchorbench_icl_core",
-    "rag": "datasets/anchorbench_rag_core",
-    "tool": "datasets/anchorbench_tool_core",
-}
+SUITE_DATASETS = {**_CORE, **VARIANT_DATASETS}
 
 
 async def run_suite_api(
@@ -133,12 +128,13 @@ async def run_history_suite_api(
     out_dir: Path,
     max_tokens: int = 512,
     max_concurrent: int = 50,
+    baseline_condition: str = "control_twostage",
 ) -> list[dict]:
     """Run History suite with two-stage protocol via API.
 
     Stage 1: send partial-evidence prompt, get model's initial estimate.
     Stage 2: send full-evidence prompt with Stage 1 answer in 'history'.
-    Control: single-stage (no history).
+    Control: single-stage (no history) or two-stage (control_twostage).
     """
     model_slug = model_id.replace("/", "_")
     model_out_dir = out_dir / "history" / model_slug
@@ -148,10 +144,18 @@ async def run_history_suite_api(
     control_tasks = []
     anchored_tasks = []
 
+    conditions = [
+        baseline_condition,
+        "irrelevant_low",
+        "irrelevant_high",
+        "plausible_low",
+        "plausible_high",
+    ]
+
     for item_idx, item in enumerate(items):
-        for cond in CONDITIONS:
+        for cond in conditions:
             pv = item[cond]
-            if cond == "control":
+            if cond == baseline_condition:
                 control_tasks.append((item_idx, cond, pv))
             else:
                 anchored_tasks.append((item_idx, cond, pv))
@@ -230,8 +234,8 @@ async def run_history_suite_api(
             prompt_text = pv.get("prompt_text", "")
             answer, parsed_ok, strategy = parse_response(raw, prompt_text)
             rec = build_record(model_id, item, cond, pv, answer, parsed_ok, strategy, raw)
-            rec["stage1_raw"] = s1_res.get("raw_text", "")
-            stage1_answer, _, _ = parse_response(rec["stage1_raw"], "")
+            rec["stage1_raw_text"] = s1_res.get("raw_text", "")
+            stage1_answer, _, _ = parse_response(rec["stage1_raw_text"], "")
             use_as_anchor = cond.startswith(("plausible_", "irrelevant_"))
             rec["anchor_value"] = stage1_answer if use_as_anchor else None
             rec["stage1_answer"] = stage1_answer
@@ -245,7 +249,7 @@ async def run_history_suite_api(
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
             fh.flush()
 
-    write_and_summarize(records, model_out_dir, label=f"History | {model_id}")
+    write_and_summarize(records, model_out_dir, label=f"History | {model_id}", baseline_condition=baseline_condition)
     return records
 
 
@@ -278,7 +282,9 @@ async def main_async(args: argparse.Namespace) -> None:
             log.info("[%s] Already complete (%s), skipping. Use --force to re-run.", suite, existing)
             continue
 
-        pv_file = Path(dataset_dir) / "promptviews_core.jsonl"
+        pv_file = Path(dataset_dir) / "promptviews.jsonl"
+        if not pv_file.exists():
+            pv_file = Path(dataset_dir) / "promptviews_core.jsonl"
         spec_file = Path(dataset_dir) / "itemspecs.jsonl"
 
         if not pv_file.exists():
@@ -287,7 +293,18 @@ async def main_async(args: argparse.Namespace) -> None:
 
         views = load_promptviews(pv_file)
         specs = load_itemspecs(spec_file)
-        items = prepare_items(views, specs, args.max_items, args.seed)
+        if suite == "history":
+            hist_conditions = [
+                args.history_baseline_condition,
+                "irrelevant_low",
+                "irrelevant_high",
+                "plausible_low",
+                "plausible_high",
+            ]
+            items = prepare_items(views, specs, args.max_items, args.seed, conditions=hist_conditions)
+        else:
+            items = prepare_items(views, specs, args.max_items, args.seed)
+            
         log.info("[%s] Loaded %d items (%d prompts)", suite, len(items), len(items) * 5)
 
         if suite == "history":
@@ -295,6 +312,7 @@ async def main_async(args: argparse.Namespace) -> None:
                 client, args.model_id, items, Path(args.out_dir),
                 max_tokens=args.max_tokens,
                 max_concurrent=args.max_concurrent,
+                baseline_condition=args.history_baseline_condition,
             )
         else:
             records = await run_suite_api(
@@ -331,7 +349,7 @@ def main() -> None:
                    help="OpenRouter model ID (e.g., openai/gpt-5.4-mini)")
     p.add_argument("--suites", nargs="+",
                    default=["external", "icl", "rag", "tool", "history"],
-                   choices=["external", "history", "icl", "rag", "tool"],
+                   choices=["external", "history", "icl", "icl_dist", "rag", "tool"],
                    help="Suites to run")
     p.add_argument("--out_dir", type=str, default="results/api_benchmark")
     p.add_argument("--max_items", type=int, default=None,
@@ -343,6 +361,10 @@ def main() -> None:
     p.add_argument("--api_key", type=str, default=None)
     p.add_argument("--force", action="store_true",
                    help="Re-run even if results already exist")
+    p.add_argument("--history_baseline_condition", type=str,
+                   choices=["control", "control_twostage"],
+                   default="control_twostage",
+                   help="Baseline condition for History suite (default: control_twostage)")
     args = p.parse_args()
 
     asyncio.run(main_async(args))

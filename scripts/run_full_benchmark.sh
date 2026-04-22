@@ -1,223 +1,180 @@
 #!/usr/bin/env bash
-# Full AnchorBench benchmark: 10 open models × 5 suites on 4× H100 NVL GPUs.
+# Full AnchorBench benchmark re-run on 4 H100 GPUs.
 #
-# Uses core views only (promptviews_core.jsonl, 1800 prompts/suite). Launches
-# a tmux session with one window per GPU. Each GPU runs its assigned models
-# sequentially (all 5 suites per model before moving to the next). Maximizes
-# GPU utilization (0.95 memory, batch_size 64 where applicable).
+# === DEPRECATED in favour of the unified CLI ===
+# This script is kept for backward compatibility. The recommended way to
+# launch the full paper benchmark is now:
+#
+#   python scripts/run.py experiment --name paper_main
+#
+# which reads `model_tiers:` and `experiments.paper_main` from
+# `configs/benchmark.yaml`. Setting USE_NEW_CLI=1 will dispatch this
+# script to the CLI; otherwise the legacy bash logic below is used.
+#
+# Runs all 10 open-weight models across 5 suites (External, ICL, RAG, Tool, History).
+# GPU allocation:
+#   - Small models (1B-4B):  1 GPU each, 4 models in parallel
+#   - Medium models (7B-8B): 1 GPU each, up to 4 in parallel
+#   - Large models (13B):    1 GPU, run serially
+#   - Very large (32B OLMo): 4 GPUs (tensor_parallel_size=4)
 #
 # Usage:
-#   bash scripts/run_full_benchmark.sh              # resume: skip suites already ≥1800 lines
-#   bash scripts/run_full_benchmark.sh fresh        # archive results/full_benchmark → archive/, rerun all
-#   bash scripts/run_full_benchmark.sh force        # same as fresh (alias)
+#   bash scripts/run_full_benchmark.sh                    # legacy bash logic
+#   USE_NEW_CLI=1 bash scripts/run_full_benchmark.sh      # delegate to CLI
+#   bash scripts/run_full_benchmark.sh 2>&1 | tee logs/full_benchmark_$(date +%Y%m%d).log
 #
-# Monitor:
-#   tmux attach -t benchmark
-#   tmux select-window -t benchmark:gpu0   # switch to GPU 0
-#
-# Resume after interruption:
-#   Just re-run — completed suites (≥1800 lines) are automatically skipped.
-#
-# GPU scheduling (4× H100 NVL, 95.8GB each):
-#
-#   GPU 0: Llama-3.2-1B → Qwen2.5-1.5B → Gemma-3-1B → recompute_metrics
-#          (~1.5GB + ~3GB + ~2GB; fast models, ~1.5h total)
-#
-#   GPU 1: Llama-3.2-3B → Qwen2.5-3B → Gemma-3-4B
-#          (~6GB + ~6GB + ~8GB; small-medium models, ~3h total)
-#
-#   GPU 2: Llama-3.1-8B → Qwen2.5-7B → OLMo-2-1124-13B
-#          (~16GB + ~14GB + ~26GB; medium models, ~4h total)
-#
-#   GPU 3: OLMo-2-0325-32B
-#          (~64GB; single large model, ~3h total)
 set -euo pipefail
 
-SESSION="benchmark"
-TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-LOGDIR="logs/benchmark_${TIMESTAMP}"
-mkdir -p "$LOGDIR"
-ln -sfn "benchmark_${TIMESTAMP}" logs/latest_benchmark
+if [ "${USE_NEW_CLI:-0}" = "1" ]; then
+  SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+  REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+  echo "[deprecated] dispatching to: python scripts/run.py experiment --name paper_main"
+  exec bash "$SCRIPT_DIR/run_with_env.sh" python "$REPO_ROOT/scripts/run.py" \
+    experiment --name paper_main "$@"
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-cd "$PROJECT_ROOT"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
 
-# Load .env if present (for any API keys)
-if [ -f .env ]; then
-    set -a; source .env; set +a
-fi
+source scripts/paper_model_ids.inc.sh
 
-# Fresh run: archive previous full_benchmark, then run every suite from scratch
-FORCE_RERUN=
-case "${1:-}" in
-    force|rerun|fresh|archive|new|--force|--rerun|--fresh) FORCE_RERUN=1 ;;
-esac
-if [ -n "${ANCHORBENCH_FORCE_RERUN:-}" ]; then FORCE_RERUN=1; fi
-if [ -n "$FORCE_RERUN" ]; then
-    ARCHIVE_ROOT="results/archive"
-    ARCHIVE_DIR="${ARCHIVE_ROOT}/full_benchmark_${TIMESTAMP}"
-    if [ -d results/full_benchmark ] && [ -n "$(ls -A results/full_benchmark 2>/dev/null)" ]; then
-        mkdir -p "$ARCHIVE_ROOT"
-        echo "Archiving: results/full_benchmark → $ARCHIVE_DIR"
-        mv results/full_benchmark "$ARCHIVE_DIR"
-        mkdir -p results/full_benchmark
-        echo "$TIMESTAMP — archived before full re-run (run_full_benchmark.sh)" >> "${ARCHIVE_ROOT}/full_benchmark_manifest.txt"
-        echo "  $ARCHIVE_DIR" >> "${ARCHIVE_ROOT}/full_benchmark_manifest.txt"
-    else
-        mkdir -p results/full_benchmark
-    fi
-    export ANCHORBENCH_FORCE_RERUN=1
-    FORCE_RERUN_EXPORT="ANCHORBENCH_FORCE_RERUN=1 "
-else
-    FORCE_RERUN_EXPORT=""
-fi
-
-# Core views only (1800 prompts/suite).
-# Dedicated 4×H100: default high mem util. Lower if you share GPUs or OOM.
-export ANCHORBENCH_VIEWS=promptviews_core.jsonl
-export ANCHORBENCH_BATCH_SIZE=64
-GPU_MEM_UTIL="${GPU_MEM_UTIL:-0.92}"
-GPU_MEM_UTIL_32B="${GPU_MEM_UTIL_32B:-0.88}"
-
-# Kill existing session if any
-tmux kill-session -t "$SESSION" 2>/dev/null || true
-
-echo "================================================================"
-echo " AnchorBench Full Benchmark (core views)"
-echo " Started: $TIMESTAMP"
-echo " Logs:    $LOGDIR/"
-echo " Views:   promptviews_core.jsonl (1800/suite)"
-if [ -n "$FORCE_RERUN" ]; then echo " Mode:    FRESH RUN (archived prior results, all suites)"; fi
-echo " Models:  10 open models × 5 suites"
-echo " GPUs:    4× H100 NVL (mem util $GPU_MEM_UTIL)"
-echo "================================================================"
-if [ -z "$FORCE_RERUN" ] && [ -f results/full_benchmark/external/meta-llama_Llama-3.2-1B-Instruct/results.jsonl ]; then
-    n=$(wc -l < results/full_benchmark/external/meta-llama_Llama-3.2-1B-Instruct/results.jsonl 2>/dev/null || echo 0)
-    if [ "${n:-0}" -ge 1800 ] 2>/dev/null; then
-        echo ""
-        echo "  NOTE: Existing results look COMPLETE — suites will SKIP (no GPU load)."
-        echo "  To re-run inference from scratch:"
-        echo "    bash scripts/run_full_benchmark.sh fresh"
-        echo ""
-    fi
-fi
-echo ""
-echo "Launching tmux session '$SESSION'..."
-echo "  Monitor: tmux attach -t $SESSION"
-echo ""
-
-# ── Create tmux session with control window ──
-tmux new-session -d -s "$SESSION" -n control
-tmux send-keys -t "$SESSION":control "cat <<'BANNER'
-╔══════════════════════════════════════════════════════════════╗
-║  AnchorBench Full Benchmark                                 ║
-║  Started: $TIMESTAMP                                        ║
-║  Logs:    $LOGDIR/                                          ║
-║                                                             ║
-║  Windows:                                                   ║
-║    gpu0 — Llama-1B, Qwen-1.5B, Gemma-1B                    ║
-║    gpu1 — Llama-3B, Qwen-3B, Gemma-4B                      ║
-║    gpu2 — Llama-8B, Qwen-7B, OLMo-13B                      ║
-║    gpu3 — OLMo-32B                                          ║
-║                                                             ║
-║  Navigate: Ctrl-b w (list) | Ctrl-b n/p (next/prev)        ║
-║  Detach:   Ctrl-b d                                         ║
-╚══════════════════════════════════════════════════════════════╝
-BANNER" C-m
-
-# Common vLLM settings (max GPU util)
-MAX_TOKENS=512
+OUT_BASE="results/full_benchmark"
+BATCH_SIZE=64
 MAX_MODEL_LEN=4096
+GPU_UTIL=0.90
 
-# ── GPU 0: Small models (1B-1.5B) ──
-tmux new-window -t "$SESSION" -n gpu0
-tmux send-keys -t "$SESSION":gpu0 "export ${FORCE_RERUN_EXPORT}ANCHORBENCH_VIEWS=promptviews_core.jsonl ANCHORBENCH_BATCH_SIZE=64 GPU_MEM_UTIL=$GPU_MEM_UTIL MAX_TOKENS=512 MAX_MODEL_LEN=4096 LOGDIR=$LOGDIR PROJECT_ROOT=$PROJECT_ROOT && cd \$PROJECT_ROOT && \\
-echo '━━━ GPU 0: Small models ━━━' && \\
-echo '' && \\
-echo '>>> [1/3] Llama-3.2-1B-Instruct' && \\
-bash scripts/run_model_vllm.sh meta-llama/Llama-3.2-1B-Instruct 0 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu0_llama_1b.log && \\
-echo '' && \\
-echo '>>> [2/3] Qwen2.5-1.5B-Instruct' && \\
-bash scripts/run_model_vllm.sh Qwen/Qwen2.5-1.5B-Instruct 0 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu0_qwen_1.5b.log && \\
-echo '' && \\
-echo '>>> [3/3] Gemma-3-1B-it' && \\
-bash scripts/run_model_vllm.sh google/gemma-3-1b-it 0 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu0_gemma_1b.log && \\
-echo '' && \\
-echo '━━━ GPU 0: Recomputing unified metrics ━━━' && \\
-bash scripts/run_with_env.sh python scripts/eval/recompute_all_unified.py \\
-    --results_dir results/full_benchmark 2>&1 | tee $LOGDIR/recompute_metrics.log && \\
-echo '' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && \\
-echo '  GPU 0: ALL DONE' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" C-m
+SUITES=("external" "icl" "rag" "tool" "history")
+SUITE_DATASETS=(
+  "datasets/anchorbench_external_core"
+  "datasets/anchorbench_icl_core"
+  "datasets/anchorbench_rag_core"
+  "datasets/anchorbench_tool_core"
+  "datasets/anchorbench_history_core"
+)
 
-# ── GPU 1: Small-medium models (3B-4B) ──
-tmux new-window -t "$SESSION" -n gpu1
-tmux send-keys -t "$SESSION":gpu1 "export ${FORCE_RERUN_EXPORT}ANCHORBENCH_VIEWS=promptviews_core.jsonl ANCHORBENCH_BATCH_SIZE=64 GPU_MEM_UTIL=$GPU_MEM_UTIL MAX_TOKENS=512 MAX_MODEL_LEN=4096 LOGDIR=$LOGDIR PROJECT_ROOT=$PROJECT_ROOT && cd \$PROJECT_ROOT && \\
-echo '━━━ GPU 1: Small-medium models ━━━' && \\
-echo '' && \\
-echo '>>> [1/3] Llama-3.2-3B-Instruct' && \\
-bash scripts/run_model_vllm.sh meta-llama/Llama-3.2-3B-Instruct 1 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu1_llama_3b.log && \\
-echo '' && \\
-echo '>>> [2/3] Qwen2.5-3B-Instruct' && \\
-bash scripts/run_model_vllm.sh Qwen/Qwen2.5-3B-Instruct 1 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu1_qwen_3b.log && \\
-echo '' && \\
-echo '>>> [3/3] Gemma-3-4B-it' && \\
-bash scripts/run_model_vllm.sh google/gemma-3-4b-it 1 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu1_gemma_4b.log && \\
-echo '' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && \\
-echo '  GPU 1: ALL DONE' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" C-m
+run_model_all_suites() {
+  local model_id="$1"
+  local gpu_id="$2"
+  local tp_size="${3:-1}"
+  local model_slug="${model_id//\//_}"
 
-# ── GPU 2: Medium models (7B-13B) ──
-tmux new-window -t "$SESSION" -n gpu2
-tmux send-keys -t "$SESSION":gpu2 "export ${FORCE_RERUN_EXPORT}ANCHORBENCH_VIEWS=promptviews_core.jsonl ANCHORBENCH_BATCH_SIZE=64 GPU_MEM_UTIL=$GPU_MEM_UTIL MAX_TOKENS=512 MAX_MODEL_LEN=4096 LOGDIR=$LOGDIR PROJECT_ROOT=$PROJECT_ROOT && cd \$PROJECT_ROOT && \\
-echo '━━━ GPU 2: Medium models ━━━' && \\
-echo '' && \\
-echo '>>> [1/3] Llama-3.1-8B-Instruct' && \\
-bash scripts/run_model_vllm.sh meta-llama/Llama-3.1-8B-Instruct 2 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu2_llama_8b.log && \\
-echo '' && \\
-echo '>>> [2/3] Qwen2.5-7B-Instruct' && \\
-bash scripts/run_model_vllm.sh Qwen/Qwen2.5-7B-Instruct 2 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu2_qwen_7b.log && \\
-echo '' && \\
-echo '>>> [3/3] OLMo-2-1124-13B-Instruct' && \\
-bash scripts/run_model_vllm.sh allenai/OLMo-2-1124-13B-Instruct 2 $MAX_TOKENS $GPU_MEM_UTIL $MAX_MODEL_LEN 1 \\
-    2>&1 | tee $LOGDIR/gpu2_olmo_13b.log && \\
-echo '' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && \\
-echo '  GPU 2: ALL DONE' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" C-m
+  echo "[$(date +%H:%M:%S)] Starting $model_id on GPU $gpu_id (TP=$tp_size)"
 
-# ── GPU 3: Large model (32B) ──
-tmux new-window -t "$SESSION" -n gpu3
-tmux send-keys -t "$SESSION":gpu3 "export ${FORCE_RERUN_EXPORT}ANCHORBENCH_VIEWS=promptviews_core.jsonl ANCHORBENCH_BATCH_SIZE=64 GPU_MEM_UTIL=$GPU_MEM_UTIL_32B MAX_TOKENS=512 MAX_MODEL_LEN=4096 LOGDIR=$LOGDIR PROJECT_ROOT=$PROJECT_ROOT && cd \$PROJECT_ROOT && \\
-echo '━━━ GPU 3: Large model (mem util $GPU_MEM_UTIL_32B) ━━━' && \\
-echo '' && \\
-echo '>>> [1/1] OLMo-2-0325-32B-Instruct' && \\
-bash scripts/run_model_vllm.sh allenai/OLMo-2-0325-32B-Instruct 3 \$MAX_TOKENS \$GPU_MEM_UTIL 4096 1 \\
-    2>&1 | tee $LOGDIR/gpu3_olmo_32b.log && \\
-echo '' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━' && \\
-echo '  GPU 3: ALL DONE' && \\
-echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" C-m
+  for i in "${!SUITES[@]}"; do
+    local suite="${SUITES[$i]}"
+    local data_dir="${SUITE_DATASETS[$i]}"
+    local runner="scripts/eval/run_${suite}.py"
+    local out_dir="${OUT_BASE}/${suite}"
 
+    if [ ! -f "$runner" ]; then
+      echo "  WARNING: $runner not found, skipping $suite"
+      continue
+    fi
+
+    local summary_file="$out_dir/${model_slug}/summary.json"
+    if [ -f "$summary_file" ]; then
+      echo "  SKIP: $suite/$model_slug (summary.json exists)"
+      continue
+    fi
+
+    local extra_args=""
+    if [ "$suite" = "history" ]; then
+      extra_args="--baseline_condition control"
+    fi
+
+    echo "  [$(date +%H:%M:%S)] Running $suite..."
+    CUDA_VISIBLE_DEVICES="$gpu_id" bash scripts/run_with_env.sh python "$runner" \
+      --model_id "$model_id" \
+      --promptviews "${data_dir}/promptviews_core.jsonl" \
+      --itemspecs "${data_dir}/itemspecs.jsonl" \
+      --out_dir "$out_dir" \
+      --backend vllm \
+      --batch_size "$BATCH_SIZE" \
+      --gpu_memory_utilization "$GPU_UTIL" \
+      --max_model_len "$MAX_MODEL_LEN" \
+      --tensor_parallel_size "$tp_size" \
+      $extra_args \
+      2>&1 | tail -20
+
+    local results_file="$out_dir/${model_slug}/results.jsonl"
+    if [ -f "$results_file" ]; then
+      local count
+      count=$(wc -l < "$results_file")
+      echo "  OK: $suite/$model_slug -> $count records"
+    else
+      echo "  WARNING: No results.jsonl produced for $suite/$model_slug"
+    fi
+  done
+
+  echo "[$(date +%H:%M:%S)] Done: $model_id"
+}
+
+echo "=========================================="
+echo "AnchorBench Full Benchmark Re-run"
+echo "Models: ${#PAPER_ANCHORBENCH_MODEL_IDS[@]}"
+echo "Suites: ${SUITES[*]}"
+echo "Output: $OUT_BASE"
+echo "=========================================="
 echo ""
-echo "Tmux session '$SESSION' launched with 5 windows:"
-echo "  control  — status overview"
-echo "  gpu0     — Llama-1B, Qwen-1.5B, Gemma-1B  (+ metrics recompute)"
-echo "  gpu1     — Llama-3B, Qwen-3B, Gemma-4B"
-echo "  gpu2     — Llama-8B, Qwen-7B, OLMo-13B"
-echo "  gpu3     — OLMo-32B"
+
+mkdir -p "$OUT_BASE"
+
+# ── Tier 1: Small models (1B-4B) — 4 in parallel, 1 GPU each ──
+echo "=== Tier 1: Small models (4 parallel, 1 GPU each) ==="
+SMALL_MODELS=(
+  "Qwen/Qwen2.5-1.5B-Instruct"
+  "meta-llama/Llama-3.2-1B-Instruct"
+  "google/gemma-3-1b-it"
+  "Qwen/Qwen2.5-3B-Instruct"
+)
+pids=()
+for i in "${!SMALL_MODELS[@]}"; do
+  run_model_all_suites "${SMALL_MODELS[$i]}" "$i" 1 &
+  pids+=($!)
+done
+for pid in "${pids[@]}"; do wait "$pid"; done
 echo ""
-echo "Attach with:  tmux attach -t $SESSION"
-echo "Logs at:      $LOGDIR/"
+
+# Second batch of small
+echo "=== Tier 1b: More small models ==="
+SMALL2_MODELS=(
+  "meta-llama/Llama-3.2-3B-Instruct"
+  "google/gemma-3-4b-it"
+)
+pids=()
+for i in "${!SMALL2_MODELS[@]}"; do
+  run_model_all_suites "${SMALL2_MODELS[$i]}" "$i" 1 &
+  pids+=($!)
+done
+for pid in "${pids[@]}"; do wait "$pid"; done
 echo ""
+
+# ── Tier 2: Medium models (7B-8B) — 2 parallel, 1 GPU each ──
+echo "=== Tier 2: Medium models (2 parallel, 1 GPU each) ==="
+MED_MODELS=(
+  "Qwen/Qwen2.5-7B-Instruct"
+  "meta-llama/Llama-3.1-8B-Instruct"
+)
+pids=()
+for i in "${!MED_MODELS[@]}"; do
+  run_model_all_suites "${MED_MODELS[$i]}" "$i" 1 &
+  pids+=($!)
+done
+for pid in "${pids[@]}"; do wait "$pid"; done
+echo ""
+
+# ── Tier 3: Large model (13B) — 1 GPU ──
+echo "=== Tier 3: Large models (serial, 1 GPU) ==="
+run_model_all_suites "allenai/OLMo-2-1124-13B-Instruct" "0" 1
+echo ""
+
+# ── Tier 4: Very large (32B) — 4 GPUs, TP=4 ──
+echo "=== Tier 4: 32B model (TP=4, all GPUs) ==="
+run_model_all_suites "allenai/OLMo-2-0325-32B-Instruct" "0,1,2,3" 4
+echo ""
+
+echo "=========================================="
+echo "Full benchmark complete!"
+echo "Results in: $OUT_BASE/"
+echo "=========================================="

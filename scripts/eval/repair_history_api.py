@@ -29,7 +29,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from anchorbench_eval.evaluator import parse_response, write_and_summarize
-from anchorbench_eval.metrics import compute_unified_metrics
+from anchorbench_eval.metrics import EPSILON, compute_unified_metrics
 
 log = logging.getLogger(__name__)
 
@@ -67,7 +67,7 @@ def repair_model_dir(model_dir: Path, *, dry_run: bool = False) -> dict | None:
             n_already_ok += 1
             continue
 
-        stage1_raw = rec.get("stage1_raw", "")
+        stage1_raw = rec.get("stage1_raw_text", "") or rec.get("stage1_raw", "")
         if not stage1_raw:
             continue
 
@@ -112,8 +112,6 @@ def ceiling_diagnosis(all_results: list[dict]) -> None:
     print("\n" + "=" * 70)
     print("CEILING DIAGNOSIS: API History Suite")
     print("=" * 70)
-
-    EPSILON = 3.0
 
     for entry in all_results:
         model = entry["model"]

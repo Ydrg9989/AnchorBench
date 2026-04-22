@@ -55,11 +55,6 @@ _PLACEBO_PREAMBLES = [
     "Note: This assessment file was last modified {anchor} days ago.",
 ]
 
-_AUTHORITY_PREAMBLE_TEMPLATE = (
-    "An expert panel of senior industry analysts with 20+ years experience "
-    "estimated the {metric} index at approximately {anchor}."
-)
-
 
 def _make_authority_preambles(metric: str) -> List[str]:
     """Generate authority preambles for a given metric name."""

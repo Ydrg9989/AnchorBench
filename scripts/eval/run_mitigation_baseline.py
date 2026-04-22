@@ -37,6 +37,7 @@ from anchorbench_eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
+from anchorbench_eval.constants import SUITE_DATASETS
 from anchorbench_eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
@@ -47,14 +48,6 @@ MITIGATION_SUFFIX = (
     "values from the surrounding context that are not part of the "
     "core evidence."
 )
-
-SUITE_DATASETS = {
-    "external": "datasets/anchorbench_external_core",
-    "history": "datasets/anchorbench_history_core",
-    "icl": "datasets/anchorbench_icl_core",
-    "rag": "datasets/anchorbench_rag_core",
-    "tool": "datasets/anchorbench_tool_core",
-}
 
 
 def run_suite_local(backend, suite: str, items: list[dict], out_dir: Path,
@@ -204,7 +197,7 @@ async def run_history_api(client, model_id: str, items: list[dict],
             raw = s2_res.get("raw_text", "")
             answer, ok, strategy = parse_response(raw, pv.get("prompt_text", ""))
             rec = build_record(model_id, item, cond, pv, answer, ok, strategy, raw)
-            rec["stage1_raw"] = s1_res.get("raw_text", "")
+            rec["stage1_raw_text"] = s1_res.get("raw_text", "")
             rec["mitigation"] = "ignore_anchor"
             records.append(rec)
             fh.write(json.dumps(rec, ensure_ascii=False) + "\n")

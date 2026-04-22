@@ -9,7 +9,7 @@ AnchorBench maps four established human anchoring paradigms to five LLM interfac
 ## Quick Start
 
 ```bash
-pip install -r requirements.txt
+pip install -e ".[all]"
 
 # Generate all 5 suites (1,800 items, 9,000 prompts)
 bash scripts/generate_all.sh core 42
@@ -19,6 +19,14 @@ bash scripts/validate_all.sh core
 
 # Freeze for release
 bash scripts/freeze_dataset.sh core
+```
+
+## Smoke Test
+
+Verify the full pipeline (generate → validate → pytest) without GPU:
+
+```bash
+bash scripts/smoke_test.sh
 ```
 
 ## Environment
@@ -229,65 +237,61 @@ Each line is a JSON object representing one concrete prompt (5 per ItemSpec):
 ## Repository Layout
 
 ```
-src/anchorbench_v1/           # Benchmark data generation
-  schema.py                   #   ItemSpec, PromptView, RAGDoc dataclasses
-  domains.py                  #   6 domains × 3 label families × 8 scenarios × 4 questions
-  itemspec_gen.py             #   ItemSpec generators (shared backbone + per-suite)
-  generate.py                 #   CLI: --suite, --size, --seed, --scoring_function
-  validate.py                 #   Validation CLI
-  validators.py               #   Deterministic validators + diversity checks
-  suites/                     #   Per-suite prompt renderers
-    _shared.py                #     CONDITIONS, format_evidence, resolve_templates
-    external.py               #     External anchor renderer (9 conditions)
-    history.py                #     History two-stage renderer (6 conditions)
-    icl.py                    #     ICL demo-header renderer (7 conditions)
-    icl_dist.py               #     ICL demo-label bands × framing (5 conditions)
-    rag.py                    #     RAG corpus renderer (13+ conditions)
-    tool_agentic.py           #     Tool function-calling renderer (5 conditions)
-    tool_read.py              #     Tool plain-JSON renderer (5 conditions)
-    tool.py                   #     Backward-compat shim → tool_agentic
-
-tests/
-  test_generation.py          # 30 tests: reproducibility, gold, pairing, diversity
-  test_parsing.py             # Answer parsing tests
-  test_metrics.py             # Metric computation tests
-
+src/
+├── anchorbench_v1/           # Benchmark data generation
+│   ├── schema.py             #   ItemSpec, PromptView, RAGDoc dataclasses
+│   ├── domains.py            #   6 domains × 3 label families × 8 scenarios × 4 questions
+│   ├── itemspec_gen.py       #   ItemSpec generators (shared backbone + per-suite)
+│   ├── generate.py           #   CLI: --suite, --size, --seed, --scoring_function
+│   ├── validate.py           #   Validation CLI
+│   └── suites/               #   Per-suite prompt renderers
+├── anchorbench_eval/         # Evaluation and metrics
+│   ├── constants.py          #   SUITE_DATASETS, MODEL_SHORT, defaults (from YAML)
+│   ├── backends.py           #   HFBackend, VLLMBackend inference backends
+│   ├── evaluator.py          #   Orchestrator (prepare, parse, build_record, run)
+│   ├── metrics.py            #   UAI, TAR, Disc_Δ, MAE, Acc10, bootstrap CIs
+│   ├── parsing.py            #   3-tier parsing cascade (XML → regex → LLM)
+│   └── runner_utils.py       #   Shared CLI, backend builders, result discovery
+├── mitigation_eval/          # API evaluation support
+│   └── async_api.py          #   Async OpenRouter client
+configs/
+└── benchmark.yaml            # Centralized suite paths, model names, defaults
 scripts/
-  paper_model_ids.inc.sh      # Ten HF model ids (matches paper Table model-details)
-  generate_all.sh             # Generate all 5 suites
-  validate_all.sh             # Validate all 5 suites
-  freeze_dataset.sh           # Archive with checksums
-  eval/                       # Evaluation runners + unified metrics
-
-datasets/                     # Generated benchmark data
-  anchorbench_{suite}_{size}/ #   Per-suite output directories
-    itemspecs.jsonl
-    promptviews.jsonl
-    manifest.json
-
+├── run_full_benchmark.sh     # Main multi-GPU orchestration (open-weight)
+├── run_model_vllm.sh         # Per-model vLLM driver
+├── generate_all.sh           # Generate all 5 suites
+├── smoke_test.sh             # End-to-end pipeline smoke test (no GPU)
+└── eval/                     # Suite runners + aggregation
+datasets/                     # Generated benchmark data (JSONL)
+results/                      # Evaluation outputs (gitignored)
+tests/                        # Pytest suite (no GPU needed)
+COLM/                         # Camera-ready paper source (LaTeX)
 docs/                         # Specification and reference docs
-paper/                        # Paper source (LaTeX)
 ```
+
+See [docs/REPO_STRUCTURE.md](docs/REPO_STRUCTURE.md) for the complete file layout.
 
 ## Reproducing Paper Results
 
 ```bash
-# Run evaluation for a single suite + model
-PYTHONPATH=src python scripts/eval/run_external.py \
-    --model meta-llama/Llama-3.2-3B-Instruct \
-    --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
-    --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
-    --out_dir results/external_core --batch_size 32 --max_new_tokens 512
+# 1. Generate datasets (1,800 items × 5 suites = 9,000 prompts)
+bash scripts/generate_all.sh core 42
 
-# Multi-GPU batch runs (one model per GPU; see script headers for env overrides)
-bash scripts/run_external_8B_7B.sh
-bash scripts/run_icl_gpus.sh      # default data: anchorbench_icl_dist_core
-bash scripts/run_history_gpus.sh  # default baseline: control_twostage (fair two-stage)
-bash scripts/run_rag_gpus.sh
-bash scripts/run_tool_gpus.sh
+# 2. Run open-weight models (requires 4× H100 GPUs)
+bash scripts/run_full_benchmark.sh
 
-# Recompute unified metrics across all results
-PYTHONPATH=src:scripts/eval python scripts/eval/recompute_all_unified.py
+# 3. Run API models
+PYTHONPATH=src python scripts/eval/run_api_benchmark.py \
+    --model_id openai/gpt-5.4-mini \
+    --suites external history icl rag tool
+
+# 4. Recompute unified metrics
+PYTHONPATH=src python scripts/eval/recompute_all_unified.py \
+    --results_dir results/full_benchmark
+
+# 5. Generate paper figures and tables
+PYTHONPATH=src python COLM/scripts/generate_paper_figures.py
+PYTHONPATH=src python scripts/eval/export_latex_tables.py
 ```
 
 See [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for the full reproduction guide.
@@ -301,7 +305,20 @@ See [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for the full reproduction
 | [Data Objects Reference](docs/data_objects_reference.md) | Complete ItemSpec / PromptView field reference |
 | [Reproducibility Guide](docs/REPRODUCIBILITY.md) | Step-by-step reproduction instructions |
 | [Repository Structure](docs/REPO_STRUCTURE.md) | Full file layout |
+| [Environment Setup](docs/ENVIRONMENT.md) | Conda env, vLLM/cuDNN troubleshooting |
+
+## Citation
+
+```bibtex
+@inproceedings{anchorbench2026,
+  title     = {AnchorBench: Measuring {LLM} Susceptibility to Numeric
+               Anchoring Across Interface Paradigms},
+  author    = {Anonymous},
+  booktitle = {Conference on Language Modeling (COLM)},
+  year      = {2026},
+}
+```
 
 ## License
 
-[To be added before submission]
+Apache-2.0. See [LICENSE](LICENSE).

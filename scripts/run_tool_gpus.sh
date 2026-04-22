@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# DEPRECATED: prefer `python scripts/run.py eval --suite tool --model ...` or
+#   `python scripts/run.py experiment --name paper_main` for the full panel.
+# This script remains for backward compatibility with prior shell pipelines.
+#
 # Run Tool experiments maximizing GPU utilization.
 #
 # Strategy:

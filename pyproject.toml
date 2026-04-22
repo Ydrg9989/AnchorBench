@@ -1,0 +1,36 @@
+[project]
+name = "anchorbench"
+version = "2.1.0"
+description = "AnchorBench: Measuring LLM Susceptibility to Numeric Anchoring Across Interface Paradigms"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "matplotlib>=3.7",
+    "pyyaml>=6.0",
+    "requests>=2.31",
+    "torch>=2.1",
+    "transformers>=4.36",
+]
+
+[project.optional-dependencies]
+vllm = ["vllm>=0.6.0"]
+api = ["aiohttp>=3.9"]
+dev = ["pytest>=7.0", "ruff>=0.4"]
+all = ["anchorbench[vllm,api,dev]"]
+
+[project.scripts]
+anchorbench-generate = "anchorbench_v1.generate:main"
+anchorbench-validate = "anchorbench_v1.validate:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

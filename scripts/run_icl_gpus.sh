@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-# Run ICL-style experiments (default: icl_dist core) with one model per GPU.
+# DEPRECATED: prefer `python scripts/run.py eval --suite icl --model ...` or
+#   `python scripts/run.py experiment --name paper_main` for the full panel.
+# This script remains for backward compatibility with prior shell pipelines.
+#
+# Run ICL-style experiments (default: standard ICL core) with one model per GPU.
 #
 # Default model list: all ten instruction-tuned models from the paper
-# (COLM/sections/appendix/setup.tex, Table model-details), including Gemma~3 and OLMo~2.
+# (COLM/sections/appendix.tex, Table model-details), including Gemma~3 and OLMo~2.
 # If you have fewer GPUs than models, jobs run in waves (full GPU use each wave).
 #
 # Usage:
 #   cd "$REPO_ROOT" && bash scripts/run_icl_gpus.sh
 #
 # Environment overrides:
-#   ICL_DATA_DIR     - dataset dir (default: datasets/anchorbench_icl_dist_core)
-#   ICL_OUT_BASE     - results root (default: results/icl_dist_core)
+#   ICL_DATA_DIR     - dataset dir (default: datasets/anchorbench_icl_core)
+#                      For ICL-dist: ICL_DATA_DIR=datasets/anchorbench_icl_dist_core ICL_OUT_BASE=results/icl_dist_core
+#   ICL_OUT_BASE     - results root (default: results/full_benchmark)
 #   ICL_BATCH_SIZE   - batch size for HF/vLLM batched path (default: 32)
 #   ICL_BACKEND      - hf | vllm (default: hf)
 #   ICL_MODELS       - space-separated model ids (optional; else built-in list)
@@ -25,8 +30,8 @@ REPO_ROOT="$(pwd)"
 # shellcheck source=paper_model_ids.inc.sh
 source "$REPO_ROOT/scripts/paper_model_ids.inc.sh"
 
-DATA_DIR="${ICL_DATA_DIR:-datasets/anchorbench_icl_dist_core}"
-OUT_BASE="${ICL_OUT_BASE:-results/icl_dist_core}"
+DATA_DIR="${ICL_DATA_DIR:-datasets/anchorbench_icl_core}"
+OUT_BASE="${ICL_OUT_BASE:-results/full_benchmark}"
 BATCH_SIZE="${ICL_BATCH_SIZE:-32}"
 BACKEND="${ICL_BACKEND:-hf}"
 TP_SIZE="${ICL_TP:-1}"

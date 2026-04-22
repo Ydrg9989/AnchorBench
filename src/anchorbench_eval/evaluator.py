@@ -29,7 +29,6 @@ from .parsing import (
     parse_final_answer,
     parse_last_number,
     parse_structured,
-    parse_with_fallback,
     parse_xml_answer,
 )
 
@@ -531,6 +530,18 @@ def run_history_two_stage(
     return records
 
 
+def _git_hash() -> str | None:
+    """Return short git commit hash, or None if not in a git repo."""
+    import subprocess
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL, text=True,
+        ).strip()
+    except Exception:
+        return None
+
+
 def write_and_summarize(
     records: list[dict],
     out_dir: Path,
@@ -538,11 +549,16 @@ def write_and_summarize(
     epsilon: float = 3.0,
     *,
     baseline_condition: str = "control",
+    run_metadata: dict[str, Any] | None = None,
 ) -> dict:
     """Compute unified metrics, write summary.json, print summary.
 
     The results.jsonl is assumed to already be written by the run_* function.
+    If *run_metadata* is provided (model_id, backend, args, etc.), it is
+    saved to ``run_config.json`` alongside the summary for traceability.
     """
+    import datetime
+
     strategy_counts = Counter(r.get("parse_strategy", "unknown") for r in records)
     log.info("Parse strategy breakdown: %s", dict(strategy_counts))
 
@@ -553,6 +569,18 @@ def write_and_summarize(
     with open(summary_path, "w") as f:
         json.dump(metrics, f, indent=2)
     log.info("Summary -> %s", summary_path)
+
+    if run_metadata is not None:
+        config_path = out_dir / "run_config.json"
+        meta = {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            "git_commit": _git_hash(),
+            "package_version": "2.1.0",
+            **run_metadata,
+        }
+        with open(config_path, "w") as f:
+            json.dump(meta, f, indent=2)
+        log.info("Run config -> %s", config_path)
 
     print_summary(metrics, label=label)
     return metrics

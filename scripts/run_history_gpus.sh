@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# DEPRECATED: prefer `python scripts/run.py eval --suite history --model ...` or
+#   `python scripts/run.py experiment --name paper_main` for the full panel.
+# This script remains for backward compatibility with prior shell pipelines.
+#
 # Run History suite (default: two-stage baseline) with one model per GPU.
 #
 # Default models: same ten open-weight IDs as the paper (scripts/paper_model_ids.inc.sh).

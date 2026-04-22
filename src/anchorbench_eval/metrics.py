@@ -329,8 +329,6 @@ def _collect_item_uai_vectors(
     vectors: dict[str, list[float]] = {
         "irr": [], "plaus": [], "placebo": [], "authority": [], "neutral": [],
     }
-    paired_irr: list[float] = []
-    paired_plaus: list[float] = []
 
     for iid, conds in items.items():
         ctrl = conds.get(control_key)
@@ -474,6 +472,13 @@ def compute_extended_metrics(
     return result
 
 
+def _parse_offset_from_item_id(item_id: str) -> int | None:
+    """Extract offset from item_id like 'EXT-pricing_wtp-e-off15-001'."""
+    import re
+    m = re.search(r"-off(\d+)-", item_id or "")
+    return int(m.group(1)) if m else None
+
+
 def compute_by_offset(
     records: list[dict],
     epsilon: float = EPSILON,
@@ -488,6 +493,8 @@ def compute_by_offset(
             offset = anchors.get("offset")
         if offset is None:
             offset = r.get("anchor_offset")
+        if offset is None:
+            offset = _parse_offset_from_item_id(r.get("item_id", ""))
         if offset is not None:
             by_offset.setdefault(int(offset), []).append(r)
 

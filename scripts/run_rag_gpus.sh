@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+# DEPRECATED: prefer `python scripts/run.py eval --suite rag --model ...` or
+#   `python scripts/run.py experiment --name paper_main` for the full panel.
+# This script remains for backward compatibility with prior shell pipelines.
+#
 # Run RAG experiments maximizing GPU utilization.
 #
 # Strategy:
@@ -82,11 +86,9 @@ for ((start = 0; start < NMODELS; start += NGPU)); do
   for ((idx = start; idx < wave_end; idx++)); do
     model="${MODELS[$idx]}"
     out_name="${model//\//_}"
-    out_dir="$OUT_BASE/${out_name}"
-    mkdir -p "$out_dir"
     export CUDA_VISIBLE_DEVICES=$slot
-    echo "[GPU $slot] $model -> $out_dir"
-    python scripts/eval/run_rag.py $DATA_ARGS --model_id "$model" --out_dir "$out_dir" $OPTS &
+    echo "[GPU $slot] $model -> $OUT_BASE/${out_name}/"
+    python scripts/eval/run_rag.py $DATA_ARGS --model_id "$model" --out_dir "$OUT_BASE" $OPTS &
     pids+=($!)
     slot=$((slot + 1))
   done

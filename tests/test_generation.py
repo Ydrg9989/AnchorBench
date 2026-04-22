@@ -14,12 +14,8 @@ Tests:
 import json
 import random
 import statistics
-import sys
-from pathlib import Path
 
 import pytest
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from anchorbench_v1.domains import DOMAINS, DOMAIN_IDS
 from anchorbench_v1.itemspec_gen import (

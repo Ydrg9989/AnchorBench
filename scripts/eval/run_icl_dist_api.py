@@ -35,7 +35,9 @@ from mitigation_eval.async_api import AsyncOpenRouterClient
 
 log = logging.getLogger(__name__)
 
-ICL_DIST_DATASET = "datasets/anchorbench_icl_dist_core"
+from anchorbench_eval.constants import VARIANT_DATASETS
+
+ICL_DIST_DATASET = VARIANT_DATASETS.get("icl_dist", "datasets/anchorbench_icl_dist_core")
 
 
 async def run_icl_dist_api(

@@ -28,22 +28,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-SUITES = ("external", "icl", "rag", "tool", "history")
+from anchorbench_eval.runner_utils import MODEL_SHORT, SUITES
 
 _INT_PAT = re.compile(r"(?<![\d.])-?\d+(?!\d)(?!\.\d)")
-
-MODEL_SHORT = {
-    "meta-llama_Llama-3.2-1B-Instruct": "Llama-1B",
-    "meta-llama_Llama-3.2-3B-Instruct": "Llama-3B",
-    "meta-llama_Llama-3.1-8B-Instruct": "Llama-8B",
-    "Qwen_Qwen2.5-1.5B-Instruct": "Qwen-1.5B",
-    "Qwen_Qwen2.5-3B-Instruct": "Qwen-3B",
-    "Qwen_Qwen2.5-7B-Instruct": "Qwen-7B",
-    "google_gemma-3-1b-it": "Gemma-1B",
-    "google_gemma-3-4b-it": "Gemma-4B",
-    "allenai_OLMo-2-1124-13B-Instruct": "OLMo-13B",
-    "allenai_OLMo-2-0325-32B-Instruct": "OLMo-32B",
-}
 
 
 def categorize_failure(raw_text: str) -> str:
@@ -73,20 +60,11 @@ def categorize_failure(raw_text: str) -> str:
     return "other"
 
 
+from anchorbench_eval.runner_utils import discover_results as _discover_all
+
+
 def discover_results(results_dir: Path) -> list[tuple[str, str, Path]]:
-    found = []
-    for suite in SUITES:
-        suite_dir = results_dir / suite
-        if not suite_dir.is_dir():
-            continue
-        for p in sorted(suite_dir.rglob("results.jsonl")):
-            rel = p.relative_to(suite_dir)
-            parts = list(rel.parts)
-            model_slug = parts[0] if len(parts) >= 2 else suite_dir.name
-            if model_slug in SUITES:
-                continue
-            found.append((suite, model_slug, p))
-    return found
+    return [(s, slug, p) for s, slug, _, p in _discover_all(results_dir)]
 
 
 def truncate(text: str, max_len: int = 120) -> str:

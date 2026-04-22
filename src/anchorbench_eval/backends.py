@@ -2,15 +2,15 @@
 
 HFBackend   — local HuggingFace Transformers inference
 VLLMBackend — vLLM inference (PagedAttention, high GPU utilization)
-APIBackend  — async OpenRouter / OpenAI-compatible API inference
 
 All support generate(), generate_batch(), and generate_for_extraction().
 HFBackend and VLLMBackend also support generate_chat() and generate_batch_tool().
+
+API models use AsyncOpenRouterClient directly (see run_api_benchmark.py).
 """
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 from typing import Any, Protocol, runtime_checkable
@@ -348,65 +348,3 @@ class VLLMBackend:
         return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
 
 
-class APIBackend:
-    """Async OpenRouter / OpenAI-compatible API backend."""
-
-    def __init__(
-        self,
-        model_id: str,
-        api_key: str | None = None,
-        max_concurrent: int = 20,
-    ) -> None:
-        from mitigation_eval.async_api import AsyncOpenRouterClient
-
-        self.model_id = model_id
-        self._client = AsyncOpenRouterClient(
-            api_key=api_key, max_concurrent=max_concurrent,
-        )
-
-    @property
-    def supports_structured(self) -> bool:
-        return True
-
-    def generate(
-        self, prompt: str, *, max_tokens: int = 512,
-        temperature: float = 0.0, structured: bool = False,
-    ) -> str:
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self._client.query_batch(
-                self.model_id, [prompt],
-                max_tokens=max_tokens, temperature=temperature,
-            )
-        )
-        return results[0].get("raw_text", "")
-
-    def generate_batch_async(
-        self, prompts: list[str], *, max_tokens: int = 512,
-        temperature: float = 0.0,
-    ) -> list[str]:
-        loop = asyncio.get_event_loop()
-        results = loop.run_until_complete(
-            self._client.query_batch(
-                self.model_id, prompts,
-                max_tokens=max_tokens, temperature=temperature,
-            )
-        )
-        return [r.get("raw_text", "") for r in results]
-
-    def generate_batch(
-        self, prompts: list[str], *, max_tokens: int = 512,
-        temperature: float = 0.0, batch_size: int = 16,
-    ) -> list[str]:
-        """Batch generation via async API (batch_size ignored; all concurrent)."""
-        return self.generate_batch_async(
-            prompts, max_tokens=max_tokens, temperature=temperature,
-        )
-
-    def generate_for_extraction(
-        self, raw_output: str, extraction_prompt: str,
-    ) -> str:
-        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
-
-    async def close(self) -> None:
-        await self._client.close()

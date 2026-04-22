@@ -8,19 +8,53 @@ venv/
 .venv/
 *.egg-info/
 .eggs/
+dist/
+build/
+.pytest_cache/
 
-# Environment
+# Environment / secrets
 .env
 .env.local
 
 # IDE / editor
 .cursor/
 .codex/
+.idea/
+.vscode/
+*.swp
+*.swo
 
-# Generated results (can be reproduced from datasets + scripts)
+# Generated results (reproducible from datasets + scripts)
 results/
+outputs/
+logs/
+figures/
 
-# Generated datasets (keep DATASET_CARD and manifests)
+# Archives and backups
+*.zip
+*.tar.gz
+archive_*.tar.gz
+*_pre_rerun_backup_*/
+
+# Legacy (removed; available in git history)
+legacy/
+analysis/
+
+# LaTeX build artifacts
+COLM/*.aux
+COLM/*.bbl
+COLM/*.blg
+COLM/*.fls
+COLM/*.fdb_latexmk
+COLM/*.log
+COLM/*.out
+COLM/*.synctex
+COLM/*.synctex.gz
+COLM/*.synctex(busy)
+COLM/pdflatex*.fls
+COLM/archive/
+
+# Generated datasets (keep manifests and core promptviews)
 datasets/anchorbench_v1/**/*.jsonl
 datasets/anchorbench_v1/**/artifacts/
 datasets/anchorbench_v1/llm_*/

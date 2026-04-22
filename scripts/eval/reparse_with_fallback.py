@@ -39,33 +39,16 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-SUITES = ("external", "icl", "rag", "tool", "history")
+from anchorbench_eval.runner_utils import discover_results as _discover_all, fmt, SUITES
 
 
-def discover_results(results_dir: Path) -> list[tuple[str, str, Path]]:
-    """Find all results.jsonl under results_dir/<suite>/<model>/."""
-    found = []
-    for suite in SUITES:
-        suite_dir = results_dir / suite
-        if not suite_dir.is_dir():
-            continue
-        for p in sorted(suite_dir.rglob("results.jsonl")):
-            rel = p.relative_to(suite_dir)
-            parts = list(rel.parts)
-            model_slug = parts[0] if len(parts) >= 2 else suite_dir.name
-            if model_slug in SUITES:
-                continue
-            found.append((suite, model_slug, p))
-    return found
+def _discover_results_local(results_dir: Path) -> list[tuple[str, str, Path]]:
+    return [(s, slug, p) for s, slug, _, p in _discover_all(results_dir)]
 
 
 def load_records(path: Path) -> list[dict]:
     with open(path) as f:
         return [json.loads(line) for line in f if line.strip()]
-
-
-def fmt(v: float | None, d: int = 3) -> str:
-    return f"{v:.{d}f}" if v is not None else "---"
 
 
 def fmt_pct(v: float | None) -> str:
@@ -134,7 +117,7 @@ def main() -> None:
 
     paths: list[tuple[str, Path]] = []
     if args.results_dir:
-        for suite, model_slug, rpath in discover_results(args.results_dir):
+        for suite, model_slug, rpath in _discover_results_local(args.results_dir):
             paths.append((f"{suite}/{model_slug}", rpath))
     for rpath in (args.results or []):
         paths.append((str(rpath.name), rpath))

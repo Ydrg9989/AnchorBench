@@ -60,39 +60,19 @@ run_suite() {
     local out_dir
     local extra_args=()
 
+    out_dir="$RESULTS_ROOT/$suite"
     case "$suite" in
-        external)
-            out_dir="$RESULTS_ROOT/external/${MODEL_SLUG}"
-            ;;
-        icl)
-            out_dir="$RESULTS_ROOT/icl"
-            extra_args+=(--batch_size "$BATCH_SIZE")
-            ;;
-        rag)
-            out_dir="$RESULTS_ROOT/rag/${MODEL_SLUG}"
-            extra_args+=(--batch_size "$BATCH_SIZE")
-            ;;
-        tool)
-            out_dir="$RESULTS_ROOT/tool"
+        icl|rag|tool)
             extra_args+=(--batch_size "$BATCH_SIZE")
             ;;
         history)
-            out_dir="$RESULTS_ROOT/history/${MODEL_SLUG}"
             extra_args+=(--request_final_line)
             ;;
     esac
 
     mkdir -p "$out_dir"
 
-    local results_file
-    case "$suite" in
-        icl|tool)
-            results_file="$out_dir/${MODEL_SLUG}/results.jsonl"
-            ;;
-        *)
-            results_file="$out_dir/results.jsonl"
-            ;;
-    esac
+    local results_file="$out_dir/${MODEL_SLUG}/results.jsonl"
 
     if [ -z "${ANCHORBENCH_FORCE_RERUN:-}" ]; then
         if [ -f "$results_file" ]; then
@@ -126,6 +106,41 @@ run_suite() {
     elapsed_min=$(( (end_ts - start_ts) / 60 ))
 
     echo "[$(date +%H:%M:%S)] ✓ $suite DONE (${elapsed_min}m)"
+
+    # Post-run validation
+    if [ -f "$results_file" ]; then
+        local n_lines
+        n_lines=$(wc -l < "$results_file")
+        if [ "$n_lines" -lt 1 ]; then
+            echo "WARNING: $suite results.jsonl is empty (0 lines)"
+        else
+            echo "  Validation: $n_lines lines in results.jsonl"
+        fi
+
+        local expected_prefix
+        case "$suite" in
+            external) expected_prefix="EXT-" ;;
+            icl)      expected_prefix="ICL-" ;;
+            rag)      expected_prefix="RAG-" ;;
+            tool)     expected_prefix="TOOL-" ;;
+            history)  expected_prefix="HIST-" ;;
+        esac
+
+        local first_id
+        first_id=$(head -1 "$results_file" | python3 -c "import sys,json; print(json.load(sys.stdin).get('item_id',''))" 2>/dev/null || true)
+        if [ -n "$first_id" ] && [ -n "$expected_prefix" ]; then
+            case "$first_id" in
+                "${expected_prefix}"*)
+                    echo "  Validation: first item_id='$first_id' matches expected prefix '$expected_prefix'"
+                    ;;
+                *)
+                    echo "WARNING: first item_id='$first_id' does NOT start with expected prefix '$expected_prefix'"
+                    ;;
+            esac
+        fi
+    else
+        echo "WARNING: $suite results.jsonl not found after run"
+    fi
 }
 
 TOTAL_START=$(date +%s)

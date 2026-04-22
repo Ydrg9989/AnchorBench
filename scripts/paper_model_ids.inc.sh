@@ -1,5 +1,5 @@
 # Hugging Face Hub identifiers for the ten instruction-tuned models in the paper.
-# Source of truth: COLM/sections/appendix/setup.tex (Table~\ref{tab:model-details}).
+# Source of truth: COLM/sections/appendix.tex (Table model-details).
 # Do not execute this file directly; it is sourced from run_*_gpus.sh scripts.
 #
 # shellcheck disable=SC2034

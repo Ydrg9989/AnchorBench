@@ -30,67 +30,13 @@ from anchorbench_eval.metrics import (
     compute_unified_metrics,
     print_summary,
 )
-
-SUITES = ("external", "icl", "rag", "tool", "tool_agentic", "tool_read", "history")
-
-MODEL_SHORT = {
-    "meta-llama_Llama-3.2-1B-Instruct": "Llama-1B",
-    "meta-llama_Llama-3.2-3B-Instruct": "Llama-3B",
-    "meta-llama_Llama-3.1-8B-Instruct": "Llama-8B",
-    "Qwen_Qwen2.5-1.5B-Instruct": "Qwen-1.5B",
-    "Qwen_Qwen2.5-3B-Instruct": "Qwen-3B",
-    "Qwen_Qwen2.5-7B-Instruct": "Qwen-7B",
-    "google_gemma-3-1b-it": "Gemma-1B",
-    "google_gemma-3-4b-it": "Gemma-4B",
-    "allenai_OLMo-2-1124-13B-Instruct": "OLMo-13B",
-    "allenai_OLMo-2-0325-32B-Instruct": "OLMo-32B",
-    "openai_gpt-4o-mini": "GPT-4o-mini",
-    "openai_gpt-5.4-mini": "GPT-5.4-mini",
-    "google_gemini-2.5-flash": "Gemini-2.5-Flash",
-    "anthropic_claude-haiku-4.5": "Claude-H4.5",
-    "x-ai_grok-3-mini-beta": "Grok-3-mini",
-}
-
-
-def discover_results(results_dir: Path) -> list[tuple[str, str, str, Path]]:
-    """Find all results.jsonl files and extract (suite, model_slug, short_name, path)."""
-    found = []
-    for suite in SUITES:
-        suite_dir = results_dir / suite
-        if not suite_dir.is_dir():
-            continue
-
-        for p in sorted(suite_dir.rglob("results.jsonl")):
-            rel = p.relative_to(suite_dir)
-            parts = list(rel.parts)
-
-            if len(parts) == 1:
-                model_slug = suite_dir.name
-                if model_slug in SUITES:
-                    continue
-            elif len(parts) == 2:
-                model_slug = parts[0]
-            elif len(parts) == 3:
-                model_slug = parts[0]
-            else:
-                continue
-
-            short = MODEL_SHORT.get(model_slug, model_slug)
-            found.append((suite, model_slug, short, p))
-
-    return found
-
-
-def fmt(v: float | None, decimals: int = 2) -> str:
-    if v is None:
-        return "---"
-    return f"{v:.{decimals}f}"
-
-
-def fmt_pct(v: float | None) -> str:
-    if v is None:
-        return "---"
-    return f"{v * 100:.1f}%"
+from anchorbench_eval.runner_utils import (
+    SUITES,
+    MODEL_SHORT,
+    discover_results,
+    fmt,
+    fmt_pct,
+)
 
 
 def main() -> None:
@@ -121,14 +67,21 @@ def main() -> None:
         if not records:
             print(f"  WARNING: empty {path}")
             continue
-        metrics = compute_extended_metrics(records, epsilon=args.epsilon)
+
+        conds_present = {r.get("condition") for r in records}
+        if "control_twostage" in conds_present and "control" not in conds_present:
+            bc = "control_twostage"
+        else:
+            bc = "control"
+
+        metrics = compute_extended_metrics(records, epsilon=args.epsilon, baseline_condition=bc)
         metrics["suite"] = suite.capitalize()
         metrics["model"] = short
         metrics["model_slug"] = slug
         metrics["n_records"] = len(records)
 
-        metrics["by_offset"] = compute_by_offset(records, epsilon=args.epsilon)
-        metrics["by_difficulty"] = compute_by_difficulty(records, epsilon=args.epsilon)
+        metrics["by_offset"] = compute_by_offset(records, epsilon=args.epsilon, baseline_condition=bc)
+        metrics["by_difficulty"] = compute_by_difficulty(records, epsilon=args.epsilon, baseline_condition=bc)
 
         all_results.append(metrics)
 

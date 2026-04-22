@@ -16,20 +16,19 @@ Outputs to results/extension_summary/.
 
 from __future__ import annotations
 
+import argparse
 import csv
 import json
 import logging
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
 
 from anchorbench_eval.metrics import compute_unified_metrics
 
 log = logging.getLogger(__name__)
-
-RESULTS_ROOT = Path("results")
-OUTPUT_DIR = RESULTS_ROOT / "extension_summary"
 
 
 def load_records(path: Path) -> list[dict]:
@@ -77,9 +76,9 @@ def _fmt(v, prec=3):
     return str(v)
 
 
-def package_mitigation():
+def package_mitigation(results_root: Path):
     """Compare mitigation vs baseline for each model x suite."""
-    mit_dir = RESULTS_ROOT / "mitigation_ignore_anchor"
+    mit_dir = results_root / "mitigation_ignore_anchor"
     if not mit_dir.exists():
         log.warning("No mitigation results found at %s", mit_dir)
         return []
@@ -97,7 +96,7 @@ def package_mitigation():
             mit_records = load_records(model_dir / "results.jsonl")
             mit_m = metrics_row(mit_records, f"{suite}/{model_slug} (mitigated)")
 
-            base_path = _find_baseline(suite, model_slug)
+            base_path = _find_baseline(suite, model_slug, results_root)
             base_records = load_records(base_path) if base_path else []
             base_m = metrics_row(base_records, f"{suite}/{model_slug} (baseline)")
 
@@ -117,11 +116,11 @@ def package_mitigation():
     return rows
 
 
-def _find_baseline(suite: str, model_slug: str) -> Path | None:
+def _find_baseline(suite: str, model_slug: str, results_root: Path) -> Path | None:
     """Find baseline results.jsonl for a model+suite."""
     candidates = [
-        RESULTS_ROOT / "full_benchmark" / suite / model_slug / "results.jsonl",
-        RESULTS_ROOT / "api_benchmark" / suite / model_slug / "results.jsonl",
+        results_root / "full_benchmark" / suite / model_slug / "results.jsonl",
+        results_root / "api_benchmark" / suite / model_slug / "results.jsonl",
     ]
     for c in candidates:
         if c.exists():
@@ -129,9 +128,9 @@ def _find_baseline(suite: str, model_slug: str) -> Path | None:
     return None
 
 
-def package_icl_dist_api():
+def package_icl_dist_api(results_root: Path):
     """Compare standard ICL vs ICL-dist for API models."""
-    icl_api_dir = RESULTS_ROOT / "icl_numeric_api"
+    icl_api_dir = results_root / "icl_numeric_api"
     if not icl_api_dir.exists():
         log.warning("No ICL-dist API results at %s", icl_api_dir)
         return []
@@ -145,7 +144,7 @@ def package_icl_dist_api():
         dist_records = load_records(model_dir / "results.jsonl")
         dist_m = metrics_row(dist_records)
 
-        std_path = RESULTS_ROOT / "api_benchmark" / "icl" / model_slug / "results.jsonl"
+        std_path = results_root / "api_benchmark" / "icl" / model_slug / "results.jsonl"
         std_records = load_records(std_path)
         std_m = metrics_row(std_records)
 
@@ -163,9 +162,9 @@ def package_icl_dist_api():
     return rows
 
 
-def package_sampling():
+def package_sampling(results_root: Path):
     """Compare greedy vs sampling for each model x suite."""
-    samp_dir = RESULTS_ROOT / "decoding_sampling_robustness"
+    samp_dir = results_root / "decoding_sampling_robustness"
     if not samp_dir.exists():
         log.warning("No sampling results at %s", samp_dir)
         return []
@@ -236,7 +235,14 @@ def write_json(data, path: Path):
     log.info("Wrote %s", path)
 
 
-def write_markdown_report(mit_rows, icl_rows, samp_rows, path: Path):
+def write_markdown_report(
+    mit_rows,
+    icl_rows,
+    samp_rows,
+    path: Path,
+    results_root: Path,
+    out_dir: Path,
+):
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = ["# Extension Experiment Results\n"]
 
@@ -277,10 +283,11 @@ def write_markdown_report(mit_rows, icl_rows, samp_rows, path: Path):
         lines.append("*No results available.*\n")
 
     lines.append("## File Locations\n")
-    lines.append("- Mitigation: `results/mitigation_ignore_anchor/`")
-    lines.append("- ICL-dist API: `results/icl_numeric_api/`")
-    lines.append("- Sampling: `results/decoding_sampling_robustness/`")
-    lines.append("- Summaries: `results/extension_summary/`")
+    rr = results_root.as_posix()
+    lines.append(f"- Mitigation: `{rr}/mitigation_ignore_anchor/`")
+    lines.append(f"- ICL-dist API: `{rr}/icl_numeric_api/`")
+    lines.append(f"- Sampling: `{rr}/decoding_sampling_robustness/`")
+    lines.append(f"- Summaries: `{out_dir.as_posix()}/`")
     lines.append("")
 
     path.write_text("\n".join(lines))
@@ -289,27 +296,47 @@ def write_markdown_report(mit_rows, icl_rows, samp_rows, path: Path):
 
 def main():
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument(
+        "--results_root",
+        default="results",
+        help="Root directory containing mitigation, ICL-dist, sampling, and baseline runs",
+    )
+    p.add_argument(
+        "--out_dir",
+        default="results/extension_summary",
+        help="Output directory for CSV, JSON, and markdown report",
+    )
+    args = p.parse_args()
+    results_root = ROOT / args.results_root
+    out_dir = ROOT / args.out_dir
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
-    mit_rows = package_mitigation()
-    icl_rows = package_icl_dist_api()
-    samp_rows = package_sampling()
+    mit_rows = package_mitigation(results_root)
+    icl_rows = package_icl_dist_api(results_root)
+    samp_rows = package_sampling(results_root)
 
-    write_csv(mit_rows, OUTPUT_DIR / "mitigation_comparison.csv")
-    write_csv(icl_rows, OUTPUT_DIR / "icl_dist_api_comparison.csv")
-    write_csv(samp_rows, OUTPUT_DIR / "sampling_robustness.csv")
+    write_csv(mit_rows, out_dir / "mitigation_comparison.csv")
+    write_csv(icl_rows, out_dir / "icl_dist_api_comparison.csv")
+    write_csv(samp_rows, out_dir / "sampling_robustness.csv")
 
     all_data = {
         "mitigation": mit_rows,
         "icl_dist_api": icl_rows,
         "sampling": samp_rows,
     }
-    write_json(all_data, OUTPUT_DIR / "all_extension_results.json")
-    write_markdown_report(mit_rows, icl_rows, samp_rows,
-                          OUTPUT_DIR / "EXTENSION_REPORT.md")
+    write_json(all_data, out_dir / "all_extension_results.json")
+    write_markdown_report(
+        mit_rows,
+        icl_rows,
+        samp_rows,
+        out_dir / "EXTENSION_REPORT.md",
+        results_root,
+        out_dir,
+    )
 
-    log.info("Done. Results in %s", OUTPUT_DIR)
+    log.info("Done. Results in %s", out_dir)
 
 
 if __name__ == "__main__":

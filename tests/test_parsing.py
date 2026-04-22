@@ -4,11 +4,6 @@ Includes regression tests derived from actual smoke-test failures
 (tool-call JSON outputs, verbose CoT, ambiguous intermediate numbers).
 """
 
-import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-
 import pytest
 
 from anchorbench_eval.parsing import (

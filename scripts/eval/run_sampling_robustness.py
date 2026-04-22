@@ -35,14 +35,14 @@ from anchorbench_eval.evaluator import (
     prepare_items,
     write_and_summarize,
 )
+from anchorbench_eval.constants import SUITE_DATASETS as _ALL, VARIANT_DATASETS
 from anchorbench_eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
 
 SUITE_DATASETS = {
-    "external": "datasets/anchorbench_external_core",
-    "rag": "datasets/anchorbench_rag_core",
-    "icl_dist": "datasets/anchorbench_icl_dist_core",
+    k: v for k, v in {**_ALL, **VARIANT_DATASETS}.items()
+    if k in ("external", "rag", "icl_dist")
 }
 
 SAMPLING_TEMP = 0.7
