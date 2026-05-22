@@ -54,6 +54,18 @@ COLM/*.synctex(busy)
 COLM/pdflatex*.fls
 COLM/archive/
 
+EMNLP/*.aux
+EMNLP/*.bbl
+EMNLP/*.blg
+EMNLP/*.fls
+EMNLP/*.fdb_latexmk
+EMNLP/*.log
+EMNLP/*.out
+EMNLP/*.synctex
+EMNLP/*.synctex.gz
+EMNLP/*.synctex(busy)
+EMNLP/pdflatex*.fls
+
 # Generated datasets (keep manifests and core promptviews)
 datasets/anchorbench_v1/**/*.jsonl
 datasets/anchorbench_v1/**/artifacts/
