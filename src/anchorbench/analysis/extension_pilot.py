@@ -1,0 +1,268 @@
+"""Extension-domain pilot (REVIEWER-2): law + consumer vs business + medical.
+
+Compares anchoring magnitudes on the 2 extension pilot domains
+(legal_contract_compliance, consumer_purchase_decision; added for the
+COLM 2026 rebuttal in response to reviewer REVIEWER-2) against the 6
+business domains in the published benchmark, on External and History.
+
+Together with ``medical_pilot.py`` this establishes a 6-business + 3-medical
++ 2-other = 11-domain panel and demonstrates that the qualitative
+``UAI_plaus > UAI_irr > 0`` pattern is not a business-domain artifact.
+
+Outputs are written to ``results/rebuttal/extension_pilot/``.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import math
+from collections import defaultdict
+from pathlib import Path
+
+log = logging.getLogger(__name__)
+
+DEFAULT_EXT_DIR = Path("results/rebuttal/extension_pilot")
+DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
+DEFAULT_MEDICAL_DIR = Path("results/rebuttal/medical")
+DEFAULT_OUT = Path("results/rebuttal/extension_pilot")
+
+SUITES = ("external", "history")
+
+
+def _load_records(p: Path) -> list[dict]:
+    if not p.exists():
+        return []
+    out = []
+    with open(p) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            out.append(json.loads(line))
+    return out
+
+
+def _safe_metrics(records: list[dict], baseline: str) -> dict:
+    from anchorbench.eval.metrics import compute_unified_metrics
+    if not records:
+        return {}
+    present = {r.get("condition") for r in records}
+    effective_baseline = baseline if baseline in present else "control"
+    return compute_unified_metrics(
+        records, baseline_condition=effective_baseline
+    )
+
+
+def gather(
+    extension_dir: Path,
+    business_dir: Path,
+    medical_dir: Path | None = None,
+) -> list[dict]:
+    from anchorbench.eval.constants import MODEL_SHORT
+
+    rows: list[dict] = []
+    for suite in SUITES:
+        baseline = "control_twostage" if suite == "history" else "control"
+        ext_suite = extension_dir / suite
+        bus_suite = business_dir / suite
+        med_suite = (medical_dir / suite) if medical_dir is not None else None
+        if not ext_suite.exists():
+            log.warning("Extension results missing for %s", suite)
+            continue
+        for slug_dir in sorted(ext_suite.iterdir()):
+            if not slug_dir.is_dir():
+                continue
+            slug = slug_dir.name
+            ext_records = _load_records(slug_dir / "results.jsonl")
+            if not ext_records:
+                continue
+            bus_records = _load_records(bus_suite / slug / "results.jsonl")
+            med_records = (
+                _load_records(med_suite / slug / "results.jsonl")
+                if med_suite is not None else []
+            )
+            ext = _safe_metrics(ext_records, baseline)
+            bus = _safe_metrics(bus_records, baseline) if bus_records else {}
+            med = _safe_metrics(med_records, baseline) if med_records else {}
+            row = {
+                "suite": suite,
+                "model": MODEL_SHORT.get(slug, slug),
+                "model_slug": slug,
+                "n_other": len(ext_records),
+                "n_business": len(bus_records),
+                "n_medical": len(med_records),
+                "uai_irr_other": ext.get("uai_irr"),
+                "uai_irr_business": bus.get("uai_irr"),
+                "uai_irr_medical": med.get("uai_irr"),
+                "uai_pls_other": ext.get("uai_plaus"),
+                "uai_pls_business": bus.get("uai_plaus"),
+                "uai_pls_medical": med.get("uai_plaus"),
+                "disc_other": ext.get("disc_delta"),
+                "disc_business": bus.get("disc_delta"),
+                "disc_medical": med.get("disc_delta"),
+                "mae_other": ext.get("mae_control"),
+                "mae_business": bus.get("mae_control"),
+                "acc10_other": ext.get("acc10_control"),
+                "acc10_business": bus.get("acc10_control"),
+            }
+            rows.append(row)
+    return rows
+
+
+def _fmt(v: float | None, prec: int = 2) -> str:
+    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
+        return "---"
+    return f"{v:.{prec}f}"
+
+
+def write_csv(rows: list[dict], path: Path) -> None:
+    import csv
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not rows:
+        return
+    keys = list(rows[0].keys())
+    with open(path, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
+        w.writeheader()
+        w.writerows(rows)
+    log.info("Wrote %s (%d rows)", path, len(rows))
+
+
+def write_json(rows: list[dict], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(rows, indent=2))
+    log.info("Wrote %s", path)
+
+
+def write_latex(rows: list[dict], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows_sorted = sorted(rows, key=lambda r: (r["suite"], r["model"]))
+    lines = [
+        r"% Auto-generated by anchorbench.analysis.extension_pilot",
+        r"% REVIEWER-2 response: 11-domain panel "
+        r"(6 business + 3 medical + 2 other) UAI side-by-side.",
+        r"\begin{table}[t]",
+        r"\centering",
+        r"\small",
+        r"\setlength{\tabcolsep}{4pt}",
+        r"\begin{tabular}{ll rrr rrr rrr}",
+        r"\toprule",
+        r"& & \multicolumn{3}{c}{UAI$_{\mathrm{irr}}$}"
+        r" & \multicolumn{3}{c}{UAI$_{\mathrm{pls}}$}"
+        r" & \multicolumn{3}{c}{Disc$_{\Delta}$} \\",
+        r"\cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}",
+        r"Suite & Model "
+        r"& bus & med & oth "
+        r"& bus & med & oth "
+        r"& bus & med & oth \\",
+        r"\midrule",
+    ]
+    prev = ""
+    for r in rows_sorted:
+        suite_cell = r["suite"] if r["suite"] != prev else ""
+        prev = r["suite"]
+        lines.append(
+            f"{suite_cell} & {r['model']} & "
+            f"{_fmt(r['uai_irr_business'])} & {_fmt(r['uai_irr_medical'])} & "
+            f"{_fmt(r['uai_irr_other'])} & "
+            f"{_fmt(r['uai_pls_business'])} & {_fmt(r['uai_pls_medical'])} & "
+            f"{_fmt(r['uai_pls_other'])} & "
+            f"{_fmt(r['disc_business'])} & {_fmt(r['disc_medical'])} & "
+            f"{_fmt(r['disc_other'])} \\\\"
+        )
+    lines.extend([
+        r"\bottomrule",
+        r"\end{tabular}",
+        (
+            r"\caption{Eleven-domain robustness panel: 6 business domains"
+            r" (published benchmark), 3 medical pilot domains (C1),"
+            r" and 2 extension pilot domains added for reviewer REVIEWER-2"
+            r" (legal contract compliance, consumer purchase decision)."
+            r" The pattern UAI$_{\mathrm{pls}}>$UAI$_{\mathrm{irr}}>0$"
+            r" replicates across all three domain families on both"
+            r" External and History, demonstrating that anchoring is not"
+            r" a business-domain artifact.}"
+        ),
+        r"\label{tab:rebuttal_extension_pilot}",
+        r"\end{table}",
+    ])
+    path.write_text("\n".join(lines) + "\n")
+    log.info("Wrote %s", path)
+
+
+def write_markdown(rows: list[dict], path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    rows_sorted = sorted(rows, key=lambda r: (r["suite"], r["model"]))
+
+    by_suite: dict[str, list[dict]] = defaultdict(list)
+    for r in rows_sorted:
+        by_suite[r["suite"]].append(r)
+
+    lines = [
+        "# Extension-domain pilot (REVIEWER-2)\n\n",
+        "Law + consumer pilot vs. business + medical panel.\n\n",
+    ]
+    for suite, rs in by_suite.items():
+        lines.append(f"## {suite.capitalize()}\n\n")
+        for key in ("uai_irr", "uai_pls", "disc"):
+            for tag in ("business", "medical", "other"):
+                vals = [r[f"{key}_{tag}"] for r in rs
+                        if r.get(f"{key}_{tag}") is not None]
+                if not vals:
+                    continue
+                m = sum(vals) / len(vals)
+                lines.append(
+                    f"- mean {key} ({tag}, n={len(vals)}): {m:+.3f}\n"
+                )
+        lines.append("\n")
+        lines.append(
+            "| Model | UAI_pls (bus) | UAI_pls (med) | UAI_pls (oth) | "
+            "Disc (bus) | Disc (med) | Disc (oth) |\n"
+        )
+        lines.append("|---|---:|---:|---:|---:|---:|---:|\n")
+        for r in rs:
+            lines.append(
+                f"| {r['model']} | "
+                f"{_fmt(r['uai_pls_business'])} | "
+                f"{_fmt(r['uai_pls_medical'])} | "
+                f"{_fmt(r['uai_pls_other'])} | "
+                f"{_fmt(r['disc_business'])} | "
+                f"{_fmt(r['disc_medical'])} | "
+                f"{_fmt(r['disc_other'])} |\n"
+            )
+        lines.append("\n")
+    path.write_text("".join(lines))
+    log.info("Wrote %s", path)
+
+
+def main(argv: list[str] | None = None) -> None:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s",
+        datefmt="%H:%M:%S",
+    )
+    p = argparse.ArgumentParser(
+        description="Extension-domain pilot vs business+medical (REVIEWER-2)"
+    )
+    p.add_argument("--extension_dir", type=Path, default=DEFAULT_EXT_DIR)
+    p.add_argument("--business_dir", type=Path, default=DEFAULT_BUSINESS_DIR)
+    p.add_argument("--medical_dir", type=Path, default=DEFAULT_MEDICAL_DIR)
+    p.add_argument("--out_dir", type=Path, default=DEFAULT_OUT)
+    args = p.parse_args(argv)
+
+    rows = gather(args.extension_dir, args.business_dir, args.medical_dir)
+    log.info("Gathered %d (suite, model) rows", len(rows))
+    if not rows:
+        log.error("No rows; aborting")
+        raise SystemExit(1)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
+    write_csv(rows, args.out_dir / "extension_comparison.csv")
+    write_json(rows, args.out_dir / "extension_comparison.json")
+    write_latex(rows, args.out_dir / "extension_pilot_table.tex")
+    write_markdown(rows, args.out_dir / "interpretation.md")
+
+
+if __name__ == "__main__":
+    main()

@@ -8,14 +8,13 @@ Every suite shares:
 
 from __future__ import annotations
 
-from typing import List, Optional, Tuple
-
-from ..domains import ALL_DOMAINS as DOMAINS, DomainConfig
-from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec
+from ..domains import ALL_DOMAINS as DOMAINS
+from ..domains import DomainConfig
+from ..schema import ItemSpec
 
 MISSING_VALUE_DISPLAY = "[data not available]"
 
-CONDITIONS: List[Tuple[str, str, str]] = [
+CONDITIONS: list[tuple[str, str, str]] = [
     # (condition_name, relevance_type, anchor_direction)
     ("control",         "none",       ""),
     ("irrelevant_low",  "irrelevant", "low"),
@@ -24,7 +23,7 @@ CONDITIONS: List[Tuple[str, str, str]] = [
     ("plausible_high",  "plausible",  "high"),
 ]
 
-EXTENDED_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
+EXTENDED_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("placebo_low",    "placebo",   "low"),
     ("placebo_high",   "placebo",   "high"),
     ("authority_low",  "authority", "low"),
@@ -34,27 +33,27 @@ EXTENDED_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
 # Rebuttal-only D1 conditions for the plausible-intensity probe (Cluster H).
 # Used only by the dedicated D1 dataset generator; the core External dataset
 # is unchanged.
-INTENSITY_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
+INTENSITY_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("plausible_mild_low",    "plausible_mild",   "low"),
     ("plausible_mild_high",   "plausible_mild",   "high"),
     ("plausible_strong_low",  "plausible_strong", "low"),
     ("plausible_strong_high", "plausible_strong", "high"),
 ]
 
-HISTORY_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
+HISTORY_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("control_twostage", "none", ""),
 ]
 
-ICL_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
+ICL_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("neutral_low",  "neutral", "low"),
     ("neutral_high", "neutral", "high"),
 ]
 
 
 def format_evidence(
-    evidence: List[dict],
+    evidence: list[dict],
     show_missing: bool = True,
-    indices: Optional[List[int]] = None,
+    indices: list[int] | None = None,
 ) -> str:
     """Format evidence ratings as indented bullet lines."""
     if indices is not None:
@@ -73,7 +72,7 @@ def format_evidence(
     return "\n".join(lines)
 
 
-def resolve_templates(spec: ItemSpec) -> Tuple[str, str, int, DomainConfig]:
+def resolve_templates(spec: ItemSpec) -> tuple[str, str, int, DomainConfig]:
     """Resolve scenario text and question template from spec metadata.
 
     Uses the auditable indices stored in the spec to select templates.
@@ -91,8 +90,8 @@ def resolve_anchor_preamble(
     dcfg: DomainConfig,
     relevance: str,
     phrasing_idx: int,
-    anchor_value: Optional[int],
-) -> Optional[str]:
+    anchor_value: int | None,
+) -> str | None:
     """Select and format the anchor preamble for a given relevance type."""
     if relevance == "none" or anchor_value is None:
         return None

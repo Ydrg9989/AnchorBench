@@ -29,23 +29,31 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
 
+from anchorbench.eval.constants import (
+    API_MODEL_IDS,
+    OW_MODEL_IDS,
+)
+from anchorbench.eval.io import load_records
+from anchorbench.eval.metrics import (
+    bh_correction,
+    bootstrap_ci,
+    compute_unified_metrics,
+    group_by_item,
+    paired_wilcoxon,
+)
+
 from ._common import (
     ALL_MODELS_ORDER,
-    API_MODELS_ORDER,
     DEFAULT_API_RESULTS,
-    DEFAULT_FIG_DIR,
     DEFAULT_ICL_DIST_API,
     DEFAULT_ICL_DIST_OW,
     DEFAULT_OW_RESULTS,
     DEFAULT_TABLE_DIR,
     OW_MODELS_ORDER,
-    ROOT,
-    SUITES,
     SUITE_LATEX,
     collect_per_suite,
     discover_jsonl,
@@ -54,23 +62,6 @@ from ._common import (
     short_to_latex,
     write_table,
 )
-
-sys.path.insert(0, str(ROOT / "src"))
-from anchorbench.eval.constants import (  # noqa: E402
-    API_MODEL_IDS,
-    OW_MODEL_IDS,
-)
-from anchorbench.eval.io import load_records  # noqa: E402
-from anchorbench.eval.metrics import (  # noqa: E402
-    bh_correction,
-    bootstrap_ci,
-    compute_unified_metrics,
-    compute_by_difficulty,
-    compute_by_offset,
-    group_by_item,
-    paired_wilcoxon,
-)
-
 
 # ---------------------------------------------------------------------------
 # Per-suite tables (Tables 4-8, app:external ... app:tool)
@@ -253,9 +244,6 @@ def build_stats_inference(unified: list[dict]) -> str:
             return f"{p:.2f}"
         return f"{p:.2f}"
 
-    ow_disc = [r["disc_delta"] for r in unified
-               if r.get("suite") and r["model"] in OW_MODELS_ORDER
-               and r.get("disc_delta") is not None]
     suite_means: dict[str, float] = {}
     for suite in ("External", "History", "Icl", "Rag", "Tool"):
         ow_cells = [r["disc_delta"] for r in unified
@@ -375,7 +363,7 @@ def collect_pooled_uai(records_root: Path, baseline: str = "control",
             conds = {r.get("condition") for r in recs}
             bc = "control_twostage" if "control_twostage" in conds and "control" not in conds else "control"
             items = group_by_item(recs)
-            for iid, by_cond in items.items():
+            for _iid, by_cond in items.items():
                 ctrl = by_cond.get(bc)
                 if ctrl is None:
                     continue
@@ -486,7 +474,7 @@ def compute_delta_mae_by_suite(records_dirs: list[Path]) -> dict[str, dict[str, 
                 mae_ctrl: list[float] = []
                 mae_irr: list[float] = []
                 mae_pls: list[float] = []
-                for iid, by_cond in items.items():
+                for _iid, by_cond in items.items():
                     ctrl = by_cond.get(bc)
                     if ctrl is None:
                         continue
@@ -551,11 +539,11 @@ def build_anchored_mae(delta: dict[str, dict[str, float]]) -> str:
         d = delta.get(key, {})
         irr = d.get("irr")
         pls = d.get("pls")
-        irr_s = "$+${:.2f}".format(irr) if irr is not None and irr >= 0 else (
-            "$-${:.2f}".format(abs(irr)) if irr is not None else "---"
+        irr_s = f"$+${irr:.2f}" if irr is not None and irr >= 0 else (
+            f"$-${abs(irr):.2f}" if irr is not None else "---"
         )
-        pls_s = "$+${:.2f}".format(pls) if pls is not None and pls >= 0 else (
-            "$-${:.2f}".format(abs(pls)) if pls is not None else "---"
+        pls_s = f"$+${pls:.2f}" if pls is not None and pls >= 0 else (
+            f"$-${abs(pls):.2f}" if pls is not None else "---"
         )
         lines.append(f"    {SUITE_LATEX[suite]:<14} & {irr_s} & {pls_s} \\\\")
     lines.append("    \\bottomrule")

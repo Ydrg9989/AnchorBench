@@ -14,9 +14,6 @@ Control_twostage: two-stage matched control — Stage 1 asks a non-numeric
 
 from __future__ import annotations
 
-from typing import List
-
-from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import format_evidence, resolve_templates
 from .external import _build_prompt as _external_build_prompt
@@ -204,7 +201,7 @@ def _intensity_promptview(
     )
 
 
-def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
+def build_intensity_promptviews(spec: ItemSpec) -> list[PromptView]:
     """P1 cross-pathway intensity probe for History.
 
     Renders 4 conditions: ``plausible_mild_low/high`` and
@@ -221,7 +218,7 @@ def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
     ]
 
 
-def render_history(spec: ItemSpec) -> List[PromptView]:
+def render_history(spec: ItemSpec) -> list[PromptView]:
     """Render 6 conditions for History.
 
     control          — single-stage (same as External control)

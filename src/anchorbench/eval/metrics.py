@@ -25,9 +25,6 @@ Statistical helpers:
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
 import numpy as np
 
 CONDITIONS = [
@@ -83,7 +80,7 @@ def compute_unified_metrics(
     items = group_by_item(records)
 
     mae_control_vals = []
-    for iid, conds in items.items():
+    for _iid, conds in items.items():
         ctrl = conds.get(baseline_condition)
         if ctrl is None:
             continue
@@ -107,7 +104,7 @@ def compute_unified_metrics(
         c: [] for c in CONDITIONS if c != "control"
     }
 
-    for iid, conds in items.items():
+    for _iid, conds in items.items():
         ctrl = conds.get(baseline_condition)
         if ctrl is None:
             continue
@@ -166,7 +163,7 @@ def compute_unified_metrics(
     acr_vals: list[float] = []
     rr_vals: list[float] = []
     if has_stage1:
-        for iid, conds in items.items():
+        for _iid, conds in items.items():
             for cond in ("plausible_low", "plausible_high"):
                 rec = conds.get(cond)
                 if rec is None:
@@ -330,7 +327,7 @@ def _collect_item_uai_vectors(
         "irr": [], "plaus": [], "placebo": [], "authority": [], "neutral": [],
     }
 
-    for iid, conds in items.items():
+    for _iid, conds in items.items():
         ctrl = conds.get(control_key)
         if ctrl is None:
             continue
@@ -408,7 +405,7 @@ def compute_extended_metrics(
 
     if base.get("mae_control") is not None:
         mae_vals = []
-        for iid, conds in items.items():
+        for _iid, conds in items.items():
             ctrl = conds.get(baseline_condition)
             if ctrl and ctrl.get("answer_int") is not None and ctrl.get("y_star_evidence") is not None:
                 mae_vals.append(abs(ctrl["answer_int"] - ctrl["y_star_evidence"]))

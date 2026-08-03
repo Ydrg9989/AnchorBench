@@ -26,8 +26,8 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
+from anchorbench.eval.constants import SUITE_DATASETS as _ALL
+from anchorbench.eval.constants import VARIANT_DATASETS
 from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
@@ -35,7 +35,6 @@ from anchorbench.eval.evaluator import (
     prepare_items,
     write_and_summarize,
 )
-from anchorbench.eval.constants import SUITE_DATASETS as _ALL, VARIANT_DATASETS
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
@@ -54,7 +53,7 @@ def run_suite_local_sampled(backend, suite: str, items: list[dict],
                             temperature: float, seed_idx: int) -> list[dict]:
     """Run a suite locally with specified temperature."""
     model_slug = backend.model_id.replace("/", "_")
-    tag = f"greedy" if temperature == 0.0 else f"t{temperature}_s{seed_idx}"
+    tag = "greedy" if temperature == 0.0 else f"t{temperature}_s{seed_idx}"
     model_out = out_dir / suite / model_slug / tag
     model_out.mkdir(parents=True, exist_ok=True)
     results_path = model_out / "results.jsonl"

@@ -14,19 +14,15 @@ import argparse
 import csv
 import json
 import logging
-import sys
-from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
-
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "src"))
 
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
 
+ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 METRIC_KEYS = [
@@ -242,8 +238,8 @@ def _make_figure(rows: list[dict], fig_dir: Path):
     x_labels = []
 
     gi = 0
-    for si, suite in enumerate(suites):
-        for mi, model in enumerate(models):
+    for _si, suite in enumerate(suites):
+        for _mi, model in enumerate(models):
             x_labels.append(f"{suite[:3].upper()}\n{model}")
             x_positions.append(gi)
             for sti, strat in enumerate(strategies):

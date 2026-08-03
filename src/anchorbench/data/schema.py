@@ -6,8 +6,7 @@ import hashlib
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
-
+from typing import Any
 
 ANSWER_FORMAT_INSTRUCTION = (
     "Return only a single integer 0\u2013100 on the last line."
@@ -26,29 +25,29 @@ class ItemSpec:
     domain: str
     template_family: str
 
-    answer_space: Dict[str, Any] = field(
+    answer_space: dict[str, Any] = field(
         default_factory=lambda: {"type": "int", "min": 0, "max": 100}
     )
     theta: int = 0
     y_star: int = 0
-    y_star_components: Dict[str, Any] = field(default_factory=dict)
+    y_star_components: dict[str, Any] = field(default_factory=dict)
 
     y_star_theta: int = 0
     y_star_evidence: int = 0
 
     difficulty: str = "easy"
 
-    anchors: Dict[str, Any] = field(default_factory=dict)
-    evidence_structured: List[Dict[str, Any]] = field(default_factory=list)
-    tags: Dict[str, Any] = field(default_factory=dict)
+    anchors: dict[str, Any] = field(default_factory=dict)
+    evidence_structured: list[dict[str, Any]] = field(default_factory=list)
+    tags: dict[str, Any] = field(default_factory=dict)
 
     # Suite-specific metadata (optional)
-    rag: Optional[Dict[str, Any]] = None
-    tool: Optional[Dict[str, Any]] = None
-    history: Optional[Dict[str, Any]] = None
+    rag: dict[str, Any] | None = None
+    tool: dict[str, Any] | None = None
+    history: dict[str, Any] | None = None
 
     # LLM-generated scenario text (None = use template from domains.py)
-    scenario_text: Optional[str] = None
+    scenario_text: str | None = None
 
     # ── Auditable template selection metadata ────────────────────────
     evidence_label_family_idx: int = 0
@@ -58,7 +57,7 @@ class ItemSpec:
 
     # Extension scoring (core = "mean")
     scoring_function: str = "mean"
-    scoring_weights: Optional[List[float]] = None
+    scoring_weights: list[float] | None = None
 
     render_version: str = "1.0.0"
     generator_version: str = ""
@@ -72,7 +71,7 @@ class ItemSpec:
         return d
 
     @classmethod
-    def from_dict(cls, d: dict) -> "ItemSpec":
+    def from_dict(cls, d: dict) -> ItemSpec:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
@@ -86,15 +85,15 @@ class PromptView:
     condition: str
 
     prompt_text: str
-    prompt_components: Dict[str, str] = field(default_factory=dict)
+    prompt_components: dict[str, str] = field(default_factory=dict)
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
     anchor_relevance: str = "none"
-    anchor_value: Optional[int] = None
+    anchor_value: int | None = None
 
     prompt_hash: str = ""
-    provenance: Dict[str, Any] = field(default_factory=dict)
+    provenance: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self):
         if not self.prompt_hash and self.prompt_text:
@@ -111,7 +110,7 @@ class PromptView:
         return d
 
     @classmethod
-    def from_dict(cls, d: dict) -> "PromptView":
+    def from_dict(cls, d: dict) -> PromptView:
         return cls(**{k: v for k, v in d.items() if k in cls.__dataclass_fields__})
 
 
@@ -125,7 +124,7 @@ class RAGDoc:
     text: str
     role: str = ""
     relevance: str = "none"
-    anchor_value: Optional[int] = None
+    anchor_value: int | None = None
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -136,9 +135,9 @@ class RAGDoc:
 
 
 def write_jsonl(
-    records: List[Any],
+    records: list[Any],
     path: str | Path,
-    cls: Optional[Type[json.JSONEncoder]] = None,
+    cls: type[json.JSONEncoder] | None = None,
 ) -> None:
     """Write list of dicts (or dataclass instances) to JSONL."""
     Path(path).parent.mkdir(parents=True, exist_ok=True)
@@ -148,9 +147,9 @@ def write_jsonl(
             f.write(json.dumps(obj, ensure_ascii=False, cls=cls) + "\n")
 
 
-def read_jsonl(path: str | Path) -> List[Dict[str, Any]]:
+def read_jsonl(path: str | Path) -> list[dict[str, Any]]:
     """Read JSONL file into list of dicts."""
-    items: List[Dict[str, Any]] = []
+    items: list[dict[str, Any]] = []
     with open(path) as f:
         for line in f:
             line = line.strip()

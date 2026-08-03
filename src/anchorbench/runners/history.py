@@ -18,15 +18,22 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from anchorbench.eval.evaluator import (
     CONDITIONS as EVAL_CONDITIONS,
+)
+from anchorbench.eval.evaluator import (
     prepare_items,
     run_history_two_stage,
     write_and_summarize,
+)
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.runner_utils import (
+    add_common_args,
+    build_suffix,
+    make_backend,
+    make_fallback,
+    model_output_dir,
 )
 
 HISTORY_CONDITIONS_TWOSTAGE_BASELINE = [
@@ -36,14 +43,6 @@ HISTORY_CONDITIONS_TWOSTAGE_BASELINE = [
     "plausible_low",
     "plausible_high",
 ]
-from anchorbench.eval.io import load_itemspecs, load_promptviews
-from anchorbench.eval.runner_utils import (
-    add_common_args,
-    build_suffix,
-    make_backend,
-    make_fallback,
-    model_output_dir,
-)
 
 log = logging.getLogger(__name__)
 

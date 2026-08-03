@@ -18,11 +18,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+from anchorbench.eval.io import load_records
+from anchorbench.eval.metrics import compute_by_offset
 
 from ._common import (
     DEFAULT_API_RESULTS,
@@ -31,10 +33,6 @@ from ._common import (
     ROOT,
     discover_jsonl,
 )
-
-sys.path.insert(0, str(ROOT / "src"))
-from anchorbench.eval.io import load_records  # noqa: E402
-from anchorbench.eval.metrics import compute_by_offset  # noqa: E402
 
 SUITES = [("external", "External"), ("rag", "RAG"), ("icl", "ICL")]
 OFFSETS = [15, 25, 40]

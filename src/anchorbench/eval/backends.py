@@ -11,7 +11,6 @@ API models use AsyncOpenRouterClient directly (see run_api_benchmark.py).
 
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any, Protocol, runtime_checkable
 

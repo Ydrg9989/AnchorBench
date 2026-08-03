@@ -52,3 +52,24 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+ignore = [
+    # Line length is not enforced. 99% of lines are already under 100, but the
+    # ~250 that are not are mostly LaTeX string literals in the table builders,
+    # where reflowing changes generated output for no correctness gain. There
+    # is no autoformatter in this project to keep it consistent either.
+    "E501",
+    # zip(...) without an explicit strict=; the call sites pair sequences that
+    # are constructed together and are known to be equal length.
+    "B905",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Package __init__ files re-export names as the public surface.
+"__init__.py" = ["F401"]

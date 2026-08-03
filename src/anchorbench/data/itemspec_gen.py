@@ -22,14 +22,14 @@ from __future__ import annotations
 import itertools
 import random
 import statistics
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from collections.abc import Callable
+from typing import Any
 
 from .domains import (
     ALL_DOMAINS,
-    DOMAINS,
     DOMAIN_IDS,
-    DomainConfig,
 )
+from .schema import ItemSpec
 
 # DOMAIN_LOOKUP is the registry consulted by itemspec_gen.* helpers below.
 # It includes the original 6 business domains AND the 3 rebuttal-only
@@ -38,7 +38,6 @@ from .domains import (
 # reproducibility, and the default DOMAIN_IDS continues to be the 6-domain
 # list (so a no-domains-arg call still produces the original dataset).
 DOMAIN_LOOKUP = ALL_DOMAINS
-from .schema import ItemSpec
 
 # ── Shared constants ─────────────────────────────────────────────────
 
@@ -56,9 +55,9 @@ MEDIUM_MISSING_COUNT = 1
 # ── Scoring functions ────────────────────────────────────────────────
 
 def compute_gold_answer(
-    visible_values: List[int],
+    visible_values: list[int],
     scoring_function: str = "mean",
-    weights: Optional[List[float]] = None,
+    weights: list[float] | None = None,
 ) -> int:
     """Compute deterministic gold answer from visible evidence values."""
     if not visible_values:
@@ -81,9 +80,9 @@ def compute_gold_answer(
 def _generate_evidence(
     rng: random.Random,
     theta: int,
-    labels: List[str],
+    labels: list[str],
     difficulty: str,
-) -> List[dict]:
+) -> list[dict]:
     """Generate 5 evidence ratings with difficulty-dependent structure.
 
     Easy:   5 visible concordant ratings, sigma=8.
@@ -102,7 +101,7 @@ def _generate_evidence(
 
     raw_values = [max(0, min(100, round(rng.gauss(theta, sigma)))) for _ in labels]
 
-    missing_indices: List[int] = []
+    missing_indices: list[int] = []
     if n_missing > 0:
         indices = list(range(len(labels)))
         missing_indices = sorted(rng.sample(indices, n_missing))
@@ -125,17 +124,17 @@ def _generate_evidence(
     ]
 
 
-def _visible_values(evidence: List[dict]) -> List[int]:
+def _visible_values(evidence: list[dict]) -> list[int]:
     """Extract non-missing evidence values."""
     return [e["value"] for e in evidence if not e.get("missing")]
 
 
 def _build_y_star_components(
-    evidence: List[dict],
+    evidence: list[dict],
     theta: int,
     y_star_evidence: int,
     scoring_function: str = "mean",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Construct the y_star derivation record."""
     visible = _visible_values(evidence)
     return {
@@ -159,17 +158,17 @@ def _generate_offset_grid_specs(
     id_prefix: str,
     seed_offset: int,
     *,
-    domains: Optional[List[str]] = None,
+    domains: list[str] | None = None,
     n_per_cell: int = 5,
     seed: int = 42,
     generator_version: str = "",
     split: str = "pilot",
-    difficulties: Optional[List[str]] = None,
-    anchor_offsets: Optional[List[int]] = None,
+    difficulties: list[str] | None = None,
+    anchor_offsets: list[int] | None = None,
     scoring_function: str = "mean",
-    scoring_weights: Optional[List[float]] = None,
-    extra_fn: Optional[Callable] = None,
-) -> List[ItemSpec]:
+    scoring_weights: list[float] | None = None,
+    extra_fn: Callable | None = None,
+) -> list[ItemSpec]:
     """Generate ItemSpecs on the (domain × difficulty × offset × idx) grid.
 
     Suite-specific metadata is injected via extra_fn(rng, spec_kwargs, dcfg).
@@ -178,7 +177,7 @@ def _generate_offset_grid_specs(
     difficulties = difficulties or ["easy", "hard"]
     anchor_offsets = anchor_offsets or ANCHOR_OFFSETS
     rng = random.Random(seed + seed_offset)
-    specs: List[ItemSpec] = []
+    specs: list[ItemSpec] = []
     global_idx = 0
 
     for domain_id in domains:
@@ -204,7 +203,7 @@ def _generate_offset_grid_specs(
 
                     item_id = f"{id_prefix}-{domain_id}-{difficulty[0]}-off{offset}-{i+1:03d}"
 
-                    spec_kwargs: Dict[str, Any] = dict(
+                    spec_kwargs: dict[str, Any] = dict(
                         item_id=item_id,
                         suite=suite,
                         domain=domain_id,
@@ -248,7 +247,7 @@ def _generate_offset_grid_specs(
 
 # ── Per-suite wrappers ───────────────────────────────────────────────
 
-def generate_external_itemspecs(**kwargs) -> List[ItemSpec]:
+def generate_external_itemspecs(**kwargs) -> list[ItemSpec]:
     """External-suite ItemSpecs (no suite-specific metadata)."""
     return _generate_offset_grid_specs("external", "EXT", seed_offset=0, **kwargs)
 
@@ -262,7 +261,7 @@ def _rag_extras(rng, kw, dcfg):
     }
 
 
-def generate_rag_itemspecs(**kwargs) -> List[ItemSpec]:
+def generate_rag_itemspecs(**kwargs) -> list[ItemSpec]:
     """RAG ItemSpecs (adds frozen 3-doc mini-corpus metadata)."""
     return _generate_offset_grid_specs("rag", "RAG", seed_offset=2000,
                                       extra_fn=_rag_extras, **kwargs)
@@ -276,7 +275,7 @@ def _tool_extras(rng, kw, dcfg):
     }
 
 
-def generate_tool_itemspecs(**kwargs) -> List[ItemSpec]:
+def generate_tool_itemspecs(**kwargs) -> list[ItemSpec]:
     """Tool ItemSpecs (adds tool-calling metadata)."""
     return _generate_offset_grid_specs("tool", "TOOL", seed_offset=3000,
                                       extra_fn=_tool_extras, **kwargs)
@@ -286,7 +285,7 @@ ICL_N_DEMOS = 3
 ICL_DEMO_EVIDENCE_COUNT = 3
 
 
-def _generate_icl_demos(rng: random.Random, domain_id: str) -> List[Dict[str, Any]]:
+def _generate_icl_demos(rng: random.Random, domain_id: str) -> list[dict[str, Any]]:
     """Generate N neutral demos for an ICL item."""
     labels = DOMAIN_LOOKUP[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
     demos = []
@@ -302,7 +301,7 @@ def _icl_extras(rng, kw, dcfg):
     kw["tags"]["icl_demos"] = _generate_icl_demos(rng, kw["domain"])
 
 
-def generate_icl_itemspecs(**kwargs) -> List[ItemSpec]:
+def generate_icl_itemspecs(**kwargs) -> list[ItemSpec]:
     """ICL ItemSpecs (adds pre-generated demo examples)."""
     return _generate_offset_grid_specs("icl", "ICL", seed_offset=4000,
                                       extra_fn=_icl_extras, **kwargs)
@@ -313,12 +312,12 @@ def _generate_icl_dist_demos(
     domain_id: str,
     anchor_low: int,
     anchor_high: int,
-) -> Dict[str, List[Dict[str, Any]]]:
+) -> dict[str, list[dict[str, Any]]]:
     """Pre-generate three demo lists: neutral mid-band, low-clustered, high-clustered."""
     labels = DOMAIN_LOOKUP[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
 
-    def pack(center: int, spread: int) -> List[Dict[str, Any]]:
-        demos: List[Dict[str, Any]] = []
+    def pack(center: int, spread: int) -> list[dict[str, Any]]:
+        demos: list[dict[str, Any]] = []
         for _ in range(ICL_N_DEMOS):
             theta_d = max(0, min(100, center + rng.randint(-spread, spread)))
             evidence = [
@@ -348,7 +347,7 @@ def _icl_dist_extras(rng, kw, dcfg):
         kw["tags"][key] = demos
 
 
-def generate_icl_dist_itemspecs(**kwargs) -> List[ItemSpec]:
+def generate_icl_dist_itemspecs(**kwargs) -> list[ItemSpec]:
     """ICL-distribution ItemSpecs (neutral vs low vs high demo bands + framing)."""
     return _generate_offset_grid_specs("icl_dist", "ICLDIST", seed_offset=4500,
                                       extra_fn=_icl_dist_extras, **kwargs)
@@ -361,19 +360,19 @@ WARMUP_LOW_THETA_MIN, WARMUP_LOW_THETA_MAX = 15, 30
 WARMUP_HIGH_THETA_MIN, WARMUP_HIGH_THETA_MAX = 70, 85
 
 
-def _enumerate_2_of_5_subsets() -> List[Tuple[int, int]]:
+def _enumerate_2_of_5_subsets() -> list[tuple[int, int]]:
     return list(itertools.combinations(range(5), 2))
 
 
-def _subset_mean(evidence: List[dict], indices: Tuple[int, ...]) -> float:
+def _subset_mean(evidence: list[dict], indices: tuple[int, ...]) -> float:
     vals = [evidence[i]["value"] for i in indices
             if i < len(evidence) and not evidence[i].get("missing") and evidence[i].get("value") is not None]
     return sum(vals) / len(vals) if vals else 0.0
 
 
 def _choose_plausible_subsets(
-    evidence: List[dict], y_star_evidence: int, delta: int = HISTORY_SUBSET_DELTA,
-) -> Dict[str, Any]:
+    evidence: list[dict], y_star_evidence: int, delta: int = HISTORY_SUBSET_DELTA,
+) -> dict[str, Any]:
     """Choose low- and high-pressure 2-of-5 subsets by mean closest to y_star ± delta."""
     visible = [e["value"] for e in evidence if not e.get("missing")]
     if len(visible) < 2:
@@ -399,7 +398,7 @@ def _choose_plausible_subsets(
 
 def _build_warmup_case(
     rng: random.Random, domain_id: str, theta_min: int, theta_max: int, template_idx: int,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Build a warmup case (same domain, different case) for irrelevant conditions."""
     dcfg = DOMAIN_LOOKUP[domain_id]
     labels = dcfg.evidence_labels
@@ -414,21 +413,21 @@ def _build_warmup_case(
 
 
 def generate_history_itemspecs(
-    domains: Optional[List[str]] = None,
+    domains: list[str] | None = None,
     n_per_cell: int = 5,
     seed: int = 42,
     generator_version: str = "",
     split: str = "pilot",
-    difficulties: Optional[List[str]] = None,
+    difficulties: list[str] | None = None,
     subset_delta: int = HISTORY_SUBSET_DELTA,
     scoring_function: str = "mean",
-    scoring_weights: Optional[List[float]] = None,
-) -> List[ItemSpec]:
+    scoring_weights: list[float] | None = None,
+) -> list[ItemSpec]:
     """Generate History ItemSpecs (domain × difficulty grid, no offset dimension)."""
     domains = domains or DOMAIN_IDS
     difficulties = difficulties or ["easy", "hard"]
     rng = random.Random(seed)
-    specs: List[ItemSpec] = []
+    specs: list[ItemSpec] = []
     global_idx = 0
 
     for domain_id in domains:

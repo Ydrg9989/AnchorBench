@@ -18,7 +18,7 @@ import random
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import requests
 
@@ -33,14 +33,14 @@ class OpenRouterClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        artifact_dir: Optional[str] = None,
+        api_key: str | None = None,
+        artifact_dir: str | None = None,
         max_retries: int = 5,
         timeout: int = 90,
     ):
         self.api_key = api_key or os.environ.get("OPENROUTER_API_KEY", "")
         if not self.api_key:
-            raise EnvironmentError(
+            raise OSError(
                 "Set OPENROUTER_API_KEY env var or pass api_key."
             )
         self.artifact_dir = Path(artifact_dir) if artifact_dir else None
@@ -59,14 +59,14 @@ class OpenRouterClient:
     def chat(
         self,
         model: str,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         temperature: float = 0.7,
         max_tokens: int = 2048,
-        seed: Optional[int] = None,
-        extra_body: Optional[dict] = None,
-    ) -> Tuple[str, Dict[str, Any]]:
+        seed: int | None = None,
+        extra_body: dict | None = None,
+    ) -> tuple[str, dict[str, Any]]:
         """Send one chat completion. Returns (text, provenance)."""
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "model": model,
             "messages": messages,
             "temperature": temperature,
@@ -95,12 +95,12 @@ class OpenRouterClient:
 
     def chat_batch(
         self,
-        requests_list: List[Dict[str, Any]],
+        requests_list: list[dict[str, Any]],
         concurrency: int = 8,
-    ) -> List[Tuple[str, Dict[str, Any]]]:
+    ) -> list[tuple[str, dict[str, Any]]]:
         """Run multiple chat() calls concurrently. Each dict in requests_list
         is passed as kwargs to chat(). Returns results in input order."""
-        results: List[Optional[Tuple[str, Dict]]] = [None] * len(requests_list)
+        results: list[tuple[str, dict] | None] = [None] * len(requests_list)
 
         def _run(idx: int, kwargs: dict):
             return idx, self.chat(**kwargs)
@@ -121,7 +121,7 @@ class OpenRouterClient:
 
     def _request_with_retry(
         self, payload: dict, prompt_hash: str
-    ) -> Tuple[str, dict]:
+    ) -> tuple[str, dict]:
         """Execute a single API request with exponential-backoff retry."""
         last_exc = None
         for attempt in range(self.max_retries + 1):
@@ -171,7 +171,7 @@ class OpenRouterClient:
 
     # ── model listing (for registry checks) ──────────────────────────
 
-    def list_models(self) -> List[str]:
+    def list_models(self) -> list[str]:
         """Fetch available model IDs from OpenRouter."""
         resp = self._session.get(
             "https://openrouter.ai/api/v1/models", timeout=30

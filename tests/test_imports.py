@@ -94,8 +94,8 @@ def test_deprecation_shims_redirect() -> None:
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
-        import anchorbench_v1
         import anchorbench_eval
+        import anchorbench_v1
         import mitigation_eval
 
     import anchorbench.data

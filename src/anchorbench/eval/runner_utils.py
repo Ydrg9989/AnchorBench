@@ -10,14 +10,14 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Union
 
 from .backends import HFBackend, VLLMBackend
-from .parsing import LLMFallbackExtractor, XML_TAG_INSTRUCTION
+from .constants import MODEL_SHORT, SUITES
+from .parsing import XML_TAG_INSTRUCTION, LLMFallbackExtractor
 
 log = logging.getLogger(__name__)
 
-Backend = Union[HFBackend, VLLMBackend]
+Backend = HFBackend | VLLMBackend
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -117,9 +117,7 @@ def model_output_dir(args: argparse.Namespace) -> Path:
     return d
 
 
-# ---- Result discovery (used by recompute_all_unified.py and friends) ----
-
-from .constants import MODEL_SHORT, SUITES  # noqa: E402
+# ---- Result discovery ----
 
 
 def discover_results(

@@ -25,15 +25,13 @@ Ablation conditions (8):
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
-
 from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView, RAGDoc
 from ._shared import CONDITIONS, format_evidence, resolve_templates
 
 # ── Document templates ───────────────────────────────────────────────
 
-_DOC_CORE_TEMPLATES: Dict[str, List[str]] = {
+_DOC_CORE_TEMPLATES: dict[str, list[str]] = {
     "pricing_wtp": [
         "Market Context Report: The product category under assessment has seen variable customer reception across comparable markets. Key factors influencing willingness-to-pay include perceived differentiation, switching costs, and competitive intensity. Assessment methodologies typically combine conjoint analysis with direct survey instruments.",
         "Pricing Research Summary: This assessment examines customer price sensitivity for a product offering. Historical patterns in this category indicate that willingness-to-pay is influenced by brand positioning, feature completeness, and market maturity. Multiple independent research instruments were used to capture price tolerance signals.",
@@ -72,7 +70,7 @@ _DOC_CORE_TEMPLATES: Dict[str, List[str]] = {
     ],
 }
 
-_DOC_FILLER_TEMPLATES: Dict[str, List[str]] = {
+_DOC_FILLER_TEMPLATES: dict[str, list[str]] = {
     "pricing_wtp": [
         "Assessment Methodology Note: The evaluation framework employs standardized rating instruments administered independently across multiple research channels. All scores are normalized to a common scale for cross-source comparability. Assessment protocols follow established market research guidelines.",
         "Data Collection Procedures: Research data was collected using parallel independent instruments with standardized administration protocols. Quality controls include respondent screening, consistency checks, and outlier flagging procedures applied uniformly across all data sources.",
@@ -257,7 +255,7 @@ def _build_anchor_slot_intensity(
 
 # ── Per-item corpus construction ─────────────────────────────────────
 
-def build_item_corpus(spec: ItemSpec) -> Dict[str, RAGDoc]:
+def build_item_corpus(spec: ItemSpec) -> dict[str, RAGDoc]:
     """Build the frozen 3-document corpus for one RAG item.
 
     Returns dict keyed by role: {core, filler, anchor_slot_{condition}...}.
@@ -313,9 +311,9 @@ def build_item_corpus(spec: ItemSpec) -> Dict[str, RAGDoc]:
     return result
 
 
-def build_full_corpus(specs: List[ItemSpec]) -> List[RAGDoc]:
+def build_full_corpus(specs: list[ItemSpec]) -> list[RAGDoc]:
     """Build complete frozen corpus for all RAG items."""
-    all_docs: List[RAGDoc] = []
+    all_docs: list[RAGDoc] = []
     seen: set = set()
     for spec in specs:
         if spec.suite != "rag":
@@ -333,7 +331,7 @@ def build_full_corpus(specs: List[ItemSpec]) -> List[RAGDoc]:
 _RETRIEVAL_HEADER = "The following documents were retrieved for your assessment query.\n"
 
 
-def _format_retrieved_docs(docs: List[RAGDoc]) -> str:
+def _format_retrieved_docs(docs: list[RAGDoc]) -> str:
     blocks = []
     for i, doc in enumerate(docs):
         blocks.append(f"[Document {i+1}]\n{doc.text}")
@@ -344,11 +342,11 @@ def _build_prompt(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    corpus: Dict[str, RAGDoc],
+    corpus: dict[str, RAGDoc],
     *,
-    doc_key: Optional[str] = None,
+    doc_key: str | None = None,
     doc_order: str = "middle",
-    ablation_type: Optional[str] = None,
+    ablation_type: str | None = None,
 ) -> PromptView:
     scenario, question, _, _ = resolve_templates(spec)
     evidence_block = format_evidence(spec.evidence_structured)
@@ -387,9 +385,9 @@ def _build_prompt(
         "anchor_doc_role": doc_anchor.role,
     }
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
-    anchor_value: Optional[int] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
+    anchor_value: int | None = None
 
     base_cond = condition.split("_order_")[0].split("_nodiscl")[0].split("_authority")[0]
     if base_cond != "control":
@@ -421,7 +419,7 @@ def _build_prompt(
 
 # ── P2 RAG realism ablation ───────────────────────────────────────────
 
-_DOC_DISTRACTOR_TEMPLATES: Dict[str, List[str]] = {
+_DOC_DISTRACTOR_TEMPLATES: dict[str, list[str]] = {
     "pricing_wtp": [
         "Adjacent Market Note: A separate retailer in a tangentially related "
         "category reported quarterly inventory churn of 14%, but this segment "
@@ -498,9 +496,9 @@ _DOC_DISTRACTOR_TEMPLATES: Dict[str, List[str]] = {
 }
 
 
-def _build_distractor_docs(domain: str, item_id: str) -> List[RAGDoc]:
+def _build_distractor_docs(domain: str, item_id: str) -> list[RAGDoc]:
     pool = _DOC_DISTRACTOR_TEMPLATES.get(domain) or _DOC_DISTRACTOR_TEMPLATES["pricing_wtp"]
-    out: List[RAGDoc] = []
+    out: list[RAGDoc] = []
     for i, body in enumerate(pool):
         out.append(RAGDoc(
             doc_id=f"{item_id}_distractor_{i+1}",
@@ -514,7 +512,7 @@ def _build_distractor_docs(domain: str, item_id: str) -> List[RAGDoc]:
 
 
 def _format_retrieved_docs_with_scores(
-    docs: List[RAGDoc], scores: List[float],
+    docs: list[RAGDoc], scores: list[float],
 ) -> str:
     blocks = []
     for i, (doc, score) in enumerate(zip(docs, scores)):
@@ -558,7 +556,7 @@ def _build_realism_prompt(
 
     non_anchor = [doc_core, doc_filler] + list(distractors)
     rank_clamped = max(1, min(rank, len(non_anchor) + 1))
-    ordered: List[RAGDoc] = list(non_anchor)
+    ordered: list[RAGDoc] = list(non_anchor)
     ordered.insert(rank_clamped - 1, anchor_doc)
 
     if with_relevance_scores:
@@ -592,8 +590,8 @@ def _build_realism_prompt(
         "with_relevance_scores": with_relevance_scores,
     }
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
     anchor_value = anchor_doc.anchor_value
     if anchor_value is not None:
         anchor_string = str(anchor_value)
@@ -621,7 +619,7 @@ def _build_realism_prompt(
     )
 
 
-def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
+def build_realism_promptviews(spec: ItemSpec) -> list[PromptView]:
     """P2 RAG realism: 6 new conditions per item using the existing
     plausible/irrelevant anchor docs but varying retrieval realism.
 
@@ -633,7 +631,7 @@ def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
     if spec.suite != "rag":
         return []
     corpus = build_item_corpus(spec)
-    views: List[PromptView] = []
+    views: list[PromptView] = []
     for rel in ("plausible", "irrelevant"):
         for direction in ("low", "high"):
             anchor_doc = corpus[f"{rel}_{direction}"]
@@ -658,7 +656,7 @@ def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
     return views
 
 
-def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
+def build_intensity_promptviews(spec: ItemSpec) -> list[PromptView]:
     """P1 cross-pathway intensity: render the 4 mild/strong conditions
     on top of an existing RAG itemspec, reusing the standard 3-doc layout
     with the intensity-flavoured anchor-slot document in the middle.
@@ -670,7 +668,7 @@ def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
     corpus = build_item_corpus(spec)
     pidx = getattr(spec, "anchor_phrasing_idx", 0)
     new_corpus = dict(corpus)
-    views: List[PromptView] = []
+    views: list[PromptView] = []
     for intensity in ("plausible_mild", "plausible_strong"):
         for direction in ("low", "high"):
             anchor_val = spec.anchors[direction]
@@ -688,14 +686,14 @@ def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
     return views
 
 
-def render_rag(spec: ItemSpec) -> List[PromptView]:
+def render_rag(spec: ItemSpec) -> list[PromptView]:
     """Render base 5 + ablation conditions for a RAG item.
 
     Base: control, irrelevant_low/high, plausible_low/high (anchor in position 2).
     Ablations: order_first/last, no-disclaimer, authority.
     """
     corpus = build_item_corpus(spec)
-    views: List[PromptView] = []
+    views: list[PromptView] = []
 
     for cond, rel, _ in CONDITIONS:
         views.append(_build_prompt(spec, cond, rel, corpus))

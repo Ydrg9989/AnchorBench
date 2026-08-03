@@ -31,8 +31,8 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
+from anchorbench.eval.constants import SUITE_DATASETS as _CORE
+from anchorbench.eval.constants import VARIANT_DATASETS
 from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
@@ -41,7 +41,6 @@ from anchorbench.eval.evaluator import (
     write_and_summarize,
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews
-from anchorbench.eval.constants import SUITE_DATASETS as _CORE, VARIANT_DATASETS
 from anchorbench.inference.async_api import AsyncOpenRouterClient
 
 log = logging.getLogger(__name__)
@@ -190,7 +189,7 @@ async def run_history_suite_api(
     )
 
     stage1_prompts = []
-    for item_idx, cond, pv in anchored_tasks:
+    for _item_idx, _cond, pv in anchored_tasks:
         comps = pv.get("prompt_components", {})
         stage1_msg = comps.get("stage1_user_message", "")
         if not stage1_msg:
@@ -319,7 +318,7 @@ async def main_async(args: argparse.Namespace) -> None:
             items = prepare_items(views, specs, args.max_items, args.seed, conditions=hist_conditions)
         else:
             items = prepare_items(views, specs, args.max_items, args.seed)
-            
+
         log.info("[%s] Loaded %d items (%d prompts)", suite, len(items), len(items) * 5)
 
         if suite == "history":

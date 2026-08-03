@@ -20,19 +20,13 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import (
     compute_by_difficulty,
     compute_by_offset,
     compute_extended_metrics,
-    compute_unified_metrics,
-    print_summary,
 )
 from anchorbench.eval.runner_utils import (
-    SUITES,
-    MODEL_SHORT,
     discover_results,
     fmt,
     fmt_pct,
@@ -45,7 +39,7 @@ def main() -> None:
     )
     p.add_argument(
         "--results_dir", type=Path,
-        default=Path(__file__).resolve().parents[2] / "results" / "full_benchmark",
+        default=Path(__file__).resolve().parents[3] / "results" / "full_benchmark",
     )
     p.add_argument("--epsilon", type=float, default=3.0)
     args = p.parse_args()
@@ -57,7 +51,7 @@ def main() -> None:
         sys.exit(1)
 
     print(f"Found {len(runs)} result files in {args.results_dir}")
-    for suite, slug, short, path in runs:
+    for suite, _slug, short, path in runs:
         print(f"  {suite:<10} {short:<16} {path}")
     print()
 

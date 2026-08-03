@@ -4,11 +4,10 @@ Includes regression tests derived from actual smoke-test failures
 (tool-call JSON outputs, verbose CoT, ambiguous intermediate numbers).
 """
 
-import pytest
 
+from anchorbench.eval.evaluator import parse_response
 from anchorbench.eval.parsing import (
     clamp_to_range,
-    has_explicit_final_answer,
     is_tool_call_output,
     parse_answer_int,
     parse_cot_answer,
@@ -18,7 +17,6 @@ from anchorbench.eval.parsing import (
     parse_with_fallback,
     parse_xml_answer,
 )
-from anchorbench.eval.evaluator import parse_response
 
 
 class TestParseStructured:

@@ -11,8 +11,6 @@ anchor-bearing sentence changes.
 
 from __future__ import annotations
 
-from typing import List, Optional
-
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import (
     EXTENDED_CONDITIONS,
@@ -26,7 +24,7 @@ def _build_prompt(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
+    anchor_value: int | None,
 ) -> PromptView:
     """Build a single PromptView for External."""
     scenario, question, _, dcfg = resolve_templates(spec)
@@ -41,8 +39,8 @@ def _build_prompt(
 
     base_text = f"{scenario}\n\nEvidence:\n{evidence_block}\n\n"
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
 
     if condition == "control":
         prompt_text = f"{base_text}{question}\n{ANSWER_FORMAT_INSTRUCTION}"
@@ -78,7 +76,7 @@ def _build_prompt(
     )
 
 
-def render_external(spec: ItemSpec) -> List[PromptView]:
+def render_external(spec: ItemSpec) -> list[PromptView]:
     """Render 9 conditions for an External item."""
     return [
         _build_prompt(

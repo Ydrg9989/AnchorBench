@@ -11,8 +11,7 @@ Evidence is always 5 numeric ratings 0-100.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Dict, List
+from dataclasses import dataclass
 
 
 @dataclass
@@ -23,16 +22,16 @@ class DomainConfig:
     display_name: str
     description: str
 
-    evidence_label_families: List[List[str]]
-    scenario_templates: List[str]
-    question_templates: List[str]
+    evidence_label_families: list[list[str]]
+    scenario_templates: list[str]
+    question_templates: list[str]
 
-    anchor_preambles: Dict[str, List[str]]
+    anchor_preambles: dict[str, list[str]]
 
     metric_name: str = ""
 
     @property
-    def evidence_labels(self) -> List[str]:
+    def evidence_labels(self) -> list[str]:
         """Default label family (index 0) for backward compatibility."""
         return self.evidence_label_families[0]
 
@@ -56,7 +55,7 @@ _PLACEBO_PREAMBLES = [
 ]
 
 
-def _make_authority_preambles(metric: str) -> List[str]:
+def _make_authority_preambles(metric: str) -> list[str]:
     """Generate authority preambles for a given metric name."""
     return [
         f"An expert panel of senior industry analysts with 20+ years experience "
@@ -72,7 +71,7 @@ def _make_authority_preambles(metric: str) -> List[str]:
 # fictional source). Mild = single, hedged, low-confidence source;
 # Strong = multiple convergent, high-confidence sources.
 
-def _make_plausible_mild_preambles(metric: str) -> List[str]:
+def _make_plausible_mild_preambles(metric: str) -> list[str]:
     """Low-credibility plausible preambles: single hedged source."""
     return [
         f"One preliminary estimate from a single uncorroborated data "
@@ -87,7 +86,7 @@ def _make_plausible_mild_preambles(metric: str) -> List[str]:
     ]
 
 
-def _make_plausible_strong_preambles(metric: str) -> List[str]:
+def _make_plausible_strong_preambles(metric: str) -> list[str]:
     """High-credibility plausible preambles: multiple convergent sources."""
     return [
         f"A meta-analysis of more than 40 comparable cases establishes "
@@ -101,7 +100,7 @@ def _make_plausible_strong_preambles(metric: str) -> List[str]:
 
 # ── Domain definitions ───────────────────────────────────────────────
 
-DOMAINS: Dict[str, DomainConfig] = {
+DOMAINS: dict[str, DomainConfig] = {
 
     # ── 1. Pricing / Willingness-to-Pay ───────────────────────────────
     "pricing_wtp": DomainConfig(
@@ -455,7 +454,7 @@ DOMAINS: Dict[str, DomainConfig] = {
 # are NOT included in the locked frozen core; they are generated into a
 # separate pilot split ``datasets/anchorbench_external_medical_pilot``.
 
-_MEDICAL_DOMAINS: Dict[str, DomainConfig] = {
+_MEDICAL_DOMAINS: dict[str, DomainConfig] = {
 
     # ── M1. Clinical 30-day readmission risk ──────────────────────────
     "clinical_readmission_risk": DomainConfig(
@@ -634,7 +633,7 @@ _MEDICAL_DOMAINS: Dict[str, DomainConfig] = {
 # non-numerical-aggregation-as-domain settings (legal compliance triage,
 # consumer purchase decisions). Same DomainConfig pattern as medical.
 
-_OTHER_DOMAINS: Dict[str, DomainConfig] = {
+_OTHER_DOMAINS: dict[str, DomainConfig] = {
 
     # ── L1. Legal contract compliance / regulatory triage ─────────────
     "legal_contract_compliance": DomainConfig(
@@ -761,9 +760,9 @@ _OTHER_DOMAINS: Dict[str, DomainConfig] = {
 # domains are an opt-in extension for the COLM 2026 rebuttal; existing
 # generators that read DOMAIN_IDS continue to produce the original
 # six-domain dataset, preserving reproducibility of the published benchmark.
-MEDICAL_DOMAINS: Dict[str, DomainConfig] = _MEDICAL_DOMAINS
+MEDICAL_DOMAINS: dict[str, DomainConfig] = _MEDICAL_DOMAINS
 MEDICAL_DOMAIN_IDS = list(_MEDICAL_DOMAINS.keys())
-OTHER_DOMAINS: Dict[str, DomainConfig] = _OTHER_DOMAINS
+OTHER_DOMAINS: dict[str, DomainConfig] = _OTHER_DOMAINS
 OTHER_DOMAIN_IDS = list(_OTHER_DOMAINS.keys())
 BUSINESS_DOMAIN_IDS = list(DOMAINS.keys())
 ALL_DOMAIN_IDS = BUSINESS_DOMAIN_IDS + MEDICAL_DOMAIN_IDS + OTHER_DOMAIN_IDS
@@ -771,7 +770,7 @@ ALL_DOMAIN_IDS = BUSINESS_DOMAIN_IDS + MEDICAL_DOMAIN_IDS + OTHER_DOMAIN_IDS
 # Combined registry consulted by generators that need to look up
 # business / medical / other domains. DOMAINS proper stays at 6 entries to
 # preserve the reproducibility of the published benchmark.
-ALL_DOMAINS: Dict[str, DomainConfig] = {
+ALL_DOMAINS: dict[str, DomainConfig] = {
     **DOMAINS, **MEDICAL_DOMAINS, **OTHER_DOMAINS,
 }
 

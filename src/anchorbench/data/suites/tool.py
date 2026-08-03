@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import json
 import statistics
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import CONDITIONS, format_evidence, resolve_templates
@@ -73,7 +73,7 @@ TOOL_SCHEMAS = [
 
 # ── Deterministic tool executors ─────────────────────────────────────
 
-def execute_get_evidence_summary(ratings: List[float]) -> Dict[str, Any]:
+def execute_get_evidence_summary(ratings: list[float]) -> dict[str, Any]:
     """Compute summary statistics from evidence ratings."""
     if not ratings:
         return {"mean": 0, "count": 0}
@@ -90,8 +90,8 @@ def execute_check_external_reference(
     domain: str,
     metric: str,
     condition: str = "control",
-    anchor_value: Optional[int] = None,
-) -> Dict[str, Any]:
+    anchor_value: int | None = None,
+) -> dict[str, Any]:
     """Return condition-dependent external reference data."""
     if condition == "control":
         return {
@@ -122,7 +122,7 @@ TOOL_EXECUTORS = {
 }
 
 
-def _get_visible_ratings(spec: ItemSpec) -> List[float]:
+def _get_visible_ratings(spec: ItemSpec) -> list[float]:
     """Extract non-missing evidence values as floats."""
     return [
         float(e["value"])
@@ -147,8 +147,8 @@ def _build_messages(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Any]]:
+    anchor_value: int | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     """Build the chat messages list with simulated tool calls and responses.
 
     Returns (messages, evidence_summary_result, reference_result).
@@ -170,7 +170,7 @@ def _build_messages(
         f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
 
-    messages: List[Dict[str, Any]] = [
+    messages: list[dict[str, Any]] = [
         {"role": "system", "content": _SYSTEM_PROMPT},
         {"role": "user", "content": user_content},
         {
@@ -225,9 +225,9 @@ def _render_plaintext_fallback(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
-    evidence_result: Dict[str, Any],
-    reference_result: Dict[str, Any],
+    anchor_value: int | None,
+    evidence_result: dict[str, Any],
+    reference_result: dict[str, Any],
 ) -> str:
     """Plain-text rendering for models without tool-calling template support."""
     scenario, question, _, _ = resolve_templates(spec)
@@ -256,12 +256,11 @@ def _build_prompt(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
+    anchor_value: int | None,
 ) -> PromptView:
     """Build a single PromptView for one Tool condition."""
     scenario, question, _, dcfg = resolve_templates(spec)
     evidence_block = format_evidence(spec.evidence_structured)
-    metric = dcfg.metric_name or dcfg.display_name.lower()
 
     messages, evidence_result, reference_result = _build_messages(
         spec, condition, relevance, anchor_value
@@ -272,19 +271,16 @@ def _build_prompt(
         evidence_result, reference_result,
     )
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
-    anchor_val_out: Optional[int] = None
-    anchor_field: Optional[str] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
+    anchor_val_out: int | None = None
 
     if condition != "control" and anchor_value is not None:
         anchor_val_out = anchor_value
         anchor_string = str(anchor_value)
         if "irrelevant" in condition:
-            anchor_field = "request_id"
             search_str = f'"request_id": {anchor_value}'
         else:
-            anchor_field = "reference_value"
             search_str = f'"reference_value": {anchor_value}'
         start = prompt_text.find(search_str)
         if start >= 0:
@@ -323,8 +319,8 @@ def _build_messages_elicited(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Any]]:
+    anchor_value: int | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     """Build messages where the assistant *plans* the lookup before
     calling the tool, framing it as model-initiated rather than externally
     injected."""
@@ -352,7 +348,7 @@ def _build_messages_elicited(
         "check_external_reference."
     )
 
-    messages: List[Dict[str, Any]] = [
+    messages: list[dict[str, Any]] = [
         {"role": "system", "content": _SYSTEM_PROMPT},
         {"role": "user", "content": user_content},
         {
@@ -399,8 +395,8 @@ def _build_messages_elicited(
 
 
 def _execute_noisy_reference(
-    condition: str, anchor_value: Optional[int], domain: str,
-) -> Dict[str, Any]:
+    condition: str, anchor_value: int | None, domain: str,
+) -> dict[str, Any]:
     """Return a realistic noisy tool response with metadata distractors."""
     if condition == "control":
         return {
@@ -446,8 +442,8 @@ def _build_messages_noisy(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
-) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Any]]:
+    anchor_value: int | None,
+) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     """Build messages with a noisier tool envelope (extra metadata fields
     surround the anchor value to test salience-of-number effects)."""
     scenario, question, _, dcfg = resolve_templates(spec)
@@ -465,7 +461,7 @@ def _build_messages_noisy(
         f"Evidence:\n{evidence_block}\n\n"
         f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
-    messages: List[Dict[str, Any]] = [
+    messages: list[dict[str, Any]] = [
         {"role": "system", "content": _SYSTEM_PROMPT},
         {"role": "user", "content": user_content},
         {
@@ -510,7 +506,7 @@ def _build_realism_prompt(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
+    anchor_value: int | None,
     *,
     variant: str,
 ) -> PromptView:
@@ -535,9 +531,9 @@ def _build_realism_prompt(
     scenario, question, _, _ = resolve_templates(spec)
     evidence_block = format_evidence(spec.evidence_structured)
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
-    anchor_val_out: Optional[int] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
+    anchor_val_out: int | None = None
     if anchor_value is not None:
         anchor_val_out = anchor_value
         anchor_string = str(anchor_value)
@@ -576,7 +572,7 @@ def _build_realism_prompt(
     )
 
 
-def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
+def build_realism_promptviews(spec: ItemSpec) -> list[PromptView]:
     """P3 Tool realism: 8 new conditions per item.
 
     For relevance in {plausible, irrelevant} and direction in {low, high},
@@ -585,7 +581,7 @@ def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
     """
     if spec.suite != "tool":
         return []
-    views: List[PromptView] = []
+    views: list[PromptView] = []
     for rel in ("plausible", "irrelevant"):
         for direction in ("low", "high"):
             anchor_value = spec.anchors[direction]
@@ -601,7 +597,7 @@ def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
     return views
 
 
-def render_tool(spec: ItemSpec) -> List[PromptView]:
+def render_tool(spec: ItemSpec) -> list[PromptView]:
     """Render 5 conditions for a Tool item.
 
     Conditions: control, irrelevant_low, irrelevant_high,
@@ -620,7 +616,7 @@ def render_tool(spec: ItemSpec) -> List[PromptView]:
 def get_tool_messages(
     spec: ItemSpec,
     condition: str,
-) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Return (messages, tool_schemas_list) for a given item and condition.
 
     Used by evaluation scripts that apply the model's chat template

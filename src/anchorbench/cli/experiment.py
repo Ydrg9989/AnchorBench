@@ -17,7 +17,6 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
@@ -95,7 +94,6 @@ def _build_cell_cmd(model: dict, data: dict, decoding: dict,
 
 def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]:
     """Return list of (model_dict, data_dict, gpu_ids, out_dir) cells."""
-    decoding = OmegaConf.to_container(cfg.decoding, resolve=True)
     suites: list[str] = list(cfg.get("suites", []))
     base_out = ROOT / cfg.get("out_dir", "results/experiment")
     api_out = ROOT / cfg.get("api_out_dir", str(base_out))

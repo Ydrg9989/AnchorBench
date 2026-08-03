@@ -15,7 +15,8 @@ Checks run by ``validate_all``:
 from __future__ import annotations
 
 import statistics
-from typing import Any, Counter, Dict, List, Optional, Set
+from collections import Counter
+from typing import Any
 
 from .schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 
@@ -54,7 +55,7 @@ ALL_VALID_CONDITIONS = (
 ALL_VALID_RELEVANCE = {"none", "irrelevant", "plausible", "neutral", "placebo", "authority"}
 VALID_DIFFICULTIES = {"easy", "medium", "hard"}
 
-SUITE_CONDITIONS: Dict[str, Set[str]] = {
+SUITE_CONDITIONS: dict[str, set[str]] = {
     "external": EXTERNAL_CONDITIONS,
     "history": HISTORY_CONDITIONS,
     "icl": ICL_CONDITIONS,
@@ -67,9 +68,9 @@ _OFFSET_SUITES = {"external", "rag", "tool", "icl", "icl_dist"}
 
 
 def _compute_expected_gold(
-    visible: List[int],
+    visible: list[int],
     scoring_function: str = "mean",
-    scoring_weights: Optional[List[float]] = None,
+    scoring_weights: list[float] | None = None,
 ) -> int:
     """Recompute expected gold answer to validate ItemSpec.y_star_evidence."""
     if not visible:
@@ -89,8 +90,8 @@ def _compute_expected_gold(
 
 # ── ItemSpec checks ──────────────────────────────────────────────────
 
-def _check_itemspec(spec: ItemSpec) -> List[str]:
-    errs: List[str] = []
+def _check_itemspec(spec: ItemSpec) -> list[str]:
+    errs: list[str] = []
     iid = spec.item_id
 
     if not (30 <= spec.theta <= 70):
@@ -141,8 +142,8 @@ def _check_itemspec(spec: ItemSpec) -> List[str]:
     return errs
 
 
-def _check_suite_extras(spec: ItemSpec) -> List[str]:
-    errs: List[str] = []
+def _check_suite_extras(spec: ItemSpec) -> list[str]:
+    errs: list[str] = []
     iid = spec.item_id
 
     if spec.suite == "external":
@@ -218,7 +219,7 @@ def _check_suite_extras(spec: ItemSpec) -> List[str]:
 
 # ── PromptView checks ────────────────────────────────────────────────
 
-def _infer_expected_relevance(condition: str) -> Optional[str]:
+def _infer_expected_relevance(condition: str) -> str | None:
     if condition in ("control", "control_twostage"):
         return "none"
     if "authority" in condition:
@@ -234,8 +235,8 @@ def _infer_expected_relevance(condition: str) -> Optional[str]:
     return None
 
 
-def _check_promptview(pv: PromptView) -> List[str]:
-    errs: List[str] = []
+def _check_promptview(pv: PromptView) -> list[str]:
+    errs: list[str] = []
     tag = f"{pv.item_id}/{pv.condition}"
 
     if ANSWER_FORMAT_INSTRUCTION not in pv.prompt_text:
@@ -265,16 +266,16 @@ def _check_promptview(pv: PromptView) -> List[str]:
 
 _INVARIANT_KEYS = ("evidence", "scenario", "question")
 
-_SUITE_EXTRA_INVARIANT_KEYS: Dict[str, tuple] = {
+_SUITE_EXTRA_INVARIANT_KEYS: dict[str, tuple] = {
     "icl": ("demo_answers", "demo_evidence"),
     "icl_dist": (),
     "tool": ("evidence_summary",),
 }
 
 
-def _check_pairing(views: List[PromptView]) -> List[str]:
-    errs: List[str] = []
-    by_item: Dict[str, Dict[str, PromptView]] = {}
+def _check_pairing(views: list[PromptView]) -> list[str]:
+    errs: list[str] = []
+    by_item: dict[str, dict[str, PromptView]] = {}
     for pv in views:
         by_item.setdefault(pv.item_id, {})[pv.condition] = pv
 
@@ -322,9 +323,9 @@ def _check_pairing(views: List[PromptView]) -> List[str]:
 
 # ── Cross-dataset checks ─────────────────────────────────────────────
 
-def _check_no_duplicates(specs: List[ItemSpec], views: List[PromptView]) -> List[str]:
-    errs: List[str] = []
-    seen: Dict[str, int] = {}
+def _check_no_duplicates(specs: list[ItemSpec], views: list[PromptView]) -> list[str]:
+    errs: list[str] = []
+    seen: dict[str, int] = {}
     for s in specs:
         seen[s.item_id] = seen.get(s.item_id, 0) + 1
     for iid, n in seen.items():
@@ -342,15 +343,15 @@ def _check_no_duplicates(specs: List[ItemSpec], views: List[PromptView]) -> List
     return errs
 
 
-def _check_balance(specs: List[ItemSpec]) -> List[str]:
-    errs: List[str] = []
-    by_suite: Dict[str, List[ItemSpec]] = {}
+def _check_balance(specs: list[ItemSpec]) -> list[str]:
+    errs: list[str] = []
+    by_suite: dict[str, list[ItemSpec]] = {}
     for s in specs:
         by_suite.setdefault(s.suite, []).append(s)
 
     for suite, ss in by_suite.items():
-        domains: Dict[str, int] = {}
-        diffs: Dict[str, int] = {}
+        domains: dict[str, int] = {}
+        diffs: dict[str, int] = {}
         for s in ss:
             domains[s.domain] = domains.get(s.domain, 0) + 1
             diffs[s.difficulty] = diffs.get(s.difficulty, 0) + 1
@@ -365,10 +366,10 @@ def _check_balance(specs: List[ItemSpec]) -> List[str]:
     return errs
 
 
-def _check_template_diversity(specs: List[ItemSpec]) -> List[str]:
+def _check_template_diversity(specs: list[ItemSpec]) -> list[str]:
     """Warn if template indices show no variation (all items use same template)."""
-    errs: List[str] = []
-    by_suite: Dict[str, List[ItemSpec]] = {}
+    errs: list[str] = []
+    by_suite: dict[str, list[ItemSpec]] = {}
     for s in specs:
         by_suite.setdefault(s.suite, []).append(s)
 
@@ -393,9 +394,9 @@ def _check_template_diversity(specs: List[ItemSpec]) -> List[str]:
 
 
 def _check_manifest(
-    specs: List[ItemSpec], views: List[PromptView], manifest: Dict[str, Any],
-) -> List[str]:
-    errs: List[str] = []
+    specs: list[ItemSpec], views: list[PromptView], manifest: dict[str, Any],
+) -> list[str]:
+    errs: list[str] = []
     counts = manifest.get("counts", {})
 
     n = counts.get("itemspecs")
@@ -408,7 +409,7 @@ def _check_manifest(
     m_domains = set(counts.get("domains", []))
     a_domains = set(s.domain for s in specs)
     if m_domains and m_domains != a_domains:
-        errs.append(f"manifest: domains mismatch")
+        errs.append("manifest: domains mismatch")
 
     return errs
 
@@ -416,12 +417,12 @@ def _check_manifest(
 # ── Public entry point ────────────────────────────────────────────────
 
 def validate_all(
-    specs: List[ItemSpec],
-    views: List[PromptView],
-    manifest: Optional[Dict[str, Any]] = None,
-) -> List[str]:
+    specs: list[ItemSpec],
+    views: list[PromptView],
+    manifest: dict[str, Any] | None = None,
+) -> list[str]:
     """Run all deterministic validators.  Empty list = all passed."""
-    errs: List[str] = []
+    errs: list[str] = []
 
     errs.extend(_check_no_duplicates(specs, views))
 

@@ -27,8 +27,7 @@ import sys
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
+from anchorbench.eval.constants import SUITE_DATASETS
 from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
@@ -37,7 +36,6 @@ from anchorbench.eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench.eval.constants import SUITE_DATASETS
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
@@ -154,7 +152,7 @@ async def run_history_api(client, model_id: str, items: list[dict],
     )
 
     stage1_prompts = []
-    for idx, cond, pv in anchored_tasks:
+    for _idx, _cond, pv in anchored_tasks:
         comps = pv.get("prompt_components", {})
         stage1_prompts.append(comps.get("stage1_user_message", pv.get("prompt_text", "")))
 

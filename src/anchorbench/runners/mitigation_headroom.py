@@ -25,26 +25,21 @@ import argparse
 import csv
 import json
 import logging
-import sys
 from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "src"))
-
+from anchorbench.eval.constants import MODEL_SHORT
+from anchorbench.eval.constants import SUITE_DATASETS as _ALL
 from anchorbench.eval.evaluator import (
-    CONDITIONS,
-    build_record,
-    parse_response,
     prepare_items,
     run_single_stage,
     write_and_summarize,
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews
-from anchorbench.eval.constants import MODEL_SHORT, SUITE_DATASETS as _ALL
 from anchorbench.eval.metrics import compute_unified_metrics
 
+ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 SUITE_DATASETS = {k: v for k, v in _ALL.items() if k in ("external", "rag")}

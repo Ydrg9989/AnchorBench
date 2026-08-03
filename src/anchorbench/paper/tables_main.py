@@ -22,23 +22,21 @@ from pathlib import Path
 
 import numpy as np
 
+from anchorbench.eval.metrics import bh_correction, paired_wilcoxon
+
 from ._common import (
     ALL_MODELS_ORDER,
     DEFAULT_API_RESULTS,
     DEFAULT_OW_RESULTS,
     DEFAULT_TABLE_DIR,
-    SUITES,
     SUITE_LATEX,
+    SUITES,
     collect_per_suite,
     fmt_num,
     fmt_pct,
     short_to_latex,
     write_table,
 )
-
-import sys
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
-from anchorbench.eval.metrics import bh_correction, paired_wilcoxon  # noqa: E402
 
 
 def load_unified(*paths: Path) -> list[dict]:
@@ -247,7 +245,6 @@ def build_main_results_revised(unified: list[dict]) -> str:
 
 def build_uai_pathway(unified: list[dict]) -> str:
     """Table 2: suite-mean UAI_irr, UAI_pls, Disc_delta + Wilcoxon p_BH."""
-    rows: list[tuple[str, float, float, float, float]] = []
     suite_order = ["External", "History", "Rag", "Tool", "Icl"]
     pathway_pvals: list[float] = []
     intermediate: list[tuple[str, float, float, float]] = []
@@ -289,8 +286,8 @@ def build_uai_pathway(unified: list[dict]) -> str:
         if p < 0.01:
             return "$<$0.01"
         if p < 0.05:
-            return "$\\approx${:.2f}".format(p)
-        return "{:.2f}".format(p)
+            return f"$\\approx${p:.2f}"
+        return f"{p:.2f}"
 
     lines: list[str] = []
     lines.append("% Table 2: UAI by pathway (mean over models) + Wilcoxon p_BH.")

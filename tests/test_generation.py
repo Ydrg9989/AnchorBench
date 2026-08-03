@@ -11,13 +11,11 @@ Tests:
   8. Validator passes on generated data
 """
 
-import json
-import random
 import statistics
 
 import pytest
 
-from anchorbench.data.domains import DOMAINS, DOMAIN_IDS
+from anchorbench.data.domains import DOMAINS
 from anchorbench.data.itemspec_gen import (
     compute_gold_answer,
     generate_external_itemspecs,
@@ -27,10 +25,8 @@ from anchorbench.data.itemspec_gen import (
     generate_rag_itemspecs,
     generate_tool_itemspecs,
 )
-from anchorbench.data.schema import ItemSpec
 from anchorbench.data.suites import SUITE_RENDERERS
 from anchorbench.data.validators import validate_all
-
 
 # ── Fixtures ─────────────────────────────────────────────────────────
 

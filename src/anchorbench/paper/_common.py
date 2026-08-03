@@ -6,16 +6,13 @@ formatting helpers that are reused by every figure/table script.
 
 from __future__ import annotations
 
-import sys
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
+
+from anchorbench.eval.constants import MODEL_SHORT
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "src"
-if str(SRC) not in sys.path:
-    sys.path.insert(0, str(SRC))
-
-from anchorbench.eval.constants import MODEL_SHORT  # noqa: E402
 
 DEFAULT_OW_RESULTS = ROOT / "results" / "full_benchmark"
 DEFAULT_API_RESULTS = ROOT / "results" / "api_benchmark"

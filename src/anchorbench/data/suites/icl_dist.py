@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import random
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
@@ -65,7 +65,7 @@ def _demos_tag_for_condition(condition: str) -> str:
     raise ValueError(f"unknown icl_dist condition: {condition!r}")
 
 
-def _fallback_demos(spec: ItemSpec, tag: str) -> List[Dict[str, Any]]:
+def _fallback_demos(spec: ItemSpec, tag: str) -> list[dict[str, Any]]:
     """Regenerate demos if tags missing (e.g. legacy spec); deterministic from item_id."""
     stable = int(hashlib.sha256(spec.item_id.encode()).hexdigest()[:8], 16)
     rng = random.Random(spec.seed * 10000 + stable % 10000)
@@ -84,7 +84,7 @@ def _fallback_demos(spec: ItemSpec, tag: str) -> List[Dict[str, Any]]:
     return out
 
 
-def _load_demos(spec: ItemSpec, condition: str) -> List[Tuple[List[dict], int]]:
+def _load_demos(spec: ItemSpec, condition: str) -> list[tuple[list[dict], int]]:
     tag = _demos_tag_for_condition(condition)
     raw = spec.tags.get(tag)
     if not raw:
@@ -97,16 +97,16 @@ def _build_prompt(
     condition: str,
     relevance: str,
     direction: str,
-    demos: List[Tuple[List[dict], int]],
+    demos: list[tuple[list[dict], int]],
     intro: str,
 ) -> PromptView:
     scenario, question, _, _ = resolve_templates(spec)
     target_evidence = format_evidence(spec.evidence_structured)
 
     demo_blocks = []
-    demo_headers: List[str] = []
-    demo_answers_list: List[int] = []
-    demo_evidence_strs: List[str] = []
+    demo_headers: list[str] = []
+    demo_answers_list: list[int] = []
+    demo_evidence_strs: list[str] = []
     for di, (demo_ev, demo_ans) in enumerate(demos):
         header = f"Example {di + 1}:"
         ev_str = format_evidence(demo_ev, show_missing=False)
@@ -127,7 +127,7 @@ def _build_prompt(
 
     anchor_value: int | None = None
     anchor_string: str | None = None
-    anchor_span: List[int] | None = None
+    anchor_span: list[int] | None = None
 
     if condition != "control":
         if direction == "low":
@@ -168,9 +168,9 @@ def _build_prompt(
     )
 
 
-def render_icl_dist(spec: ItemSpec) -> List[PromptView]:
+def render_icl_dist(spec: ItemSpec) -> list[PromptView]:
     """Render five conditions: control + plausible/irrelevant × low/high."""
-    views: List[PromptView] = []
+    views: list[PromptView] = []
     for condition, relevance, direction in CONDITIONS:
         demos = _load_demos(spec, condition)
         intro = _intro_for_condition(condition, spec.anchor_phrasing_idx)

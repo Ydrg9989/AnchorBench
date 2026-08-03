@@ -29,10 +29,8 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import sys
 import time
 from pathlib import Path
-from typing import List, Optional
 
 from . import __version__
 from .domains import ALL_DOMAIN_IDS, DOMAIN_IDS, MEDICAL_DOMAIN_IDS
@@ -80,9 +78,9 @@ def _git_hash() -> str:
         return "unknown"
 
 
-def render_all(specs: List[ItemSpec]) -> List[PromptView]:
+def render_all(specs: list[ItemSpec]) -> list[PromptView]:
     """Render PromptView records for all specs using suite-specific renderers."""
-    views: List[PromptView] = []
+    views: list[PromptView] = []
     for spec in specs:
         renderer = SUITE_RENDERERS.get(spec.suite)
         if renderer is None:
@@ -96,14 +94,14 @@ def generate_suite_dataset(
     suite: str,
     size: str = "pilot",
     seed: int = 42,
-    out_dir: Optional[str] = None,
+    out_dir: str | None = None,
     llm_enhance: bool = False,
     concurrency: int = 8,
     max_retries: int = 5,
-    domains: Optional[List[str]] = None,
-    n_per_cell: Optional[int] = None,
+    domains: list[str] | None = None,
+    n_per_cell: int | None = None,
     scoring_function: str = "mean",
-    difficulties: Optional[List[str]] = None,
+    difficulties: list[str] | None = None,
     validate: bool = True,
 ) -> dict:
     """Generate a single-suite AnchorBench dataset.
@@ -233,7 +231,6 @@ def generate_suite_dataset(
 
     # Validate
     if validate:
-        from .schema import ItemSpec as IS, PromptView as PV
         errs = validate_all(all_specs, all_views, manifest)
         if errs:
             logger.warning("Validation found %d issue(s):", len(errs))

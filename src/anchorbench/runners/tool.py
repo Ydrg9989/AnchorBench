@@ -16,10 +16,9 @@ import argparse
 import logging
 import os
 import sys
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
-
+from anchorbench.data.schema import ItemSpec
+from anchorbench.data.suites.tool import TOOL_SCHEMAS, get_tool_messages
 from anchorbench.eval.evaluator import (
     CONDITIONS,
     prepare_items,
@@ -33,9 +32,6 @@ from anchorbench.eval.runner_utils import (
     make_fallback,
     model_output_dir,
 )
-
-from anchorbench.data.schema import ItemSpec
-from anchorbench.data.suites.tool import TOOL_SCHEMAS, get_tool_messages
 
 log = logging.getLogger(__name__)
 
@@ -92,7 +88,7 @@ def main() -> None:
                 task_list.append((item_idx, cond, pv))
 
         messages_list = []
-        for item_idx, cond, pv in task_list:
+        for item_idx, cond, _pv in task_list:
             item = items[item_idx]
             spec = ItemSpec.from_dict(item["spec"])
             msgs, _ = get_tool_messages(spec, cond)
@@ -123,6 +119,7 @@ def main() -> None:
             )
 
         import json
+
         from anchorbench.eval.evaluator import build_record, parse_response
 
         records = []

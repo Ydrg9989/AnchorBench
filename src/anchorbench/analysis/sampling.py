@@ -12,19 +12,15 @@ from __future__ import annotations
 
 import argparse
 import csv
-import json
-import sys
 from pathlib import Path
 
 import numpy as np
-
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "src"))
 
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
 
+ROOT = Path(__file__).resolve().parents[3]
 SUITES = ["external", "rag", "icl_dist"]
 METRIC_KEYS = ["uai_irr", "uai_plaus", "disc_delta", "mae_control",
                "acc10_control", "tar_irr", "tar_plaus", "parse_rate"]
@@ -187,7 +183,6 @@ def make_figure(rows: list[dict], fig_dir: Path):
         axes = [axes]
 
     colors = {"Qwen-7B": "#1f77b4", "Llama-8B": "#d62728"}
-    markers = {"greedy": "o", "sampled": "s"}
 
     for ax, (mkey, mlabel) in zip(axes, metrics_to_plot):
         x_labels = []
@@ -214,7 +209,6 @@ def make_figure(rows: list[dict], fig_dir: Path):
                         ax.scatter(x_pos + 0.15, v, marker="x", s=50,
                                    color=c, alpha=0.6, zorder=2)
 
-        n_groups = len(suites_present) * (len(models) + 1) - 1
         ax.set_xticks([si * (len(models) + 1) + mi
                        for si in range(len(suites_present))
                        for mi in range(len(models))])

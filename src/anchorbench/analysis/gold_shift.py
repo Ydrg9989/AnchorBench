@@ -28,17 +28,15 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import sys
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / "src"))
-
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
+
+ROOT = Path(__file__).resolve().parents[3]
 
 SUITES = ["external", "history", "icl", "rag", "tool"]
 ANCHORED_CONDITIONS = [

@@ -14,13 +14,10 @@ Runs in < 5 seconds with no model loading.
 from __future__ import annotations
 
 import json
-import tempfile
 from pathlib import Path
 
-import pytest
-
 from anchorbench.eval.evaluator import build_record, parse_response, write_and_summarize
-from anchorbench.eval.metrics import compute_unified_metrics, EPSILON
+from anchorbench.eval.metrics import compute_unified_metrics
 from anchorbench.eval.runner_utils import (
     build_suffix,
     discover_results,
@@ -28,7 +25,6 @@ from anchorbench.eval.runner_utils import (
     fmt_pct,
     model_output_dir,
 )
-
 
 GOLD = 42.0
 ITEM_TEMPLATE = {
@@ -170,7 +166,7 @@ class TestWriteAndSummarize:
             for r in records:
                 f.write(json.dumps(r) + "\n")
 
-        metrics = write_and_summarize(records, tmp_path, label="smoke")
+        write_and_summarize(records, tmp_path, label="smoke")
         summary = tmp_path / "summary.json"
         assert summary.exists()
         data = json.loads(summary.read_text())

@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import hashlib
 import random
-from typing import List, Optional, Tuple
 
 from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
@@ -45,7 +44,7 @@ _NEUTRAL_HEADERS = [
 def _make_demo_header(
     demo_idx: int,
     relevance: str,
-    anchor_value: Optional[int],
+    anchor_value: int | None,
     phrasing_idx: int = 0,
 ) -> str:
     """Build the demo header that varies across conditions."""
@@ -69,8 +68,8 @@ def _build_prompt(
     spec: ItemSpec,
     condition: str,
     relevance: str,
-    anchor_value: Optional[int],
-    demos: List[Tuple[List[dict], int]],
+    anchor_value: int | None,
+    demos: list[tuple[list[dict], int]],
 ) -> PromptView:
     """Build a single ICL PromptView for one condition."""
     scenario, question, _, _ = resolve_templates(spec)
@@ -98,8 +97,8 @@ def _build_prompt(
         f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
     )
 
-    anchor_string: Optional[str] = None
-    anchor_span: Optional[List[int]] = None
+    anchor_string: str | None = None
+    anchor_span: list[int] | None = None
     if condition != "control" and anchor_value is not None:
         anchor_string = str(anchor_value)
         start = prompt_text.find(anchor_string)
@@ -122,7 +121,7 @@ def _build_prompt(
     )
 
 
-def render_icl(spec: ItemSpec) -> List[PromptView]:
+def render_icl(spec: ItemSpec) -> list[PromptView]:
     """Render 7 conditions for an ICL item."""
     icl_demos_tag = spec.tags.get("icl_demos")
     if icl_demos_tag:

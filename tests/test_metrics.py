@@ -1,7 +1,6 @@
 """Tests for anchorbench.eval.metrics — unified metrics + statistical helpers."""
 
 import numpy as np
-import pytest
 
 from anchorbench.eval.metrics import (
     bh_correction,

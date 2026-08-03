@@ -14,9 +14,8 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional
 
-from .domains import DOMAINS, ALL_DOMAINS  # ALL_DOMAINS includes medical-pilot domains
+from .domains import ALL_DOMAINS  # ALL_DOMAINS includes medical-pilot domains
 from .schema import ItemSpec
 
 logger = logging.getLogger(__name__)
@@ -47,9 +46,9 @@ def _make_prompt(spec: ItemSpec, variation_idx: int) -> str:
     )
 
 
-def _load_cache(cache_path: Path) -> Dict[str, str]:
+def _load_cache(cache_path: Path) -> dict[str, str]:
     """Load cached item_id → scenario_text mapping."""
-    cache: Dict[str, str] = {}
+    cache: dict[str, str] = {}
     if cache_path.exists():
         with open(cache_path) as f:
             for line in f:
@@ -72,12 +71,12 @@ def _append_cache(cache_path: Path, item_id: str, scenario_text: str, provenance
 
 
 def enhance_scenarios(
-    specs: List[ItemSpec],
+    specs: list[ItemSpec],
     *,
     concurrency: int = 8,
     max_retries: int = 5,
-    cache_path: Optional[str] = None,
-    artifact_dir: Optional[str] = None,
+    cache_path: str | None = None,
+    artifact_dir: str | None = None,
 ) -> int:
     """Populate spec.scenario_text using the bulk_writer via OpenRouter.
 
@@ -91,14 +90,14 @@ def enhance_scenarios(
         cache_path: JSONL file for caching generated scenarios.
         artifact_dir: Directory for raw request/response artifacts.
     """
-    from .openrouter_client import OpenRouterClient
     from .config import get_role_config
+    from .openrouter_client import OpenRouterClient
 
     cache_file = Path(cache_path or "datasets/anchorbench_v1/artifacts/scenarios_cache.jsonl")
     cache = _load_cache(cache_file)
 
     # Resolve which specs need generation
-    to_generate: List[ItemSpec] = []
+    to_generate: list[ItemSpec] = []
     for spec in specs:
         if spec.scenario_text:
             continue
