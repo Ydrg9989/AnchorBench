@@ -11,6 +11,8 @@ venv/
 dist/
 build/
 .pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
 # Environment / secrets
 .env
@@ -24,11 +26,25 @@ build/
 *.swp
 *.swo
 
-# Generated results (reproducible from datasets + scripts)
-results/
-outputs/
-logs/
-figures/
+# Generated results (reproducible from datasets + scripts).
+# NOTE: these are anchored with a leading "/" on purpose. Bare rules like
+# "results/" or "figures/" match at ANY depth, which previously hid
+# src/anchorbench/analysis/ and every COLM*/figures/ paper figure.
+/outputs/
+/logs/
+/figures/
+
+# results/ is ignored except the two small unified summaries, which
+# `anchorbench verify` needs in order to run on a fresh clone. A plain
+# negation cannot re-include a file underneath an excluded directory, so
+# each level has to be re-opened explicitly.
+/results/*
+!/results/full_benchmark/
+/results/full_benchmark/*
+!/results/full_benchmark/unified_all_suites.json
+!/results/api_benchmark/
+/results/api_benchmark/*
+!/results/api_benchmark/unified_all_suites.json
 
 # Archives and backups
 *.zip
@@ -36,38 +52,27 @@ figures/
 archive_*.tar.gz
 *_pre_rerun_backup_*/
 
-# Legacy (removed; available in git history)
-legacy/
-analysis/
+# Legacy top-level dirs (removed; available in git history)
+/legacy/
+/analysis/
 
-# LaTeX build artifacts
-COLM/*.aux
-COLM/*.bbl
-COLM/*.blg
-COLM/*.fls
-COLM/*.fdb_latexmk
-COLM/*.log
-COLM/*.out
-COLM/*.synctex
-COLM/*.synctex.gz
-COLM/*.synctex(busy)
-COLM/pdflatex*.fls
-COLM/archive/
+# Upstream COLM template checkout — it carries its own nested .git, so
+# adding it would record an unclonable gitlink. Everything in it is already
+# present under COLM/.
+/Template/
 
-EMNLP/*.aux
-EMNLP/*.bbl
-EMNLP/*.blg
-EMNLP/*.fls
-EMNLP/*.fdb_latexmk
-EMNLP/*.log
-EMNLP/*.out
-EMNLP/*.synctex
-EMNLP/*.synctex.gz
-EMNLP/*.synctex(busy)
-EMNLP/pdflatex*.fls
+# LaTeX build artifacts (suffix rules, so they survive directory renames)
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.out
+*.synctex
+*.synctex.gz
+*.synctex(busy)
+pdflatex*.fls
+COLM*/archive/
 
-# Generated datasets (keep manifests and core promptviews)
-datasets/anchorbench_v1/**/*.jsonl
-datasets/anchorbench_v1/**/artifacts/
-datasets/anchorbench_v1/llm_*/
-datasets/anchorbench_v1/smoke/
+# LaTeX logs only — do not ignore *.log globally, run logs live elsewhere
+COLM*/*.log
