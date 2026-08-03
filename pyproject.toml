@@ -44,6 +44,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+# Explicit, so the distribution can never re-claim generic top-level import
+# names (the pre-2.0 anchorbench_v1 / anchorbench_eval / mitigation_eval).
+include = ["anchorbench*"]
 
 [tool.setuptools.package-data]
 "anchorbench" = ["py.typed"]

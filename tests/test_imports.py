@@ -1,8 +1,8 @@
 """Smoke test: every public submodule of the anchorbench package imports.
 
 This catches regressions when modules are moved or renamed (e.g. during
-the v2.0 consolidation of anchorbench_v1, anchorbench_eval, and
-mitigation_eval into a single anchorbench/ package).
+the v2.0 consolidation of three separate packages into a single
+anchorbench/ package). See RELEASE_NOTES.md for the import migration map.
 """
 
 from __future__ import annotations
@@ -86,22 +86,3 @@ def test_version_attr() -> None:
 
     assert isinstance(anchorbench.__version__, str)
     assert anchorbench.__version__.count(".") >= 1
-
-
-def test_deprecation_shims_redirect() -> None:
-    """Old package names still import and point at the new modules."""
-    import warnings
-
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", DeprecationWarning)
-        import anchorbench_eval
-        import anchorbench_v1
-        import mitigation_eval
-
-    import anchorbench.data
-    import anchorbench.eval
-    import anchorbench.inference
-
-    assert anchorbench_v1.__path__ == anchorbench.data.__path__
-    assert anchorbench_eval.__path__ == anchorbench.eval.__path__
-    assert mitigation_eval.__path__ == anchorbench.inference.__path__

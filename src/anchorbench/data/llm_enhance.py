@@ -93,7 +93,7 @@ def enhance_scenarios(
     from .config import get_role_config
     from .openrouter_client import OpenRouterClient
 
-    cache_file = Path(cache_path or "datasets/anchorbench_v1/artifacts/scenarios_cache.jsonl")
+    cache_file = Path(cache_path or "datasets/_artifacts/scenarios_cache.jsonl")
     cache = _load_cache(cache_file)
 
     # Resolve which specs need generation
@@ -117,7 +117,7 @@ def enhance_scenarios(
 
     rcfg = get_role_config("bulk_writer")
     client = OpenRouterClient(
-        artifact_dir=artifact_dir or "datasets/anchorbench_v1/artifacts/openrouter_calls",
+        artifact_dir=artifact_dir or "datasets/_artifacts/openrouter_calls",
         max_retries=max_retries,
     )
 

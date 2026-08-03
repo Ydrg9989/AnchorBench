@@ -69,10 +69,11 @@ scripts/
 ## Changed
 
 - **Package layout consolidated** to a single `src/anchorbench/`. The
-  three legacy package names (`anchorbench_v1`, `anchorbench_eval`,
-  `mitigation_eval`) ship as deprecation shims that re-export the new
-  submodules and emit a `DeprecationWarning`. They will be removed in
-  v2.1.
+  three pre-2.0 package names (`anchorbench_v1`, `anchorbench_eval`,
+  `mitigation_eval`) are **removed**, not shimmed: v2.0.0 is the first
+  public release, so there are no downstream importers to keep working,
+  and shipping them would have claimed three generic top-level import
+  names on PyPI for no benefit. See the import migration map below.
 - **Version** bumped to `2.0.0`.
 - **Static constants** (`SUITE_DATASETS`, `MODEL_SHORT`,
   `API_MODEL_IDS`, etc.) hardcoded in
@@ -154,3 +155,21 @@ Before tagging the release, all four checks pass on `release/v2.0`:
 - Dataset files (`datasets/`).
 - Per-record `results/.../results.jsonl` outputs.
 - COLM 2026 paper source (`COLM/`).
+
+## Import migration (pre-2.0 → 2.0)
+
+| Old import | New import |
+|---|---|
+| `anchorbench_v1.*` | `anchorbench.data.*` |
+| `anchorbench_v1.suites` | `anchorbench.data.suites` |
+| `anchorbench_eval.*` | `anchorbench.eval.*` |
+| `anchorbench_eval.metrics` | `anchorbench.eval.metrics` |
+| `anchorbench_eval.runner_utils` | `anchorbench.eval.runner_utils` |
+| `mitigation_eval.*` | `anchorbench.inference.*` |
+
+```diff
+-from anchorbench_v1.suites import SUITE_RENDERERS
+-from anchorbench_eval.metrics import compute_unified_metrics
++from anchorbench.data.suites import SUITE_RENDERERS
++from anchorbench.eval.metrics import compute_unified_metrics
+```
