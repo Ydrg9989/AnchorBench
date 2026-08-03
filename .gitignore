@@ -45,6 +45,23 @@ build/
 !/results/api_benchmark/
 /results/api_benchmark/*
 !/results/api_benchmark/unified_all_suites.json
+# ...and the small extension artifacts the full (non---quick) verifier reads:
+# two aggregate CSVs plus 16 mitigation-headroom summaries, ~72 KB total.
+# The bulky per-record and item-level files stay ignored.
+!/results/revision/
+/results/revision/*
+!/results/revision/gold_shift_decomposition/
+/results/revision/gold_shift_decomposition/*
+!/results/revision/gold_shift_decomposition/gold_shift_aggregated.csv
+!/results/revision/sampling_robustness/
+/results/revision/sampling_robustness/*
+!/results/revision/sampling_robustness/sampling_robustness_summary.csv
+!/results/revision/mitigation_headroom/
+/results/revision/mitigation_headroom/**/*
+# re-open the intermediate directories *after* the exclusion above, or git
+# never descends into them and the summary.json negation below never applies
+!/results/revision/mitigation_headroom/**/
+!/results/revision/mitigation_headroom/**/summary.json
 
 # Archives and backups
 *.zip

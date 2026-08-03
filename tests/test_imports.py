@@ -35,7 +35,6 @@ PUBLIC_MODULES = [
     "anchorbench.eval.parsing",
     "anchorbench.eval.runner_utils",
     "anchorbench.inference",
-    "anchorbench.inference.async_api",
     "anchorbench.runners",
     "anchorbench.runners.base",
     "anchorbench.runners.external",
@@ -43,7 +42,6 @@ PUBLIC_MODULES = [
     "anchorbench.runners.icl",
     "anchorbench.runners.rag",
     "anchorbench.runners.tool",
-    "anchorbench.runners.api",
     "anchorbench.analysis",
     "anchorbench.analysis.unified",
     "anchorbench.paper",
@@ -63,8 +61,23 @@ PUBLIC_MODULES = [
 ]
 
 
+# Modules that need an optional dependency group. Importing them on a bare
+# `pip install anchorbench` raises ModuleNotFoundError, so they are checked
+# separately and skipped when the extra is absent.
+OPTIONAL_MODULES = [
+    ("anchorbench.inference.async_api", "aiohttp", "api"),
+    ("anchorbench.runners.api", "aiohttp", "api"),
+]
+
+
 @pytest.mark.parametrize("mod", PUBLIC_MODULES)
 def test_module_imports(mod: str) -> None:
+    importlib.import_module(mod)
+
+
+@pytest.mark.parametrize("mod,dep,extra", OPTIONAL_MODULES)
+def test_optional_module_imports(mod: str, dep: str, extra: str) -> None:
+    pytest.importorskip(dep, reason=f"{mod} needs the '{extra}' extra")
     importlib.import_module(mod)
 
 
