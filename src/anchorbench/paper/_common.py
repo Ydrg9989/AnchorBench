@@ -126,7 +126,14 @@ def write_table(path: Path, body: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(body.rstrip() + "\n")
-    print(f"  wrote {path.relative_to(ROOT)}")
+    # Log relative to the repo when possible, but never fail on it: an
+    # --out_dir outside the repo made relative_to() raise *after* the file
+    # had already been written.
+    try:
+        shown: Path | str = path.relative_to(ROOT)
+    except ValueError:
+        shown = path
+    print(f"  wrote {shown}")
 
 
 def collect_per_suite(unified: list[dict], suite: str) -> dict[str, dict]:
