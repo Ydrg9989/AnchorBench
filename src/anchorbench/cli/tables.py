@@ -73,4 +73,13 @@ def main() -> int:
             else:
                 _run(cmd)
 
+    # --paper is documented as "figures + tables + verifier", so actually run
+    # the verifier and let its exit code gate the command.
+    if args.paper:
+        cmd = ["-m", "anchorbench.paper.verify"]
+        if args.dry_run:
+            print(sys.executable, *cmd)
+        else:
+            rc |= _run(cmd)
+
     return rc
