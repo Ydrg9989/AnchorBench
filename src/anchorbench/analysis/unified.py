@@ -22,15 +22,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.io import load_records
-from anchorbench_eval.metrics import (
+from anchorbench.eval.io import load_records
+from anchorbench.eval.metrics import (
     compute_by_difficulty,
     compute_by_offset,
     compute_extended_metrics,
     compute_unified_metrics,
     print_summary,
 )
-from anchorbench_eval.runner_utils import (
+from anchorbench.eval.runner_utils import (
     SUITES,
     MODEL_SHORT,
     discover_results,

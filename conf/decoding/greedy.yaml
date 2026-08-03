@@ -1,0 +1,5 @@
+name: greedy
+temperature: 0.0
+top_p: 1.0
+n_samples: 1
+max_tokens: 512

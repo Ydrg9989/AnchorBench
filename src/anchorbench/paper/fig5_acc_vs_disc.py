@@ -14,7 +14,7 @@ Outputs:
     COLM/figures/fig5_acc_vs_disc.png
 
 Usage:
-    python scripts/eval/paper/fig5_acc_vs_disc.py
+    python anchorbench.paper.fig5_acc_vs_disc
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from _common import (
+from ._common import (
     API_MODELS_ORDER,
     DEFAULT_API_RESULTS,
     DEFAULT_FIG_DIR,

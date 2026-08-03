@@ -17,8 +17,8 @@ import statistics
 
 import pytest
 
-from anchorbench_v1.domains import DOMAINS, DOMAIN_IDS
-from anchorbench_v1.itemspec_gen import (
+from anchorbench.data.domains import DOMAINS, DOMAIN_IDS
+from anchorbench.data.itemspec_gen import (
     compute_gold_answer,
     generate_external_itemspecs,
     generate_history_itemspecs,
@@ -27,9 +27,9 @@ from anchorbench_v1.itemspec_gen import (
     generate_rag_itemspecs,
     generate_tool_itemspecs,
 )
-from anchorbench_v1.schema import ItemSpec
-from anchorbench_v1.suites import SUITE_RENDERERS
-from anchorbench_v1.validators import validate_all
+from anchorbench.data.schema import ItemSpec
+from anchorbench.data.suites import SUITE_RENDERERS
+from anchorbench.data.validators import validate_all
 
 
 # ── Fixtures ─────────────────────────────────────────────────────────

@@ -24,7 +24,20 @@ import random
 import statistics
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from .domains import DOMAINS, DOMAIN_IDS, DomainConfig
+from .domains import (
+    ALL_DOMAINS,
+    DOMAINS,
+    DOMAIN_IDS,
+    DomainConfig,
+)
+
+# DOMAIN_LOOKUP is the registry consulted by itemspec_gen.* helpers below.
+# It includes the original 6 business domains AND the 3 rebuttal-only
+# medical domains, so generators can produce medical pilots when explicitly
+# asked. DOMAINS proper stays at 6 entries to preserve published-benchmark
+# reproducibility, and the default DOMAIN_IDS continues to be the 6-domain
+# list (so a no-domains-arg call still produces the original dataset).
+DOMAIN_LOOKUP = ALL_DOMAINS
 from .schema import ItemSpec
 
 # ── Shared constants ─────────────────────────────────────────────────
@@ -169,7 +182,7 @@ def _generate_offset_grid_specs(
     global_idx = 0
 
     for domain_id in domains:
-        dcfg = DOMAINS[domain_id]
+        dcfg = DOMAIN_LOOKUP[domain_id]
         for difficulty in difficulties:
             for offset in anchor_offsets:
                 for i in range(n_per_cell):
@@ -269,33 +282,13 @@ def generate_tool_itemspecs(**kwargs) -> List[ItemSpec]:
                                       extra_fn=_tool_extras, **kwargs)
 
 
-def generate_tool_agentic_itemspecs(**kwargs) -> List[ItemSpec]:
-    """Tool-Agentic ItemSpecs (same grid as tool)."""
-    return _generate_offset_grid_specs("tool_agentic", "TOOL-A", seed_offset=3000,
-                                      extra_fn=_tool_extras, **kwargs)
-
-
-def _tool_read_extras(rng, kw, dcfg):
-    kw["tool"] = {
-        "available_tools": ["get_evidence_summary", "check_external_reference"],
-        "mode_supported": ["read_only"],
-        "tool_schema_version": "v2",
-    }
-
-
-def generate_tool_read_itemspecs(**kwargs) -> List[ItemSpec]:
-    """Tool-Read ItemSpecs (same grid, plain JSON rendering)."""
-    return _generate_offset_grid_specs("tool_read", "TOOL-R", seed_offset=3000,
-                                      extra_fn=_tool_read_extras, **kwargs)
-
-
 ICL_N_DEMOS = 3
 ICL_DEMO_EVIDENCE_COUNT = 3
 
 
 def _generate_icl_demos(rng: random.Random, domain_id: str) -> List[Dict[str, Any]]:
     """Generate N neutral demos for an ICL item."""
-    labels = DOMAINS[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
+    labels = DOMAIN_LOOKUP[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
     demos = []
     for _ in range(ICL_N_DEMOS):
         theta_demo = rng.randint(35, 65)
@@ -322,7 +315,7 @@ def _generate_icl_dist_demos(
     anchor_high: int,
 ) -> Dict[str, List[Dict[str, Any]]]:
     """Pre-generate three demo lists: neutral mid-band, low-clustered, high-clustered."""
-    labels = DOMAINS[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
+    labels = DOMAIN_LOOKUP[domain_id].evidence_labels[:ICL_DEMO_EVIDENCE_COUNT]
 
     def pack(center: int, spread: int) -> List[Dict[str, Any]]:
         demos: List[Dict[str, Any]] = []
@@ -408,7 +401,7 @@ def _build_warmup_case(
     rng: random.Random, domain_id: str, theta_min: int, theta_max: int, template_idx: int,
 ) -> Dict[str, Any]:
     """Build a warmup case (same domain, different case) for irrelevant conditions."""
-    dcfg = DOMAINS[domain_id]
+    dcfg = DOMAIN_LOOKUP[domain_id]
     labels = dcfg.evidence_labels
     theta = rng.randint(theta_min, theta_max)
     evidence = _generate_evidence(rng, theta, labels, "easy")
@@ -439,7 +432,7 @@ def generate_history_itemspecs(
     global_idx = 0
 
     for domain_id in domains:
-        dcfg = DOMAINS[domain_id]
+        dcfg = DOMAIN_LOOKUP[domain_id]
         for difficulty in difficulties:
             for i in range(n_per_cell):
                 global_idx += 1

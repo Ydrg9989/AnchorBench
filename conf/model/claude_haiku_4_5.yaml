@@ -1,0 +1,6 @@
+name: Claude-Haiku-4.5
+hf_id: anthropic/claude-haiku-4.5
+slug: anthropic_claude-haiku-4.5
+short: Claude-H4.5
+backend: openrouter
+api_concurrency: 8

@@ -1,0 +1,9 @@
+name: Qwen2.5-7B-Instruct
+hf_id: Qwen/Qwen2.5-7B-Instruct
+slug: Qwen_Qwen2.5-7B-Instruct
+short: Qwen-7B
+backend: vllm
+tensor_parallel_size: 1
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

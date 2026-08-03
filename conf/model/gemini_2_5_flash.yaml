@@ -1,0 +1,6 @@
+name: Gemini-2.5-Flash
+hf_id: google/gemini-2.5-flash
+slug: google_gemini-2.5-flash
+short: Gemini-2.5-Flash
+backend: openrouter
+api_concurrency: 8

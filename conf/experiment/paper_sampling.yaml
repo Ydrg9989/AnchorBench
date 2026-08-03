@@ -1,0 +1,10 @@
+# @package _global_
+# Sampling robustness sweep on Qwen-7B + Llama-8B (Appendix Sec. C.4).
+defaults:
+  - override /decoding: sample_t07
+
+experiment_name: paper_sampling
+suites: [external, rag, icl_dist]
+models: [qwen_7b, llama_8b]
+out_dir: results/revision/sampling_robustness
+n_seeds: 5

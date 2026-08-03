@@ -20,22 +20,22 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     prepare_items,
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from anchorbench_eval.runner_utils import (
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.runner_utils import (
     add_common_args,
     make_backend,
     make_fallback,
     model_output_dir,
 )
 
-from anchorbench_v1.schema import ItemSpec
-from anchorbench_v1.suites.tool import TOOL_SCHEMAS, get_tool_messages
+from anchorbench.data.schema import ItemSpec
+from anchorbench.data.suites.tool import TOOL_SCHEMAS, get_tool_messages
 
 log = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ def main() -> None:
             )
 
         import json
-        from anchorbench_eval.evaluator import build_record, parse_response
+        from anchorbench.eval.evaluator import build_record, parse_response
 
         records = []
         with open(results_path, "w", encoding="utf-8") as fh:

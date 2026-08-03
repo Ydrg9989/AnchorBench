@@ -16,6 +16,7 @@ from __future__ import annotations
 
 from typing import List
 
+from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import format_evidence, resolve_templates
 from .external import _build_prompt as _external_build_prompt
@@ -142,6 +143,82 @@ def _neutral_twostage_promptview(spec: ItemSpec) -> PromptView:
         },
         anchor_relevance="none",
     )
+
+
+def _intensity_promptview(
+    spec: ItemSpec, condition: str, direction: str, intensity: str,
+) -> PromptView:
+    """P1 cross-pathway intensity for History.
+
+    Stage 1 is identical to the standard plausible condition (model
+    generates a self-anchor from partial evidence). Stage 2 reveals the
+    full evidence AND inserts an external plausible preamble at the
+    requested credibility level. This tests whether an external
+    plausibility cue *compounds* with the self-anchor pathway.
+
+    intensity is one of ``plausible_mild`` / ``plausible_strong``.
+    """
+    assert intensity in ("plausible_mild", "plausible_strong")
+    scenario, question, _, dcfg = resolve_templates(spec)
+    full_evidence = format_evidence(spec.evidence_structured)
+
+    hist = spec.history or {}
+    key = "subset_indices_low" if direction == "low" else "subset_indices_high"
+    indices = hist.get(key, [0, 1])
+    partial_evidence = format_evidence(spec.evidence_structured, indices=indices)
+
+    anchor_val = spec.anchors[direction]
+    pool = dcfg.anchor_preambles.get(intensity, [])
+    if not pool:
+        raise KeyError(
+            f"Domain {spec.domain!r} missing {intensity!r} preamble pool"
+        )
+    pidx = getattr(spec, "anchor_phrasing_idx", 0)
+    anchor_sentence = pool[pidx % len(pool)].format(anchor=anchor_val)
+
+    stage1 = (
+        f"{scenario}\n\n"
+        f"Preliminary evidence (partial):\n{partial_evidence}\n\n"
+        f"{STAGE1_PLAUSIBLE_QUESTION}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+    stage2 = (
+        f"{STAGE2_PLAUSIBLE_PREAMBLE}"
+        f"Evidence:\n{full_evidence}\n\n"
+        f"{anchor_sentence} "
+        f"{STAGE2_PLAUSIBLE_QUESTION}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+
+    return PromptView(
+        item_id=spec.item_id, suite=spec.suite, domain=spec.domain,
+        condition=condition,
+        prompt_text=f"{stage1}\n\n---\n\n{stage2}",
+        prompt_components={
+            "scenario": scenario, "evidence": full_evidence,
+            "question": question, "answer_format": ANSWER_FORMAT_INSTRUCTION,
+            "stage1_user_message": stage1, "stage2_user_message": stage2,
+            "intensity_preamble": anchor_sentence,
+        },
+        anchor_string=str(anchor_val),
+        anchor_relevance=intensity,
+        anchor_value=anchor_val,
+    )
+
+
+def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
+    """P1 cross-pathway intensity probe for History.
+
+    Renders 4 conditions: ``plausible_mild_low/high`` and
+    ``plausible_strong_low/high``. The standard ``plausible_low/high``
+    is reused from the existing History run for the middle point.
+    """
+    if spec.suite != "history" or not spec.history:
+        return []
+    return [
+        _intensity_promptview(spec, "plausible_mild_low", "low", "plausible_mild"),
+        _intensity_promptview(spec, "plausible_mild_high", "high", "plausible_mild"),
+        _intensity_promptview(spec, "plausible_strong_low", "low", "plausible_strong"),
+        _intensity_promptview(spec, "plausible_strong_high", "high", "plausible_strong"),
+    ]
 
 
 def render_history(spec: ItemSpec) -> List[PromptView]:

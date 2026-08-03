@@ -1,0 +1,11 @@
+# @package _global_
+# ICL-dist variant (Appendix Table 14).
+defaults:
+  - override /data: icl_dist
+  - override /decoding: greedy
+
+experiment_name: paper_icl_dist
+suites: [icl]
+tiers: [small_a, small_b, medium, large, xlarge]
+out_dir: results/icl_dist_core
+api_out_dir: results/icl_dist_api

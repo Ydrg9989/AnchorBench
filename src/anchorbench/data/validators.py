@@ -61,13 +61,9 @@ SUITE_CONDITIONS: Dict[str, Set[str]] = {
     "icl_dist": BASE_CONDITIONS,
     "rag": RAG_ALL_CONDITIONS,
     "tool": TOOL_CONDITIONS,
-    "tool_agentic": TOOL_CONDITIONS,
-    "tool_read": TOOL_CONDITIONS,
 }
 
-_OFFSET_SUITES = {
-    "external", "rag", "tool", "tool_agentic", "tool_read", "icl", "icl_dist",
-}
+_OFFSET_SUITES = {"external", "rag", "tool", "icl", "icl_dist"}
 
 
 def _compute_expected_gold(
@@ -159,7 +155,7 @@ def _check_suite_extras(spec: ItemSpec) -> List[str]:
         elif spec.rag.get("corpus_size") != 3:
             errs.append(f"{iid}: rag.corpus_size={spec.rag.get('corpus_size')}, expected 3")
 
-    elif spec.suite in ("tool", "tool_agentic", "tool_read"):
+    elif spec.suite == "tool":
         if not spec.tool:
             errs.append(f"{iid}: missing tool dict")
         else:
@@ -273,8 +269,6 @@ _SUITE_EXTRA_INVARIANT_KEYS: Dict[str, tuple] = {
     "icl": ("demo_answers", "demo_evidence"),
     "icl_dist": (),
     "tool": ("evidence_summary",),
-    "tool_agentic": ("evidence_summary",),
-    "tool_read": ("evidence_summary",),
 }
 
 

@@ -27,13 +27,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     prepare_items,
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from anchorbench_eval.runner_utils import (
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.runner_utils import (
     add_common_args,
     build_suffix,
     make_backend,

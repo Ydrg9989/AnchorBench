@@ -1,0 +1,9 @@
+name: api
+description: OpenRouter API models, no GPU
+tensor_parallel: 0
+gpu_ids: []
+models:
+  - gpt_5_mini
+  - claude_haiku_4_5
+  - gemini_2_5_flash
+  - grok_3_mini

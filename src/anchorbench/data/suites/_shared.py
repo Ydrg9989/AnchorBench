@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Tuple
 
-from ..domains import DOMAINS, DomainConfig
+from ..domains import ALL_DOMAINS as DOMAINS, DomainConfig
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec
 
 MISSING_VALUE_DISPLAY = "[data not available]"
@@ -29,6 +29,16 @@ EXTENDED_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
     ("placebo_high",   "placebo",   "high"),
     ("authority_low",  "authority", "low"),
     ("authority_high", "authority", "high"),
+]
+
+# Rebuttal-only D1 conditions for the plausible-intensity probe (Cluster H).
+# Used only by the dedicated D1 dataset generator; the core External dataset
+# is unchanged.
+INTENSITY_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [
+    ("plausible_mild_low",    "plausible_mild",   "low"),
+    ("plausible_mild_high",   "plausible_mild",   "high"),
+    ("plausible_strong_low",  "plausible_strong", "low"),
+    ("plausible_strong_high", "plausible_strong", "high"),
 ]
 
 HISTORY_CONDITIONS: List[Tuple[str, str, str]] = CONDITIONS + [

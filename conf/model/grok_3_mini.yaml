@@ -1,0 +1,6 @@
+name: Grok-3-mini
+hf_id: x-ai/grok-3-mini-beta
+slug: x-ai_grok-3-mini-beta
+short: Grok-3-mini
+backend: openrouter
+api_concurrency: 8

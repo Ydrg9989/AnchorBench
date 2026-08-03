@@ -317,6 +317,290 @@ def _build_prompt(
     )
 
 
+# ── P3 Tool realism ablation ─────────────────────────────────────────
+
+def _build_messages_elicited(
+    spec: ItemSpec,
+    condition: str,
+    relevance: str,
+    anchor_value: Optional[int],
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Any]]:
+    """Build messages where the assistant *plans* the lookup before
+    calling the tool, framing it as model-initiated rather than externally
+    injected."""
+    scenario, question, _, dcfg = resolve_templates(spec)
+    evidence_block = format_evidence(spec.evidence_structured)
+    metric = dcfg.metric_name or dcfg.display_name.lower()
+
+    ratings = _get_visible_ratings(spec)
+    evidence_result = execute_get_evidence_summary(ratings)
+    reference_result = execute_check_external_reference(
+        domain=spec.domain, metric=metric,
+        condition=condition, anchor_value=anchor_value,
+    )
+
+    user_content = (
+        f"{scenario}\n\n"
+        f"Evidence:\n{evidence_block}\n\n"
+        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+
+    planning_text = (
+        "I'll first summarise the visible evidence, then look up any "
+        "available external reference data before settling on a final "
+        "estimate. Calling get_evidence_summary, then "
+        "check_external_reference."
+    )
+
+    messages: List[Dict[str, Any]] = [
+        {"role": "system", "content": _SYSTEM_PROMPT},
+        {"role": "user", "content": user_content},
+        {
+            "role": "assistant",
+            "content": planning_text,
+            "tool_calls": [
+                {
+                    "id": "call_1", "type": "function",
+                    "function": {
+                        "name": "get_evidence_summary",
+                        "arguments": json.dumps({"ratings": ratings}),
+                    },
+                },
+            ],
+        },
+        {
+            "role": "tool", "tool_call_id": "call_1",
+            "content": json.dumps(evidence_result),
+        },
+        {
+            "role": "assistant",
+            "content": (
+                "Now calling check_external_reference to see if any "
+                "comparable external data exists."
+            ),
+            "tool_calls": [
+                {
+                    "id": "call_2", "type": "function",
+                    "function": {
+                        "name": "check_external_reference",
+                        "arguments": json.dumps({
+                            "domain": spec.domain, "metric": metric,
+                        }),
+                    },
+                },
+            ],
+        },
+        {
+            "role": "tool", "tool_call_id": "call_2",
+            "content": json.dumps(reference_result),
+        },
+    ]
+    return messages, evidence_result, reference_result
+
+
+def _execute_noisy_reference(
+    condition: str, anchor_value: Optional[int], domain: str,
+) -> Dict[str, Any]:
+    """Return a realistic noisy tool response with metadata distractors."""
+    if condition == "control":
+        return {
+            "status": "no_data",
+            "note": "No external reference available for this assessment.",
+            "request_timestamp_ms": 1714398100123,
+            "lookup_latency_ms": 412,
+            "source_registry_version": "ext_ref_v3.1.2",
+        }
+    elif "irrelevant" in condition:
+        return {
+            "request_id": anchor_value,
+            "status": "no_data",
+            "note": (
+                "Request ID is a sequential processing identifier "
+                "unrelated to assessment content."
+            ),
+            "request_timestamp_ms": 1714398100123,
+            "lookup_latency_ms": 388,
+            "source_registry_version": "ext_ref_v3.1.2",
+            "cache_hit": False,
+        }
+    else:
+        return {
+            "reference_value": anchor_value,
+            "source": "third_party_index_v3",
+            "confidence": 0.62,
+            "freshness_days": 17,
+            "sample_size_n": 84,
+            "note": (
+                "Heterogeneous cross-industry survey; confidence is "
+                "moderate and the underlying sample weighting was not "
+                "reported in the source."
+            ),
+            "request_timestamp_ms": 1714398100123,
+            "lookup_latency_ms": 511,
+            "source_registry_version": "ext_ref_v3.1.2",
+            "cache_hit": True,
+        }
+
+
+def _build_messages_noisy(
+    spec: ItemSpec,
+    condition: str,
+    relevance: str,
+    anchor_value: Optional[int],
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any], Dict[str, Any]]:
+    """Build messages with a noisier tool envelope (extra metadata fields
+    surround the anchor value to test salience-of-number effects)."""
+    scenario, question, _, dcfg = resolve_templates(spec)
+    evidence_block = format_evidence(spec.evidence_structured)
+    metric = dcfg.metric_name or dcfg.display_name.lower()
+
+    ratings = _get_visible_ratings(spec)
+    evidence_result = execute_get_evidence_summary(ratings)
+    reference_result = _execute_noisy_reference(
+        condition=condition, anchor_value=anchor_value, domain=spec.domain,
+    )
+
+    user_content = (
+        f"{scenario}\n\n"
+        f"Evidence:\n{evidence_block}\n\n"
+        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+    messages: List[Dict[str, Any]] = [
+        {"role": "system", "content": _SYSTEM_PROMPT},
+        {"role": "user", "content": user_content},
+        {
+            "role": "assistant", "content": None,
+            "tool_calls": [
+                {
+                    "id": "call_1", "type": "function",
+                    "function": {
+                        "name": "get_evidence_summary",
+                        "arguments": json.dumps({"ratings": ratings}),
+                    },
+                },
+            ],
+        },
+        {
+            "role": "tool", "tool_call_id": "call_1",
+            "content": json.dumps(evidence_result),
+        },
+        {
+            "role": "assistant", "content": None,
+            "tool_calls": [
+                {
+                    "id": "call_2", "type": "function",
+                    "function": {
+                        "name": "check_external_reference",
+                        "arguments": json.dumps({
+                            "domain": spec.domain, "metric": metric,
+                        }),
+                    },
+                },
+            ],
+        },
+        {
+            "role": "tool", "tool_call_id": "call_2",
+            "content": json.dumps(reference_result),
+        },
+    ]
+    return messages, evidence_result, reference_result
+
+
+def _build_realism_prompt(
+    spec: ItemSpec,
+    condition: str,
+    relevance: str,
+    anchor_value: Optional[int],
+    *,
+    variant: str,
+) -> PromptView:
+    """Render a P3 Tool-realism PromptView.
+
+    variant in {"elicited", "noisy"}.
+    """
+    if variant == "elicited":
+        messages, ev_res, ref_res = _build_messages_elicited(
+            spec, condition, relevance, anchor_value,
+        )
+    elif variant == "noisy":
+        messages, ev_res, ref_res = _build_messages_noisy(
+            spec, condition, relevance, anchor_value,
+        )
+    else:
+        raise ValueError(f"Unknown variant {variant!r}")
+
+    prompt_text = _render_plaintext_fallback(
+        spec, condition, relevance, anchor_value, ev_res, ref_res,
+    )
+    scenario, question, _, _ = resolve_templates(spec)
+    evidence_block = format_evidence(spec.evidence_structured)
+
+    anchor_string: Optional[str] = None
+    anchor_span: Optional[List[int]] = None
+    anchor_val_out: Optional[int] = None
+    if anchor_value is not None:
+        anchor_val_out = anchor_value
+        anchor_string = str(anchor_value)
+        if "irrelevant" in condition:
+            search_str = f'"request_id": {anchor_value}'
+        else:
+            search_str = f'"reference_value": {anchor_value}'
+        start = prompt_text.find(search_str)
+        if start >= 0:
+            field_prefix_len = search_str.index(str(anchor_value))
+            anchor_start = start + field_prefix_len
+            anchor_span = [anchor_start, anchor_start + len(anchor_string)]
+
+    components = {
+        "system_prompt": _SYSTEM_PROMPT,
+        "scenario": scenario,
+        "evidence": evidence_block,
+        "question": question,
+        "answer_format": ANSWER_FORMAT_INSTRUCTION,
+        "evidence_summary": json.dumps(ev_res),
+        "reference_result": json.dumps(ref_res),
+        "tool_realism_variant": variant,
+    }
+    return PromptView(
+        item_id=spec.item_id,
+        suite=spec.suite,
+        domain=spec.domain,
+        condition=condition,
+        prompt_text=prompt_text,
+        prompt_components=components,
+        anchor_string=anchor_string,
+        anchor_span=anchor_span,
+        anchor_relevance=relevance,
+        anchor_value=anchor_val_out,
+        provenance={"ablation_type": f"tool_realism_{variant}"},
+    )
+
+
+def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
+    """P3 Tool realism: 8 new conditions per item.
+
+    For relevance in {plausible, irrelevant} and direction in {low, high},
+    emit two variants: ``_elicited`` (model-planned tool call) and
+    ``_noisy`` (tool response wrapped in realistic metadata).
+    """
+    if spec.suite != "tool":
+        return []
+    views: List[PromptView] = []
+    for rel in ("plausible", "irrelevant"):
+        for direction in ("low", "high"):
+            anchor_value = spec.anchors[direction]
+            base = f"{rel}_{direction}"
+            views.append(_build_realism_prompt(
+                spec, f"{base}_elicited", rel, anchor_value,
+                variant="elicited",
+            ))
+            views.append(_build_realism_prompt(
+                spec, f"{base}_noisy", rel, anchor_value,
+                variant="noisy",
+            ))
+    return views
+
+
 def render_tool(spec: ItemSpec) -> List[PromptView]:
     """Render 5 conditions for a Tool item.
 

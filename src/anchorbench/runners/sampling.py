@@ -28,15 +28,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
     parse_response,
     prepare_items,
     write_and_summarize,
 )
-from anchorbench_eval.constants import SUITE_DATASETS as _ALL, VARIANT_DATASETS
-from anchorbench_eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.constants import SUITE_DATASETS as _ALL, VARIANT_DATASETS
+from anchorbench.eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
 
@@ -169,7 +169,7 @@ def main():
 
 
 def _run_local(args):
-    from anchorbench_eval.backends import HFBackend, VLLMBackend
+    from anchorbench.eval.backends import HFBackend, VLLMBackend
 
     log.info("Loading model %s (%s)...", args.model_id, args.backend)
     if args.backend == "vllm":
@@ -206,7 +206,7 @@ def _run_local(args):
 
 
 async def _run_api(args):
-    from mitigation_eval.async_api import AsyncOpenRouterClient
+    from anchorbench.inference.async_api import AsyncOpenRouterClient
 
     api_key = args.api_key or os.getenv("OPENROUTER_API_KEY", "")
     if not api_key:

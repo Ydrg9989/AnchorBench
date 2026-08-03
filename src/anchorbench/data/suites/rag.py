@@ -27,7 +27,7 @@ from __future__ import annotations
 
 from typing import Dict, List, Optional
 
-from ..domains import DOMAINS
+from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView, RAGDoc
 from ._shared import CONDITIONS, format_evidence, resolve_templates
 
@@ -224,6 +224,37 @@ def _build_anchor_slot_plausible_authority(
     )
 
 
+def _build_anchor_slot_intensity(
+    item_id: str, domain: str, direction: str, anchor_value: int,
+    intensity: str, phrasing_idx: int = 0,
+) -> RAGDoc:
+    """Plausible anchor with mild/strong source-credibility framing (P1).
+
+    Uses the same preamble pools that External uses (attached in
+    ``anchorbench.data.domains`` under ``plausible_mild`` /
+    ``plausible_strong``) but wraps them in a RAG-document text body.
+    """
+    assert intensity in ("plausible_mild", "plausible_strong")
+    dcfg = DOMAINS[domain]
+    pool = dcfg.anchor_preambles.get(intensity, [])
+    if not pool:
+        raise KeyError(
+            f"Domain {domain!r} missing {intensity!r} preamble pool; "
+            "make sure data.domains attached it."
+        )
+    template = pool[phrasing_idx % len(pool)]
+    body = template.format(anchor=anchor_value)
+    return RAGDoc(
+        doc_id=f"{item_id}_anchor_slot_{intensity}_{direction}",
+        domain=domain,
+        doc_type="anchor_slot",
+        role="anchor_slot",
+        relevance=intensity,
+        anchor_value=anchor_value,
+        text=body,
+    )
+
+
 # ── Per-item corpus construction ─────────────────────────────────────
 
 def build_item_corpus(spec: ItemSpec) -> Dict[str, RAGDoc]:
@@ -386,6 +417,275 @@ def _build_prompt(
         anchor_value=anchor_value,
         provenance=provenance,
     )
+
+
+# ── P2 RAG realism ablation ───────────────────────────────────────────
+
+_DOC_DISTRACTOR_TEMPLATES: Dict[str, List[str]] = {
+    "pricing_wtp": [
+        "Adjacent Market Note: A separate retailer in a tangentially related "
+        "category reported quarterly inventory churn of 14%, but this segment "
+        "operates on a different value chain and the figure is not comparable.",
+        "Tangential Pricing Memo: A different product family within the parent "
+        "company maintained a 7% margin variance year-on-year, included here "
+        "for retrieval-context completeness only.",
+    ],
+    "operations_time": [
+        "Adjacent Facility Note: A sister plant operating in a different region "
+        "logged a 2-hour shift handover overlap; this is a procedural metric "
+        "with no bearing on throughput efficiency.",
+        "Tangential Operations Memo: Equipment maintenance audits in a "
+        "neighbouring facility recorded a 4-day window between major service "
+        "events, not relevant to throughput-efficiency assessment.",
+    ],
+    "transportation_logistics": [
+        "Adjacent Network Note: A regional warehouse reported 11 driver "
+        "rotations per cycle; this is a labour-scheduling metric not tied "
+        "to on-time delivery reliability.",
+        "Tangential Logistics Memo: Fleet-level depreciation accounting "
+        "showed a 6-year asset replacement window, included for context "
+        "only and not relevant to reliability scoring.",
+    ],
+    "resource_consumption": [
+        "Adjacent Utility Note: A separate office facility within the same "
+        "campus reported a 3-month water-bill cycle, not comparable to the "
+        "industrial consumption metric under review.",
+        "Tangential Sustainability Memo: Carbon-offset programme enrolment "
+        "stood at 12 employees this quarter, an HR metric unrelated to "
+        "resource-consumption efficiency.",
+    ],
+    "market_demographics": [
+        "Adjacent Brand Note: A loyalty-programme adjacent to the assessed "
+        "product reported 4% sign-up uplift, but the cohort and channel "
+        "differ from the adoption study under review.",
+        "Tangential Demographics Memo: Internal HR demographics show 19% "
+        "female representation in the regional sales force, not relevant "
+        "to product-adoption indexing.",
+    ],
+    "legal_policy": [
+        "Adjacent Compliance Note: A subsidiary entity completed 8 "
+        "voluntary disclosures last quarter; these were procedural and "
+        "do not bear on the assessed compliance posture.",
+        "Tangential Policy Memo: A 6-page revision was filed to the "
+        "internal procurement code; this is unrelated to the regulatory "
+        "compliance dimension under review.",
+    ],
+    # Medical pilot domains (defensive fallback to generic text).
+    "clinical_readmission_risk": [
+        "Adjacent Clinical Note: Ward-level staffing rotations averaged "
+        "9 nurses per shift this quarter; not relevant to per-patient "
+        "readmission risk.",
+        "Tangential Operations Memo: Pharmacy turnaround time held at "
+        "21 minutes for non-urgent prescriptions, an operational metric "
+        "unrelated to readmission scoring.",
+    ],
+    "medication_dosage_adjustment": [
+        "Adjacent Pharmacy Note: Bulk-order lead time for ancillary "
+        "supplies averaged 5 days this period; not relevant to dosage "
+        "adjustment decisions.",
+        "Tangential Operations Memo: Cold-chain logging compliance reached "
+        "98% for non-controlled medications, an operational metric "
+        "unrelated to dosage adjustment.",
+    ],
+    "diagnostic_confidence": [
+        "Adjacent Imaging Note: PACS retrieval latency averaged 6 seconds "
+        "on the imaging workstation this quarter; not relevant to "
+        "diagnostic-confidence scoring.",
+        "Tangential Workflow Memo: Imaging room turnover averaged 14 "
+        "minutes, an operational metric unrelated to diagnostic "
+        "confidence assessment.",
+    ],
+}
+
+
+def _build_distractor_docs(domain: str, item_id: str) -> List[RAGDoc]:
+    pool = _DOC_DISTRACTOR_TEMPLATES.get(domain) or _DOC_DISTRACTOR_TEMPLATES["pricing_wtp"]
+    out: List[RAGDoc] = []
+    for i, body in enumerate(pool):
+        out.append(RAGDoc(
+            doc_id=f"{item_id}_distractor_{i+1}",
+            domain=domain,
+            doc_type="distractor",
+            role="distractor",
+            relevance="none",
+            text=body,
+        ))
+    return out
+
+
+def _format_retrieved_docs_with_scores(
+    docs: List[RAGDoc], scores: List[float],
+) -> str:
+    blocks = []
+    for i, (doc, score) in enumerate(zip(docs, scores)):
+        blocks.append(f"[Document {i+1} | relevance={score:.2f}]\n{doc.text}")
+    return "\n\n".join(blocks)
+
+
+def _build_realism_prompt(
+    spec: ItemSpec,
+    condition: str,
+    relevance: str,
+    anchor_doc: RAGDoc,
+    rank: int,
+    n_distract: int,
+    with_relevance_scores: bool,
+) -> PromptView:
+    """Render a single P2 realism PromptView.
+
+    Document ordering rules:
+      total docs = 1 (core) + 1 (filler) + n_distract (distractors) + 1 (anchor)
+      rank: 1-indexed position of the anchor doc in the retrieved list.
+    """
+    scenario, question, _, _ = resolve_templates(spec)
+    evidence_block = format_evidence(spec.evidence_structured)
+
+    domain = spec.domain
+    tidx = int(spec.template_family.split("_")[-1])
+    core_text = _DOC_CORE_TEMPLATES[domain][tidx % len(_DOC_CORE_TEMPLATES[domain])]
+    filler_text = _DOC_FILLER_TEMPLATES[domain][tidx % len(_DOC_FILLER_TEMPLATES[domain])]
+    doc_core = RAGDoc(
+        doc_id=f"{spec.item_id}_core",
+        domain=domain, doc_type="core", role="core",
+        relevance="none", text=core_text,
+    )
+    doc_filler = RAGDoc(
+        doc_id=f"{spec.item_id}_filler",
+        domain=domain, doc_type="filler", role="filler",
+        relevance="none", text=filler_text,
+    )
+    distractors = _build_distractor_docs(domain, spec.item_id)[:n_distract]
+
+    non_anchor = [doc_core, doc_filler] + list(distractors)
+    rank_clamped = max(1, min(rank, len(non_anchor) + 1))
+    ordered: List[RAGDoc] = list(non_anchor)
+    ordered.insert(rank_clamped - 1, anchor_doc)
+
+    if with_relevance_scores:
+        # Decreasing pseudo-relevance scores by rank position (anchor is
+        # NOT artificially elevated; this mimics retrievers that surface
+        # the anchored doc despite uncertain relevance).
+        scores = [round(1.0 - 0.13 * i, 2) for i in range(len(ordered))]
+        docs_block = _format_retrieved_docs_with_scores(ordered, scores)
+    else:
+        docs_block = _format_retrieved_docs(ordered)
+
+    prompt_text = (
+        f"{_RETRIEVAL_HEADER}\n"
+        f"{docs_block}\n\n"
+        f"{scenario}\n\n"
+        f"Evidence:\n{evidence_block}\n\n"
+        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
+    )
+
+    components = {
+        "retrieval_header": _RETRIEVAL_HEADER,
+        "retrieved_docs": docs_block,
+        "scenario": scenario,
+        "evidence": evidence_block,
+        "question": question,
+        "answer_format": ANSWER_FORMAT_INSTRUCTION,
+        "retrieved_doc_ids": ",".join(d.doc_id for d in ordered),
+        "anchor_doc_id": anchor_doc.doc_id,
+        "anchor_rank": rank_clamped,
+        "n_distractors": n_distract,
+        "with_relevance_scores": with_relevance_scores,
+    }
+
+    anchor_string: Optional[str] = None
+    anchor_span: Optional[List[int]] = None
+    anchor_value = anchor_doc.anchor_value
+    if anchor_value is not None:
+        anchor_string = str(anchor_value)
+        start = prompt_text.find(anchor_string, len(_RETRIEVAL_HEADER))
+        if start >= 0:
+            anchor_span = [start, start + len(anchor_string)]
+
+    return PromptView(
+        item_id=spec.item_id,
+        suite=spec.suite,
+        domain=spec.domain,
+        condition=condition,
+        prompt_text=prompt_text,
+        prompt_components=components,
+        anchor_string=anchor_string,
+        anchor_span=anchor_span,
+        anchor_relevance=relevance,
+        anchor_value=anchor_value,
+        provenance={
+            "ablation_type": "realism",
+            "anchor_rank": rank_clamped,
+            "n_distractors": n_distract,
+            "with_relevance_scores": with_relevance_scores,
+        },
+    )
+
+
+def build_realism_promptviews(spec: ItemSpec) -> List[PromptView]:
+    """P2 RAG realism: 6 new conditions per item using the existing
+    plausible/irrelevant anchor docs but varying retrieval realism.
+
+    Conditions (per relevance type in {plausible, irrelevant}):
+      *_rank1            anchor doc at rank 1, no distractors
+      *_rank5            anchor doc at rank 5 (bottom), 2 distractors
+      *_rank5_distract   anchor doc at rank 5, 2 distractors, +relevance scores
+    """
+    if spec.suite != "rag":
+        return []
+    corpus = build_item_corpus(spec)
+    views: List[PromptView] = []
+    for rel in ("plausible", "irrelevant"):
+        for direction in ("low", "high"):
+            anchor_doc = corpus[f"{rel}_{direction}"]
+            # rank1, 0 distractors, no scores
+            views.append(_build_realism_prompt(
+                spec, f"{rel}_{direction}_rank1", rel,
+                anchor_doc, rank=1, n_distract=0,
+                with_relevance_scores=False,
+            ))
+            # rank5, 2 distractors, no scores (pure rank+distractor effect)
+            views.append(_build_realism_prompt(
+                spec, f"{rel}_{direction}_rank5", rel,
+                anchor_doc, rank=5, n_distract=2,
+                with_relevance_scores=False,
+            ))
+            # rank5, 2 distractors, +relevance scores
+            views.append(_build_realism_prompt(
+                spec, f"{rel}_{direction}_rank5_distract", rel,
+                anchor_doc, rank=5, n_distract=2,
+                with_relevance_scores=True,
+            ))
+    return views
+
+
+def build_intensity_promptviews(spec: ItemSpec) -> List[PromptView]:
+    """P1 cross-pathway intensity: render the 4 mild/strong conditions
+    on top of an existing RAG itemspec, reusing the standard 3-doc layout
+    with the intensity-flavoured anchor-slot document in the middle.
+
+    Conditions emitted: plausible_mild_low/high, plausible_strong_low/high.
+    """
+    if spec.suite != "rag":
+        return []
+    corpus = build_item_corpus(spec)
+    pidx = getattr(spec, "anchor_phrasing_idx", 0)
+    new_corpus = dict(corpus)
+    views: List[PromptView] = []
+    for intensity in ("plausible_mild", "plausible_strong"):
+        for direction in ("low", "high"):
+            anchor_val = spec.anchors[direction]
+            cond = f"{intensity}_{direction}"
+            doc = _build_anchor_slot_intensity(
+                spec.item_id, spec.domain, direction, anchor_val,
+                intensity, pidx,
+            )
+            new_corpus[cond] = doc
+            views.append(_build_prompt(
+                spec, cond, intensity, new_corpus,
+                doc_key=cond, doc_order="middle",
+                ablation_type=intensity,
+            ))
+    return views
 
 
 def render_rag(spec: ItemSpec) -> List[PromptView]:

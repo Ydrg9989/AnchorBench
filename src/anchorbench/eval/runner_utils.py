@@ -12,8 +12,8 @@ import logging
 from pathlib import Path
 from typing import Union
 
-from anchorbench_eval.backends import HFBackend, VLLMBackend
-from anchorbench_eval.parsing import LLMFallbackExtractor, XML_TAG_INSTRUCTION
+from .backends import HFBackend, VLLMBackend
+from .parsing import LLMFallbackExtractor, XML_TAG_INSTRUCTION
 
 log = logging.getLogger(__name__)
 
@@ -119,7 +119,7 @@ def model_output_dir(args: argparse.Namespace) -> Path:
 
 # ---- Result discovery (used by recompute_all_unified.py and friends) ----
 
-from anchorbench_eval.constants import MODEL_SHORT, SUITES  # noqa: E402
+from .constants import MODEL_SHORT, SUITES  # noqa: E402
 
 
 def discover_results(

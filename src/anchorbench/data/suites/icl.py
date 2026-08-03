@@ -16,7 +16,7 @@ import hashlib
 import random
 from typing import List, Optional, Tuple
 
-from ..domains import DOMAINS
+from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import ICL_CONDITIONS, format_evidence, resolve_templates
 

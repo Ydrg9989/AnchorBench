@@ -1,17 +1,32 @@
 [project]
 name = "anchorbench"
-version = "2.1.0"
+version = "2.0.0"
 description = "AnchorBench: Measuring LLM Susceptibility to Numeric Anchoring Across Interface Paradigms"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
+authors = [{name = "AnchorBench Authors"}]
+readme = "README.md"
+keywords = ["llm", "benchmark", "anchoring", "evaluation", "nlp"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
     "numpy>=1.24",
     "scipy>=1.10",
     "matplotlib>=3.7",
+    "pandas>=2.0",
     "pyyaml>=6.0",
     "requests>=2.31",
+    "tqdm>=4.65",
     "torch>=2.1",
     "transformers>=4.36",
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
 ]
 
 [project.optional-dependencies]
@@ -21,8 +36,7 @@ dev = ["pytest>=7.0", "ruff>=0.4"]
 all = ["anchorbench[vllm,api,dev]"]
 
 [project.scripts]
-anchorbench-generate = "anchorbench_v1.generate:main"
-anchorbench-validate = "anchorbench_v1.validate:main"
+anchorbench = "anchorbench.cli.main:main"
 
 [build-system]
 requires = ["setuptools>=68.0"]
@@ -30,6 +44,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"anchorbench" = ["py.typed"]
+"anchorbench.data" = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

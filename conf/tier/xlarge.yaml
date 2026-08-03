@@ -1,0 +1,6 @@
+name: xlarge
+description: 32B, tensor parallel across 4 GPUs
+tensor_parallel: 4
+gpu_ids: ["0,1,2,3"]
+models:
+  - olmo_32b

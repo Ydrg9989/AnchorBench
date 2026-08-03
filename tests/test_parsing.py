@@ -1,4 +1,4 @@
-"""Tests for anchorbench_eval.parsing — multi-tier answer parser.
+"""Tests for anchorbench.eval.parsing — multi-tier answer parser.
 
 Includes regression tests derived from actual smoke-test failures
 (tool-call JSON outputs, verbose CoT, ambiguous intermediate numbers).
@@ -6,7 +6,7 @@ Includes regression tests derived from actual smoke-test failures
 
 import pytest
 
-from anchorbench_eval.parsing import (
+from anchorbench.eval.parsing import (
     clamp_to_range,
     has_explicit_final_answer,
     is_tool_call_output,
@@ -18,7 +18,7 @@ from anchorbench_eval.parsing import (
     parse_with_fallback,
     parse_xml_answer,
 )
-from anchorbench_eval.evaluator import parse_response
+from anchorbench.eval.evaluator import parse_response
 
 
 class TestParseStructured:

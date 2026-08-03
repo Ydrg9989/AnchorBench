@@ -1,0 +1,11 @@
+# @package _global_
+# Gold-shift decomposition (Appendix Table 11). Uses paper_main outputs;
+# this recipe primarily drives anchorbench.analysis.gold_shift.
+defaults:
+  - override /decoding: greedy
+
+experiment_name: paper_gold_shift
+suites: [external, history, icl, rag, tool]
+tiers: [small_a, small_b, medium, large, xlarge, api]
+out_dir: results/full_benchmark
+analysis_only: true

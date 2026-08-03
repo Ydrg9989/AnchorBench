@@ -15,7 +15,7 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from anchorbench_eval.constants import MODEL_SHORT  # noqa: E402
+from anchorbench.eval.constants import MODEL_SHORT  # noqa: E402
 
 DEFAULT_OW_RESULTS = ROOT / "results" / "full_benchmark"
 DEFAULT_API_RESULTS = ROOT / "results" / "api_benchmark"

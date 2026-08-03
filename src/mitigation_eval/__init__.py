@@ -1,1 +1,21 @@
-"""Mitigation evaluation module for AnchorBench v2 anchoring bias experiments."""
+"""Deprecation shim: ``mitigation_eval`` was renamed to :mod:`anchorbench.inference`.
+
+This module re-exports the new package and emits a ``DeprecationWarning``
+on import. It will be removed in AnchorBench v2.1.
+"""
+
+from __future__ import annotations
+
+import warnings
+
+import anchorbench.inference as _new
+
+warnings.warn(
+    "mitigation_eval has been renamed to anchorbench.inference; the alias "
+    "will be removed in v2.1. Update your imports.",
+    DeprecationWarning,
+    stacklevel=2,
+)
+
+__path__ = _new.__path__  # type: ignore[attr-defined]
+__all__ = list(getattr(_new, "__all__", []))

@@ -1,0 +1,9 @@
+name: Gemma-3-1B-IT
+hf_id: google/gemma-3-1b-it
+slug: google_gemma-3-1b-it
+short: Gemma-1B
+backend: vllm
+tensor_parallel_size: 1
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

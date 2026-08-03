@@ -1,15 +1,15 @@
 """AnchorBench dataset generation CLI.
 
 Usage (core benchmark):
-    PYTHONPATH=src python -m anchorbench_v1.generate \
+    PYTHONPATH=src python -m anchorbench.data.generate \
         --suite external --size pilot --seed 42
 
 Extension splits (separate from core):
-    PYTHONPATH=src python -m anchorbench_v1.generate \
+    PYTHONPATH=src python -m anchorbench.data.generate \
         --suite external --size pilot --seed 42 \
         --scoring_function weighted_mean
 
-    PYTHONPATH=src python -m anchorbench_v1.generate \
+    PYTHONPATH=src python -m anchorbench.data.generate \
         --suite external --size pilot --seed 42 \
         --difficulties easy medium hard
 
@@ -35,7 +35,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from . import __version__
-from .domains import DOMAIN_IDS
+from .domains import ALL_DOMAIN_IDS, DOMAIN_IDS, MEDICAL_DOMAIN_IDS
 from .itemspec_gen import (
     generate_external_itemspecs,
     generate_history_itemspecs,
@@ -43,8 +43,6 @@ from .itemspec_gen import (
     generate_icl_itemspecs,
     generate_rag_itemspecs,
     generate_tool_itemspecs,
-    generate_tool_agentic_itemspecs,
-    generate_tool_read_itemspecs,
 )
 from .schema import ItemSpec, PromptView, write_jsonl
 from .suites import SUITE_RENDERERS
@@ -53,10 +51,7 @@ from .validators import validate_all
 
 logger = logging.getLogger(__name__)
 
-SUITE_NAMES = [
-    "external", "history", "icl", "icl_dist", "rag",
-    "tool", "tool_agentic", "tool_read",
-]
+SUITE_NAMES = ["external", "history", "icl", "icl_dist", "rag", "tool"]
 
 _ITEMSPEC_GENERATORS = {
     "external": generate_external_itemspecs,
@@ -65,8 +60,6 @@ _ITEMSPEC_GENERATORS = {
     "icl_dist": generate_icl_dist_itemspecs,
     "rag": generate_rag_itemspecs,
     "tool": generate_tool_itemspecs,
-    "tool_agentic": generate_tool_agentic_itemspecs,
-    "tool_read": generate_tool_read_itemspecs,
 }
 
 _SIZE_PARAMS = {
@@ -289,6 +282,13 @@ def main() -> None:
                         help="Max retries per request (default: 5)")
     parser.add_argument("--n_per_cell", type=int, default=None,
                         help="Override items per cell")
+    parser.add_argument(
+        "--domains", nargs="+", default=None,
+        help=(
+            "Override domain set. Use 'medical' for the 3 rebuttal medical "
+            "domains, 'all' for the union, or pass explicit domain IDs."
+        ),
+    )
     parser.add_argument("--no_validate", action="store_true",
                         help="Skip deterministic validation")
     args = parser.parse_args()
@@ -299,6 +299,19 @@ def main() -> None:
         "Generating AnchorBench %s (%s, seed=%d, scoring=%s, mode=%s)...",
         args.suite, args.size, args.seed, sf, mode,
     )
+
+    domains_arg = args.domains
+    if domains_arg is not None and len(domains_arg) == 1:
+        sentinel = domains_arg[0].lower()
+        if sentinel == "medical":
+            domains_arg = list(MEDICAL_DOMAIN_IDS)
+        elif sentinel == "other":
+            from anchorbench.data.domains import OTHER_DOMAIN_IDS
+            domains_arg = list(OTHER_DOMAIN_IDS)
+        elif sentinel == "all":
+            domains_arg = list(ALL_DOMAIN_IDS)
+        elif sentinel == "business":
+            domains_arg = list(DOMAIN_IDS)
 
     manifest = generate_suite_dataset(
         suite=args.suite,
@@ -312,6 +325,7 @@ def main() -> None:
         scoring_function=sf,
         difficulties=args.difficulties,
         validate=not args.no_validate,
+        domains=domains_arg,
     )
 
     logger.info(

@@ -1,0 +1,11 @@
+# @package _global_
+# History matched-control follow-up (Appendix Table 13).
+defaults:
+  - override /data: history
+  - override /decoding: greedy
+
+experiment_name: paper_history_matched
+suites: [history]
+tiers: [small_a, small_b, medium, large, xlarge]
+baseline_condition: control_twostage
+out_dir: results/history_matched

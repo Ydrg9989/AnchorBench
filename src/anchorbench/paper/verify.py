@@ -12,9 +12,9 @@ tolerance; mismatches are summarized at the end and the script returns
 a non-zero exit code if any are found.
 
 Usage:
-    python scripts/verify_paper_tables.py            # check all claims
-    python scripts/verify_paper_tables.py --quick    # main + uai-pathway only
-    python scripts/verify_paper_tables.py --strict   # tighten tolerances
+    python -m anchorbench.paper.verify            # check all claims
+    python -m anchorbench.paper.verify --quick    # main + uai-pathway only
+    python -m anchorbench.paper.verify --strict   # tighten tolerances
 """
 
 from __future__ import annotations
@@ -29,7 +29,7 @@ from typing import Iterable
 
 import numpy as np
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 RESULTS = ROOT / "results"
 
 SUITE_NAME_MAP = {"ICL": "Icl", "RAG": "Rag"}
@@ -197,10 +197,20 @@ PAPER_AMAE: dict[str, tuple[float, float]] = {
     "Tool": (-0.65, 3.45),
 }
 
-# Findings 3: paper text values (pooled across all 14 models)
+# Findings 3: paper text values.
+# NOTE: these are the *open-weight* tier means, matching the "Open-weight"
+# curve in Figure 4 (fig4_dose_response.py keeps the two tiers separate) and
+# the numbers quoted in findings.tex Sec. "Finding 3". Do not pool with API.
 PAPER_DOSE: dict[str, dict[str, float]] = {
     "External": {"15": 0.32, "25": 0.26, "40": 0.18},
     "Rag": {"15": 0.23, "25": 0.15, "40": 0.06},
+}
+
+# Same claim for the API tier ("API models show the same monotonic decrease on
+# External at roughly 2x smaller magnitudes; on RAG they peak at delta=25").
+PAPER_DOSE_API: dict[str, dict[str, float]] = {
+    "External": {"15": 0.16, "25": 0.13, "40": 0.08},
+    "Rag": {"15": 0.10, "25": 0.11, "40": 0.05},
 }
 
 
@@ -299,20 +309,30 @@ def verify_anchored_mae(all_data, mismatches, strict: bool):
 
 
 def verify_dose(all_data, mismatches, strict: bool):
-    header("5. Dose-response (suite mean of UAI_pls, all 14 models)")
+    header("5. Dose-response (suite mean of UAI_pls, per model tier)")
     tol = 0.02 if strict else 0.04  # paper text rounds to 2 d.p., we recompute
-    for suite, by_off in PAPER_DOSE.items():
-        entries = [d for d in all_data if d["suite"] == suite and "by_offset" in d]
-        for off, p_val in by_off.items():
-            vals = [d["by_offset"][off]["uai_plaus"]
-                    for d in entries if off in d.get("by_offset", {})]
-            if not vals:
-                print(f"  {suite}@{off}: no data")
-                continue
-            d_val = float(np.mean(vals))
-            s = check("dose", f"{suite}@offset={off}", p_val, d_val, tol, mismatches)
-            print(f"  {suite}@offset={off:>2s}: data={d_val:.3f} (paper {p_val:.2f}) "
-                  f"[{s}]")
+    tiers = (
+        ("open-weight", OW_SLUGS, PAPER_DOSE, "dose"),
+        ("API", API_SLUGS, PAPER_DOSE_API, "dose_api"),
+    )
+    for tier_name, slugs, paper_vals, kind in tiers:
+        print(f"  -- {tier_name} tier ({len(slugs)} models) --")
+        for suite, by_off in paper_vals.items():
+            entries = [d for d in all_data
+                       if d["suite"] == suite
+                       and d.get("model_slug") in slugs
+                       and "by_offset" in d]
+            for off, p_val in by_off.items():
+                vals = [d["by_offset"][off]["uai_plaus"]
+                        for d in entries if off in d.get("by_offset", {})]
+                if not vals:
+                    print(f"  {suite}@{off}: no data")
+                    continue
+                d_val = float(np.mean(vals))
+                s = check(kind, f"{suite}@offset={off} ({tier_name})",
+                          p_val, d_val, tol, mismatches)
+                print(f"  {suite}@offset={off:>2s}: data={d_val:.3f} "
+                      f"(paper {p_val:.2f}) [{s}]")
 
 
 def verify_intext(all_data, mismatches, strict: bool):
@@ -368,13 +388,16 @@ def verify_extension_csvs(mismatches, strict: bool):
         print(f"  gold_shift CSV missing: {gs}")
 
     # 7b. Sampling robustness
+    # Transcribed from Table "tab:sampling_robustness" in
+    # COLM/sections/appendix.tex (Sec. "Sampling robustness"):
+    # (Disc_delta greedy, sampled mean, sampled SD).
     PAPER_SAMP = {
-        ("external", "Qwen-7B"): (0.26, 0.25, 0.01),
-        ("external", "Llama-8B"): (0.28, 0.26, 0.08),
-        ("rag", "Qwen-7B"): (0.19, 0.19, 0.02),
-        ("rag", "Llama-8B"): (0.11, 0.12, 0.09),
-        ("icl_dist", "Qwen-7B"): (0.06, 0.08, 0.02),
-        ("icl_dist", "Llama-8B"): (-0.04, 0.09, 0.03),
+        ("external", "Qwen-7B"): (0.26, 0.29, 0.02),
+        ("external", "Llama-8B"): (0.30, 0.24, 0.07),
+        ("rag", "Qwen-7B"): (0.19, 0.18, 0.02),
+        ("rag", "Llama-8B"): (0.16, 0.06, 0.04),
+        ("icl_dist", "Qwen-7B"): (0.07, 0.08, 0.02),
+        ("icl_dist", "Llama-8B"): (0.03, 0.00, 0.02),
     }
     samp = RESULTS / "revision/sampling_robustness/sampling_robustness_summary.csv"
     if samp.exists():

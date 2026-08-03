@@ -1,0 +1,9 @@
+name: Gemma-3-4B-IT
+hf_id: google/gemma-3-4b-it
+slug: google_gemma-3-4b-it
+short: Gemma-4B
+backend: vllm
+tensor_parallel_size: 1
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

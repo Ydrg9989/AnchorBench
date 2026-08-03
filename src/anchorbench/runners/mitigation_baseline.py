@@ -29,7 +29,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
     parse_response,
@@ -37,8 +37,8 @@ from anchorbench_eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench_eval.constants import SUITE_DATASETS
-from anchorbench_eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.constants import SUITE_DATASETS
+from anchorbench.eval.io import load_itemspecs, load_promptviews
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ def run_suite_local(backend, suite: str, items: list[dict], out_dir: Path,
 def run_history_local(backend, items: list[dict], out_dir: Path,
                       max_tokens: int) -> list[dict]:
     """Run history suite locally with mitigation suffix."""
-    from anchorbench_eval.evaluator import run_history_two_stage
+    from anchorbench.eval.evaluator import run_history_two_stage
     model_slug = backend.model_id.replace("/", "_")
     model_out = out_dir / "history" / model_slug
     model_out.mkdir(parents=True, exist_ok=True)
@@ -235,7 +235,7 @@ def main() -> None:
 
 
 def _run_local(args):
-    from anchorbench_eval.backends import HFBackend, VLLMBackend
+    from anchorbench.eval.backends import HFBackend, VLLMBackend
 
     log.info("Loading model %s (%s)...", args.model_id, args.backend)
     if args.backend == "vllm":
@@ -275,7 +275,7 @@ def _run_local(args):
 
 
 async def _run_api(args):
-    from mitigation_eval.async_api import AsyncOpenRouterClient
+    from anchorbench.inference.async_api import AsyncOpenRouterClient
 
     api_key = args.api_key or os.getenv("OPENROUTER_API_KEY", "")
     if not api_key:

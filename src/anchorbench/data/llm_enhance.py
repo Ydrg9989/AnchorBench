@@ -5,7 +5,7 @@ for each ItemSpec. Results are cached to disk so re-runs with the same seed
 don't burn tokens.
 
 Usage:
-    from anchorbench_v1.llm_enhance import enhance_scenarios
+    from anchorbench.data.llm_enhance import enhance_scenarios
     enhance_scenarios(specs, concurrency=8, cache_path="out/scenarios_cache.jsonl")
 """
 
@@ -16,7 +16,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from .domains import DOMAINS
+from .domains import DOMAINS, ALL_DOMAINS  # ALL_DOMAINS includes medical-pilot domains
 from .schema import ItemSpec
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ _SYSTEM_PROMPT = (
 
 def _make_prompt(spec: ItemSpec, variation_idx: int) -> str:
     """Build the user prompt for scenario generation from a spec's domain."""
-    dcfg = DOMAINS[spec.domain]
+    dcfg = ALL_DOMAINS[spec.domain]
     return (
         f"Domain: {dcfg.display_name}\n"
         f"Description: {dcfg.description}\n"

@@ -1,0 +1,9 @@
+name: OLMo-2-1124-13B-Instruct
+hf_id: allenai/OLMo-2-1124-13B-Instruct
+slug: allenai_OLMo-2-1124-13B-Instruct
+short: OLMo-13B
+backend: vllm
+tensor_parallel_size: 1
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

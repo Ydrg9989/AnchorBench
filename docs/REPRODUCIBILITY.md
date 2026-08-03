@@ -1,186 +1,163 @@
 # Reproducibility Guide
 
+This guide reproduces the AnchorBench dataset and every figure/table in
+the COLM 2026 paper using the consolidated `anchorbench` CLI introduced
+in v2.0.
+
 ## Requirements
 
 - Python 3.10+
-- CUDA-capable GPU (for model evaluation only; generation is CPU-only)
-- Dependencies: `pip install -r requirements.txt`
+- A CUDA-capable GPU (only required for open-weight inference; dataset
+  generation and analysis run on CPU)
+- `pip install -e ".[all]"`
+- For API models: `OPENROUTER_API_KEY` exported in the environment
 
-## Reproducing the Benchmark Dataset
-
-### Quick Start
-
-```bash
-# 1. Generate all 5 suites (pilot size, seed 42)
-bash scripts/generate_all.sh pilot 42
-
-# 2. Validate all generated datasets
-bash scripts/validate_all.sh pilot
-
-# 3. Freeze dataset for release
-bash scripts/freeze_dataset.sh pilot
-```
-
-### Step-by-Step
-
-#### Generate a single suite
+## One-shot reproduction
 
 ```bash
-PYTHONPATH=src python -m anchorbench_v1.generate \
-    --suites external --size pilot --seed 42 \
-    --out_dir datasets/anchorbench_external_pilot/
+bash scripts/reproduce_paper.sh
 ```
 
-Available `--suites`: `external`, `history`, `icl`, `rag`, `tool`
+This regenerates datasets if missing, runs the frozen `paper_main`
+recipe (14 models x 5 suites), recomputes unified summaries, rebuilds
+every figure/table, and finally calls `anchorbench verify` to confirm
+the numbers match the published values. Pass `DRY_RUN=1` to see the
+plan without executing.
 
-Available `--size`: `smoke` (6 items), `pilot` (180 items), `core` (360 items)
+## Step-by-step
 
-#### Validate
+### 1. Generate the dataset
 
 ```bash
-PYTHONPATH=src python -m anchorbench_v1.validate \
-    --data_dir datasets/anchorbench_external_pilot/
+anchorbench generate data=external
+anchorbench generate data=history
+anchorbench generate data=icl
+anchorbench generate data=icl_dist
+anchorbench generate data=rag
+anchorbench generate data=tool
 ```
 
-### Deterministic Regeneration
+`anchorbench generate` is a thin wrapper around
+`anchorbench.data.generate.generate_suite_dataset`. Each call writes
+`itemspecs.jsonl`, `promptviews.jsonl`, and `manifest.json` under
+`datasets/anchorbench_<suite>_<size>/`. Generation is deterministic
+given the same `seed`.
 
-All generation is deterministic given the same `--seed`. The only non-deterministic field in the output is `manifest.json:timestamp`. To verify:
+Validate determinism by re-running with the same seed and diffing the
+JSONL files; only `manifest.json:timestamp` should differ.
+
+### 2. Validate the dataset
 
 ```bash
-# Compare two runs with the same seed
-diff <(grep -v '"timestamp"' datasets/run1/manifest.json) \
-     <(grep -v '"timestamp"' datasets/run2/manifest.json)
-
-diff datasets/run1/itemspecs.jsonl datasets/run2/itemspecs.jsonl
-diff datasets/run1/promptviews.jsonl datasets/run2/promptviews.jsonl
+bash scripts/validate_all.sh core
 ```
 
-## Reproducing Paper Results
+Internally this calls `python -m anchorbench.data.validate` for each
+suite. Validation enforces all schema, condition, and offset-grid
+invariants.
 
-### Run a single model on one suite
+### 3. Run inference
+
+A single (model, suite) cell:
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_icl.py \
-    --model meta-llama/Llama-3.2-3B-Instruct \
-    --promptviews datasets/anchorbench_icl_pilot/promptviews.jsonl \
-    --itemspecs datasets/anchorbench_icl_pilot/itemspecs.jsonl \
-    --out_dir results/icl_pilot \
-    --batch_size 32 --max_new_tokens 512
+anchorbench eval data=external model=qwen_7b
 ```
 
-### Run all models on all suites
+A full named recipe:
 
 ```bash
-bash scripts/run_full_benchmark.sh
-
-# Or per-suite:
-bash scripts/run_icl_gpus.sh
-bash scripts/run_tool_gpus.sh
-bash scripts/run_rag_gpus.sh
-bash scripts/run_history_gpus.sh
+anchorbench experiment +experiment=paper_main          # 14 models x 5 suites
+anchorbench experiment +experiment=paper_icl_dist      # Table 14
+anchorbench experiment +experiment=paper_history_matched
+anchorbench experiment +experiment=paper_sampling
+anchorbench experiment +experiment=paper_mitigation_headroom
+anchorbench experiment +experiment=paper_gold_shift
 ```
 
-### Recompute unified metrics
+Override anything from the command line (Hydra syntax):
 
 ```bash
-PYTHONPATH=src python scripts/eval/recompute_all_unified.py --results_dir results/full_benchmark
+anchorbench eval data=icl model=llama_8b model.batch_size=64 +decoding.n_samples=5
 ```
 
-## Decoding Protocol
+Use `+dry_run=true` to enumerate the cells without dispatching them to a
+backend.
 
-All evaluations use:
-- `temperature = 0.0` (greedy decoding)
+### 4. Recompute unified summaries
+
+```bash
+python -m anchorbench.analysis.unified --results_dir results/full_benchmark
+python -m anchorbench.analysis.unified --results_dir results/api_benchmark
+```
+
+Both commands rebuild `unified_all_suites.json` from the per-record
+`results.jsonl` files. Output is byte-identical given the same inputs.
+
+### 5. Regenerate figures and tables
+
+```bash
+anchorbench tables --paper          # all figures + tables
+anchorbench tables --figures        # only figures
+anchorbench tables --tables         # only main + appendix tables
+anchorbench tables --extensions     # gold-shift / sampling / mitigation
+```
+
+### 6. Verify against published numbers
+
+```bash
+anchorbench verify             # all claims
+anchorbench verify --quick     # main-table claims only
+anchorbench verify --strict    # tighter tolerances
+```
+
+`anchorbench verify` reads typed `Claim(suite, metric, value, tolerance)`
+entries from `src/anchorbench/paper/verify.py`. CI fails when any claim
+drifts, so adding a metric or changing a number is a deliberate update
+rather than an accidental drift.
+
+## Decoding protocol
+
+All paper experiments use the `greedy` decoding profile
+(`conf/decoding/greedy.yaml`):
+
+- `temperature = 0.0`
 - `max_tokens = 512`
-- No system prompt by default
-- Answer format: integer 0–100 on the last line
+- no system prompt
+- answer format: integer 0 to 100 on the last line
 
-## Parsing
+The sampling robustness experiment uses `sample_t07` (5 samples,
+`temperature = 0.7`).
 
-Responses are parsed with a multi-stage regex parser (`parse_answer_int` in `src/mitigation_eval/runner.py`):
-1. Look for a standalone integer on the last non-empty line
-2. Fall back to the first integer in the response
-3. Records with no parseable integer are marked `parsed_ok=False`
+## Per-artifact mapping
 
-## Key Outputs
+Open-weight (OW) results live under `results/full_benchmark/`; API
+results live under `results/api_benchmark/`; rebuttal extensions live
+under `results/revision/`.
 
-```
-results/{suite}_pilot/{model_slug}/
-    results.jsonl      — per-prompt raw outputs and parsed answers
-    summary.json       — aggregated UAI, TAR, Disc_delta, parse rate
-```
+| Paper artifact | LaTeX label | Generator | Output |
+|---|---|---|---|
+| Figure 4 (dose-response) | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `COLM/figures/fig4_dose_response.{pdf,png}` |
+| Figure 5 (acc vs. disc) | `fig:acc-vs-disc` | `anchorbench.paper.fig5_acc_vs_disc` | `COLM/figures/fig5_acc_vs_disc.{pdf,png}` |
+| Table 1 (main results) | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results.tex` |
+| Table 2 (UAI by pathway) | `tab:uai-pathway` | `anchorbench.paper.tables_main` | `outputs/tables/tab_uai_pathway.tex` |
+| Tables 4-8 (per-suite full) | `tab:app-{suite}` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_app_{suite}.tex` |
+| Tables 9-12 (UAI / stats / distribution / MAE) | various | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_*.tex` |
+| Table 13 (history matched) | `tab:history_matched` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_history_matched.tex` |
+| Table 14 (ICL-dist) | `tab:icl_dist` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_icl_dist.tex` |
+| Table 15 (Tool plaintext) | `tab:tool_plaintext` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_tool_plaintext.tex` |
+| Table 16 (difficulty) | `tab:difficulty` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_difficulty.tex` |
+| Boundary subtable | `tab:boundary` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_boundary.tex` |
+| Model panel | `tab:model-details` | `anchorbench.paper.tables_appendix` | `outputs/tables/tab_model_details.tex` |
+| Gold-shift decomposition | `tab:gold_shift_main` | `anchorbench.analysis.gold_shift` | `results/revision/gold_shift_decomposition/*.tex` |
+| Sampling robustness | `tab:sampling_robustness` | `anchorbench.analysis.sampling` | `results/revision/sampling_robustness/*.tex` |
+| Mitigation headroom | `tab:mitigation_headroom` | `anchorbench.analysis.mitigation` | `results/revision/mitigation_headroom/*.tex` |
 
 ## Checksums
 
-After freezing, checksums are stored in `datasets/anchorbench_pilot_checksums.sha256`. Verify with:
+After freezing, dataset checksums are stored in
+`datasets/anchorbench_pilot_checksums.sha256`:
 
 ```bash
 sha256sum -c datasets/anchorbench_pilot_checksums.sha256
 ```
-
-## Reproducing Paper Figures and Tables
-
-All COLM 2026 figures and tables can be regenerated from the per-record
-`results.jsonl` files (no inference). Run the umbrella script:
-
-```bash
-PYTHONPATH=src python COLM/scripts/generate_paper_figures.py
-```
-
-This calls every per-artifact script and writes outputs to
-`COLM/figures/` and `outputs/tables/`. Pass `--figures`, `--tables`, or
-`--extensions` to regenerate only one group; pass `--skip_extensions`
-to skip the slower gold-shift / sampling / mitigation aggregation.
-
-After regeneration, verify against the published numbers:
-
-```bash
-PYTHONPATH=src python scripts/verify_paper_tables.py            # all claims
-PYTHONPATH=src python scripts/verify_paper_tables.py --quick    # main only
-PYTHONPATH=src python scripts/verify_paper_tables.py --strict   # tighter tols
-```
-
-### Per-artifact mapping
-
-Every figure or table in the paper is produced by exactly one script.
-Open-weight (OW) results live in `results/full_benchmark/`; API results
-live in `results/api_benchmark/`; revision experiments live in
-`results/revision/`.
-
-| Paper artifact | LaTeX label | Generator | Output path |
-|---|---|---|---|
-| Figure 4 (dose-response) | `fig:dose-response` | `scripts/eval/paper/fig4_dose_response.py` | `COLM/figures/fig4_dose_response.{pdf,png}` |
-| Figure 5 (acc vs. disc) | `fig:acc-vs-disc` | `scripts/eval/paper/fig5_acc_vs_disc.py` | `COLM/figures/fig5_acc_vs_disc.{pdf,png}` |
-| Table 1 (main results) | `tab:main_results` | `scripts/eval/paper/tables_main.py` | `outputs/tables/tab_main_results.tex` |
-| Table 2 (UAI by pathway) | `tab:uai-pathway` | `scripts/eval/paper/tables_main.py` | `outputs/tables/tab_uai_pathway.tex` |
-| Table 4 (External, full) | `tab:app-external` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_app_external.tex` |
-| Table 5 (History, full) | `tab:app-history` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_app_history.tex` |
-| Table 6 (ICL, full) | `tab:app-icl` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_app_icl.tex` |
-| Table 7 (RAG, full) | `tab:app-rag` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_app_rag.tex` |
-| Table 8 (Tool, full) | `tab:app-tool` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_app_tool.tex` |
-| Table 9 (UAI summary) | `tab:uai_summary` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_uai_summary.tex` |
-| Table 10 (stats inference) | `tab:stats_inference` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_stats_inference.tex` |
-| Table 11 (UAI distribution) | `tab:uai_distribution` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_uai_distribution.tex` |
-| Table 12 (Δ-MAE) | `tab:anchored_mae` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_anchored_mae.tex` |
-| Table 13 (history matched) | `tab:history_matched` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_history_matched.tex` |
-| Table 14 (ICL-dist) | `tab:icl_dist` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_icl_dist.tex` |
-| Table 15 (Tool plaintext) | `tab:tool_plaintext` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_tool_plaintext.tex` |
-| Table 16 (difficulty) | `tab:difficulty` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_difficulty.tex` |
-| Boundary subtable | `tab:boundary` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_boundary.tex` |
-| Model panel | `tab:model-details` | `scripts/eval/paper/tables_appendix.py` | `outputs/tables/tab_model_details.tex` |
-| Gold-shift decomposition | `tab:gold_shift_main` | `scripts/eval/gold_shift_decomposition.py` | `results/revision/gold_shift_decomposition/*.tex` |
-| Sampling robustness | `tab:sampling_robustness` | `scripts/eval/sampling_robustness_figures.py` | `results/revision/sampling_robustness/*.tex` |
-| Mitigation headroom | `tab:mitigation_headroom` | `scripts/eval/aggregate_mitigation_headroom.py` | `results/revision/mitigation_headroom/*.tex` |
-
-### Recomputing aggregated metrics
-
-If raw `results/.../results.jsonl` files have changed (e.g. after a
-re-run), recompute the unified summaries first:
-
-```bash
-PYTHONPATH=src python scripts/eval/recompute_all_unified.py \
-    --results_dir results/full_benchmark
-PYTHONPATH=src python scripts/eval/recompute_all_unified.py \
-    --results_dir results/api_benchmark
-```
-
-Then re-run the umbrella generator and verifier above.

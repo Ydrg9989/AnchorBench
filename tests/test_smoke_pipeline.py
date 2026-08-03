@@ -19,9 +19,9 @@ from pathlib import Path
 
 import pytest
 
-from anchorbench_eval.evaluator import build_record, parse_response, write_and_summarize
-from anchorbench_eval.metrics import compute_unified_metrics, EPSILON
-from anchorbench_eval.runner_utils import (
+from anchorbench.eval.evaluator import build_record, parse_response, write_and_summarize
+from anchorbench.eval.metrics import compute_unified_metrics, EPSILON
+from anchorbench.eval.runner_utils import (
     build_suffix,
     discover_results,
     fmt,

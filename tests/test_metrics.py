@@ -1,9 +1,9 @@
-"""Tests for anchorbench_eval.metrics — unified metrics + statistical helpers."""
+"""Tests for anchorbench.eval.metrics — unified metrics + statistical helpers."""
 
 import numpy as np
 import pytest
 
-from anchorbench_eval.metrics import (
+from anchorbench.eval.metrics import (
     bh_correction,
     bootstrap_ci,
     compute_unified_metrics,

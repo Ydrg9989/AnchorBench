@@ -1,0 +1,10 @@
+# @package _global_
+# Mitigation headroom on External + RAG for Qwen-7B + Llama-8B.
+defaults:
+  - override /decoding: greedy
+
+experiment_name: paper_mitigation_headroom
+suites: [external, rag]
+models: [qwen_7b, llama_8b]
+strategies: [baseline, ignore, self_check, cot]
+out_dir: results/revision/mitigation_headroom

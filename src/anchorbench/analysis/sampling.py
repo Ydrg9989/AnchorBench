@@ -21,9 +21,9 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from anchorbench_eval.constants import MODEL_SHORT
-from anchorbench_eval.io import load_records
-from anchorbench_eval.metrics import compute_unified_metrics
+from anchorbench.eval.constants import MODEL_SHORT
+from anchorbench.eval.io import load_records
+from anchorbench.eval.metrics import compute_unified_metrics
 
 SUITES = ["external", "rag", "icl_dist"]
 METRIC_KEYS = ["uai_irr", "uai_plaus", "disc_delta", "mae_control",

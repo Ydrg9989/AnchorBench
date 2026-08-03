@@ -22,7 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS as EVAL_CONDITIONS,
     prepare_items,
     run_history_two_stage,
@@ -36,8 +36,8 @@ HISTORY_CONDITIONS_TWOSTAGE_BASELINE = [
     "plausible_low",
     "plausible_high",
 ]
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from anchorbench_eval.runner_utils import (
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.runner_utils import (
     add_common_args,
     build_suffix,
     make_backend,

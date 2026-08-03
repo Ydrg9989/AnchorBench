@@ -1,0 +1,7 @@
+name: medium
+description: Medium models (7B-8B), 1 GPU each, 2 in parallel
+tensor_parallel: 1
+gpu_ids: [0, 1]
+models:
+  - qwen_7b
+  - llama_8b

@@ -1,0 +1,7 @@
+name: small_b
+description: Remaining small models, 1 GPU each, 2 in parallel
+tensor_parallel: 1
+gpu_ids: [0, 1]
+models:
+  - llama_3b
+  - gemma_4b

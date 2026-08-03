@@ -50,4 +50,4 @@ echo "============================================================"
 echo "  AnchorBench — Validate all suites (size=${SIZE})"
 echo "============================================================"
 
-PYTHONPATH=src python -m anchorbench_v1.validate --data_dir "${DIRS[@]}"
+python -m anchorbench.data.validate --data_dir "${DIRS[@]}"

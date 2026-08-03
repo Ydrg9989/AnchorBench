@@ -12,7 +12,7 @@ Outputs:
     COLM/figures/fig4_dose_response.png
 
 Usage:
-    python scripts/eval/paper/fig4_dose_response.py
+    python anchorbench.paper.fig4_dose_response
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-from _common import (
+from ._common import (
     DEFAULT_API_RESULTS,
     DEFAULT_FIG_DIR,
     DEFAULT_OW_RESULTS,
@@ -33,8 +33,8 @@ from _common import (
 )
 
 sys.path.insert(0, str(ROOT / "src"))
-from anchorbench_eval.io import load_records  # noqa: E402
-from anchorbench_eval.metrics import compute_by_offset  # noqa: E402
+from anchorbench.eval.io import load_records  # noqa: E402
+from anchorbench.eval.metrics import compute_by_offset  # noqa: E402
 
 SUITES = [("external", "External"), ("rag", "RAG"), ("icl", "ICL")]
 OFFSETS = [15, 25, 40]

@@ -1,0 +1,9 @@
+name: small_a
+description: Small models (1B-3B), 1 GPU each, run 4 in parallel
+tensor_parallel: 1
+gpu_ids: [0, 1, 2, 3]
+models:
+  - qwen_1_5b
+  - llama_1b
+  - gemma_1b
+  - qwen_3b

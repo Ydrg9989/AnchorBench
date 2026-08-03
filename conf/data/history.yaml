@@ -1,0 +1,6 @@
+suite: history
+dataset_dir: datasets/anchorbench_history_core
+promptviews_file: promptviews_core.jsonl
+itemspecs_file: itemspecs.jsonl
+conditions: [control, irrelevant, plausible]
+two_stage: true

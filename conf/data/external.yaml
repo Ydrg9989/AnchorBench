@@ -1,0 +1,5 @@
+suite: external
+dataset_dir: datasets/anchorbench_external_core
+promptviews_file: promptviews_core.jsonl
+itemspecs_file: itemspecs.jsonl
+conditions: [control, irrelevant, plausible]

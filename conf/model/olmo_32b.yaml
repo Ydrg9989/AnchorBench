@@ -1,0 +1,9 @@
+name: OLMo-2-0325-32B-Instruct
+hf_id: allenai/OLMo-2-0325-32B-Instruct
+slug: allenai_OLMo-2-0325-32B-Instruct
+short: OLMo-32B
+backend: vllm
+tensor_parallel_size: 4
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

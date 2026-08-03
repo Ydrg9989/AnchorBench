@@ -1,0 +1,5 @@
+suite: tool
+dataset_dir: datasets/anchorbench_tool_core
+promptviews_file: promptviews_core.jsonl
+itemspecs_file: itemspecs.jsonl
+conditions: [control, irrelevant, plausible]

@@ -1,7 +1,7 @@
 """Validation CLI for AnchorBench.
 
 Usage (single suite):
-    PYTHONPATH=src python -m anchorbench_v1.validate \\
+    PYTHONPATH=src python -m anchorbench.data.validate \\
         --data_dir datasets/anchorbench_external_smoke/
 
 Usage (all suites at once):

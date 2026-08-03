@@ -33,7 +33,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
     parse_response,
@@ -41,9 +41,9 @@ from anchorbench_eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from anchorbench_eval.constants import MODEL_SHORT, SUITE_DATASETS as _ALL
-from anchorbench_eval.metrics import compute_unified_metrics
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.constants import MODEL_SHORT, SUITE_DATASETS as _ALL
+from anchorbench.eval.metrics import compute_unified_metrics
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ def run_strategy(backend, suite: str, items: list[dict], out_dir: Path,
     existing = model_out / "summary.json"
     if existing.exists() and not force:
         log.info("[%s/%s/%s] Already exists, loading. Use --force to re-run.", suite, model_slug, strategy_name)
-        from anchorbench_eval.io import load_records
+        from anchorbench.eval.io import load_records
         return load_records(str(results_path))
 
     records = run_single_stage(
@@ -348,7 +348,7 @@ def main():
                    help="Re-run even if summary.json already exists")
     args = p.parse_args()
 
-    from anchorbench_eval.backends import HFBackend, VLLMBackend
+    from anchorbench.eval.backends import HFBackend, VLLMBackend
 
     log.info("Loading model %s (%s)...", args.model_id, args.backend)
     if args.backend == "vllm":

@@ -1,0 +1,9 @@
+name: Llama-3.2-3B-Instruct
+hf_id: meta-llama/Llama-3.2-3B-Instruct
+slug: meta-llama_Llama-3.2-3B-Instruct
+short: Llama-3B
+backend: vllm
+tensor_parallel_size: 1
+gpu_memory_utilization: 0.9
+max_model_len: 4096
+dtype: bfloat16

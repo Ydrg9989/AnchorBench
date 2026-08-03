@@ -33,16 +33,16 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
     parse_response,
     prepare_items,
     write_and_summarize,
 )
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from anchorbench_eval.constants import SUITE_DATASETS as _CORE, VARIANT_DATASETS
-from mitigation_eval.async_api import AsyncOpenRouterClient
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.constants import SUITE_DATASETS as _CORE, VARIANT_DATASETS
+from anchorbench.inference.async_api import AsyncOpenRouterClient
 
 log = logging.getLogger(__name__)
 
@@ -57,20 +57,34 @@ async def run_suite_api(
     out_dir: Path,
     max_tokens: int = 512,
     max_concurrent: int = 50,
+    prompt_suffix: str = "",
+    conditions: list[str] | None = None,
 ) -> list[dict]:
-    """Run a single suite via API with high concurrency."""
+    """Run a single suite via API with high concurrency.
+
+    ``prompt_suffix`` is appended to every prompt before sending (used for
+    rebuttal experiments such as the CoT prompt). Defaults to '' for
+    backwards-compatible behavior.
+
+    ``conditions`` overrides the default 5 conditions (used by ablation runs
+    that only need a subset).
+    """
     model_slug = model_id.replace("/", "_")
     model_out_dir = out_dir / suite / model_slug
     model_out_dir.mkdir(parents=True, exist_ok=True)
     results_path = model_out_dir / "results.jsonl"
 
+    use_conds = list(conditions) if conditions else CONDITIONS
+
     task_list = []
     for item_idx, item in enumerate(items):
-        for cond in CONDITIONS:
-            pv = item[cond]
+        for cond in use_conds:
+            pv = item.get(cond)
+            if pv is None:
+                continue
             task_list.append((item_idx, cond, pv))
 
-    prompts = [pv.get("prompt_text", "") for _, _, pv in task_list]
+    prompts = [pv.get("prompt_text", "") + prompt_suffix for _, _, pv in task_list]
 
     log.info(
         "[%s] Running %d prompts via API (max_concurrent=%d)...",
@@ -129,6 +143,7 @@ async def run_history_suite_api(
     max_tokens: int = 512,
     max_concurrent: int = 50,
     baseline_condition: str = "control_twostage",
+    prompt_suffix: str = "",
 ) -> list[dict]:
     """Run History suite with two-stage protocol via API.
 
@@ -163,7 +178,7 @@ async def run_history_suite_api(
     log.info("[history] Running %d control prompts (single-stage)...", len(control_tasks))
     t0 = time.time()
 
-    control_prompts = [pv.get("prompt_text", "") for _, _, pv in control_tasks]
+    control_prompts = [pv.get("prompt_text", "") + prompt_suffix for _, _, pv in control_tasks]
     control_results = await client.query_batch(
         model_id, control_prompts,
         max_tokens=max_tokens, temperature=0.0,
@@ -180,7 +195,7 @@ async def run_history_suite_api(
         stage1_msg = comps.get("stage1_user_message", "")
         if not stage1_msg:
             stage1_msg = pv.get("prompt_text", "")
-        stage1_prompts.append(stage1_msg)
+        stage1_prompts.append(stage1_msg + prompt_suffix)
 
     stage1_results = await client.query_batch(
         model_id, stage1_prompts,
@@ -198,10 +213,10 @@ async def run_history_suite_api(
                 f"Previous conversation:\n"
                 f"User: {stage1_prompts[anchored_tasks.index((item_idx, cond, pv))]}\n"
                 f"Assistant: {s1_answer}\n\n"
-                f"User: {stage2_msg}"
+                f"User: {stage2_msg}{prompt_suffix}"
             )
         else:
-            conversation = pv.get("prompt_text", "")
+            conversation = pv.get("prompt_text", "") + prompt_suffix
 
         stage2_prompts.append(conversation)
 
@@ -313,12 +328,14 @@ async def main_async(args: argparse.Namespace) -> None:
                 max_tokens=args.max_tokens,
                 max_concurrent=args.max_concurrent,
                 baseline_condition=args.history_baseline_condition,
+                prompt_suffix=getattr(args, "prompt_suffix", ""),
             )
         else:
             records = await run_suite_api(
                 client, args.model_id, suite, items, Path(args.out_dir),
                 max_tokens=args.max_tokens,
                 max_concurrent=args.max_concurrent,
+                prompt_suffix=getattr(args, "prompt_suffix", ""),
             )
 
         total_records.extend(records)
@@ -365,6 +382,8 @@ def main() -> None:
                    choices=["control", "control_twostage"],
                    default="control_twostage",
                    help="Baseline condition for History suite (default: control_twostage)")
+    p.add_argument("--prompt_suffix", type=str, default="",
+                   help="Optional text to append to every prompt (e.g., CoT instruction)")
     args = p.parse_args()
 
     asyncio.run(main_async(args))

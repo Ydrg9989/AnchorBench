@@ -1,0 +1,12 @@
+# @package _global_
+# Main 14-model x 5-suite paper benchmark.
+defaults:
+  - override /decoding: greedy
+
+experiment_name: paper_main
+suites: [external, history, icl, rag, tool]
+tiers: [small_a, small_b, medium, large, xlarge, api]
+results_root: results
+out_dir: results/full_benchmark
+api_out_dir: results/api_benchmark
+baseline_condition: control

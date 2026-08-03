@@ -23,19 +23,19 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from anchorbench_eval.evaluator import (
+from anchorbench.eval.evaluator import (
     CONDITIONS,
     build_record,
     parse_response,
     prepare_items,
     write_and_summarize,
 )
-from anchorbench_eval.io import load_itemspecs, load_promptviews
-from mitigation_eval.async_api import AsyncOpenRouterClient
+from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.inference.async_api import AsyncOpenRouterClient
 
 log = logging.getLogger(__name__)
 
-from anchorbench_eval.constants import VARIANT_DATASETS
+from anchorbench.eval.constants import VARIANT_DATASETS
 
 ICL_DIST_DATASET = VARIANT_DATASETS.get("icl_dist", "datasets/anchorbench_icl_dist_core")
 
