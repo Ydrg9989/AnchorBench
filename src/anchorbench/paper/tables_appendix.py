@@ -259,15 +259,24 @@ def build_stats_inference(unified: list[dict]) -> str:
         rs = np.random.RandomState(42)
         ow_models_set = set(OW_MODELS_ORDER)
         ow_models = sorted({r["model"] for r in unified if r["model"] in ow_models_set})
+        # Resample models with replacement. This used to filter with
+        # `r["model"] in sample_models`, a membership test, so a model drawn
+        # three times contributed once -- a random subset retaining each model
+        # with probability 1-(1-1/n)^n ~ 0.65, not a bootstrap. It understated
+        # the interval ([0.23, 0.57] against [0.20, 0.60] here) because it
+        # never produced the heavily-reweighted draws a bootstrap relies on.
+        # Indexing the per-cell values keeps repeats, which is the point.
+        disc_by_cell = {
+            (r["model"], r.get("suite")): r["disc_delta"]
+            for r in unified
+            if r["model"] in ow_models_set and r.get("disc_delta") is not None
+        }
         for _ in range(2000):
             idx = rs.randint(0, len(ow_models), size=len(ow_models))
-            sample_models = [ow_models[i] for i in idx]
+            boot_models = [ow_models[i] for i in idx]
             sm: dict[str, float] = {}
             for s in ("External", "History", "Icl", "Rag", "Tool"):
-                vals = [r["disc_delta"] for r in unified
-                        if r.get("suite") == s
-                        and r["model"] in sample_models
-                        and r.get("disc_delta") is not None]
+                vals = [disc_by_cell[(m, s)] for m in boot_models if (m, s) in disc_by_cell]
                 if vals:
                     sm[s] = float(np.mean(vals))
             if len(sm) > 1:

@@ -138,13 +138,66 @@ six suites. This is the strongest reproducibility result in the audit.
 
 ---
 
-## D4 — The CI at `findings.tex:107` is not produced by a bootstrap
+## D4 — The CI at `findings.tex:107` was not produced by a bootstrap
 
 | | |
 |---|---|
-| **Status** | OPEN — measurement pending (Stage 1.6) |
+| **Status** | **FIXED** in code; paper wording is an author decision (see below) |
 | **Affects** | `tab:stats_inference` bottom row; the interval quoted in main-text prose |
-| **Severity** | High — a published number |
+| **Severity** | Downgraded to Low after measurement — the published number is sound |
+
+### Measured outcome (Stage 1.6)
+
+| | range | 95% CI |
+|---|---|---|
+| **Published** (`findings.tex:107`, `appendix.tex:1077`) | 0.40 | **[0.20, 0.62]** |
+| Broken sampler, i.e. what the code emitted before the fix | 0.40 | [0.23, 0.57] |
+| **Corrected bootstrap**, seed 42, B=2000 | 0.40 | **[0.20, 0.60]** |
+
+The point estimate is unaffected: it is computed from the data, not the
+bootstrap, and reproduces as 0.3962 → **0.40** exactly as published.
+
+**The published interval is consistent with a correct bootstrap; the code was
+what had drifted.** Across 200 seeds at B=2000 the corrected upper bound
+rounds to 0.60 in 47% of runs and to 0.62 in 7%, and never falls below 0.59 —
+whereas the broken sampler's 0.57 lies outside that entire range. The
+published lower bound of 0.20 matches the corrected value exactly.
+
+This also revises the earlier suspicion (recorded when the audit was written)
+that fixing the sampler would *invalidate* the published interval. It does the
+opposite: it moves the code back into agreement with the paper, to within
+seed noise.
+
+Direction of the error is worth noting: the subset sampler **understated**
+uncertainty. Retaining ~6.5 of 10 distinct models and averaging them
+unweighted never produces the heavily-reweighted draws a bootstrap depends
+on, so the interval came out too narrow. The fix widens it, which is the
+conservative direction.
+
+### Fixed
+
+`tables_appendix.py` now resamples with replacement and indexes per-cell
+values so repeats count repeatedly. Regenerating `tab_stats_inference.tex`
+changes exactly one line and nothing else in the table.
+
+`tests/test_stats_inference_bootstrap.py` pins it by recomputing a correct
+bootstrap from scratch and comparing, rather than asserting a literal, plus a
+second test asserting the two samplers still disagree so the first cannot
+quietly lose its teeth. Verified non-vacuous against the reintroduced bug.
+
+### Open: what the paper should say
+
+Published **[0.20, 0.62]** vs regenerated **[0.20, 0.60]**. Both are correct
+bootstrap outcomes; they differ only by which seed was drawn. Options:
+
+1. **Update the paper to [0.20, 0.60]** — the released code then reproduces
+   the published number exactly, which is the point of this ledger. Two
+   characters in `findings.tex:107` and one row in `appendix.tex:1077`;
+   negligible pagination impact.
+2. **Leave [0.20, 0.62]** — defensible, but a reader running the released
+   code gets 0.60 and has no way to know why.
+
+Recommendation: option 1.
 
 `tables_appendix.py:263-270`:
 
