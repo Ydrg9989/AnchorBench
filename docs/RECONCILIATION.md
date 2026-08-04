@@ -22,13 +22,13 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D3](#d3) | Five of six suites reproduce exactly; History needs `--n_per_cell 30` | ACCEPTED | no |
 | [D4](#d4) | The range CI was not produced by a bootstrap | RESOLVED | yes — corrected |
 | [D5](#d5) | Two appendix tables cannot be regenerated | OPEN → Stage 3 | yes — reruns planned |
-| [D6](#d6) | Inline appendix tables vs current output (measured) | OPEN | one prose value (D6a) |
+| [D6](#d6) | Inline appendix tables vs current output (measured) | RESOLVED | yes — 4 tables now generated |
 | [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
 
-The 12 divergences in D6 are now tracked mechanically: each has an entry in
-`verify.py::KNOWN_DIVERGENCES` carrying its measured size, and `verify`
-fails if one stops firing — so a tolerance can no longer be widened to make
-a disagreement disappear.
+`verify.py::KNOWN_DIVERGENCES` is **empty**, and all three verify modes
+report zero mismatches. That is the goal state, not an unused mechanism: the
+table still fails the run if an entry stops firing, so a divergence cannot be
+recorded and then quietly swallowed by a tolerance.
 
 How to re-measure:
 
@@ -294,7 +294,7 @@ cell in `results/rebuttal/cot_replication/README.md`.
 
 | | |
 |---|---|
-| **Status** | OPEN — per-table dispositions below |
+| **Status** | **RESOLVED** — the four drifting tables are now generated, not pasted |
 | **Measured with** | `python scripts/measure_paper_drift.py [--verbose]` |
 
 The 13 `\input{}`-ed tables cannot drift by construction. Of the 14 tables
@@ -424,3 +424,45 @@ tables now use `ROUNDING_2DP = 0.005` in either mode, which is the smallest
 tolerance that is meaningful for a number printed to two decimals. Anything
 above it is a real divergence and belongs in `KNOWN_DIVERGENCES`, not in a
 wider tolerance.
+
+
+---
+
+## D6 resolution — the pasted tables are now generated
+
+The four drifting tables (`tab:stats_inference`, `tab:uai_distribution`,
+`tab:anchored_mae`, `tab:difficulty`) no longer carry pasted numbers.
+`appendix.tex` `\input{}`s a generated body for each, produced by
+`scripts/sync_paper_tables.py` from `outputs/tables/`.
+
+**Only the `tabular` is generated.** The `\begin{table}` wrapper, float type,
+`\caption` and `\label` stay in `appendix.tex`, because the captions carry
+interpretation the generator has no business owning — "Hard items show
+stronger discrimination on External and RAG", the $n{=}14$/$n{=}13$ sample
+sizes, "Overshoot concentrates in History (23.8\% for plausible)". A naive
+whole-float `\input` would have deleted all of it. Generator owns the
+numbers; author owns the prose.
+
+Caption and prose values that restated a drifted cell were updated with it:
+
+| site | was | now |
+|---|---|---|
+| `tab:anchored_mae` caption, Tool | $-$0.65 | $-$0.67 |
+| `tab:uai_distribution` caption, overshoot | 5–7\% | 4–7\% |
+| `findings.tex:122`, History $p_{\mathrm{BH}}$ | $\approx$0.01 | $\approx$0.02 |
+| `findings.tex:207` and `appendix.tex:1101`, Pearson CI | [$-$0.43, $-$0.01] | [$-$0.43, $-$0.00] |
+
+Two caption claims were **checked and left alone** because they still hold:
+the difficulty caption's "hard items show stronger discrimination on External
+and RAG" (External 0.11→0.23, RAG 0.05→0.16, and History easy 0.33 > hard
+0.23 as stated), and the 23.8\% History overshoot figure, recomputed from raw
+records as exactly 23.8\%.
+
+`tab:history_matched` and `tab:tool_plaintext` are deliberately **not**
+converted: their input runs were never preserved, so the generator emits a
+single row and `---` placeholders. Syncing them would replace published
+numbers with blanks. They stay pasted until the D5 re-runs.
+
+Guarded by `tests/test_golden_artifacts.py::test_paper_table_bodies_are_in_sync`,
+which runs `sync_paper_tables.py --check` and fails if a committed body has
+gone stale against the generator.

@@ -71,8 +71,6 @@ def test_known_divergences_are_actually_exercised() -> None:
     """
     from anchorbench.paper.verify import KNOWN_DIVERGENCES
 
-    assert KNOWN_DIVERGENCES, "ledger is empty; nothing is being tracked"
-
     out = _run_verify().stdout
     reported = out.count("[known]")
     assert reported == len(KNOWN_DIVERGENCES), (
@@ -81,6 +79,10 @@ def test_known_divergences_are_actually_exercised() -> None:
         f"tolerance now swallows it or its check stopped running -- both hide "
         f"a real disagreement.\n{out}"
     )
+    # The table is empty at present, because the four tables that used to
+    # diverge are now \input-ed from generated bodies. An empty ledger is the
+    # goal state, not a broken test -- but it must stay empty honestly, which
+    # is what the equality above enforces in both directions.
 
 
 def test_anchored_mae_is_actually_computed() -> None:

@@ -133,3 +133,24 @@ def test_figures_regenerate_identically(tmp_path):
         "figure generators no longer reproduce tests/golden/figures.sha256:\n  "
         + "\n  ".join(problems)
     )
+
+
+def test_paper_table_bodies_are_in_sync():
+    """The \\input-ed appendix bodies must match current generator output.
+
+    COLM_camera_ready/tables/*_body.tex are copied from outputs/tables/ by
+    scripts/sync_paper_tables.py. They are committed so a clean clone builds
+    the PDF without regenerating anything -- which also means they can go
+    stale. This is the check that stops that silently reintroducing the drift
+    the conversion was meant to end.
+    """
+    _requires_bulk()
+    proc = subprocess.run(
+        [sys.executable, "scripts/sync_paper_tables.py", "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+        env={**os.environ, "PYTHONPATH": "src"},
+    )
+    assert proc.returncode == 0, (
+        "paper table bodies are stale; run scripts/sync_paper_tables.py\n"
+        f"{proc.stdout}\n{proc.stderr}"
+    )

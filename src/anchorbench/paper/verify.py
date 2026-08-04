@@ -209,25 +209,25 @@ PAPER_POS_N: dict[str, str] = {
 }
 
 PAPER_AMAE: dict[str, tuple[float, float]] = {
-    "External": (0.09, 3.60),
-    "History": (-1.61, 0.12),
-    "ICL": (0.14, -0.03),
-    "RAG": (-0.03, 0.61),
-    "Tool": (-0.65, 3.45),
+    "External": (0.08, 3.61),
+    "History": (-1.60, 0.12),
+    "ICL": (0.14, -0.04),
+    "RAG": (-0.04, 0.59),
+    "Tool": (-0.67, 3.39),
 }
 
 # tab:stats_inference, transcribed from COLM_camera_ready/sections/appendix.tex.
 # suite -> (mean dUAI, CI lo, CI hi, p_BH); "range" and "pearson" carry
 # (estimate, CI lo, CI hi).
 PAPER_STATS_INFERENCE: dict[str, tuple[float, ...]] = {
-    "External": (0.17, 0.12, 0.22, 0.0),   # p printed as "<0.01"
-    "History": (0.28, 0.11, 0.47, 0.01),
+    "External": (0.17, 0.13, 0.22, 0.0),   # p printed as "<0.01"
+    "History": (0.28, 0.12, 0.47, 0.02),
     "Icl": (0.00, -0.02, 0.03, 0.81),
     "Rag": (0.10, 0.05, 0.17, 0.0),
     "Tool": (0.11, 0.04, 0.20, 0.0),
 }
 PAPER_STATS_RANGE = (0.40, 0.20, 0.60)
-PAPER_STATS_PEARSON = (-0.24, -0.43, -0.01)
+PAPER_STATS_PEARSON = (-0.24, -0.43, -0.00)
 
 # Claims that are known to disagree with the data, with the size of the
 # disagreement. Every entry must have a row in docs/RECONCILIATION.md.
@@ -238,22 +238,11 @@ PAPER_STATS_PEARSON = (-0.24, -0.43, -0.01)
 # fails by a different amount, is itself an error -- the ledger is then
 # stale and must be updated deliberately.
 KNOWN_DIVERGENCES: dict[tuple[str, str], float] = {
-    # D6a: tab:stats_inference, four cells from a data snapshot that no longer
-    # exists. Two are also quoted in prose; none changes a claim.
-    ("stats", "External CI lo"): 0.0058,
-    ("stats", "History CI lo"): 0.0105,
-    ("stats", "History p_BH"): 0.0108,
-    ("stats", "Pearson CI hi"): 0.0076,
-    # D6b: tab:anchored_mae. Largest is Tool dMAE_pls at 0.06 on a value of
-    # 3.45, i.e. under 2% relative.
-    ("amae", "External dMAE_irr"): 0.0078,
-    ("amae", "External dMAE_pls"): 0.0143,
-    ("amae", "History dMAE_irr"): 0.0098,
-    ("amae", "ICL dMAE_pls"): 0.0126,
-    ("amae", "RAG dMAE_irr"): 0.0068,
-    ("amae", "RAG dMAE_pls"): 0.0247,
-    ("amae", "Tool dMAE_irr"): 0.0174,
-    ("amae", "Tool dMAE_pls"): 0.0578,
+    # Empty by design. The four tables that used to diverge (D6) are now
+    # input-ed from generated bodies via scripts/sync_paper_tables.py, so
+    # the paper prints exactly what the code computes. Entries belong here
+    # only when a claim genuinely disagrees and the disagreement is
+    # recorded in docs/RECONCILIATION.md -- never to silence a tolerance.
 }
 
 # How far a known divergence may move before it counts as a new problem.
