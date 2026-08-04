@@ -35,6 +35,7 @@ from pathlib import Path
 from . import __version__
 from .domains import ALL_DOMAIN_IDS, DOMAIN_IDS, MEDICAL_DOMAIN_IDS
 from .itemspec_gen import (
+    ANCHOR_OFFSETS,
     generate_external_itemspecs,
     generate_history_itemspecs,
     generate_icl_dist_itemspecs,
@@ -65,6 +66,22 @@ _SIZE_PARAMS = {
     "pilot": {"n_per_cell": 5, "split": "pilot"},
     "core":  {"n_per_cell": 10, "split": "core"},
 }
+
+# Most suites build a domain x difficulty x offset grid, so a size preset's
+# n_per_cell is multiplied by the three anchor offsets {15, 25, 40}. History
+# has no offset dimension -- its anchor is the model's own Stage-1 answer, at
+# a fixed theta +/- 25 -- so the same preset produced a third as many items:
+# 120 instead of 360 at --size core. The published History suite has 360, so
+# the documented recipe silently generated a third of the benchmark.
+# Scale the preset instead of expecting callers to pass --n_per_cell 30.
+# See docs/RECONCILIATION.md D1.
+_SUITES_WITHOUT_OFFSET_GRID = {"history"}
+
+
+def _n_per_cell_for(suite: str, base: int) -> int:
+    if suite in _SUITES_WITHOUT_OFFSET_GRID:
+        return base * len(ANCHOR_OFFSETS)
+    return base
 
 
 def _git_hash() -> str:
@@ -132,7 +149,10 @@ def generate_suite_dataset(
     if size == "smoke":
         effective_domains = effective_domains[:1]
 
-    effective_n_per_cell = n_per_cell if n_per_cell is not None else params["n_per_cell"]
+    effective_n_per_cell = (
+        n_per_cell if n_per_cell is not None
+        else _n_per_cell_for(suite, params["n_per_cell"])
+    )
     effective_difficulties = difficulties or ["easy", "hard"]
 
     scoring_weights = None

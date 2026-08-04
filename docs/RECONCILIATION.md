@@ -17,7 +17,7 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 
 | | divergence | status | affects a published number? |
 |---|---|---|---|
-| [D1](#d1) | History regenerates at 120 items instead of 360 | OPEN → Stage 2 | no |
+| [D1](#d1) | History regenerated at 120 items instead of 360 | RESOLVED | no |
 | [D2](#d2) | `generator_version` differs on every regenerated itemspec | ACCEPTED | no |
 | [D3](#d3) | Five of six suites reproduce exactly; History needs `--n_per_cell 30` | ACCEPTED | no |
 | [D4](#d4) | The range CI was not produced by a bootstrap | RESOLVED | yes — corrected |
@@ -47,7 +47,7 @@ python -m anchorbench.paper.verify --strict           # paper claims
 
 | | |
 |---|---|
-| **Status** | OPEN — fix belongs in Stage 2 |
+| **Status** | **RESOLVED** — size preset fixed in Stage 2.2 |
 | **Affects** | `datasets/anchorbench_history_core/`, and any attempt to reproduce the History suite |
 | **Severity** | High for reproduction; **zero** for published numbers |
 
@@ -110,13 +110,18 @@ No paper number is affected — the paper used the 360-item dataset, which is
 committed and verified reproducible. But anyone following the documented
 command silently gets a third of the benchmark, so this is a real defect.
 
-Stage 2 fix: make the `core` preset yield 360 items for every suite, e.g. by
-scaling `n_per_cell` for suites without an offset dimension rather than
-hard-coding 30 at the call site. Verification is exact — regenerate all six
-suites and compare against the committed hashes.
+### Resolved
 
-**Do not** regenerate `datasets/anchorbench_history_core/` as part of that
-fix. The committed data is the paper's ground truth.
+`generate.py` now scales `n_per_cell` for suites without an offset dimension
+(`_SUITES_WITHOUT_OFFSET_GRID`), so every suite reaches 360 items from
+`--size core` alone. `--suite history --size core --seed 42` yields 360
+itemspecs and 1,800 core promptviews, matching the published suite.
+
+The committed datasets were **not** regenerated — they are the paper's ground
+truth. `tests/test_dataset_regeneration.py` previously carried an explicit
+`n_per_cell=30` for History to work around this; it no longer does, and all
+six suites still reproduce byte-for-byte. That is what proves the fix changed
+the recipe without disturbing the data.
 
 ---
 

@@ -24,19 +24,14 @@ from anchorbench.data.generate import generate_suite_dataset
 ROOT = Path(__file__).resolve().parents[1]
 DATASETS = ROOT / "datasets"
 
-# n_per_cell is the one recipe parameter that is not implied by --size core.
-#
-# The offset-grid suites get 6 domains x 2 difficulties x 3 anchor offsets x 10
-# = 360 items from the `core` preset. History has no offset dimension
-# (itemspec_gen.generate_history_itemspecs, anchor fixed at theta +/- 25), so
-# the same preset yields 120 and it needs n_per_cell=30 to reach 360.
-#
-# The explicit 30 below records D1. When D1 is fixed so that `core` yields 360
-# for every suite, this entry becomes None like the others -- and these
-# assertions are what proves the fix did not disturb the data.
-RECIPES = {
+# Every suite now reaches 360 items from `--size core` alone: generate.py
+# scales n_per_cell for suites without an offset dimension. History used to
+# need an explicit n_per_cell=30 here (D1); that it no longer does, and still
+# reproduces the committed data byte-for-byte, is what proves the fix changed
+# the recipe without disturbing the data.
+RECIPES: dict[str, int | None] = {
     "external": None,
-    "history": 30,
+    "history": None,
     "icl": None,
     "icl_dist": None,
     "rag": None,
