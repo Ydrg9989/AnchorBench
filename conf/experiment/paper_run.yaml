@@ -5,13 +5,4 @@ defaults:
   - paper_main
 
 experiment_name: paper_run
-git_hash: null  # set during release; null = warn only
-dataset_size: core
 seeds: [42]
-expected_outputs:
-  - results/full_benchmark/unified_all_suites.json
-  - results/api_benchmark/unified_all_suites.json
-  - COLM/figures/fig4_dose_response.pdf
-  - COLM/figures/fig5_acc_vs_disc.pdf
-  - outputs/tables/tab_main_results.tex
-  - outputs/tables/tab_uai_pathway.tex

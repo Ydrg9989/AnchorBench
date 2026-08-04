@@ -7,4 +7,3 @@ experiment_name: paper_sampling
 suites: [external, rag, icl_dist]
 models: [qwen_7b, llama_8b]
 out_dir: results/revision/sampling_robustness
-n_seeds: 5

@@ -7,5 +7,10 @@ defaults:
 experiment_name: paper_history_matched
 suites: [history]
 tiers: [small_a, small_b, medium, large, xlarge]
+# control_twostage is not in promptviews_core.jsonl; it lives in the
+# full promptviews.jsonl, so the recipe has to override the data group.
+data:
+  promptviews_file: promptviews.jsonl
+
 baseline_condition: control_twostage
 out_dir: results/history_matched

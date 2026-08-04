@@ -166,7 +166,7 @@ def main() -> None:
             return "*"
         return ""
 
-    for suite_name in ("External", "Icl", "Rag", "Tool", "Tool_agentic", "Tool_read", "History"):
+    for suite_name in ("External", "Icl", "Rag", "Tool", "History"):
         rows = [r for r in all_results if r["suite"] == suite_name]
         if not rows:
             continue

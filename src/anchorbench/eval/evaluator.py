@@ -20,6 +20,8 @@ from typing import Any
 
 import numpy as np
 
+from anchorbench import __version__
+
 from .backends import Backend, HFBackend
 from .metrics import compute_unified_metrics, print_summary
 from .parsing import (
@@ -576,7 +578,7 @@ def write_and_summarize(
         meta = {
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             "git_commit": _git_hash(),
-            "package_version": "2.1.0",
+            "package_version": __version__,
             **run_metadata,
         }
         with open(config_path, "w") as f:

@@ -3,4 +3,3 @@ variant: icl_dist
 dataset_dir: datasets/anchorbench_icl_dist_core
 promptviews_file: promptviews_core.jsonl
 itemspecs_file: itemspecs.jsonl
-conditions: [control, irrelevant, plausible]

@@ -80,6 +80,37 @@ def test_promptviews_reproduce_byte_for_byte(regenerated):
     assert checked, f"{suite}: no promptview files were compared"
 
 
+def test_uncertain_promptviews_reproduce():
+    """The uncertain suite backs Table 2 in the MAIN paper, so it needs the
+    same guarantee as the six core suites.
+
+    It is produced differently from them: there is no
+    `generate --suite external_uncertain`, and the directory holds only
+    promptviews with no itemspecs of its own. The runner derives them from
+    anchorbench_external_core/itemspecs.jsonl by re-rendering each external
+    item at k = 1, 2, 3 visible ratings. Nothing carries
+    suite="external_uncertain" at the itemspec level, which is why the
+    renderer is deliberately absent from data.suites.SUITE_RENDERERS --
+    registering it there would advertise a suite `generate` cannot produce.
+    """
+    from anchorbench.runners.rebuttal_uncertain import build_uncertain_promptviews
+
+    committed = DATASETS / "anchorbench_external_uncertain" / "promptviews_uncertain.jsonl"
+    core = DATASETS / "anchorbench_external_core"
+    if not (committed.exists() and core.exists()):
+        pytest.skip("uncertain or external core dataset not present")
+
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        produced = build_uncertain_promptviews(core, Path(tmp))
+        assert _sha256(produced) == _sha256(committed), (
+            "promptviews_uncertain.jsonl no longer regenerates from "
+            "anchorbench_external_core/itemspecs.jsonl. It backs Table 2 in "
+            "the main paper; the committed file is ground truth."
+        )
+
+
 def test_itemspecs_reproduce_apart_from_provenance(regenerated):
     suite, committed, out = regenerated
     old, new = _rows(committed / "itemspecs.jsonl"), _rows(out / "itemspecs.jsonl")

@@ -8,4 +8,3 @@ experiment_name: paper_gold_shift
 suites: [external, history, icl, rag, tool]
 tiers: [small_a, small_b, medium, large, xlarge, api]
 out_dir: results/full_benchmark
-analysis_only: true

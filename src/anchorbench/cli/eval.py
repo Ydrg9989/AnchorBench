@@ -44,7 +44,10 @@ def _build_cmd(cfg: DictConfig) -> list[str]:
     pv = dataset_dir / data.promptviews_file
     isp = dataset_dir / data.itemspecs_file
 
-    out_dir = Path(cfg.out_dir)
+    # cfg.out_dir is relative, and hydra's version_base=None turns on
+    # job.chdir, so a bare Path() resolved under outputs/hydra/<date>/<time>/
+    # instead of results/. cli/experiment.py already anchors on ROOT.
+    out_dir = ROOT / cfg.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 
     if _is_api_model(model.hf_id):
