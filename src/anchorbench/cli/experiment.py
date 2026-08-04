@@ -54,7 +54,8 @@ def _is_api(hf_id: str) -> bool:
 
 
 def _build_cell_cmd(model: dict, data: dict, decoding: dict,
-                    out_dir: Path, baseline_condition: str | None) -> list[str]:
+                    out_dir: Path, baseline_condition: str | None,
+                    tool_plaintext: bool = False) -> list[str]:
     suite = data["suite"]
     variant = data.get("variant")
     dataset_dir = ROOT / data["dataset_dir"]
@@ -89,6 +90,11 @@ def _build_cell_cmd(model: dict, data: dict, decoding: dict,
     ]
     if suite == "history" and baseline_condition:
         cmd += ["--baseline_condition", baseline_condition]
+    if suite == "tool" and tool_plaintext:
+        # Forces the plaintext rendering for models that would otherwise
+        # get native structured tool messages, which is what makes the
+        # within-model comparison in tab:tool_plaintext possible.
+        cmd += ["--tool_plaintext"]
     return cmd
 
 
@@ -135,9 +141,11 @@ def _hydra_main(cfg: DictConfig) -> int:
     failures = 0
     decoding = OmegaConf.to_container(cfg.decoding, resolve=True)
     baseline = cfg.get("baseline_condition")
+    tool_plaintext = bool(cfg.get("tool_plaintext", False))
     for i, (model, data, gpu, out_dir) in enumerate(cells, 1):
         out_dir.mkdir(parents=True, exist_ok=True)
-        cmd = _build_cell_cmd(model, data, decoding, out_dir, baseline)
+        cmd = _build_cell_cmd(model, data, decoding, out_dir, baseline,
+                              tool_plaintext)
         tag = f"[{i}/{len(cells)}] {model['short']} / {data['suite']}"
         if cfg.get("dry_run"):
             print(tag, " ".join(cmd))

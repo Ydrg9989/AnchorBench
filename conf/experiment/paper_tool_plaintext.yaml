@@ -1,0 +1,17 @@
+# @package _global_
+# Tool suite in plaintext format, for the within-model structured-vs-plaintext
+# comparison in Appendix Table tab:tool_plaintext.
+#
+# Only the five models that used *structured* tool messages in the main
+# benchmark are re-run here; Gemma and OLMo already get plaintext by default
+# (runners/tool.py::_tool_use_plaintext_prompts), so for them there is nothing
+# to compare.
+defaults:
+  - override /data: tool
+  - override /decoding: greedy
+
+experiment_name: paper_tool_plaintext
+suites: [tool]
+models: [qwen_1_5b, qwen_3b, qwen_7b, llama_3b, llama_8b]
+tool_plaintext: true
+out_dir: results/tool_plaintext
