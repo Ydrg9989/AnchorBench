@@ -3,6 +3,7 @@
 import numpy as np
 
 from anchorbench.eval.metrics import (
+    _collect_item_uai_vectors,
     bh_correction,
     bootstrap_ci,
     compute_unified_metrics,
@@ -174,3 +175,56 @@ class TestBHCorrection:
     def test_single(self):
         adjusted = bh_correction([0.05])
         assert adjusted == [0.05]
+
+
+def _rec(item_id, condition, answer, anchor, y_star=50, control=None):
+    return {
+        "item_id": item_id, "condition": condition, "answer_int": answer,
+        "anchor_value": anchor, "y_star_evidence": y_star, "parsed_ok": True,
+        "suite": "external", "domain": "d", "difficulty": "easy",
+    }
+
+
+def test_disc_delta_pairs_on_item_and_direction():
+    """plausible must be paired against irrelevant on the *same* item and the
+    same anchor direction, so only the framing sentence differs.
+
+    This used to slice both vectors to the shorter length in dict-iteration
+    order. The epsilon exclusion drops different items from each, so the rows
+    being differenced were unrelated. The construction below makes the two
+    disagree: item A is excluded from `irr` only (its irrelevant anchor sits
+    within epsilon of control), so positional pairing would difference item
+    B's plausible value against item C's irrelevant one.
+    """
+    records = []
+    for iid, (irr_anchor, pls_anchor) in {
+        "A": (51, 90),   # irrelevant anchor within epsilon of control -> dropped
+        "B": (90, 90),
+        "C": (90, 90),
+    }.items():
+        records.append(_rec(iid, "control", 50, None))
+        records.append(_rec(iid, "irrelevant_high", 50, irr_anchor))
+        records.append(_rec(iid, "plausible_high", 70, pls_anchor))
+
+    vectors = _collect_item_uai_vectors(records)
+    assert set(vectors["irr"]) == {("B", "high"), ("C", "high")}
+    assert set(vectors["plaus"]) == {("A", "high"), ("B", "high"), ("C", "high")}
+
+    # Only items present in both may be differenced.
+    shared = vectors["plaus"].keys() & vectors["irr"].keys()
+    assert shared == {("B", "high"), ("C", "high")}, (
+        "A has no irrelevant value after epsilon exclusion and must not be paired"
+    )
+
+
+def test_low_and_high_anchors_are_kept_apart():
+    """An item contributes one UAI per direction; keying on item_id alone
+    would collide and silently drop one."""
+    records = [
+        _rec("A", "control", 50, None),
+        _rec("A", "irrelevant_low", 40, 10),
+        _rec("A", "irrelevant_high", 60, 90),
+    ]
+    vectors = _collect_item_uai_vectors(records)
+    assert set(vectors["irr"]) == {("A", "low"), ("A", "high")}
+    assert len(vectors["irr"]) == 2

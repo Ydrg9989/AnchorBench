@@ -320,14 +320,22 @@ def _collect_item_uai_vectors(
     records: list[dict],
     epsilon: float = EPSILON,
     control_key: str = "control",
-) -> dict[str, list[float]]:
-    """Collect per-item UAI values keyed by condition group."""
+) -> dict[str, dict[tuple[str, str], float]]:
+    """Per-item UAI by condition group, keyed by (item_id, anchor direction).
+
+    The key carries the direction because an item contributes one UAI per
+    direction -- irrelevant_low and irrelevant_high both land in "irr". Keying
+    on item_id alone would collide, and pairing plausible against irrelevant
+    then has to match on both: same item *and* same anchor value, so that only
+    the framing sentence differs. That is what Disc_delta is defined to
+    isolate.
+    """
     items = group_by_item(records)
-    vectors: dict[str, list[float]] = {
-        "irr": [], "plaus": [], "placebo": [], "authority": [], "neutral": [],
+    vectors: dict[str, dict[tuple[str, str], float]] = {
+        "irr": {}, "plaus": {}, "placebo": {}, "authority": {}, "neutral": {},
     }
 
-    for _iid, conds in items.items():
+    for iid, conds in items.items():
         ctrl = conds.get(control_key)
         if ctrl is None:
             continue
@@ -347,16 +355,17 @@ def _collect_item_uai_vectors(
                 continue
             uai = (y_anchor - y_ctrl) / denom
 
+            key = (iid, cond.rsplit("_", 1)[-1])
             if "placebo" in cond:
-                vectors["placebo"].append(uai)
+                vectors["placebo"][key] = uai
             elif "authority" in cond:
-                vectors["authority"].append(uai)
+                vectors["authority"][key] = uai
             elif "neutral" in cond:
-                vectors["neutral"].append(uai)
+                vectors["neutral"][key] = uai
             elif "irrelevant" in cond:
-                vectors["irr"].append(uai)
+                vectors["irr"][key] = uai
             elif "plausible" in cond:
-                vectors["plaus"].append(uai)
+                vectors["plaus"][key] = uai
 
     return vectors
 
@@ -396,7 +405,7 @@ def compute_extended_metrics(
     ci_results = {}
     for key in ("irr", "plaus", "placebo", "authority", "neutral"):
         if vectors[key]:
-            mean, lo, hi = bootstrap_ci(vectors[key])
+            mean, lo, hi = bootstrap_ci(list(vectors[key].values()))
             ci_results[f"uai_{key}_ci"] = {"mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4)}
             ci_results[f"n_uai_{key}"] = len(vectors[key])
         else:
@@ -413,24 +422,31 @@ def compute_extended_metrics(
             mean, lo, hi = bootstrap_ci(mae_vals)
             ci_results["mae_control_ci"] = {"mean": round(mean, 2), "lo": round(lo, 2), "hi": round(hi, 2)}
 
-    if base.get("disc_delta") is not None and vectors["irr"] and vectors["plaus"]:
-        disc_vals = np.array(vectors["plaus"][:min(len(vectors["plaus"]), len(vectors["irr"]))]) \
-                  - np.array(vectors["irr"][:min(len(vectors["plaus"]), len(vectors["irr"]))])
-        mean, lo, hi = bootstrap_ci(disc_vals.tolist())
+    # Pair on (item_id, direction). This used to slice both lists to the
+    # shorter length in dict-iteration order, which is not a pairing at all:
+    # the epsilon exclusion drops different items from each vector, so the
+    # "paired" rows were unrelated. Neither output below is read by any paper
+    # artifact, so this corrects the computation without changing a published
+    # number.
+    paired_keys = sorted(vectors["plaus"].keys() & vectors["irr"].keys())
+    if base.get("disc_delta") is not None and paired_keys:
+        disc_vals = [vectors["plaus"][k] - vectors["irr"][k] for k in paired_keys]
+        mean, lo, hi = bootstrap_ci(disc_vals)
         ci_results["disc_delta_ci"] = {"mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4)}
 
     p_values = {}
     test_labels = []
 
-    if vectors["irr"] and vectors["plaus"]:
-        n_paired = min(len(vectors["irr"]), len(vectors["plaus"]))
-        p = paired_wilcoxon(vectors["plaus"][:n_paired], vectors["irr"][:n_paired])
+    if paired_keys:
+        p = paired_wilcoxon([vectors["plaus"][k] for k in paired_keys],
+                            [vectors["irr"][k] for k in paired_keys])
         p_values["p_plaus_vs_irr"] = round(p, 6) if not np.isnan(p) else None
         test_labels.append("p_plaus_vs_irr")
 
     for key in ("irr", "plaus", "placebo", "authority", "neutral"):
         if vectors[key]:
-            p = paired_wilcoxon(vectors[key], [0.0] * len(vectors[key]))
+            vals = list(vectors[key].values())
+            p = paired_wilcoxon(vals, [0.0] * len(vals))
             p_values[f"p_{key}_vs_zero"] = round(p, 6) if not np.isnan(p) else None
             test_labels.append(f"p_{key}_vs_zero")
 
