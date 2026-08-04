@@ -142,7 +142,7 @@ six suites. This is the strongest reproducibility result in the audit.
 
 | | |
 |---|---|
-| **Status** | **FIXED** in code; paper wording is an author decision (see below) |
+| **Status** | **RESOLVED** — code fixed, paper updated to match |
 | **Affects** | `tab:stats_inference` bottom row; the interval quoted in main-text prose |
 | **Severity** | Downgraded to Low after measurement — the published number is sound |
 
@@ -185,19 +185,18 @@ bootstrap from scratch and comparing, rather than asserting a literal, plus a
 second test asserting the two samplers still disagree so the first cannot
 quietly lose its teeth. Verified non-vacuous against the reintroduced bug.
 
-### Open: what the paper should say
+### Resolved in the paper
 
-Published **[0.20, 0.62]** vs regenerated **[0.20, 0.60]**. Both are correct
-bootstrap outcomes; they differ only by which seed was drawn. Options:
+The authors chose to move the paper to the value the released code produces,
+so a reader running `anchorbench tables` reproduces the published interval
+exactly. Changed in two places:
 
-1. **Update the paper to [0.20, 0.60]** — the released code then reproduces
-   the published number exactly, which is the point of this ledger. Two
-   characters in `findings.tex:107` and one row in `appendix.tex:1077`;
-   negligible pagination impact.
-2. **Leave [0.20, 0.62]** — defensible, but a reader running the released
-   code gets 0.60 and has no way to know why.
+- `sections/findings.tex:107` — the prose in Finding 1
+- `sections/appendix.tex:1078` — the `tab:stats_inference` row
 
-Recommendation: option 1.
+Rebuilt and verified: 34 pages, 0 errors, 0 overfull boxes, main text still
+ending at the bottom of page 10 with the Ethics statement opening page 11.
+The pre-change PDF remains reachable at tag `colm2026-camera-ready`.
 
 `tables_appendix.py:263-270`:
 
