@@ -312,23 +312,31 @@ tables". Measurement moved three tables — `tab:app-external`,
 | `tab:history_matched` | structural | 10 rows vs 1 | see D5 |
 | `tab:tool_plaintext` | structural | 4 cols vs 2 | see D5 |
 
-### D6a — `tab:stats_inference` (5/29 cells)
+### D6a — `tab:stats_inference` (was 5/29 cells, now 4/29)
 
-The range-CI row is no longer among them; that was D4 and is resolved. What
-remains:
+The range-CI row is no longer among them; that was D4 and is resolved.
 
-| cell | paper | current | delta |
+**ICL $p_{\mathrm{BH}}$ 0.62 → 0.81 is now also resolved**: it was the only
+cell here with a delta above rounding noise, and it was quoted in main-text
+prose at `sections/findings.tex:123`. Updated at both sites to the value the
+released code produces. Both values are far from significance and the
+sentence already read "n.s.", so no claim changed.
+
+Four cells remain, every one of them a delta of exactly 0.01:
+
+| cell | paper | current | also quoted in prose? |
 |---|---|---|---|
-| External CI lower | 0.12 | 0.13 | 0.01 |
-| History CI lower | 0.11 | 0.12 | 0.01 |
-| History $p_{\mathrm{BH}}$ | 0.01 | 0.02 | 0.01 |
-| **ICL $p_{\mathrm{BH}}$** | **0.62** | **0.81** | **0.19** |
-| Pearson CI upper | $-$0.01 | $-$0.00 | 0.01 |
+| External CI lower | 0.12 | 0.13 | no |
+| History CI lower | 0.11 | 0.12 | no |
+| History $p_{\mathrm{BH}}$ | 0.01 | 0.02 | yes — `findings.tex:122` reads "$\approx 0.01$" |
+| Pearson CI upper | $-$0.01 | $-$0.00 | yes — `findings.tex:193` and the Fig. 4 caption |
 
-**The ICL p-value is also quoted in main-text prose**, at
-`sections/findings.tex:123`. Both values are far from significance and the
-sentence already reads "n.s.", so no claim changes — but it is the second
-prose-quoted number found to disagree with the released code, after D4.
+**Disposition:** deliberately left in place for now. Stage 1.4 transcribes
+this table into `verify.py`, so these four become mechanically checked rows
+rather than prose claims — they are the first real exercise of that
+machinery. Align them when the `\input{}` conversion regenerates the table as
+a block (Stage 2), or sooner if preferred; nothing here is at risk of
+changing a claim.
 
 Ruled out as the cause: the positional pairing in
 `build_stats_inference` (`pls_arr[:n] - irr_arr[:n]`, which pairs by
