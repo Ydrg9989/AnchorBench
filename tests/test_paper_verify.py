@@ -95,6 +95,14 @@ def test_anchored_mae_is_actually_computed() -> None:
     per-record generations, which is where the table itself gets them.
     """
     out = _run_verify().stdout
+
+    # The deltas need results/**/results.jsonl, which is published on Zenodo
+    # rather than committed, so a clean clone legitimately cannot run this.
+    # That is reported as "NOT CHECKED", which is the honest outcome and quite
+    # different from the silent "skipped" this test exists to catch.
+    if "NOT CHECKED: needs results/" in out:
+        pytest.skip("results/ generations absent (clean clone)")
+
     assert "dMAE_irr=" in out, f"anchored-MAE check produced no values:\n{out}"
     assert "skipped (no mae_irr" not in out, (
         "verify_anchored_mae is reading fields that do not exist in the "
