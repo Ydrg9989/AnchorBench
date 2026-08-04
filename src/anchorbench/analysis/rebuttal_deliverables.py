@@ -5,7 +5,6 @@ Produces ``COLM/review/rebuttal_artifacts/`` populated with:
 
   tables/
     tab_main_results_revised.tex            (A2)
-    tab_uai_pathway.tex                     (existing)
     implied_weight_table.tex                (A1)
     excess_uai_table.tex                    (A1)
     cot_vs_baseline.tex                     (A3)
@@ -50,8 +49,6 @@ ARTIFACTS = [
     # --- A2 / Cluster C: revised Table 1 ----------------------------------
     ("outputs/tables/tab_main_results_revised.tex",
      "tables/tab_main_results_revised.tex"),
-    ("outputs/tables/tab_uai_pathway.tex",
-     "tables/tab_uai_pathway.tex"),
 
     # --- A3 / Cluster F: existing CoT meta-analysis -----------------------
     ("results/rebuttal/cot_reasoning/cot_vs_baseline.tex",

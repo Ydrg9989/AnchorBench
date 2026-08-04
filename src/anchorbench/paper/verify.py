@@ -188,7 +188,13 @@ PAPER_MAIN: dict[tuple[str, str], tuple[float, float]] = {
     ("x-ai_grok-3-mini-beta", "Tool"): (0.989, 0.02),
 }
 
-# Suite-mean (irr, plaus, disc_delta) over all 14 models (Tool: parseable)
+# Suite-mean (irr, plaus, disc_delta) over all 14 models (Tool: parseable).
+#
+# These came from Table 2, which was cut from the paper, and the generator
+# for it is gone. The check stays because it is the only guard on the
+# absolute UAI levels: Table 1 prints U_irr and U_pls per cell, but
+# PAPER_MAIN only carries acc10 and disc_delta, so without this the levels
+# are covered solely through their difference.
 PAPER_PATHWAY: dict[str, tuple[float, float, float]] = {
     "External": (0.05, 0.22, 0.17),
     "History": (0.05, 0.34, 0.28),
