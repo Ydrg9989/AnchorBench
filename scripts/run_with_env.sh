@@ -34,6 +34,14 @@ if [ -z "${HF_TOKEN:-}" ]; then
     fi
 fi
 
+# Load the OpenRouter key from outside the repo. Keeping it out of the working
+# tree means a folder upload or tarball of the repo cannot leak it.
+ANCHORBENCH_ENV="${ANCHORBENCH_ENV:-${HOME}/.config/anchorbench/env}"
+if [ -z "${OPENROUTER_API_KEY:-}" ] && [ -f "$ANCHORBENCH_ENV" ]; then
+    # shellcheck disable=SC1090
+    source "$ANCHORBENCH_ENV"
+fi
+
 export PYTHONPATH="${PYTHONPATH:-}:$(cd "$(dirname "$0")/.." && pwd)/src"
 
 exec "$@"
