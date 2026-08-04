@@ -30,8 +30,8 @@ from ._common import (
     DEFAULT_API_RESULTS,
     DEFAULT_FIG_DIR,
     DEFAULT_OW_RESULTS,
-    ROOT,
     discover_jsonl,
+    rel_to_root,
 )
 
 SUITES = [("external", "External"), ("rag", "RAG"), ("icl", "ICL")]
@@ -126,8 +126,8 @@ def plot(
     out_pdf.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_pdf, bbox_inches="tight")
     fig.savefig(out_pdf.with_suffix(".png"), bbox_inches="tight", dpi=200)
-    print(f"  wrote {out_pdf.relative_to(ROOT)}")
-    print(f"  wrote {out_pdf.with_suffix('.png').relative_to(ROOT)}")
+    print(f"  wrote {rel_to_root(out_pdf)}")
+    print(f"  wrote {rel_to_root(out_pdf.with_suffix('.png'))}")
 
 
 def main() -> None:

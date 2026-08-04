@@ -14,7 +14,6 @@ See docs/RECONCILIATION.md D4.
 
 import json
 import re
-
 from pathlib import Path
 
 import numpy as np

@@ -8,10 +8,9 @@ scripts/run_with_env.sh); this test stops it from coming back.
 """
 
 import re
+from pathlib import Path
 
 import pytest
-
-from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 

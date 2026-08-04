@@ -121,19 +121,25 @@ def fmt_pct1(v: float | None, dash: str = "---") -> str:
     return f"{v * 100:.1f}\\%"
 
 
+def rel_to_root(path: Path) -> Path:
+    """Path relative to the repo for logging, or unchanged if outside it.
+
+    Logging must never fail on an output path: writing to an --out_dir
+    outside the repo made relative_to() raise *after* the file had already
+    been written.
+    """
+    try:
+        return path.relative_to(ROOT)
+    except ValueError:
+        return path
+
+
 def write_table(path: Path, body: str) -> None:
     """Write a LaTeX table snippet to ``path``, creating parents."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(body.rstrip() + "\n")
-    # Log relative to the repo when possible, but never fail on it: an
-    # --out_dir outside the repo made relative_to() raise *after* the file
-    # had already been written.
-    try:
-        shown: Path | str = path.relative_to(ROOT)
-    except ValueError:
-        shown = path
-    print(f"  wrote {shown}")
+    print(f"  wrote {rel_to_root(path)}")
 
 
 def collect_per_suite(unified: list[dict], suite: str) -> dict[str, dict]:
