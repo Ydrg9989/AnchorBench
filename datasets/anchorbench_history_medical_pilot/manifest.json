@@ -1,0 +1,47 @@
+{
+  "version": "2.0.0",
+  "suite": "history",
+  "generator_version": "28f59f6",
+  "seed": 42,
+  "size": "pilot",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-05-22T15:38:12Z",
+  "counts": {
+    "itemspecs": 30,
+    "promptviews": 180,
+    "promptviews_core": 150,
+    "promptviews_ablation": 30,
+    "suites": [
+      "history"
+    ],
+    "domains": [
+      "clinical_readmission_risk",
+      "diagnostic_confidence",
+      "medication_dosage_adjustment"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 6,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": [
+      "control_twostage"
+    ]
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_history_medical_pilot/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_history_medical_pilot/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_history_medical_pilot/promptviews_core.jsonl",
+    "promptviews_ablation": "datasets/anchorbench_history_medical_pilot/promptviews_ablation.jsonl"
+  },
+  "validation_passed": true
+}

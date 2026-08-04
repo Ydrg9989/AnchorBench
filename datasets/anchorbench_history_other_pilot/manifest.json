@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "suite": "history",
+  "generator_version": "28f59f6",
+  "seed": 42,
+  "size": "pilot",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-05-24T10:22:49Z",
+  "counts": {
+    "itemspecs": 20,
+    "promptviews": 120,
+    "promptviews_core": 100,
+    "promptviews_ablation": 20,
+    "suites": [
+      "history"
+    ],
+    "domains": [
+      "consumer_purchase_decision",
+      "legal_contract_compliance"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 6,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": [
+      "control_twostage"
+    ]
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_history_other_pilot/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_history_other_pilot/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_history_other_pilot/promptviews_core.jsonl",
+    "promptviews_ablation": "datasets/anchorbench_history_other_pilot/promptviews_ablation.jsonl"
+  }
+}

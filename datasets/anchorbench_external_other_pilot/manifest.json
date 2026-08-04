@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "suite": "external",
+  "generator_version": "28f59f6",
+  "seed": 42,
+  "size": "pilot",
+  "scoring_function": "mean",
+  "llm_enhanced": false,
+  "llm_calls_made": 0,
+  "timestamp": "2026-05-24T10:22:48Z",
+  "counts": {
+    "itemspecs": 60,
+    "promptviews": 540,
+    "promptviews_core": 300,
+    "promptviews_ablation": 240,
+    "suites": [
+      "external"
+    ],
+    "domains": [
+      "consumer_purchase_decision",
+      "legal_contract_compliance"
+    ],
+    "difficulties": [
+      "easy",
+      "hard"
+    ],
+    "conditions_per_item": 9,
+    "core_conditions": [
+      "control",
+      "irrelevant_high",
+      "irrelevant_low",
+      "plausible_high",
+      "plausible_low"
+    ],
+    "ablation_conditions": [
+      "authority_high",
+      "authority_low",
+      "placebo_high",
+      "placebo_low"
+    ]
+  },
+  "files": {
+    "itemspecs": "datasets/anchorbench_external_other_pilot/itemspecs.jsonl",
+    "promptviews": "datasets/anchorbench_external_other_pilot/promptviews.jsonl",
+    "promptviews_core": "datasets/anchorbench_external_other_pilot/promptviews_core.jsonl",
+    "promptviews_ablation": "datasets/anchorbench_external_other_pilot/promptviews_ablation.jsonl"
+  }
+}
