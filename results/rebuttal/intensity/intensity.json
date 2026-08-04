@@ -1,0 +1,32 @@
+[
+  {
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "uai_mild": 0.2281805855071329,
+    "uai_standard": 0.3107740164421074,
+    "uai_strong": 0.49280981911986993,
+    "n_mild": 716,
+    "n_standard": 716,
+    "n_strong": 716
+  },
+  {
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "uai_mild": 0.4468776936270878,
+    "uai_standard": 0.4153347549830091,
+    "uai_strong": 0.40263533437094384,
+    "n_mild": 673,
+    "n_standard": 670,
+    "n_strong": 676
+  },
+  {
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "uai_mild": 0.25899820436354715,
+    "uai_standard": 0.39449288686240763,
+    "uai_strong": 0.4166600068976777,
+    "n_mild": 702,
+    "n_standard": 690,
+    "n_strong": 675
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "suite": "external",
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "uai_mild": 0.2281805855071329,
+    "uai_standard": 0.3107740164421074,
+    "uai_strong": 0.49280981911986993,
+    "n_mild": 716,
+    "n_standard": 716,
+    "n_strong": 716
+  },
+  {
+    "suite": "external",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "uai_mild": 0.06908527623438192,
+    "uai_standard": 0.15503929833430985,
+    "uai_strong": 0.28667095998247943,
+    "n_mild": 710,
+    "n_standard": 711,
+    "n_strong": 705
+  },
+  {
+    "suite": "external",
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "uai_mild": 0.4468776936270878,
+    "uai_standard": 0.4153347549830091,
+    "uai_strong": 0.40263533437094384,
+    "n_mild": 673,
+    "n_standard": 670,
+    "n_strong": 676
+  },
+  {
+    "suite": "external",
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "uai_mild": 0.25899820436354715,
+    "uai_standard": 0.39449288686240763,
+    "uai_strong": 0.4166600068976777,
+    "n_mild": 702,
+    "n_standard": 690,
+    "n_strong": 675
+  },
+  {
+    "suite": "rag",
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "uai_mild": 0.0732579804427708,
+    "uai_standard": 0.1889636923959068,
+    "uai_strong": 0.2923232999195331,
+    "n_mild": 717,
+    "n_standard": 717,
+    "n_strong": 717
+  },
+  {
+    "suite": "rag",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "uai_mild": 0.01682281198699538,
+    "uai_standard": 0.09051818122200402,
+    "uai_strong": 0.10330010832803027,
+    "n_mild": 708,
+    "n_standard": 710,
+    "n_strong": 706
+  },
+  {
+    "suite": "rag",
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "uai_mild": 0.0036220396376910385,
+    "uai_standard": -0.06075279764823952,
+    "uai_strong": 0.04261604674235561,
+    "n_mild": 706,
+    "n_standard": 706,
+    "n_strong": 706
+  },
+  {
+    "suite": "rag",
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "uai_mild": 0.0968697921626795,
+    "uai_standard": 0.08722715092237239,
+    "uai_strong": 0.2940231587126984,
+    "n_mild": 702,
+    "n_standard": 703,
+    "n_strong": 698
+  },
+  {
+    "suite": "history",
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "uai_mild": 0.37425252161518546,
+    "uai_standard": 0.23913387621537685,
+    "uai_strong": 0.5173328971660309,
+    "n_mild": 682,
+    "n_standard": 682,
+    "n_strong": 683
+  },
+  {
+    "suite": "history",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "uai_mild": 0.4531745546625437,
+    "uai_standard": 0.24328538678600806,
+    "uai_strong": 0.9109849578303005,
+    "n_mild": 704,
+    "n_standard": 708,
+    "n_strong": 704
+  },
+  {
+    "suite": "history",
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "uai_mild": 0.613744723124517,
+    "uai_standard": 0.5807339181785741,
+    "uai_strong": 0.5999705194718881,
+    "n_mild": 688,
+    "n_standard": 688,
+    "n_strong": 687
+  },
+  {
+    "suite": "history",
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "uai_mild": 0.44150637212976634,
+    "uai_standard": 0.19668203846817203,
+    "uai_strong": 1.5672247756387834,
+    "n_mild": 700,
+    "n_standard": 696,
+    "n_strong": 693
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "plausible_baseline": 0.17414560652820907,
+    "plausible_elicited": 0.021791818391307945,
+    "plausible_noisy": -0.011215028977712694,
+    "irrelevant_baseline": -0.0005718342626142765,
+    "irrelevant_elicited": 0.008283459529563062,
+    "irrelevant_noisy": 0.003035928302614761
+  },
+  {
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "plausible_baseline": 0.05876404009622788,
+    "plausible_elicited": 0.05920269353919228,
+    "plausible_noisy": 0.14649473794298268,
+    "irrelevant_baseline": 0.056424930846420425,
+    "irrelevant_elicited": 0.01957961388011405,
+    "irrelevant_noisy": -0.012201747172782438
+  },
+  {
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "plausible_baseline": 0.13126304430307645,
+    "plausible_elicited": 0.2768686788547992,
+    "plausible_noisy": 0.2939278607056082,
+    "irrelevant_baseline": 0.3064808062324295,
+    "irrelevant_elicited": 0.34558089725559077,
+    "irrelevant_noisy": 0.39371029410744407
+  },
+  {
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "plausible_baseline": 0.6199379058095188,
+    "plausible_elicited": 0.5444966242569302,
+    "plausible_noisy": 0.577328550890167,
+    "irrelevant_baseline": 0.449616830153136,
+    "irrelevant_elicited": 0.4023153831665107,
+    "irrelevant_noisy": 0.4542330419244485
+  }
+]

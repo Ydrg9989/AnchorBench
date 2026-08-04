@@ -1,0 +1,44 @@
+[
+  {
+    "suite": "external",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "strategy": "baseline",
+    "uai_irr": 0.0399,
+    "uai_plaus": 0.1957,
+    "disc_delta": 0.1559,
+    "mae_control": 3.44,
+    "acc10_control": 0.907,
+    "tar_irr": 0.2617,
+    "tar_plaus": 0.4632,
+    "parse_rate": 0.9933
+  },
+  {
+    "suite": "external",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "strategy": "judgment",
+    "uai_irr": 0.0772,
+    "uai_plaus": 0.1236,
+    "disc_delta": 0.0463,
+    "mae_control": 6.44,
+    "acc10_control": 0.8235,
+    "tar_irr": 0.3842,
+    "tar_plaus": 0.4972,
+    "parse_rate": 0.9889
+  },
+  {
+    "suite": "external",
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "strategy": "rule",
+    "uai_irr": 0.0004,
+    "uai_plaus": 0.0125,
+    "disc_delta": 0.0121,
+    "mae_control": 1.11,
+    "acc10_control": 0.9583,
+    "tar_irr": 0.0431,
+    "tar_plaus": 0.0542,
+    "parse_rate": 1.0
+  }
+]

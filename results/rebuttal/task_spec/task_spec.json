@@ -1,0 +1,54 @@
+[
+  {
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "uai_pls_baseline": 0.2706,
+    "uai_irr_baseline": 0.0133,
+    "acc10_baseline": 0.725,
+    "uai_pls_rule": 0.1346,
+    "uai_irr_rule": 0.0223,
+    "acc10_rule": 0.9583,
+    "uai_pls_judgment": 0.2681,
+    "uai_irr_judgment": -0.0027,
+    "acc10_judgment": 0.6556
+  },
+  {
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "uai_pls_baseline": 0.1957,
+    "uai_irr_baseline": 0.0399,
+    "acc10_baseline": 0.907,
+    "uai_pls_rule": 0.0125,
+    "uai_irr_rule": 0.0004,
+    "acc10_rule": 0.9583,
+    "uai_pls_judgment": 0.1236,
+    "uai_irr_judgment": 0.0772,
+    "acc10_judgment": 0.8235
+  },
+  {
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "uai_pls_baseline": 0.5136,
+    "uai_irr_baseline": 0.2663,
+    "acc10_baseline": 0.5568,
+    "uai_pls_rule": 0.081,
+    "uai_irr_rule": 0.0189,
+    "acc10_rule": 0.9443,
+    "uai_pls_judgment": 0.3754,
+    "uai_irr_judgment": 0.2499,
+    "acc10_judgment": 0.5653
+  },
+  {
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "uai_pls_baseline": 0.3249,
+    "uai_irr_baseline": 0.0526,
+    "acc10_baseline": 0.8672,
+    "uai_pls_rule": 0.009,
+    "uai_irr_rule": 0.0015,
+    "acc10_rule": 0.9944,
+    "uai_pls_judgment": 0.2774,
+    "uai_irr_judgment": 0.143,
+    "acc10_judgment": 0.7598
+  }
+]

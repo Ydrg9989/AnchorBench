@@ -1,0 +1,14 @@
+{
+  "plausible__baseline": 0.6199379058095188,
+  "plausible__baseline_n": 643,
+  "plausible__elicited": 0.5444966242569302,
+  "plausible__elicited_n": 692,
+  "plausible__noisy": 0.577328550890167,
+  "plausible__noisy_n": 688,
+  "irrelevant__baseline": 0.449616830153136,
+  "irrelevant__baseline_n": 693,
+  "irrelevant__elicited": 0.4023153831665107,
+  "irrelevant__elicited_n": 687,
+  "irrelevant__noisy": 0.4542330419244485,
+  "irrelevant__noisy_n": 694
+}

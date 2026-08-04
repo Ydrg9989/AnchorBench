@@ -1,0 +1,9 @@
+suite,model,model_slug,n_other,n_business,n_medical,uai_irr_other,uai_irr_business,uai_irr_medical,uai_pls_other,uai_pls_business,uai_pls_medical,disc_other,disc_business,disc_medical,mae_other,mae_business,acc10_other,acc10_business
+external,Qwen-7B,Qwen_Qwen2.5-7B-Instruct,300,1800,450,0.0075,0.0133,0.0652,0.4524,0.2711,0.3819,0.4449,0.2578,0.3167,6.13,7.74,0.7833,0.725
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,300,1800,450,-0.0251,-0.0082,0.0803,0.2196,0.1585,0.0896,0.2447,0.1666,0.0093,4.58,3.64,0.8833,0.8942
+external,Gemma-4B,google_gemma-3-4b-it,300,1800,450,0.2043,0.1954,0.2771,0.6679,0.4281,0.2106,0.4636,0.2327,-0.0665,17.4,16.33,0.5,0.5511
+external,Llama-8B,meta-llama_Llama-3.1-8B-Instruct,300,1800,450,0.1985,0.065,0.032,0.4591,0.3604,0.2451,0.2605,0.2954,0.2131,5.85,5.61,0.8833,0.8258
+history,Qwen-7B,Qwen_Qwen2.5-7B-Instruct,100,1800,150,-0.0238,-0.058,-0.3679,0.1685,0.3739,0.6549,0.1922,0.4318,1.0228,10.15,7.11,0.75,0.7861
+history,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,100,1800,150,0.4568,-0.0008,0.4349,0.5078,0.3155,0.5311,0.0511,0.3163,0.0962,12.35,5.14,0.5,0.8583
+history,Gemma-4B,google_gemma-3-4b-it,100,1800,150,0.0266,0.2298,0.1658,0.3965,0.5001,0.4085,0.3699,0.2703,0.2427,12.15,15.78,0.7,0.5621
+history,Llama-8B,meta-llama_Llama-3.1-8B-Instruct,100,1800,150,0.4194,0.1325,-0.229,0.3575,0.2337,0.2507,-0.0618,0.1012,0.4798,13.05,5.74,0.6,0.8287

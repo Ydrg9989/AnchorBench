@@ -1,0 +1,7 @@
+suite,model,model_slug,strategy,uai_irr,uai_plaus,disc_delta,mae_control,acc10_control,tar_irr,tar_plaus,parse_rate
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,baseline,0.0624,0.1469,0.0845,3.38,0.8914,0.2734,0.4861,0.9989
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,cot,0.0546,0.1802,0.1255,5.49,0.8408,0.2709,0.4867,0.9978
+history,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,baseline,-0.0912,0.5052,0.5964,9.78,0.6741,0.4392,0.6095,0.9983
+history,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,cot,0.0883,0.1677,0.0794,5.46,0.8361,0.2943,0.4736,0.9989
+rag,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,baseline,0.0825,0.0529,-0.0297,4.31,0.8778,0.3046,0.3538,0.9983
+rag,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,cot,0.0441,-0.0074,-0.0515,4.68,0.8611,0.2782,0.2986,0.9994

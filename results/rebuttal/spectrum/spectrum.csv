@@ -1,0 +1,6 @@
+acc10_control,mae_control,model,model_slug,n_items,uai_authority,uai_authority_hi,uai_authority_lo,uai_irr,uai_irr_hi,uai_irr_lo,uai_placebo,uai_placebo_hi,uai_placebo_lo,uai_plaus,uai_plaus_hi,uai_plaus_lo
+0.725,7.74,Qwen-7B,Qwen_Qwen2.5-7B-Instruct,360,0.562,0.595,0.5299,0.0133,0.0387,-0.0109,-0.0034,0.0184,-0.0265,0.2711,0.3121,0.2303
+0.8942,3.64,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,360,0.4887,0.5507,0.4185,-0.0082,0.063,-0.0864,0.0171,0.0793,-0.042,0.1585,0.227,0.0935
+0.5511,16.33,Gemma-4B,google_gemma-3-4b-it,360,0.5759,0.7184,0.4254,0.1954,0.3589,0.0281,0.3782,0.5403,0.218,0.4281,0.5754,0.2897
+0.8258,5.61,Llama-8B,meta-llama_Llama-3.1-8B-Instruct,360,0.4168,0.5144,0.315,0.065,0.168,-0.0405,0.0811,0.1975,-0.0365,0.3604,0.4393,0.2833
+0.9972,0.38,GPT-5.4-mini,openai_gpt-5.4-mini,360,0.3977,0.4271,0.3676,0.0055,0.0163,-0.0051,-0.0102,0.0034,-0.0295,0.1301,0.1503,0.1105

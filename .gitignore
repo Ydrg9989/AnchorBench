@@ -39,6 +39,9 @@ build/
 # negation cannot re-include a file underneath an excluded directory, so
 # each level has to be re-opened explicitly.
 /results/*
+# sha256 of every published results/ file, so a downloaded Zenodo tarball can
+# be checked against what the paper was computed from (scripts/checksum_results.sh)
+!/results/CHECKSUMS.sha256
 !/results/full_benchmark/
 /results/full_benchmark/*
 !/results/full_benchmark/unified_all_suites.json
@@ -62,6 +65,23 @@ build/
 # never descends into them and the summary.json negation below never applies
 !/results/revision/mitigation_headroom/**/
 !/results/revision/mitigation_headroom/**/summary.json
+
+# results/rebuttal/ is 402 GB-scale on disk but the camera-ready appendix
+# needs only ~1 MB of it: every \input-ed table in COLM_camera_ready/tables/
+# is byte-reproducible from a .tex in here. Re-open the small derived
+# artifacts and keep the per-record generations out.
+!/results/rebuttal/
+/results/rebuttal/**/*
+!/results/rebuttal/**/
+!/results/rebuttal/**/*.tex
+!/results/rebuttal/**/*.csv
+!/results/rebuttal/**/*.json
+!/results/rebuttal/**/*.md
+# ...but never the bulk generations or the run logs. The logs embed absolute
+# paths from the machine they ran on, including agent scratchpad directories.
+/results/rebuttal/**/*.jsonl
+/results/rebuttal/**/_logs/
+/results/rebuttal/**/*.log
 
 # Archives and backups
 *.zip

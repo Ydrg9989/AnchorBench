@@ -1,0 +1,50 @@
+[
+  {
+    "model": "Qwen-7B",
+    "model_slug": "Qwen_Qwen2.5-7B-Instruct",
+    "plausible_baseline": 0.1889636923959068,
+    "plausible_rank1": 0.23444758772476307,
+    "plausible_rank5": 0.14165381672329638,
+    "plausible_rank5_distract": 0.11456922102283777,
+    "irrelevant_baseline": 0.007747741155008447,
+    "irrelevant_rank1": -0.017082022548479882,
+    "irrelevant_rank5": -0.020230958609087735,
+    "irrelevant_rank5_distract": 0.00026596994725804323
+  },
+  {
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "plausible_baseline": 0.09051818122200402,
+    "plausible_rank1": 0.02227135626133667,
+    "plausible_rank5": 0.21123321502011524,
+    "plausible_rank5_distract": 0.039034364126304746,
+    "irrelevant_baseline": 0.043645140106592054,
+    "irrelevant_rank1": 0.0919167948291929,
+    "irrelevant_rank5": 0.1310090625322868,
+    "irrelevant_rank5_distract": 0.04815539222334421
+  },
+  {
+    "model": "Gemma-4B",
+    "model_slug": "google_gemma-3-4b-it",
+    "plausible_baseline": -0.06075279764823952,
+    "plausible_rank1": 0.0006569445931907669,
+    "plausible_rank5": 0.01383323147157986,
+    "plausible_rank5_distract": 0.007782135225230697,
+    "irrelevant_baseline": 0.03384515863828621,
+    "irrelevant_rank1": -0.04136919562657246,
+    "irrelevant_rank5": 0.013030177499413154,
+    "irrelevant_rank5_distract": 0.022831413683397646
+  },
+  {
+    "model": "Llama-8B",
+    "model_slug": "meta-llama_Llama-3.1-8B-Instruct",
+    "plausible_baseline": 0.08722715092237239,
+    "plausible_rank1": 0.12408579003329406,
+    "plausible_rank5": 0.1373312627186508,
+    "plausible_rank5_distract": -0.03981592958834482,
+    "irrelevant_baseline": -0.0178989478867431,
+    "irrelevant_rank1": 0.013435267854759549,
+    "irrelevant_rank5": 0.008810473122040197,
+    "irrelevant_rank5_distract": 0.00550565364564351
+  }
+]

@@ -1,0 +1,4 @@
+suite,model,model_slug,strategy,uai_irr,uai_plaus,disc_delta,mae_control,acc10_control,tar_irr,tar_plaus,parse_rate
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,baseline,0.0399,0.1957,0.1559,3.44,0.907,0.2617,0.4632,0.9933
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,judgment,0.0772,0.1236,0.0463,6.44,0.8235,0.3842,0.4972,0.9889
+external,OLMo-13B,allenai_OLMo-2-1124-13B-Instruct,rule,0.0004,0.0125,0.0121,1.11,0.9583,0.0431,0.0542,1.0

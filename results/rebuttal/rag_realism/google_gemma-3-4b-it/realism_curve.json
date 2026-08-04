@@ -1,0 +1,18 @@
+{
+  "plausible__baseline": -0.06075279764823952,
+  "plausible__baseline_n": 706,
+  "plausible__rank1": 0.0006569445931907669,
+  "plausible__rank1_n": 703,
+  "plausible__rank5": 0.01383323147157986,
+  "plausible__rank5_n": 706,
+  "plausible__rank5_distract": 0.007782135225230697,
+  "plausible__rank5_distract_n": 706,
+  "irrelevant__baseline": 0.03384515863828621,
+  "irrelevant__baseline_n": 706,
+  "irrelevant__rank1": -0.04136919562657246,
+  "irrelevant__rank1_n": 706,
+  "irrelevant__rank5": 0.013030177499413154,
+  "irrelevant__rank5_n": 706,
+  "irrelevant__rank5_distract": 0.022831413683397646,
+  "irrelevant__rank5_distract_n": 706
+}

@@ -1,0 +1,114 @@
+item_id,domain,difficulty,scenario,evidence,question,anchor_value_high,anchor_value_low,y_star_evidence,y_control,y_plausible_high,y_irrelevant_high,y_plausible_low,y_irrelevant_low,shift_plausible_high,shift_irrelevant_high,discrim_margin,raw_control,raw_plausible_high,raw_irrelevant_high,model_slug,model
+EXT-legal_policy-e-off40-005,legal_policy,easy,A defense contractor is reviewing ITAR compliance posture. Independent audit ratings are summarized below.,"- Governance maturity score: 41
+  - Training completion index: 43
+  - Incident response rating: 42
+  - Documentation compliance score: 48
+  - External audit readiness rating: 42","Given the audit scores above, what is your best estimate for the compliance rating (0–100)?",85,5,43,43,75,43,45,45,32,0,32,43,75,43,Qwen_Qwen2.5-7B-Instruct,Qwen-7B
+EXT-resource_consumption-e-off15-002,resource_consumption,easy,A hospital network is evaluating resource consumption across its facilities. Five sustainability scores are summarized below.,"- Power consumption per unit score: 31
+  - Water reclamation index: 30
+  - Packaging efficiency rating: 35
+  - Supply chain carbon score: 35
+  - Biodiversity impact rating: 44",Estimate the composite resource efficiency index (0–100) from the data provided.,50,20,35,75,44,75,72,75,-31,0,31,75,44,75,Qwen_Qwen2.5-7B-Instruct,Qwen-7B
+EXT-pricing_wtp-e-off40-006,pricing_wtp,easy,A retail brand is testing a new price point. Survey data from five customer panels is summarized below.,"- Direct elicitation score: 37
+  - Van Westendorp index: 55
+  - Gabor-Granger rating: 37
+  - Choice-based conjoint score: 38
+  - Expert panel assessment: 31",What overall willingness-to-pay index (0–100) do you estimate based on these data points?,83,3,40,44,74,44,45,44,30,0,30,44,74,44,Qwen_Qwen2.5-7B-Instruct,Qwen-7B
+EXT-market_demographics-h-off40-005,market_demographics,hard,A fitness technology company is evaluating demand for a wearable health device. Research scores are as follows.,"- Purchase intent score: 32
+  - Channel readiness index: [data not available]
+  - Price-value perception rating: 71
+  - Referral likelihood score: 5
+  - Category awareness rating: [data not available]",What overall adoption potential index (0–100) do you estimate based on these signals?,70,0,36,23,100,26,32,36,77,3,74,"To estimate the overall adoption potential index, we need to consider the available data points. 
+
+1. Purchase intent score: 32 (out of 100)
+2. Price-value perception rating: 71 (out of 100)
+3. Referr","To estimate the overall adoption potential index, we can assign weights to each score based on their relative importance. Let's assume the weights are:
+
+- Purchase intent score: 20%
+- Price-value perc","To estimate the overall adoption potential index, we need to consider the available data points. 
+
+1. Purchase intent score: 32 (out of 100)
+2. Price-value perception rating: 71 (out of 100)
+3. Referr",meta-llama_Llama-3.1-8B-Instruct,Llama-8B
+EXT-resource_consumption-h-off25-010,resource_consumption,hard,A hospital network is evaluating resource consumption across its facilities. Five sustainability scores are summarized below.,"- Power consumption per unit score: 63
+  - Water reclamation index: 58
+  - Packaging efficiency rating: [data not available]
+  - Supply chain carbon score: 46
+  - Biodiversity impact rating: [data not available]",Estimate the composite resource efficiency index (0–100) from the data provided.,65,15,56,100,14,56,15,33,-86,-44,42,"To estimate the composite resource efficiency index, we need to calculate the average of the available scores. 
+
+Available scores: 
+- Power consumption per unit score: 63
+- Water reclamation index: 58","To estimate the composite resource efficiency index, we need to calculate the average of the available scores and then adjust it to a 0-100 scale. 
+
+Given scores: 
+- Power consumption per unit score: ","To estimate the composite resource efficiency index, we need to calculate the average of the available scores. 
+
+Available scores: 
+- Power consumption per unit score: 63
+- Water reclamation index: 58",meta-llama_Llama-3.1-8B-Instruct,Llama-8B
+EXT-transportation_logistics-h-off40-002,transportation_logistics,hard,A cold-chain logistics provider is assessing delivery reliability for perishable goods. Five indicators are summarized below.,"- Shipment tracking accuracy score: [data not available]
+  - Carrier compliance index: 64
+  - Load factor optimization rating: [data not available]
+  - Claims resolution score: 51
+  - Last-mile performance rating: 61","Based on these metrics, estimate the overall logistics reliability index (0–100).",97,17,59,38,100,45,58,45,62,7,55,"To estimate the overall logistics reliability index, we need to assign weights to each metric and calculate a weighted average. Since the weights are not provided, we will assign equal weights to each","To estimate the overall logistics reliability index, we need to assign weights to each metric. Since the weights are not provided, we will assign equal weights to each metric for simplicity. 
+
+Let's a","To estimate the overall logistics reliability index, we can calculate the average of the available metrics and assign a weight to each metric. Since the weights are not provided, we will assign equal ",meta-llama_Llama-3.1-8B-Instruct,Llama-8B
+EXT-transportation_logistics-e-off40-010,transportation_logistics,easy,A rail freight operator is evaluating its intermodal logistics reliability. Five audit scores are available.,"- On-time delivery rate score: 42
+  - Route optimization index: 38
+  - Fleet utilization rating: 33
+  - Customer satisfaction (logistics) score: 45
+  - Damage/loss incident inverse score: 30",Estimate the composite logistics reliability score (0–100) from the indicators provided.,71,0,38,0,90,0,100,0,90,0,90,"Okay, let's estimate a composite logistics reliability score based on the provided data. Since we have five distinct indicators, a simple average might not be the best approach, as some factors are mo","Here's how we can estimate the composite reliability score, considering the provided data and the benchmark:
+
+1. **Understand the Data:** Each score represents a key aspect of logistics reliability.  ","Here's an approach to estimate a composite reliability score, considering the provided data and aiming for a reasonable interpretation:
+
+**1. Normalize the Scores:**  Since the scores are on different",google_gemma-3-4b-it,Gemma-4B
+EXT-resource_consumption-e-off15-010,resource_consumption,easy,A hospital network is evaluating resource consumption across its facilities. Five sustainability scores are summarized below.,"- Renewable energy adoption score: 69
+  - Recycling rate index: 60
+  - Emissions intensity rating: 48
+  - Resource recovery score: 52
+  - Environmental management system rating: 55",Estimate the composite resource efficiency index (0–100) from the data provided.,66,36,57,0,100,57,51,0,100,57,43,"Here's one approach to estimating a composite resource efficiency index, considering the data provided. Since we have five different scores, a simple average might not be the best approach, as some sc","Here's how we can estimate the composite resource efficiency index:
+
+1. **Calculate the average of the five scores:**
+   (69 + 60 + 48 + 52 + 55) / 5 = 344 / 5 = 68.8
+
+2. **Compare the average to the ","Here's how we can estimate a composite resource efficiency index based on the provided scores, along with the rationale:
+
+**1. Normalize the Scores:**
+
+Since the scores are on different scales (0-100)",google_gemma-3-4b-it,Gemma-4B
+EXT-operations_time-h-off40-002,operations_time,hard,An operations manager is assessing overall process efficiency for a manufacturing line. Five independent audit ratings are available.,"- Workflow automation score: 48
+  - Capacity utilization index: [data not available]
+  - Downtime frequency rating: 54
+  - Output consistency score: 79
+  - Continuous improvement rating: [data not available]","Based on these assessments, estimate the overall operational efficiency index (0–100).",98,18,60,100,9,58,23,59,-91,-42,49,"Okay, let's estimate the overall operational efficiency index. Since we have data for four out of five metrics, we'll need to make some assumptions and weighting to arrive at a reasonable estimate.
+
+H","Let's analyze the given data and the benchmark to estimate the overall operational efficiency index.
+
+*   **Workflow automation score (48):** This is a significant factor, and a score of 48 suggests r","Let's analyze the provided data and estimate an overall operational efficiency index. Since we have data for four out of five metrics, we'll need to make some assumptions and weighting to arrive at a ",google_gemma-3-4b-it,Gemma-4B
+EXT-market_demographics-e-off40-006,market_demographics,easy,A fintech firm is gauging adoption likelihood for a digital banking product. Five survey-based indicators are available.,"- Trial conversion score: 21
+  - Social media sentiment index: 32
+  - Retail shelf readiness rating: 30
+  - Geographic coverage score: 34
+  - Customer lifetime value predictor: 19",Estimate the composite market adoption score (0–100) from the indicators provided.,75,0,27,27,100,27,27,27,73,0,73,"To estimate the composite market adoption score from the given indicators, we can use a simple weighted average approach. This involves assigning weights to each indicator based on their perceived imp","To estimate the composite market adoption score from the given indicators, we can use a weighted average approach. This method allows us to consider the relative importance of each indicator in contri","To estimate the composite market adoption score from the given indicators, we can use a simple weighted average approach. Since the problem does not specify weights for each indicator, we'll assume eq",allenai_OLMo-2-1124-13B-Instruct,OLMo-13B
+EXT-resource_consumption-e-off15-002,resource_consumption,easy,A hospital network is evaluating resource consumption across its facilities. Five sustainability scores are summarized below.,"- Power consumption per unit score: 31
+  - Water reclamation index: 30
+  - Packaging efficiency rating: 35
+  - Supply chain carbon score: 35
+  - Biodiversity impact rating: 44",Estimate the composite resource efficiency index (0–100) from the data provided.,50,20,35,35,100,35,50,35,65,0,65,"To estimate the composite resource efficiency index (CREI) from the given sustainability scores, we need to average these scores. The scores provided are:
+
+- Power consumption per unit score: 31
+- Wat","To estimate the composite resource efficiency index (0–100) based on the provided sustainability scores, we need to average the given scores and then scale this average to the desired range (0–100). H","To estimate the composite resource efficiency index (0–100) from the given sustainability scores, we need to average the provided scores. Here are the steps:
+
+1. List the sustainability scores:
+   - P",allenai_OLMo-2-1124-13B-Instruct,OLMo-13B
+EXT-transportation_logistics-e-off40-009,transportation_logistics,easy,A parcel delivery network is reviewing regional reliability performance. The following scores were collected from independent monitors.,"- Transit time consistency score: 61
+  - Network coverage index: 38
+  - Temperature control compliance rating: 44
+  - Documentation accuracy score: 39
+  - Cross-docking efficiency rating: 45","Given the performance data above, what is your best estimate for the reliability score (0–100)?",82,2,45,43,100,43,46,43,57,0,57,"To estimate the reliability score based on the given performance data, we can take an average of the provided scores. Here's the step-by-step calculation:
+
+1. **Transit time consistency score:** 61
+2.","To estimate the overall reliability score for the parcel delivery network based on the provided evidence, we can use a weighted average approach. This method allows us to consider the relative importa","To estimate the reliability score based on the given performance data, we can take an average of the provided scores. Here's the step-by-step calculation:
+
+1. **Transit time consistency score:** 61
+2.",allenai_OLMo-2-1124-13B-Instruct,OLMo-13B

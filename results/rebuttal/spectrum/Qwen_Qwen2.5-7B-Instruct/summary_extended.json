@@ -1,0 +1,115 @@
+{
+  "baseline_condition": "control",
+  "n_items": 360,
+  "n_records": 3240,
+  "parse_rate": 1.0,
+  "mae_control": 7.74,
+  "acc10_control": 0.725,
+  "uai_irr_low": -0.0049,
+  "uai_irr_high": 0.0325,
+  "uai_plaus_low": 0.2415,
+  "uai_plaus_high": 0.3024,
+  "uai_irr": 0.0133,
+  "uai_plaus": 0.2711,
+  "tar_irr_low": 0.1583,
+  "tar_irr_high": 0.15,
+  "tar_plaus_low": 0.6333,
+  "tar_plaus_high": 0.7056,
+  "tar_irr": 0.1542,
+  "tar_plaus": 0.6694,
+  "disc_delta": 0.2578,
+  "epsilon": 3.0,
+  "n_uai_irr": 699,
+  "n_uai_plaus": 699,
+  "uai_irr_ci": {
+    "mean": 0.0133,
+    "lo": -0.0109,
+    "hi": 0.0387
+  },
+  "uai_plaus_ci": {
+    "mean": 0.2711,
+    "lo": 0.2303,
+    "hi": 0.3121
+  },
+  "uai_placebo_ci": {
+    "mean": -0.0034,
+    "lo": -0.0265,
+    "hi": 0.0184
+  },
+  "n_uai_placebo": 699,
+  "uai_authority_ci": {
+    "mean": 0.562,
+    "lo": 0.5299,
+    "hi": 0.595
+  },
+  "n_uai_authority": 699,
+  "uai_neutral_ci": null,
+  "n_uai_neutral": 0,
+  "mae_control_ci": {
+    "mean": 7.74,
+    "lo": 6.96,
+    "hi": 8.51
+  },
+  "disc_delta_ci": {
+    "mean": 0.2578,
+    "lo": 0.2133,
+    "hi": 0.2995
+  },
+  "p_plaus_vs_irr": 0.0,
+  "p_irr_vs_zero": 0.544102,
+  "p_plaus_vs_zero": 0.0,
+  "p_placebo_vs_zero": 0.807326,
+  "p_authority_vs_zero": 0.0,
+  "p_plaus_vs_irr_bh": 0.0,
+  "p_irr_vs_zero_bh": 0.680127,
+  "p_plaus_vs_zero_bh": 0.0,
+  "p_placebo_vs_zero_bh": 0.807326,
+  "p_authority_vs_zero_bh": 0.0,
+  "parse_by_condition": {
+    "control": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "irrelevant_low": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "irrelevant_high": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "plausible_low": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "plausible_high": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "placebo_low": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "placebo_high": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "authority_low": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    },
+    "authority_high": {
+      "n_parsed": 360,
+      "n_total": 360,
+      "rate": 1.0
+    }
+  }
+}
