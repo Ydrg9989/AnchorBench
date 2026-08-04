@@ -11,9 +11,31 @@ when it is resolved, and the resolution is recorded with it.
 Baseline for all comparisons: tag `colm2026-camera-ready`.
 
 Status legend — **OPEN** needs a decision · **ACCEPTED** understood, no action
-· **FIXED** resolved, with the fixing commit named.
+needed · **RESOLVED** fixed, with the resolution recorded.
+
+## Index
+
+| | divergence | status | affects a published number? |
+|---|---|---|---|
+| [D1](#d1) | History regenerates at 120 items instead of 360 | OPEN → Stage 2 | no |
+| [D2](#d2) | `generator_version` differs on every regenerated itemspec | ACCEPTED | no |
+| [D3](#d3) | Five of six suites reproduce exactly; History needs `--n_per_cell 30` | ACCEPTED | no |
+| [D4](#d4) | The range CI was not produced by a bootstrap | RESOLVED | yes — corrected |
+| [D5](#d5) | Two appendix tables cannot be regenerated | OPEN → Stage 3 | yes — reruns planned |
+| [D6](#d6) | Inline appendix tables vs current output (measured) | OPEN | one prose value (D6a) |
+
+How to re-measure:
+
+```bash
+python -m pytest tests/test_dataset_regeneration.py   # D1, D2, D3
+python -m pytest tests/test_golden_artifacts.py       # generator self-consistency
+python scripts/measure_paper_drift.py --verbose       # D6
+python -m anchorbench.paper.verify --strict           # paper claims
+```
 
 ---
+
+<a id="d1"></a>
 
 ## D1 — History regenerates at 120 items instead of 360
 
@@ -92,6 +114,8 @@ fix. The committed data is the paper's ground truth.
 
 ---
 
+<a id="d2"></a>
+
 ## D2 — `generator_version` differs on every regenerated itemspec
 
 | | |
@@ -115,6 +139,8 @@ every dataset hash. It must not be "synced" to the package version.
 
 ---
 
+<a id="d3"></a>
+
 ## D3 — Stage 1.1 result: five of six suites reproduce exactly
 
 | | |
@@ -137,6 +163,8 @@ The prompts the models actually saw are reproducible from current code for all
 six suites. This is the strongest reproducibility result in the audit.
 
 ---
+
+<a id="d4"></a>
 
 ## D4 — The CI at `findings.tex:107` was not produced by a bootstrap
 
@@ -226,6 +254,8 @@ before deciding whether to re-typeset.
 
 ---
 
+<a id="d5"></a>
+
 ## D5 — Two appendix tables cannot be regenerated
 
 | | |
@@ -247,23 +277,89 @@ cell in `results/rebuttal/cot_replication/README.md`.
 
 ---
 
-## D6 — Appendix tables drift from current generator output
+<a id="d6"></a>
+
+## D6 — Appendix tables vs current generator output (measured)
 
 | | |
 |---|---|
-| **Status** | OPEN — awaiting per-table disposition |
+| **Status** | OPEN — per-table dispositions below |
+| **Measured with** | `python scripts/measure_paper_drift.py [--verbose]` |
 
-Roughly eight appendix tables no longer match what their generators emit.
-Reported magnitudes range from below reporting precision (`p 0.99` vs `1.00`
-in three per-suite tables; `tab:anchored_mae` by 0.01-0.06) to material
-(`tab:stats_inference`, see D4). `verify.py`'s `PAPER_AMAE` tolerance is 0.20,
-twenty times the observed drift, so verify passes while the table disagrees.
+The 13 `\input{}`-ed tables cannot drift by construction. Of the 14 tables
+pasted inline in `appendix.tex`, **8 match current output exactly**, 4 carry
+small numeric drift, and 2 are structurally incomplete (D5).
 
-These figures come from the audit sweep and have **not yet been
-re-measured** here. Stage 1.4 transcribes the published values into
-`verify.py` so each one becomes a mechanically checked row rather than a
-prose claim; this entry gets split per table at that point.
+This supersedes the audit sweep's estimate of "roughly eight drifting
+tables". Measurement moved three tables — `tab:app-external`,
+`tab:app-rag`, `tab:app-tool` — from "drifted" to identical; the reported
+`p 0.99` vs `1.00` difference is not present in the data.
 
-Structural note: every drifting table is *pasted inline* in `appendix.tex`,
-and none of the 13 `\input{}`-ed tables drifted. Converting the pasted ones to
-`\input{}` would retire this failure mode permanently.
+| paper table | status | cells differing | max abs delta |
+|---|---|---|---|
+| `tab:app-external` | identical | 0/29 | — |
+| `tab:app-history` | identical | 0/29 | — |
+| `tab:app-icl` | identical | 0/29 | — |
+| `tab:app-rag` | identical | 0/29 | — |
+| `tab:app-tool` | identical | 0/28 | — |
+| `tab:uai_summary` | identical | 0/35 | — |
+| `tab:icl_dist` | identical | 0/40 | — |
+| `tab:model-details` | no numeric cells | — | — |
+| `tab:stats_inference` | **drift** | 5/29 | **0.19** |
+| `tab:uai_distribution` | drift | 10/27 | 0.20 |
+| `tab:anchored_mae` | drift | 8/10 | 0.06 |
+| `tab:difficulty` | drift | 10/17 | 0.50 |
+| `tab:history_matched` | structural | 10 rows vs 1 | see D5 |
+| `tab:tool_plaintext` | structural | 4 cols vs 2 | see D5 |
+
+### D6a — `tab:stats_inference` (5/29 cells)
+
+The range-CI row is no longer among them; that was D4 and is resolved. What
+remains:
+
+| cell | paper | current | delta |
+|---|---|---|---|
+| External CI lower | 0.12 | 0.13 | 0.01 |
+| History CI lower | 0.11 | 0.12 | 0.01 |
+| History $p_{\mathrm{BH}}$ | 0.01 | 0.02 | 0.01 |
+| **ICL $p_{\mathrm{BH}}$** | **0.62** | **0.81** | **0.19** |
+| Pearson CI upper | $-$0.01 | $-$0.00 | 0.01 |
+
+**The ICL p-value is also quoted in main-text prose**, at
+`sections/findings.tex:123`. Both values are far from significance and the
+sentence already reads "n.s.", so no claim changes — but it is the second
+prose-quoted number found to disagree with the released code, after D4.
+
+Ruled out as the cause: the positional pairing in
+`build_stats_inference` (`pls_arr[:n] - irr_arr[:n]`, which pairs by
+position rather than by model). Checked directly — every suite has **zero**
+cells where one of `uai_plaus` / `uai_irr` is present and the other is not,
+so the truncation is a no-op and the arrays are aligned. It is fragile and
+worth hardening in Stage 2, but it is not producing these numbers.
+
+Remaining explanation is the same as D4: the paper's values came from a data
+snapshot that no longer exists. Recomputing from the committed
+`unified_all_suites.json` gives ICL raw $p = 0.8077$, which BH leaves
+unchanged as the largest p-value — self-consistent with the current table.
+
+**Disposition:** recommend updating `findings.tex:123` and the
+`tab:stats_inference` row to the values the released code produces, for the
+same reason D4 was updated. Author decision.
+
+### D6b — `tab:uai_distribution` (10/27), `tab:anchored_mae` (8/10), `tab:difficulty` (10/17)
+
+Max deltas 0.20, 0.06 and 0.50 respectively. All are at or below the
+reporting precision of the surrounding prose, and none is quoted in the main
+text or carries a claim that flips. `tab:difficulty`'s 0.5 is on an
+accuracy percentage (66.0 → 65.5), i.e. half a point on a 0-100 scale.
+
+**Disposition:** accept and document, or regenerate as a block if the
+`\input{}` conversion below is adopted. No claim is at risk either way.
+
+### Structural note
+
+Every drifting table is *pasted inline* in `appendix.tex`; not one of the 13
+`\input{}`-ed tables drifted. Converting the pasted ones to `\input{}`, with
+a build step copying `outputs/tables/*.tex` into `COLM_camera_ready/tables/`,
+would retire this whole failure mode. That is the single highest-leverage
+change in the audit and belongs in Stage 2.
