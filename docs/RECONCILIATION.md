@@ -23,6 +23,12 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D4](#d4) | The range CI was not produced by a bootstrap | RESOLVED | yes — corrected |
 | [D5](#d5) | Two appendix tables cannot be regenerated | OPEN → Stage 3 | yes — reruns planned |
 | [D6](#d6) | Inline appendix tables vs current output (measured) | OPEN | one prose value (D6a) |
+| [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
+
+The 12 divergences in D6 are now tracked mechanically: each has an entry in
+`verify.py::KNOWN_DIVERGENCES` carrying its measured size, and `verify`
+fails if one stops firing — so a tolerance can no longer be widened to make
+a disagreement disappear.
 
 How to re-measure:
 
@@ -371,3 +377,45 @@ Every drifting table is *pasted inline* in `appendix.tex`; not one of the 13
 a build step copying `outputs/tables/*.tex` into `COLM_camera_ready/tables/`,
 would retire this whole failure mode. That is the single highest-leverage
 change in the audit and belongs in Stage 2.
+
+---
+
+<a id="d7"></a>
+
+## D7 — `verify_anchored_mae` verified nothing at all
+
+| | |
+|---|---|
+| **Status** | **RESOLVED** — check repaired |
+| **Affects** | `tab:anchored_mae` (Table 12), and the audit's reading of `PAPER_AMAE` |
+
+The audit recorded that `PAPER_AMAE`'s tolerance of 0.20 was "twenty times
+the actual drift, so verify passes while the table is wrong". Measuring it
+turned up something worse: the check never ran.
+
+`verify_anchored_mae` read `mae_irr` and `mae_plaus` from the unified
+summaries. Those keys have never existed there — the only MAE field is
+`mae_control`. Every suite therefore hit the `if not d_irr_list: continue`
+branch, printed `skipped (no mae_irr/mae_plaus in data)`, and contributed
+nothing. `PAPER_AMAE` was dead at *any* tolerance.
+
+The deltas live in the per-record generations, which is where the table
+itself gets them, via `tables_appendix.compute_delta_mae_by_suite`. The check
+now calls that same function, so it verifies the numbers the table prints.
+
+With the check live, all five suites report values matching
+`scripts/measure_paper_drift.py` exactly, and the eight genuine divergences
+(0.007–0.058) are recorded in `KNOWN_DIVERGENCES`.
+
+`tests/test_paper_verify.py::test_anchored_mae_is_actually_computed` asserts
+the check produces values and never re-enters the skipped branch.
+
+### On `--strict`
+
+`--strict` used to halve tolerances to 0.002 on these tables. That is below
+the printed precision: values shown to 2 d.p. carry up to 0.005 of legitimate
+rounding, so 0.002 flagged twelve rounding artefacts as disagreements. Both
+tables now use `ROUNDING_2DP = 0.005` in either mode, which is the smallest
+tolerance that is meaningful for a number printed to two decimals. Anything
+above it is a real divergence and belongs in `KNOWN_DIVERGENCES`, not in a
+wider tolerance.

@@ -15,6 +15,12 @@ Usage:
     python -m anchorbench.paper.verify            # check all claims
     python -m anchorbench.paper.verify --quick    # main + uai-pathway only
     python -m anchorbench.paper.verify --strict   # tighten tolerances
+    python -m anchorbench.paper.verify --json OUT # machine-readable result
+
+Claims known to disagree with the data are listed in KNOWN_DIVERGENCES with
+the size of the disagreement, and each has a row in docs/RECONCILIATION.md.
+They are reported but do not fail the run; a claim that diverges by a
+different amount, or that is listed there and no longer diverges, does.
 """
 
 from __future__ import annotations
@@ -63,11 +69,15 @@ class Mismatch:
     paper: float
     data: float
     tol: float
+    # Listed in KNOWN_DIVERGENCES and failing by the recorded amount, so it is
+    # tracked in docs/RECONCILIATION.md rather than being a new problem.
+    known: bool = False
 
     def __str__(self) -> str:
+        tag = " [known]" if self.known else ""
         return (f"  [{self.section}] {self.label}: "
                 f"paper={self.paper:+.4f} data={self.data:+.4f} "
-                f"diff={abs(self.paper - self.data):.4f} (tol {self.tol:.3f})")
+                f"diff={abs(self.paper - self.data):.4f} (tol {self.tol:.3f}){tag}")
 
 
 def load_json(path: Path):
@@ -88,10 +98,13 @@ def check(section: str, label: str, paper: float, data: float | None,
     if data is None:
         mismatches.append(Mismatch(section, label, paper, float("nan"), tol))
         return "MISSING"
-    if abs(paper - data) > tol:
-        mismatches.append(Mismatch(section, label, paper, data, tol))
-        return "FAIL"
-    return "OK"
+    delta = abs(paper - data)
+    if delta <= tol:
+        return "OK"
+    expected = KNOWN_DIVERGENCES.get((section, label))
+    known = expected is not None and abs(delta - expected) <= KNOWN_SLACK
+    mismatches.append(Mismatch(section, label, paper, data, tol, known=known))
+    return "KNOWN" if known else "FAIL"
 
 
 def header(s: str) -> None:
@@ -197,6 +210,55 @@ PAPER_AMAE: dict[str, tuple[float, float]] = {
     "Tool": (-0.65, 3.45),
 }
 
+# tab:stats_inference, transcribed from COLM_camera_ready/sections/appendix.tex.
+# suite -> (mean dUAI, CI lo, CI hi, p_BH); "range" and "pearson" carry
+# (estimate, CI lo, CI hi).
+PAPER_STATS_INFERENCE: dict[str, tuple[float, ...]] = {
+    "External": (0.17, 0.12, 0.22, 0.0),   # p printed as "<0.01"
+    "History": (0.28, 0.11, 0.47, 0.01),
+    "Icl": (0.00, -0.02, 0.03, 0.81),
+    "Rag": (0.10, 0.05, 0.17, 0.0),
+    "Tool": (0.11, 0.04, 0.20, 0.0),
+}
+PAPER_STATS_RANGE = (0.40, 0.20, 0.60)
+PAPER_STATS_PEARSON = (-0.24, -0.43, -0.01)
+
+# Claims that are known to disagree with the data, with the size of the
+# disagreement. Every entry must have a row in docs/RECONCILIATION.md.
+#
+# This exists so tolerances can be tightened without hiding anything: a
+# divergence recorded here is tracked, whereas a tolerance wide enough to
+# swallow it is not. A claim listed here that starts *passing*, or that
+# fails by a different amount, is itself an error -- the ledger is then
+# stale and must be updated deliberately.
+KNOWN_DIVERGENCES: dict[tuple[str, str], float] = {
+    # D6a: tab:stats_inference, four cells from a data snapshot that no longer
+    # exists. Two are also quoted in prose; none changes a claim.
+    ("stats", "External CI lo"): 0.0058,
+    ("stats", "History CI lo"): 0.0105,
+    ("stats", "History p_BH"): 0.0108,
+    ("stats", "Pearson CI hi"): 0.0076,
+    # D6b: tab:anchored_mae. Largest is Tool dMAE_pls at 0.06 on a value of
+    # 3.45, i.e. under 2% relative.
+    ("amae", "External dMAE_irr"): 0.0078,
+    ("amae", "External dMAE_pls"): 0.0143,
+    ("amae", "History dMAE_irr"): 0.0098,
+    ("amae", "ICL dMAE_pls"): 0.0126,
+    ("amae", "RAG dMAE_irr"): 0.0068,
+    ("amae", "RAG dMAE_pls"): 0.0247,
+    ("amae", "Tool dMAE_irr"): 0.0174,
+    ("amae", "Tool dMAE_pls"): 0.0578,
+}
+
+# How far a known divergence may move before it counts as a new problem.
+# The values above are measured, so this only absorbs numeric wobble.
+KNOWN_SLACK = 0.002
+
+# Half of the last printed digit for a value shown to 2 d.p. Tolerances on
+# such tables cannot go below this: a smaller one flags ordinary rounding as
+# disagreement, which is what --strict used to do here.
+ROUNDING_2DP = 0.005
+
 # Findings 3: paper text values.
 # NOTE: these are the *open-weight* tier means, matching the "Open-weight"
 # curve in Figure 4 (fig4_dose_response.py keeps the two tiers separate) and
@@ -277,35 +339,89 @@ def verify_pos_n(all_data, mismatches):
               f"[{'OK' if ok else 'FAIL'}]")
 
 
-def verify_anchored_mae(all_data, mismatches, strict: bool):
+def verify_anchored_mae(all_data, mismatches, unchecked: list[str]):
     header("4. Anchored MAE table")
-    tol = 0.10 if strict else 0.20
+    # The paper prints these to 2 d.p., so a legitimate rounding difference is
+    # at most 0.005. The tolerance used to be 0.20 -- twenty times the largest
+    # actual disagreement.
+    #
+    # This check previously read `mae_irr` / `mae_plaus` from the unified
+    # summaries. Those keys have never existed there (only `mae_control` does),
+    # so every suite hit the "skipped" branch and PAPER_AMAE verified nothing
+    # at any tolerance. The deltas come from the per-record generations, which
+    # is where the table itself gets them.
+    tol = ROUNDING_2DP
+    records_dirs = [d for d in (RESULTS / "full_benchmark", RESULTS / "api_benchmark")
+                    if d.is_dir() and any(d.glob("*/*/results.jsonl"))]
+    if not records_dirs:
+        print("  NOT CHECKED: needs results/**/results.jsonl (Zenodo bundles).")
+        unchecked.append("anchored MAE (tab:anchored_mae)")
+        return
+
+    from anchorbench.paper.tables_appendix import compute_delta_mae_by_suite
+    delta = compute_delta_mae_by_suite(records_dirs)
     for suite, (p_irr, p_pls) in PAPER_AMAE.items():
-        mapped = SUITE_NAME_MAP.get(suite, suite)
-        entries = [d for d in all_data if d["suite"] == mapped]
-        if suite == "Tool":
-            entries = [d for d in entries if d.get("parse_rate", 0) > 0.05]
-        d_irr_list, d_pls_list = [], []
-        for e in entries:
-            mc = e.get("mae_control")
-            mi = e.get("mae_irr")
-            mp = e.get("mae_plaus")
-            if mc is None:
-                continue
-            if mi is not None:
-                d_irr_list.append(mi - mc)
-            if mp is not None:
-                d_pls_list.append(mp - mc)
-        if not d_irr_list:
-            print(f"  {suite:10s}: skipped (no mae_irr/mae_plaus in data)")
+        key = SUITE_NAME_MAP.get(suite, suite).lower()
+        d = delta.get(key, {})
+        d_irr, d_pls = d.get("irr"), d.get("pls")
+        if d_irr is None or d_pls is None:
+            print(f"  {suite:10s}: NOT CHECKED (no delta computed)")
+            unchecked.append(f"anchored MAE / {suite}")
             continue
-        d_irr = float(np.mean(d_irr_list))
-        d_pls = float(np.mean(d_pls_list))
-        s1 = check("amae", f"{suite} dMAE_irr", p_irr, d_irr, tol, mismatches)
-        s2 = check("amae", f"{suite} dMAE_pls", p_pls, d_pls, tol, mismatches)
-        ok = s1 == "OK" and s2 == "OK"
+        s = [check("amae", f"{suite} dMAE_irr", p_irr, d_irr, tol, mismatches),
+             check("amae", f"{suite} dMAE_pls", p_pls, d_pls, tol, mismatches)]
         print(f"  {suite:10s}: dMAE_irr={d_irr:+.2f} dMAE_pls={d_pls:+.2f}  "
-              f"[{'OK' if ok else 'FAIL'}]")
+              f"[{_worst(s)}]")
+
+
+def verify_stats_inference(all_data, mismatches):
+    """tab:stats_inference, checked against the same values the table prints."""
+    header("4b. Statistical summary table (tab:stats_inference)")
+    # Same reasoning as above: values are printed to 2 d.p.
+    tol = ROUNDING_2DP
+    # Import here: tables_appendix pulls in matplotlib-free but heavier deps,
+    # and --quick should not pay for them.
+    from anchorbench.paper.tables_appendix import stats_inference_values
+
+    v = stats_inference_values(all_data)
+    for suite, (p_mean, p_lo, p_hi, p_p) in PAPER_STATS_INFERENCE.items():
+        row = v["suites"].get(suite)
+        if row is None:
+            print(f"  {suite:10s}: skipped (not in data)")
+            continue
+        s = [
+            check("stats", f"{suite} mean", p_mean, row["mean"], tol, mismatches),
+            check("stats", f"{suite} CI lo", p_lo, row["lo"], tol, mismatches),
+            check("stats", f"{suite} CI hi", p_hi, row["hi"], tol, mismatches),
+        ]
+        # The paper prints "<0.01" rather than a value, so only check the
+        # printed p when the paper gives a number.
+        if p_p > 0:
+            s.append(check("stats", f"{suite} p_BH", p_p, row["p_bh"], tol, mismatches))
+        elif row["p_bh"] >= 0.01:
+            s.append(check("stats", f"{suite} p_BH<0.01", 0.0, row["p_bh"], 0.01, mismatches))
+        print(f"  {suite:10s}: mean={row['mean']:+.2f} "
+              f"CI=[{row['lo']:+.2f}, {row['hi']:+.2f}] p={row['p_bh']:.3f}  "
+              f"[{_worst(s)}]")
+
+    for name, paper, got in (
+        ("range", PAPER_STATS_RANGE, v["range"]),
+        ("Pearson", PAPER_STATS_PEARSON, v["pearson"]),
+    ):
+        s = [
+            check("stats", f"{name} est", paper[0], got["est"], tol, mismatches),
+            check("stats", f"{name} CI lo", paper[1], got["lo"], tol, mismatches),
+            check("stats", f"{name} CI hi", paper[2], got["hi"], tol, mismatches),
+        ]
+        print(f"  {name:10s}: est={got['est']:+.2f} "
+              f"CI=[{got['lo']:+.2f}, {got['hi']:+.2f}]  [{_worst(s)}]")
+
+
+def _worst(statuses: list[str]) -> str:
+    for level in ("MISSING", "FAIL", "KNOWN"):
+        if level in statuses:
+            return level
+    return "OK"
 
 
 def verify_dose(all_data, mismatches, strict: bool):
@@ -460,6 +576,9 @@ def main(argv: Iterable[str] | None = None) -> int:
                    help="Only check main + uai-pathway (no extension CSVs).")
     p.add_argument("--strict", action="store_true",
                    help="Tighten tolerances by ~2x (catch rounding drift).")
+    p.add_argument("--json", type=Path, default=None, metavar="PATH",
+                   help="Also write the full result as JSON, for regenerating "
+                        "the docs/RECONCILIATION.md rows mechanically.")
     args = p.parse_args(list(argv) if argv is not None else None)
 
     ow = load_json(RESULTS / "full_benchmark/unified_all_suites.json")
@@ -469,27 +588,76 @@ def main(argv: Iterable[str] | None = None) -> int:
           f"({len(ow)} OW + {len(api)} API).")
 
     mismatches: list[Mismatch] = []
+    unchecked: list[str] = []
     verify_main(all_data, mismatches, args.strict)
     verify_pathway(all_data, mismatches, args.strict)
     verify_pos_n(all_data, mismatches)
-    verify_anchored_mae(all_data, mismatches, args.strict)
+    verify_anchored_mae(all_data, mismatches, unchecked)
     verify_dose(all_data, mismatches, args.strict)
     verify_intext(all_data, mismatches, args.strict)
+    ran_sections = {"main", "pathway", "posn", "amae", "dose", "intext"}
     if not args.quick:
+        verify_stats_inference(all_data, mismatches)
         verify_extension_csvs(mismatches, args.strict)
+        ran_sections |= {"stats", "gs", "samp", "mit"}
+
+    new = [m for m in mismatches if not m.known]
+    known = [m for m in mismatches if m.known]
+
+    # A claim listed in KNOWN_DIVERGENCES that no longer diverges means the
+    # ledger is stale. That is a failure too: the record must track reality.
+    # Only sections that actually ran can declare a ledger row stale;
+    # --quick skips several, and a skipped check is not evidence of anything.
+    still_diverging = {(m.section, m.label) for m in known}
+    stale = sorted({k for k in KNOWN_DIVERGENCES if k[0] in ran_sections}
+                   - still_diverging)
 
     header("SUMMARY")
-    print(f"  Total mismatches: {len(mismatches)}")
-    if mismatches:
-        print("  Top 30:")
-        for m in mismatches[:30]:
+    print(f"  New mismatches:     {len(new)}")
+    print(f"  Known divergences:  {len(known)}  (recorded in docs/RECONCILIATION.md)")
+    if unchecked:
+        print(f"  Not checked:        {len(unchecked)}")
+    if stale:
+        print(f"  Stale ledger rows:  {len(stale)}")
+
+    if known:
+        print("\n  Known, tracked:")
+        for m in known:
             print(m)
-        if len(mismatches) > 30:
-            print(f"  ... and {len(mismatches) - 30} more")
-        print("\n  Note: tolerances allow paper-vs-data rounding drift; "
-              "investigate any |diff| close to the tol.")
+    if new:
+        print("\n  New:")
+        for m in new[:30]:
+            print(m)
+        if len(new) > 30:
+            print(f"  ... and {len(new) - 30} more")
+    if stale:
+        print("\n  Listed as known but no longer diverging -- update "
+              "KNOWN_DIVERGENCES and docs/RECONCILIATION.md:")
+        for section, label in stale:
+            print(f"  [{section}] {label}")
+
+    if unchecked:
+        print("\n  Claims that could not be checked here:")
+        for u in unchecked:
+            print(f"  - {u}")
+
+    if args.json:
+        args.json.parent.mkdir(parents=True, exist_ok=True)
+        with open(args.json, "w") as f:
+            json.dump({
+                "strict": args.strict,
+                "quick": args.quick,
+                "new": [vars(m) for m in new],
+                "known": [vars(m) for m in known],
+                "stale_known_rows": [list(s) for s in stale],
+                "unchecked": unchecked,
+            }, f, indent=2)
+        print(f"\n  wrote {args.json}")
+
+    if new or stale:
         return 1
-    print("  All checked claims verified within tolerance.")
+    print("\n  All checked claims verified, or diverging by exactly the "
+          "amount recorded in the ledger.")
     return 0
 
 

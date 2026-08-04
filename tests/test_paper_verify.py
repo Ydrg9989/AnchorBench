@@ -59,6 +59,47 @@ def test_verify_reports_no_mismatches(flags: tuple[str, ...]) -> None:
     )
 
 
+def test_known_divergences_are_actually_exercised() -> None:
+    """rc==0 must mean "checked and reconciled", not "checked nothing".
+
+    Every entry in KNOWN_DIVERGENCES is a claim the paper and the data
+    genuinely disagree on, recorded with the size of the disagreement. If the
+    tolerance were widened past one, or the check that produces it stopped
+    running, the entry would go silent and rc would still be 0. verify treats
+    a silent entry as a failure; this asserts that machinery is live rather
+    than trivially satisfied.
+    """
+    from anchorbench.paper.verify import KNOWN_DIVERGENCES
+
+    assert KNOWN_DIVERGENCES, "ledger is empty; nothing is being tracked"
+
+    out = _run_verify().stdout
+    reported = out.count("[known]")
+    assert reported == len(KNOWN_DIVERGENCES), (
+        f"{len(KNOWN_DIVERGENCES)} divergences are recorded but {reported} were "
+        f"reported. A recorded divergence that stops firing means either a "
+        f"tolerance now swallows it or its check stopped running -- both hide "
+        f"a real disagreement.\n{out}"
+    )
+
+
+def test_anchored_mae_is_actually_computed() -> None:
+    """Regression: PAPER_AMAE verified nothing at all.
+
+    verify_anchored_mae read ``mae_irr`` / ``mae_plaus`` from the unified
+    summaries. Those keys have never existed there -- only ``mae_control``
+    does -- so every suite took the "skipped" branch and the check silently
+    passed at any tolerance, including the old 0.20. The deltas come from the
+    per-record generations, which is where the table itself gets them.
+    """
+    out = _run_verify().stdout
+    assert "dMAE_irr=" in out, f"anchored-MAE check produced no values:\n{out}"
+    assert "skipped (no mae_irr" not in out, (
+        "verify_anchored_mae is reading fields that do not exist in the "
+        f"unified summaries again:\n{out}"
+    )
+
+
 def test_dose_response_is_checked_per_tier() -> None:
     """Regression: verify_dose used to pool all 14 models against
     open-weight-only paper values.
