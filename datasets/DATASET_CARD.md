@@ -36,7 +36,7 @@ configs:
 
 AnchorBench measures how much LLM numeric estimates shift toward salient reference numbers delivered through five pathways (prompt text, conversation history, in-context demonstrations, retrieved documents, tool outputs). Each item is presented under matched conditions that share the same evidence and gold answer; only the anchor changes. The benchmark distinguishes **irrelevant** anchors (transparently arbitrary) from **plausible** anchors (weakly credible), so you can measure both raw susceptibility and relevance discrimination.
 
-- **Homepage:** https://github.com/Yiderigun/LLM_anchoring
+- **Homepage:** https://github.com/Ydrg9989/LLM_anchoring
 - **Paper:** AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs (COLM 2026)
 - **Language:** English
 - **Task:** Numeric estimation (0–100) under anchoring manipulations
@@ -184,7 +184,7 @@ data/external_uncertain.jsonl    5,400   (360 items x 15 conditions)
 
 The internal repository additionally carries `itemspecs.jsonl` and the
 ablation views for each suite; those are not part of this release. See the
-[code repository](https://github.com/Yiderigun/LLM_anchoring) for them.
+[code repository](https://github.com/Ydrg9989/LLM_anchoring) for them.
 
 ### Fields
 

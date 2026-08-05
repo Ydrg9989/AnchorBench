@@ -27,7 +27,7 @@ shift but whether the shift is justified.
 ## Install
 
 ```bash
-git clone https://github.com/Yiderigun/LLM_anchoring.git
+git clone https://github.com/Ydrg9989/LLM_anchoring.git
 cd LLM_anchoring
 pip install -e ".[all]"            # core + vllm + api + dev
 ```
