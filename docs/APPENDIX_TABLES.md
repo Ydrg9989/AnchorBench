@@ -11,8 +11,8 @@ Regenerate all 13:
 anchorbench tables --appendix
 ```
 
-That needs `results/rebuttal/` — it is published on Zenodo rather than
-committed, since it is 402 MB. The ~1 MB of derived `.tex`, `.csv`, `.json`
+That needs `results/rebuttal/` — it is published as [downloadable tarballs](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing)
+rather than committed, since it is 402 MB. The ~1 MB of derived `.tex`, `.csv`, `.json`
 and `.md` inside it *is* committed, so the tables themselves are in git even
 when the generations are not.
 
@@ -73,5 +73,9 @@ closest thing to a provenance record in the repo, so it stays.
 
 `tab:tool_plaintext` and `tab:history_matched` need input directories that
 were never preserved; `tables_appendix.py` emits `---` and a single row
-without them. Recorded as D5 in [RECONCILIATION.md](RECONCILIATION.md);
-re-runs are planned as a versioned addendum.
+without them. Recorded as D5 in [RECONCILIATION.md](RECONCILIATION.md).
+
+Both were re-run independently on 2026-08-05
+(`bash scripts/run_stage3_reruns.sh`). The re-run tables and a
+published-vs-re-run comparison are in
+`../COLM_camera_ready/addendum/ADDENDUM.md`; the published values stand.

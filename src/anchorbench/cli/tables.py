@@ -30,7 +30,7 @@ ROOT = Path(__file__).resolve().parents[3]
 # appendix meant running them by hand. See docs/APPENDIX_TABLES.md for the
 # table -> module -> input mapping.
 #
-# These read results/rebuttal/**, which is published on Zenodo rather than
+# These read results/rebuttal/**, which is published as tarballs rather than
 # committed, so they only run where that tree is present.
 APPENDIX_MODULES = (
     "anchorbench.analysis.bayesian_bound",          # implied_weight + excess_uai
@@ -77,8 +77,8 @@ def main() -> int:
     rc = 0
     if args.appendix:
         if not (ROOT / "results" / "rebuttal").is_dir():
-            print("results/rebuttal/ is absent; fetch the Zenodo bundles first "
-                  "(scripts/make_zenodo_bundles.sh).", file=sys.stderr)
+            print("results/rebuttal/ is absent; fetch the results bundles first "
+                  "(scripts/make_result_bundles.sh).", file=sys.stderr)
             return 1
         for mod in APPENDIX_MODULES:
             cmd = ["-m", mod]

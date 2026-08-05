@@ -13,7 +13,7 @@ change to generator output is intended.
 Three tiers, because not everything can be regenerated from a clean clone:
 
 * outputs/tables/ and COLM/figures/ are regenerated here and compared. Most
-  need the full results/ tree, which is gitignored and published on Zenodo,
+  need the full results/ tree, which is gitignored and published as tarballs,
   so those tests skip when it is absent.
 * results/rebuttal/*.tex are pinned but not regenerated: their inputs are the
   bulk rebuttal generations, which are not committed. The files themselves
@@ -69,8 +69,8 @@ def _compare(manifest: dict[str, str]) -> list[str]:
 def _requires_bulk():
     if not BULK_MARKER.exists():
         pytest.skip(
-            "results/ generations absent (clean clone). Fetch the Zenodo "
-            "bundles to run this; see scripts/make_zenodo_bundles.sh"
+            "results/ generations absent (clean clone). Fetch the results "
+            "bundles to run this; see scripts/make_result_bundles.sh"
         )
 
 

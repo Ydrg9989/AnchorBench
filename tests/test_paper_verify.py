@@ -96,7 +96,7 @@ def test_anchored_mae_is_actually_computed() -> None:
     """
     out = _run_verify().stdout
 
-    # The deltas need results/**/results.jsonl, which is published on Zenodo
+    # The deltas need results/**/results.jsonl, which is published as tarballs
     # rather than committed, so a clean clone legitimately cannot run this.
     # That is reported as "NOT CHECKED", which is the honest outcome and quite
     # different from the silent "skipped" this test exists to catch.

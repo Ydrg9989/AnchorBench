@@ -349,7 +349,7 @@ def verify_anchored_mae(all_data, mismatches, unchecked: list[str]):
     records_dirs = [d for d in (RESULTS / "full_benchmark", RESULTS / "api_benchmark")
                     if d.is_dir() and any(d.glob("*/*/results.jsonl"))]
     if not records_dirs:
-        print("  NOT CHECKED: needs results/**/results.jsonl (Zenodo bundles).")
+        print("  NOT CHECKED: needs results/**/results.jsonl (results bundles).")
         unchecked.append("anchored MAE (tab:anchored_mae)")
         return
 

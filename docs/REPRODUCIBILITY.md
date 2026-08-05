@@ -182,7 +182,7 @@ All from `anchorbench.paper.tables_appendix`. Tables 10, 11, 12 and 17 are
 | Tables 20-23 and others | the 13 `\input`-ed tables | see [APPENDIX_TABLES.md](APPENDIX_TABLES.md) |
 
 Regenerate the last group with `anchorbench tables --appendix`; it needs
-`results/rebuttal/`, which is published on Zenodo rather than committed.
+`results/rebuttal/`, which is published as tarballs on Google Drive rather than committed.
 
 ### Not reproducible from the release
 

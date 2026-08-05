@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
-# Build the results/ tarballs for Zenodo.
+# Build the results/ tarballs for publication.
 #
 # results/ is ~631 MB of raw model generations, too large for git. It is
-# published on Zenodo instead, one tarball per experiment, so the DOI can be
-# cited from the paper. results/CHECKSUMS.sha256 (committed) covers every file
-# in every bundle, so a downloader can verify the bytes are the ones the
-# paper's numbers came from.
+# published as downloadable tarballs instead, one per experiment.
+#
+# NOTE: Google Drive gives no DOI and no permanence guarantee. If a citable
+# archive is wanted later, these same tarballs upload to Zenodo unchanged.
+#
+# results/CHECKSUMS.sha256 (committed) covers every file in every bundle, so
+# a downloader can verify the bytes are the ones the paper's numbers came
+# from.
 #
 # Usage:
-#   bash scripts/make_zenodo_bundles.sh [OUT_DIR]
+#   bash scripts/make_result_bundles.sh [OUT_DIR]
 #
-# Default OUT_DIR is dist/zenodo/ (gitignored).
+# Default OUT_DIR is dist/bundles/ (gitignored).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUT="${1:-$ROOT/dist/zenodo}"
+OUT="${1:-$ROOT/dist/bundles}"
 cd "$ROOT"
 
 # One bundle per experiment. scratch/ is an empty leftover directory and
@@ -49,5 +53,5 @@ cp results/CHECKSUMS.sha256 "$OUT/"
 
 echo
 echo "Bundles in $OUT"
-echo "Next: upload to Zenodo, then record the DOI in README.md and cite it"
-echo "      from the camera-ready."
+echo "Next: upload these to the results folder, then check the link in"
+echo "      README.md and datasets/VERSIONS.md still resolves."

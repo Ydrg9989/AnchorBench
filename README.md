@@ -9,7 +9,7 @@
 | --- | --- |
 | Paper | *AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs* (COLM 2026) |
 | Dataset | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) on Hugging Face |
-| Raw results | Zenodo — DOI pending |
+| Raw results | [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing) |
 | Code license | Apache-2.0 · **Dataset** CC BY 4.0 |
 | Python | &ge; 3.10 |
 | Status | Release v2.0 |
@@ -87,7 +87,7 @@ bash scripts/run_stage3_reruns.sh # the two re-run experiments (addendum)
 
 Approximate cost: ~24 h on 4x A100 plus roughly $300 of OpenRouter spend at
 full size. The appendix tables additionally need `results/rebuttal/`, which
-is published on Zenodo rather than committed.
+is published as tarballs on Google Drive rather than committed.
 
 ---
 
