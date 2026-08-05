@@ -36,7 +36,14 @@ from anchorbench.eval.runner_utils import (
     model_output_dir,
 )
 
+# The matched-control analysis compares the two baselines against each other,
+# so a run has to carry BOTH: `control` is single-stage (the protocol used in
+# the main benchmark) and `control_twostage` is the format-matched two-turn
+# version. paper.tables_appendix.build_history_matched computes metrics twice
+# from one results.jsonl, once per baseline, and skips any model missing
+# either. Omitting `control` here made tab:history_matched unbuildable.
 HISTORY_CONDITIONS_TWOSTAGE_BASELINE = [
+    "control",
     "control_twostage",
     "irrelevant_low",
     "irrelevant_high",

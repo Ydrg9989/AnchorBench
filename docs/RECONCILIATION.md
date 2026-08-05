@@ -21,7 +21,7 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D2](#d2) | `generator_version` differs on every regenerated itemspec | ACCEPTED | no |
 | [D3](#d3) | Five of six suites reproduce exactly; History needs `--n_per_cell 30` | ACCEPTED | no |
 | [D4](#d4) | The range CI was not produced by a bootstrap | RESOLVED | yes — corrected |
-| [D5](#d5) | Two appendix tables cannot be regenerated | OPEN → Stage 3 | yes — reruns planned |
+| [D5](#d5) | Two appendix tables cannot be regenerated | **RESOLVED** | no — published values kept, re-runs added as addendum |
 | [D6](#d6) | Inline appendix tables vs current output (measured) | RESOLVED | yes — 4 tables now generated |
 | [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
 
@@ -271,7 +271,7 @@ before deciding whether to re-typeset.
 
 | | |
 |---|---|
-| **Status** | OPEN — reruns scheduled (Stage 3) |
+| **Status** | **RESOLVED** — both re-run; published values unchanged |
 | **Affects** | `tab:tool_plaintext`, `tab:history_matched` |
 
 `tables_appendix.py` defaults `--tool_plaintext` and `--history_matched` to
@@ -466,3 +466,37 @@ numbers with blanks. They stay pasted until the D5 re-runs.
 Guarded by `tests/test_golden_artifacts.py::test_paper_table_bodies_are_in_sync`,
 which runs `sync_paper_tables.py --check` and fails if a committed body has
 gone stale against the generator.
+
+
+---
+
+## D5 resolution — both experiments re-run
+
+Re-ran on 2026-08-05, 2 x H100 (OLMo-32B at TP=2). All 15 cells parse at
+0.92-1.00. Results in `results/{history_matched,tool_plaintext}/`; the tables
+and a published-vs-re-run comparison are in
+`COLM_camera_ready/addendum/ADDENDUM.md`.
+
+**The published tables are unchanged.** These are an addendum: the original
+inputs were never preserved, so this is an independent re-run under a
+documented configuration rather than a reproduction of a known recipe.
+
+Three bugs had to be fixed before the recipes could run at all, each an
+independent reason these tables were unreproducible:
+
+1. `cli/experiment.py::_resolve_data` read `conf/data/<suite>.yaml` off disk,
+   discarding the recipe's `promptviews_file: promptviews.jsonl` override, so
+   the runner opened a file with no `control_twostage` rows and loaded 0 items.
+2. `_is_api` prefix-matched hf_ids, so `google/gemma-3-*` was dispatched to
+   OpenRouter, which returned 429 and wrote 1,800 null records plus a summary
+   reading `parse_rate: 0.0` — a complete-looking artifact with no data.
+3. `HISTORY_CONDITIONS_TWOSTAGE_BASELINE` omitted plain `control`, which
+   `build_history_matched` needs alongside `control_twostage` in one file to
+   compare the two baselines.
+
+Outcome: `tab:tool_plaintext` reproduces closely on discrimination (Qwen-7B
+exactly); `tab:history_matched` differs substantially per cell but preserves
+the main-text claim — matched-format analysis lowers Disc for a minority of
+models (3/10 published, 4/10 re-run) with a largest reduction of 70% against
+89%. Per-cell values from that table should be cited as published, noting
+that an independent re-run did not reproduce them.
