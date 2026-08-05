@@ -3,7 +3,13 @@ hf_id: allenai/OLMo-2-0325-32B-Instruct
 slug: allenai_OLMo-2-0325-32B-Instruct
 short: OLMo-32B
 backend: vllm
-tensor_parallel_size: 4
+# 40 attention heads and 8 KV heads, both divisible by 2. At TP=2 the
+# 60 GiB of bf16 weights land at 30 GiB per card, leaving ~54 GiB each
+# for KV cache -- about 108 concurrent 4096-token sequences, far more
+# than batch inference over 1800 prompts needs. TP=4 buys throughput,
+# not feasibility, and needing only 2 cards means the run can proceed
+# while another job holds the other two.
+tensor_parallel_size: 2
 gpu_memory_utilization: 0.9
 max_model_len: 4096
 dtype: bfloat16

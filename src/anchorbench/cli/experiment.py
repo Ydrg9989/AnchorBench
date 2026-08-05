@@ -39,7 +39,19 @@ def _resolve_model(name: str) -> dict:
     return _load_yaml(f"model/{name}.yaml")
 
 
-def _resolve_data(name: str) -> dict:
+def _resolve_data(name: str, cfg: DictConfig | None = None) -> dict:
+    """Load conf/data/<name>.yaml, preferring the composed config.
+
+    The composed cfg.data carries the recipe's overrides -- for example
+    paper_history_matched sets promptviews_file: promptviews.jsonl, because
+    control_twostage is absent from promptviews_core.jsonl. Reading the YAML
+    straight off disk discarded those silently, so that recipe pointed the
+    runner at a file with no control_twostage rows and it found 0 items.
+    """
+    if cfg is not None:
+        composed = cfg.get("data")
+        if composed is not None and composed.get("suite") == name:
+            return OmegaConf.to_container(composed, resolve=True)
     return _load_yaml(f"data/{name}.yaml")
 
 
@@ -109,7 +121,7 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
     explicit_models = cfg.get("models")
     tiers: list[str] = list(cfg.get("tiers", []))
 
-    suite_data = {s: _resolve_data(s) for s in suites}
+    suite_data = {s: _resolve_data(s, cfg) for s in suites}
 
     if explicit_models:
         for model_name in explicit_models:
