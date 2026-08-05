@@ -59,10 +59,25 @@ def _resolve_tier(name: str) -> dict:
     return _load_yaml(f"tier/{name}.yaml")
 
 
-def _is_api(hf_id: str) -> bool:
-    return hf_id in set(API_MODEL_IDS) or any(
-        hf_id.startswith(p) for p in ("openai/", "anthropic/", "google/", "x-ai/")
-    )
+# Backends that mean "call a hosted endpoint" rather than "load weights here".
+_API_BACKENDS = {"openrouter", "api"}
+
+
+def _is_api(model: dict) -> bool:
+    """Route by the model's declared backend, not by its hf_id prefix.
+
+    This used to prefix-match on ("openai/", "anthropic/", "google/", "x-ai/"),
+    which silently swept up the Gemma models: google/gemma-3-1b-it and
+    google/gemma-3-4b-it are open-weight and declare backend: vllm, but share
+    a namespace with google/gemini-2.5-flash. They were dispatched to the
+    OpenRouter runner, which answered 429 and wrote out 1800 records with
+    parse_rate 0.0 and every metric null -- a plausible-looking summary
+    containing no data.
+    """
+    backend = (model.get("backend") or "").lower()
+    if backend:
+        return backend in _API_BACKENDS
+    return model.get("hf_id") in set(API_MODEL_IDS)
 
 
 def _build_cell_cmd(model: dict, data: dict, decoding: dict,
@@ -74,7 +89,7 @@ def _build_cell_cmd(model: dict, data: dict, decoding: dict,
     pv = dataset_dir / data["promptviews_file"]
     isp = dataset_dir / data["itemspecs_file"]
 
-    if _is_api(model["hf_id"]):
+    if _is_api(model):
         cmd = [
             sys.executable, "-m", "anchorbench.runners.api",
             "--model_id", model["hf_id"],
@@ -128,7 +143,7 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
             model = _resolve_model(model_name)
             for suite in suites:
                 data = suite_data[suite]
-                out = (api_out if _is_api(model["hf_id"]) else base_out / suite)
+                out = (api_out if _is_api(model) else base_out / suite)
                 cells.append((model, data, None, out))
         return cells
 
@@ -140,7 +155,7 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
             gpu = gpu_slots[i % len(gpu_slots)] if gpu_slots else None
             for suite in suites:
                 data = suite_data[suite]
-                out = (api_out if _is_api(model["hf_id"]) else base_out / suite)
+                out = (api_out if _is_api(model) else base_out / suite)
                 cells.append((model, data, gpu, out))
     return cells
 
