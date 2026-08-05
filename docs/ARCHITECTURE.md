@@ -54,9 +54,10 @@ src/anchorbench/
     |-- eval.py, experiment.py, generate.py, tables.py, add_model.py
 ```
 
-Three deprecation shims (`anchorbench_v1`, `anchorbench_eval`,
-`mitigation_eval`) re-export the new submodules and emit
-`DeprecationWarning`. They are scheduled for removal in v2.1.
+The three pre-2.0 package names (`anchorbench_v1`, `anchorbench_eval`,
+`mitigation_eval`) were **removed** rather than shimmed. v2.0.0 is the first
+public release, so there were no downstream importers to keep working. The
+import migration map is in [../RELEASE_NOTES.md](../RELEASE_NOTES.md).
 
 ## Hydra config tree
 

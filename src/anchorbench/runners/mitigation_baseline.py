@@ -6,12 +6,12 @@ task evidence.  Runs all five suites for a single model and compares with
 the original (no-mitigation) results.
 
 Usage (open-weight, vLLM):
-    bash scripts/run_with_env.sh python scripts/eval/run_mitigation_baseline.py \
+    bash scripts/run_with_env.sh python -m anchorbench.runners.mitigation_baseline \
         --model_id Qwen/Qwen2.5-7B-Instruct --backend vllm \
         --out_dir results/mitigation_ignore_anchor
 
 Usage (API):
-    PYTHONPATH=src python scripts/eval/run_mitigation_baseline.py \
+    python -m anchorbench.runners.mitigation_baseline \
         --model_id openai/gpt-5.4-mini --backend api \
         --out_dir results/mitigation_ignore_anchor
 """

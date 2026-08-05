@@ -2,7 +2,7 @@
 """Run inference on RAG dataset (5 conditions, batched) and evaluate.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_rag.py \
+    python -m anchorbench.runners.rag \
         --promptviews datasets/anchorbench_rag_core/promptviews.jsonl \
         --itemspecs datasets/anchorbench_rag_core/itemspecs.jsonl \
         --model_id Qwen/Qwen2.5-7B-Instruct \

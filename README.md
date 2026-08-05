@@ -1,48 +1,52 @@
 # AnchorBench
 
-> A multi-paradigm benchmark for measuring numeric anchoring bias in
-> Large Language Models. **14 models &times; 5 anchor pathways &times;
-> 3 relevance conditions** = 9,000+ prompts, 70 evaluation cells, one
-> command to reproduce.
+> A multi-pathway benchmark for the anchoring effect in large language
+> models. **14 models &times; 5 anchor pathways &times; 3 relevance
+> conditions** = 9,000 condition-controlled prompts per model, 70 evaluation
+> cells, one command to reproduce.
 
 | | |
 | --- | --- |
-| Paper | *AnchorBench: Measuring LLM Susceptibility to Numeric Anchoring Across Interface Paradigms* (COLM 2026) |
-| License | Apache-2.0 |
+| Paper | *AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs* (COLM 2026) |
+| Dataset | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) on Hugging Face |
+| Raw results | Zenodo — DOI pending |
+| Code license | Apache-2.0 · **Dataset** CC BY 4.0 |
 | Python | &ge; 3.10 |
 | Status | Release v2.0 |
 
-AnchorBench evaluates how strongly an irrelevant or plausible numeric
-"anchor" pulls a model's downstream estimate, across five interface
-paradigms: **External** prompt context, **History** of prior
-interactions, **In-Context Learning** demos, **Retrieval-Augmented
-Generation** documents, and **Tool** outputs. The benchmark reports
-five aligned metrics (UAI, TAR, Disc<sub>&Delta;</sub>, MAE, Acc<sub>10</sub>)
-with bootstrap CIs and BH-corrected significance tests.
+AnchorBench measures how strongly an irrelevant or plausible numeric
+"anchor" pulls a model's estimate, across five delivery pathways:
+**External** prompt context, conversation **History**, **In-Context
+Learning** demonstrations, **Retrieval-Augmented Generation** documents, and
+**Tool** outputs. Because every item carries structured numeric evidence and
+a deterministic gold answer, the benchmark measures not just whether outputs
+shift but whether the shift is justified.
 
 ---
 
 ## Install
 
 ```bash
-git clone https://github.com/<your-org>/anchorbench.git
-cd anchorbench
+git clone https://github.com/Yiderigun/LLM_anchoring.git
+cd LLM_anchoring
 pip install -e ".[all]"            # core + vllm + api + dev
 ```
-
-Optional extras:
 
 | Extra | Pulls in | When to use |
 | --- | --- | --- |
 | `[vllm]` | vLLM | open-weight models (Qwen, Llama, Gemma, OLMo) |
-| `[api]`  | aiohttp | OpenRouter API models (GPT-5, Claude, Gemini, Grok) |
-| `[dev]`  | pytest, ruff | running tests / linting |
+| `[api]`  | aiohttp | OpenRouter API models (GPT, Claude, Gemini, Grok) |
+| `[dev]`  | pytest, ruff | tests and linting |
 
-Set `OPENROUTER_API_KEY` (see `.env.example`) before invoking the API tier.
+**API credentials.** Put `OPENROUTER_API_KEY` in
+`~/.config/anchorbench/env`, not in the repo — `scripts/run_with_env.sh`
+sources it from there. A key inside the working tree gets shipped by any
+folder upload or tarball; `tests/test_no_secrets.py` fails if one reappears.
+See `.env.example`.
 
 ---
 
-## Quick start (3 commands)
+## Quick start
 
 ```bash
 # 1. Generate the External suite at "smoke" size (CPU only, ~10s)
@@ -55,81 +59,106 @@ anchorbench eval data=external model=qwen_7b
 anchorbench tables --paper
 ```
 
-`anchorbench` is the single console script. It exposes Hydra-driven
+`anchorbench` is the single console script, exposing Hydra-driven
 subcommands (`eval`, `experiment`, `generate`, `tables`, `verify`,
-`add-model`) so any cell, recipe, or override is one line.
+`add-model`), so any cell, recipe or override is one line.
 
 ---
 
-## Reproduce the paper end-to-end
+## Reproduce the paper
 
 ```bash
-# Validate the environment and dry-run every planned cell
-DRY_RUN=1 bash scripts/reproduce_paper.sh
-
-# Full run: 14 models x 5 suites + figures + tables + verifier
-bash scripts/reproduce_paper.sh
+DRY_RUN=1 bash scripts/reproduce_paper.sh    # validate + dry-run every cell
+bash scripts/reproduce_paper.sh              # full run
 ```
 
-This script:
+The script regenerates any missing `datasets/anchorbench_*_core/`, runs the
+frozen `paper_main` recipe (70 cells), recomputes `unified_all_suites.json`
+for both tiers, regenerates the figures and main tables into `COLM/figures/`
+and `outputs/tables/`, and finishes with `anchorbench verify`, which fails if
+any numeric claim drifts.
 
-1. Regenerates any missing `datasets/anchorbench_*_core/` directories.
-2. Runs the frozen `paper_main` recipe (70 evaluation cells).
-3. Recomputes `unified_all_suites.json` for both the OW and API runs.
-4. Regenerates Figures 4-5 and Tables 1-16 in `COLM/figures/` and `outputs/tables/`.
-5. Runs `anchorbench verify`, which fails loudly if any numeric claim drifts.
+Two things it does **not** cover:
 
-Approximate cost: ~24h on 4xA100 + ~$300 OpenRouter spend at full size.
+```bash
+anchorbench tables --appendix     # the 13 \input-ed appendix tables
+bash scripts/run_stage3_reruns.sh # the two re-run experiments (addendum)
+```
+
+Approximate cost: ~24 h on 4x A100 plus roughly $300 of OpenRouter spend at
+full size. The appendix tables additionally need `results/rebuttal/`, which
+is published on Zenodo rather than committed.
+
+---
+
+## Verifying without re-running anything
+
+Most of the repository can be checked on a clean clone in seconds, because
+the two unified summaries and every generated table are committed:
+
+```bash
+pytest                                    # 239 tests
+anchorbench verify --strict               # every numeric paper claim
+python scripts/measure_paper_drift.py     # paper tables vs generator output
+```
+
+[docs/RECONCILIATION.md](docs/RECONCILIATION.md) is the ledger of every known
+divergence between the paper, the committed artifacts and the current code,
+with the command to re-measure each one.
 
 ---
 
 ## Extending
 
-Common extension points and where they live:
-
 | You want to... | Look at | Doc |
 | --- | --- | --- |
-| Add a new model | `conf/model/*.yaml` | [docs/EXTENDING.md#add-a-model](docs/EXTENDING.md) |
-| Add a new suite | `src/anchorbench/data/suites/` | [docs/EXTENDING.md#add-a-suite](docs/EXTENDING.md) |
-| Add a metric | `src/anchorbench/eval/metrics.py` | [docs/EXTENDING.md#add-a-metric](docs/EXTENDING.md) |
-| Add a named experiment | `conf/experiment/*.yaml` | [docs/EXTENDING.md#add-an-experiment](docs/EXTENDING.md) |
-| One-shot model registration | `anchorbench add-model openai/gpt-5o` | -- |
+| Add a model | `conf/model/*.yaml` | [EXTENDING.md](docs/EXTENDING.md) |
+| Add a suite | `src/anchorbench/data/suites/` | [EXTENDING.md](docs/EXTENDING.md) |
+| Add a metric | `src/anchorbench/eval/metrics.py` | [EXTENDING.md](docs/EXTENDING.md) |
+| Add an experiment | `conf/experiment/*.yaml` | [EXTENDING.md](docs/EXTENDING.md) |
+| Register a model in one shot | `anchorbench add-model openai/gpt-5o` | — |
 
 ---
 
 ## Repository structure
 
 ```
-anchorbench/
+LLM_anchoring/
 |-- conf/                    # Hydra config tree (data, model, tier, decoding, experiment)
 |-- src/anchorbench/         # single consolidated package
-|   |-- data/                # ItemSpec + suite renderers + validators
+|   |-- data/                # ItemSpec generation, suite renderers, validators
 |   |-- eval/                # backends, metrics, evaluator, IO
 |   |-- inference/           # OpenRouter async client
-|   |-- runners/             # per-suite runners (eval entry points)
-|   |-- analysis/            # unified, gold-shift, sampling, mitigation
-|   |-- paper/               # figure + table generators + verifier
-|   `-- cli/                 # `anchorbench` Hydra-driven entrypoints
+|   |-- runners/             # per-suite runners
+|   |-- analysis/            # unified metrics + the appendix analyses
+|   |-- paper/               # figure/table generators + claim verifier
+|   `-- cli/                 # `anchorbench` entry points
+|-- datasets/                # committed: the exact prompts the models saw
+|-- results/                 # bulk gitignored; unified summaries + tables committed
+|-- COLM_camera_ready/       # camera-ready LaTeX source, figures and PDF
 |-- scripts/                 # reproduce_paper.sh + thin wrappers
-|-- docs/                    # ARCHITECTURE, REPRODUCIBILITY, EXTENDING
-|-- datasets/                # gitignored (regenerated on demand)
-|-- results/                 # gitignored (raw + unified outputs)
-|-- COLM/                    # paper LaTeX source + figures
+|-- docs/                    # ARCHITECTURE, RECONCILIATION, APPENDIX_TABLES, ...
 `-- tests/
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the full data-flow
-diagram and package map.
+`datasets/` is **committed on purpose**: the suite renderers were
+restructured after the paper's data was generated, so the committed prompts
+are ground truth and regenerating them is a check rather than a build step.
+
+Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the package map
+and data flow, and [docs/APPENDIX_TABLES.md](docs/APPENDIX_TABLES.md) for
+which module produces which appendix table.
 
 ---
 
 ## Citation
 
 ```bibtex
-@inproceedings{anchorbench2026,
-  title     = {AnchorBench: Measuring LLM Susceptibility to Numeric
-               Anchoring Across Interface Paradigms},
-  author    = {AnchorBench Authors},
+@inproceedings{borjigin2026anchorbench,
+  title     = {AnchorBench: A Multi-Pathway Benchmark for the Anchoring
+               Effect in {LLM}s},
+  author    = {Borjigin, Yiderigun and Hermann, Alexander and
+               Cyron, Christian and Aydin, Roland},
   booktitle = {Proceedings of the Conference on Language Modeling (COLM)},
   year      = {2026}
 }
@@ -137,4 +166,6 @@ diagram and package map.
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+Code is Apache-2.0 (see [LICENSE](LICENSE)). The benchmark dataset is
+released under CC BY 4.0; see
+[datasets/DATASET_CARD.md](datasets/DATASET_CARD.md).

@@ -2,7 +2,7 @@
 """Run inference on External dataset (5 conditions) and evaluate.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_external.py \
+    python -m anchorbench.runners.external \
         --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
         --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
         --model_id Qwen/Qwen2.5-7B-Instruct \

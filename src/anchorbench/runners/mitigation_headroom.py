@@ -12,10 +12,10 @@ Runs a targeted subset: External and RAG suites, 1-2 models.
 Results saved to results/revision/mitigation_headroom/.
 
 Usage (vLLM):
-    bash scripts/run_with_env.sh python scripts/eval/run_mitigation_headroom.py \
+    bash scripts/run_with_env.sh python -m anchorbench.runners.mitigation_headroom \
         --model_id Qwen/Qwen2.5-7B-Instruct --backend vllm
 
-    bash scripts/run_with_env.sh python scripts/eval/run_mitigation_headroom.py \
+    bash scripts/run_with_env.sh python -m anchorbench.runners.mitigation_headroom \
         --model_id meta-llama/Llama-3.1-8B-Instruct --backend vllm
 """
 
@@ -398,9 +398,9 @@ def main():
         "- **cot**: \"Think step by step, list evidence, compute from evidence only\"\n\n"
         "## Reproduction\n"
         "```bash\n"
-        "bash scripts/run_with_env.sh python scripts/eval/run_mitigation_headroom.py \\\n"
+        "bash scripts/run_with_env.sh python -m anchorbench.runners.mitigation_headroom \\\n"
         "    --model_id Qwen/Qwen2.5-7B-Instruct --backend vllm\n"
-        "bash scripts/run_with_env.sh python scripts/eval/run_mitigation_headroom.py \\\n"
+        "bash scripts/run_with_env.sh python -m anchorbench.runners.mitigation_headroom \\\n"
         "    --model_id meta-llama/Llama-3.1-8B-Instruct --backend vllm\n"
         "```\n"
     )

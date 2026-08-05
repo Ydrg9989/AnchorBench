@@ -2,7 +2,7 @@
 
 ## ItemSpec
 
-**Module:** `src/anchorbench_v1/schema.py`
+**Module:** `src/anchorbench/data/schema.py`
 
 A prompt-agnostic ground-truth record for one benchmark item. Contains all information needed to render prompts and evaluate responses.
 
@@ -66,7 +66,7 @@ For hard items, missing entries have `"value": null, "missing": true`.
 
 ## PromptView
 
-**Module:** `src/anchorbench_v1/schema.py`
+**Module:** `src/anchorbench/data/schema.py`
 
 A rendered prompt for one item × condition, ready for LLM evaluation.
 
@@ -101,7 +101,7 @@ A rendered prompt for one item × condition, ready for LLM evaluation.
 
 ## RAGDoc
 
-**Module:** `src/anchorbench_v1/schema.py`
+**Module:** `src/anchorbench/data/schema.py`
 
 One document in the frozen RAG corpus (RAG suite only).
 

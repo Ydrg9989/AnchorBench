@@ -5,12 +5,12 @@ Runs a subset of suites and models under sampling to test whether
 anchoring conclusions are stable across decoding strategies.
 
 Usage (open-weight, vLLM):
-    bash scripts/run_with_env.sh python scripts/eval/run_sampling_robustness.py \
+    bash scripts/run_with_env.sh python -m anchorbench.runners.sampling \
         --model_id Qwen/Qwen2.5-7B-Instruct --backend vllm \
         --out_dir results/decoding_sampling_robustness
 
 Usage (API):
-    PYTHONPATH=src python scripts/eval/run_sampling_robustness.py \
+    python -m anchorbench.runners.sampling \
         --model_id openai/gpt-5.4-mini --backend api \
         --out_dir results/decoding_sampling_robustness
 """

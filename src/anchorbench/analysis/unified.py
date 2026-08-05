@@ -9,7 +9,7 @@ Auto-discovers results from the directory structure:
   <results_dir>/<suite>/<model_slug>/<model_slug>/results.jsonl  (icl/tool)
 
 Usage:
-    PYTHONPATH=src python scripts/eval/recompute_all_unified.py \
+    python -m anchorbench.analysis.unified \
         --results_dir results/full_benchmark
 """
 

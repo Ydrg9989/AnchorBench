@@ -5,7 +5,7 @@ Reads the already-computed CSV at results/extension_summary/sampling_robustness.
 and the raw JSONL files, produces publication-quality figures and LaTeX.
 
 Usage:
-    python scripts/eval/sampling_robustness_figures.py
+    python -m anchorbench.analysis.sampling
 """
 
 from __future__ import annotations
@@ -266,9 +266,9 @@ def main():
         "## Reproduction\n"
         "```bash\n"
         "# Generate figures/tables from existing data:\n"
-        "python scripts/eval/sampling_robustness_figures.py\n\n"
+        "python -m anchorbench.analysis.sampling\n\n"
         "# To rerun inference (requires GPU):\n"
-        "bash scripts/run_with_env.sh python scripts/eval/run_sampling_robustness.py \\\n"
+        "bash scripts/run_with_env.sh python -m anchorbench.analysis.sampling \\\n"
         "    --model_id Qwen/Qwen2.5-7B-Instruct --backend vllm\n"
         "```\n"
     )

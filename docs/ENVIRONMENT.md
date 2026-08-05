@@ -11,7 +11,7 @@ conda activate LLM_anchoring
 Then run scripts as usual, e.g.:
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_external.py ...
+python -m anchorbench.runners.external ...
 ```
 
 ## Recommended: run wrapper (avoids vLLM/cuDNN conflict)
@@ -25,7 +25,7 @@ pydantic_core._pydantic_core.ValidationError: Assertion failed, Found 2 libcudnn
 use the project wrapper so the command runs in `LLM_anchoring` with env vars that reduce duplicate cuDNN visibility and use vLLM’s legacy engine:
 
 ```bash
-bash scripts/run_with_env.sh python scripts/eval/run_external.py \
+bash scripts/run_with_env.sh python anchorbench.runners.external \
   --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
   --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
   --model_id meta-llama/Llama-3.1-70B-Instruct \
@@ -52,7 +52,7 @@ ANCHORBENCH_CONDA_ENV=my_env bash scripts/run_with_env.sh python ...
 - **Terminal:** Run `conda activate LLM_anchoring` in the project terminal so all subsequent commands use this env.
 - **Python interpreter:** Point the IDE/Cursor Python interpreter to the env, e.g.  
   `$CONDA_PREFIX/bin/python` with `CONDA_PREFIX` set to your env path (e.g. `.../miniforge3/envs/LLM_anchoring`).
-- **Run scripts:** Prefer `bash scripts/run_with_env.sh python scripts/eval/run_*.py ...` so vLLM and path settings are applied.
+- **Run scripts:** Prefer `bash scripts/run_with_env.sh python anchorbench.runners.* ...` so vLLM and path settings are applied.
 
 ## If the cuDNN error persists
 

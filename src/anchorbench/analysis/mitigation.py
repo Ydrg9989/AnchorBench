@@ -5,7 +5,7 @@ Reads results/revision/mitigation_headroom/<suite>/<model>/<strategy>/results.js
 and regenerates the combined comparison table, LaTeX, interpretation, and figure.
 
 Usage:
-    python scripts/eval/aggregate_mitigation_headroom.py [--results_dir DIR] [--fig_dir DIR] [--out_dir DIR]
+    python -m anchorbench.analysis.mitigation [--results_dir DIR] [--fig_dir DIR] [--out_dir DIR]
 """
 
 from __future__ import annotations

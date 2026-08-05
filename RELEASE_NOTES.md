@@ -60,7 +60,7 @@ scripts/
 - **`docs/ARCHITECTURE.md`**: package map and mermaid data-flow
   diagram.
 - **`tests/test_imports.py`**: smoke test asserting every public
-  submodule imports and the deprecation shims redirect correctly.
+  submodule imports.
 - **`tests/test_paper_verify.py`**: smoke test asserting
   `anchorbench.paper.verify --quick` runs end-to-end on the bundled
   unified summaries.
@@ -109,8 +109,8 @@ scripts/
 
 ## Migration
 
-Old import sites continue to work for one release thanks to the
-deprecation shims:
+Old import sites do **not** keep working -- the pre-2.0 packages were
+removed, not shimmed (see Changed, above). Rewrite them as follows:
 
 ```python
 # old

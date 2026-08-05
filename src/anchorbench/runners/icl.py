@@ -5,14 +5,14 @@ Works for the metadata-header ICL suite (``icl``) and for ``icl_dist`` (demo-lab
 bands × framing); both ship the same five condition names.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_icl.py \
+    python -m anchorbench.runners.icl \
         --promptviews datasets/anchorbench_icl_core/promptviews.jsonl \
         --itemspecs datasets/anchorbench_icl_core/itemspecs.jsonl \
         --model_id Qwen/Qwen2.5-7B-Instruct \
         --out_dir results/icl_core \
         --batch_size 32
 
-    PYTHONPATH=src python scripts/eval/run_icl.py \
+    python -m anchorbench.runners.icl \
         --promptviews datasets/anchorbench_icl_dist_smoke/promptviews.jsonl \
         --itemspecs datasets/anchorbench_icl_dist_smoke/itemspecs.jsonl \
         --out_dir results/icl_dist_smoke

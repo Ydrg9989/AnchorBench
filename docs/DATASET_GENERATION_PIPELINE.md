@@ -1,89 +1,144 @@
-# Benchmark Dataset Generation Pipeline
+# Dataset generation pipeline
 
-This document identifies the **code used** for AnchorBench benchmark dataset generation and the **redundant or unused** code that can be removed.
+How a benchmark dataset is produced. Each suite yields **ItemSpecs**
+(ground-truth records) and **PromptViews** (rendered prompts), stratified by
+domain, difficulty and condition.
 
----
+```
+1. ItemSpec generation   ->  theta, evidence, anchors, gold answer
+2. Prompt rendering      ->  one prompt per condition
+3. Serialization         ->  itemspecs.jsonl, promptviews*.jsonl, manifest.json
+```
 
 ## Entry point
 
-- **CLI:** `PYTHONPATH=src python -m anchorbench_v1.generate --suite <suite> --size <smoke|pilot|core> --out_dir <path>`
-- **Script:** `scripts/generate_all.sh [SIZE] [SEED]` — loops over suites and calls the above.
+```bash
+anchorbench generate data=external +size=core seed=42     # one suite
+bash scripts/generate_all.sh core 42                      # all six
+```
 
----
+`generate_all.sh` loops the same command over
+`external history icl icl_dist rag tool`.
 
-## Code used for benchmark generation
+## Stage 1 — ItemSpec generation
 
-### Core (always used)
+**Module:** `src/anchorbench/data/itemspec_gen.py`
 
-| Module | Role |
-|--------|------|
-| `src/anchorbench_v1/generate.py` | Orchestrates: load params → generate ItemSpecs → (optional LLM enhance) → render PromptViews → write JSONL + manifest. |
-| `src/anchorbench_v1/itemspec_gen.py` | Generates ItemSpec records per suite (external, history, icl, rag, tool, tool_agentic, tool_read). |
-| `src/anchorbench_v1/schema.py` | ItemSpec, PromptView, RAGDoc, write_jsonl, read_jsonl. |
-| `src/anchorbench_v1/domains.py` | DOMAIN_IDS, DOMAINS, domain configs (evidence labels, templates, anchor preambles). |
-| `src/anchorbench_v1/suites/__init__.py` | SUITE_RENDERERS dispatch. |
-| `src/anchorbench_v1/suites/_shared.py` | CONDITIONS, format_evidence, resolve_templates. |
-| `src/anchorbench_v1/suites/external.py` | render_external. |
-| `src/anchorbench_v1/suites/history.py` | render_history. |
-| `src/anchorbench_v1/suites/icl.py` | render_icl. |
-| `src/anchorbench_v1/suites/rag.py` | render_rag, build_item_corpus, build_full_corpus. |
-| `src/anchorbench_v1/suites/tool_agentic.py` | render_tool (agentic). |
-| `src/anchorbench_v1/suites/tool_read.py` | render_tool_read. |
-| `src/anchorbench_v1/suites/tool.py` | Shim re-exporting tool_agentic (backward compat). |
+Most suites iterate a stratified grid:
 
-### Optional (only with `--llm_enhance`)
+```
+for domain in DOMAIN_IDS:            # 6 business domains
+    for difficulty in [easy, hard]:  # 2 levels
+        for offset in [15, 25, 40]:  # 3 anchor distances
+            for i in range(n_per_cell):
+                -> one ItemSpec
+```
 
-| Module | Role |
-|--------|------|
-| `src/anchorbench_v1/llm_enhance.py` | enhance_scenarios(): OpenRouter calls to generate scenario text per item; cached. |
-| `src/anchorbench_v1/openrouter_client.py` | OpenRouterClient used by llm_enhance. |
-| `src/anchorbench_v1/config/__init__.py` | get_role_config("bulk_writer") for llm_enhance. |
+**History is the exception: it has no offset dimension.** Its anchor is the
+model's own Stage-1 answer rather than a designer-specified value, so the grid
+is domain x difficulty only and the elicitation target is fixed at
+theta +/- 25. `generate.py` scales `n_per_cell` for such suites so every suite
+still reaches 360 items at `--size core`; see
+[RECONCILIATION.md](RECONCILIATION.md) D1 for why that matters.
 
-### Validation (after generation, not part of “generation” code)
+Key computations:
 
-| Module | Role |
-|--------|------|
-| `src/anchorbench_v1/validate.py` | CLI to validate generated datasets. |
-| `src/anchorbench_v1/validators.py` | validate_all(), schema and pairing checks. |
+- **theta** (latent signal): uniform on [30, 70]
+- **anchor low / high**: `max(0, theta - offset)` / `min(100, theta + offset)`
+- **evidence**: five ratings around theta — easy uses sigma=8 with all
+  visible; hard uses sigma=15 with two hidden and one conflicting
+- **y_star_evidence** (gold): `round(mean(visible ratings))`
 
----
+Suite-specific additions: History searches a subset for plausible pressure and
+builds same-domain warmup cases; ICL pre-generates three neutral
+demonstrations into `tags`; RAG carries corpus metadata for the
+three-document mini-corpus assembled at render time; Tool carries the
+available tool schemas.
 
-## Redundant / unused for benchmark generation
+## Stage 2 — Prompt rendering
 
-### 1. Removed: `src/llm_anchoring/`
+**Modules:** `src/anchorbench/data/suites/{external,history,icl,icl_dist,rag,tool}.py`,
+dispatched through `SUITE_RENDERERS`.
 
-- **Status:** No Python source files; only `__pycache__` left (sources were removed earlier).
-- **Role:** Old pipeline (template_gen, render_dataset, etc.). Replaced by `anchorbench_v1`.
-- **Action:** Delete the entire `src/llm_anchoring/` directory.
+Each ItemSpec yields five core PromptViews:
 
-### 2. Removed: `src/anchorbench_v1/stress.py`
+| Condition | Relevance | Direction |
+|---|---|---|
+| `control` | none | — |
+| `irrelevant_low` | irrelevant | low |
+| `irrelevant_high` | irrelevant | high |
+| `plausible_low` | plausible | low |
+| `plausible_high` | plausible | high |
 
-- **Status:** Never imported by `generate.py` or `itemspec_gen.py`.
-- **Role:** Stress-split generator (200 items with stress factors); separate from the main benchmark.
-- **Action:** Remove; reintroduce later if you add a stress split to the pipeline.
+The anchor enters through a suite-specific channel: a sentence before the
+question (External), a prior conversational turn (History), demonstration
+metadata (ICL), a retrieved document (RAG), or a tool-call response (Tool).
 
-### 3. Not used by pipeline: `src/anchorbench_v1/llm_generate.py`
+**The benchmark invariant:** across all five conditions of one item,
+everything except the anchor-bearing component is identical. That is what
+makes the irrelevant-vs-plausible contrast isolate framing alone.
 
-- **Status:** Not imported by `generate.py` or `llm_enhance.py`. `llm_enhance` uses `openrouter_client` and `config` directly.
-- **Role:** Standalone role-based generation helper (`generate(role, prompt, ...)`).
-- **Action:** Optional removal if you do not use this API elsewhere.
+Suites also emit ablation views (`promptviews_ablation.jsonl`) — placebo and
+authority framings on External, `control_twostage` on History, neutral priming
+on ICL, and position/disclaimer variants on RAG.
 
-### 4. Not used by pipeline: `src/anchorbench_v1/model_registry.py`
+## Stage 3 — Serialization
 
-- **Status:** Standalone CLI (`python -m anchorbench_v1.model_registry --check`). Not called by generate.
-- **Role:** Verifies OpenRouter model IDs in config.
-- **Action:** Keep if you use it for ops; optional remove if you never run it.
+**Module:** `src/anchorbench/data/schema.py`
 
-### 5. Different dataset: `scripts/data_gen/gen_syn_anchors_local.py`
+| File | Contents |
+|---|---|
+| `itemspecs.jsonl` | one ItemSpec per line: ground truth, anchors, provenance |
+| `promptviews_core.jsonl` | the five core conditions |
+| `promptviews_ablation.jsonl` | suite-specific extra conditions |
+| `promptviews.jsonl` | core + ablation together |
+| `manifest.json` | seed, counts, `generator_version`, validation flag |
 
-- **Status:** Generates **SynAnchors** (40 items, 10 topics × 4), not AnchorBench.
-- **Output:** e.g. `data/processed/syn_anchors_v0/dataset.jsonl`.
-- **Action:** Keep if you use SynAnchors; remove if you only care about AnchorBench benchmark generation.
+## Validation
 
----
+```bash
+bash scripts/validate_all.sh core
+```
 
-## Summary
+Eight deterministic checks in `src/anchorbench/data/validators.py`
+(`validate_all`), covering the shared-prefix invariant, anchor placement, gold
+correctness and duplicate detection.
 
-- **Pipeline:** `generate.py` → `itemspec_gen` + `domains` + `schema` + `suites/*`; optionally `llm_enhance` → `openrouter_client` + `config`.
-- **Removed as redundant for benchmark generation:** `src/llm_anchoring/` (dead), `src/anchorbench_v1/stress.py` (unused).
-- **Optional:** `llm_generate.py`, `model_registry.py` (not in pipeline); `scripts/data_gen/gen_syn_anchors_local.py` (other dataset).
+## Deterministic regeneration
+
+Generation is fully deterministic given the seed. Each suite offsets the
+master seed so the suites stay independent:
+
+| Suite | Seed offset |
+|---|---|
+| external | +0 |
+| history | +0 |
+| rag | +2000 |
+| tool | +3000 |
+| icl | +4000 |
+| icl_dist | +4500 |
+
+`tests/test_dataset_regeneration.py` asserts every committed suite still
+regenerates byte-for-byte, so this is a checked property rather than a claim.
+
+`itemspecs.jsonl` also carries `generator_version`, stamped from the current
+git HEAD, so its *file hash* changes on every commit while its data does not.
+Compare promptviews, or compare itemspecs ignoring that field.
+
+## Domain configuration
+
+Templates, evidence labels and anchor preambles live in
+`src/anchorbench/data/domains.py`. The published benchmark uses six business
+domains:
+
+1. `pricing_wtp` — willingness to pay
+2. `operations_time` — operational efficiency
+3. `transportation_logistics` — logistics reliability
+4. `resource_consumption` — resource efficiency
+5. `market_demographics` — market adoption
+6. `legal_policy` — regulatory compliance
+
+`domains.py` additionally defines medical and other (legal-contract, consumer)
+domains used by the extension pilot in the appendix. `DOMAINS` proper stays at
+six entries so the published benchmark stays reproducible; the wider set is
+reachable through `ALL_DOMAIN_IDS`.

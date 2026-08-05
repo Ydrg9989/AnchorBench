@@ -2,7 +2,7 @@
 """Run inference on Tool dataset (5 conditions, chat-template) and evaluate.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_tool.py \
+    python -m anchorbench.runners.tool \
         --promptviews datasets/anchorbench_tool_core/promptviews.jsonl \
         --itemspecs datasets/anchorbench_tool_core/itemspecs.jsonl \
         --model_id Qwen/Qwen2.5-7B-Instruct \

@@ -6,7 +6,7 @@ format vs plausible/irrelevant). Use ``--baseline_condition control`` for the
 legacy single-stage control only.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_history.py \
+    python -m anchorbench.runners.history \
         --promptviews datasets/anchorbench_history_core/promptviews.jsonl \
         --itemspecs datasets/anchorbench_history_core/itemspecs.jsonl \
         --model_id Qwen/Qwen2.5-7B-Instruct \

@@ -6,10 +6,10 @@ This document describes how evaluation experiments are set up: data loading, inf
 
 ## 1. Overview
 
-- **Shared evaluation package:** `src/anchorbench_eval/` contains all parsing, metrics, backend, and orchestration logic.
-- **Suite runners:** `scripts/eval/run_external.py`, `run_history.py`, `run_icl.py`, `run_rag.py`, `run_tool.py` — thin CLI wrappers (~50-70 lines each) that call into the shared package.
-- **Unified metrics:** `scripts/eval/unified_metrics.py` re-exports from `anchorbench_eval.metrics` for backward compatibility.
-- **Batch comparison:** `scripts/eval/recompute_all_unified.py` reads multiple `results.jsonl` files (no re-inference), runs unified metrics, and prints comparison tables + LaTeX.
+- **Shared evaluation package:** `src/anchorbench/eval/` contains all parsing, metrics, backend, and orchestration logic.
+- **Suite runners:** `anchorbench.runners.external`, `run_history.py`, `run_icl.py`, `run_rag.py`, `run_tool.py` — thin CLI wrappers (~50-70 lines each) that call into the shared package.
+- **Unified metrics:** `anchorbench.eval.metrics` re-exports from `anchorbench.eval.metrics` for backward compatibility.
+- **Batch comparison:** `anchorbench.analysis.unified` reads multiple `results.jsonl` files (no re-inference), runs unified metrics, and prints comparison tables + LaTeX.
 
 **Two pipelines:**
 
@@ -23,7 +23,7 @@ This document describes how evaluation experiments are set up: data loading, inf
 ## 2. Architecture
 
 ```
-src/anchorbench_eval/
+src/anchorbench/eval/
 ├── __init__.py
 ├── parsing.py       # 3-tier parsing: structured → regex → LLM fallback
 ├── metrics.py       # UAI, TAR, Disc_delta, MAE, bootstrap CI, paired tests
@@ -31,13 +31,13 @@ src/anchorbench_eval/
 ├── evaluator.py     # prepare_items, run_single_stage, run_history_two_stage
 └── io.py            # load_promptviews, load_itemspecs, load_records
 
-scripts/eval/
+src/anchorbench/runners/
 ├── run_external.py  # Thin wrapper → evaluator.run_single_stage
 ├── run_icl.py       # Thin wrapper → evaluator.run_single_stage (batched)
 ├── run_rag.py       # Thin wrapper → evaluator.run_single_stage (batched)
 ├── run_tool.py      # Thin wrapper → evaluator + chat-template tool messages
 ├── run_history.py   # Thin wrapper → evaluator.run_history_two_stage
-├── unified_metrics.py        # Re-export from anchorbench_eval.metrics
+├── unified_metrics.py        # Re-export from anchorbench.eval.metrics
 └── recompute_all_unified.py  # Batch recompute from existing results
 ```
 
@@ -52,7 +52,7 @@ scripts/eval/
 
 ### 3.2 Model and decoding
 
-- **Backends** (`src/anchorbench_eval/backends.py`):
+- **Backends** (`src/anchorbench/eval/backends.py`):
   - **HFBackend** (default): HuggingFace Transformers — loads a causal LM, applies chat template, generates with `model.generate()`. Single-GPU or `device_map`; may underutilize GPU memory.
   - **VLLMBackend** (`--backend vllm`): vLLM — PagedAttention and continuous batching for high GPU utilization. Same chat/tool formatting as HF. Supports `--tensor_parallel_size` for multi-GPU and `--gpu_memory_utilization` (default 0.9).
   - **APIBackend**: OpenRouter/OpenAI-compatible API (used by API smoke tests).
@@ -81,7 +81,7 @@ When `--structured` is enabled and the backend supports it, the model returns JS
 
 ### Tier 2 — Deterministic regex (`parse_answer_int`)
 
-**Location:** `src/anchorbench_eval/parsing.py`
+**Location:** `src/anchorbench/eval/parsing.py`
 
 **Order of rules:**
 
@@ -140,7 +140,7 @@ Each line of `results.jsonl` is one **item x condition** run:
 
 ## 6. Evaluation Metrics (Unified)
 
-**Source:** `src/anchorbench_eval/metrics.py` — `compute_unified_metrics(records, epsilon=3.0)`.
+**Source:** `src/anchorbench/eval/metrics.py` — `compute_unified_metrics(records, epsilon=3.0)`.
 
 ### 6.1 Definitions
 
@@ -182,7 +182,7 @@ Each line of `results.jsonl` is one **item x condition** run:
 **Example (vLLM, single GPU):**
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_external.py \
+python -m anchorbench.runners.external \
   --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
   --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
   --model_id meta-llama/Llama-3.2-3B-Instruct \
@@ -194,7 +194,7 @@ PYTHONPATH=src python scripts/eval/run_external.py \
 **Example (vLLM, 70B with tensor parallelism):**
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_external.py \
+python -m anchorbench.runners.external \
   --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
   --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
   --model_id meta-llama/Llama-3.1-70B-Instruct \
@@ -208,7 +208,7 @@ PYTHONPATH=src python scripts/eval/run_external.py \
 ### Single suite, single model (HF)
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_external.py \
+python -m anchorbench.runners.external \
   --promptviews datasets/anchorbench_external_core/promptviews.jsonl \
   --itemspecs datasets/anchorbench_external_core/itemspecs.jsonl \
   --model_id Qwen/Qwen2.5-7B-Instruct \
@@ -225,7 +225,7 @@ For CoT models with low parse rate:
 ### Recompute all unified metrics (no new inference)
 
 ```bash
-PYTHONPATH=src python scripts/eval/recompute_all_unified.py
+PYTHONPATH=src python anchorbench.analysis.unified
 ```
 
 ### Run tests
@@ -240,14 +240,14 @@ PYTHONPATH=src python -m pytest tests/test_parsing.py tests/test_metrics.py -v
 
 | Path | Role |
 |------|------|
-| `src/anchorbench_eval/parsing.py` | 3-tier parsing: parse_structured, parse_answer_int, LLMFallbackExtractor |
-| `src/anchorbench_eval/metrics.py` | compute_unified_metrics, bootstrap_ci, paired_wilcoxon, bh_correction |
-| `src/anchorbench_eval/backends.py` | HFBackend, APIBackend |
-| `src/anchorbench_eval/evaluator.py` | prepare_items, run_single_stage, run_history_two_stage, write_and_summarize |
-| `src/anchorbench_eval/io.py` | load_promptviews, load_itemspecs, load_records |
-| `scripts/eval/run_*.py` | Thin CLI wrappers for each suite |
-| `scripts/eval/unified_metrics.py` | Re-export from anchorbench_eval.metrics (backward compat) |
-| `scripts/eval/recompute_all_unified.py` | Batch recompute from existing results.jsonl |
+| `src/anchorbench/eval/parsing.py` | 3-tier parsing: parse_structured, parse_answer_int, LLMFallbackExtractor |
+| `src/anchorbench/eval/metrics.py` | compute_unified_metrics, bootstrap_ci, paired_wilcoxon, bh_correction |
+| `src/anchorbench/eval/backends.py` | HFBackend, APIBackend |
+| `src/anchorbench/eval/evaluator.py` | prepare_items, run_single_stage, run_history_two_stage, write_and_summarize |
+| `src/anchorbench/eval/io.py` | load_promptviews, load_itemspecs, load_records |
+| `anchorbench.runners.*` | Thin CLI wrappers for each suite |
+| `anchorbench.eval.metrics` | Re-export from anchorbench.eval.metrics (backward compat) |
+| `anchorbench.analysis.unified` | Batch recompute from existing results.jsonl |
 | `tests/test_parsing.py` | 37 tests for parsing (structured, regex, fallback, cascade) |
 | `tests/test_metrics.py` | 14 tests for metrics (UAI, TAR, bootstrap, Wilcoxon, BH) |
 
@@ -257,21 +257,19 @@ PYTHONPATH=src python -m pytest tests/test_parsing.py tests/test_metrics.py -v
 
 ### What changed (refactor from previous version)
 
-1. **Shared package created:** All parsing, metrics, IO, backend, and evaluation logic moved to `src/anchorbench_eval/`.
-2. **Suite runners slimmed:** Each `scripts/eval/run_*.py` went from 230-440 lines to ~50-70 lines.
+1. **Shared package created:** All parsing, metrics, IO, backend, and evaluation logic moved to `src/anchorbench/eval/`.
+2. **Suite runners slimmed:** Each `anchorbench.runners.*` went from 230-440 lines to ~50-70 lines.
 3. **Metric drift fixed:** The incorrect local `compute_metrics()` in `run_external.py` and `run_rag.py` (wrong UAI denominator `anchor_val - y_star` and epsilon=1) has been removed. All suites now use the canonical `compute_unified_metrics()`.
 4. **3-tier parsing added:** Structured JSON output (Tier 1) and same-model LLM fallback (Tier 3) are now available via `--structured` and `--llm_fallback` flags.
 5. **Statistical helpers added:** `bootstrap_ci`, `paired_wilcoxon`, `bh_correction` in `metrics.py`.
-6. **`src/mitigation_eval/`** is untouched — the new package is independent.
 
 ### Backward compatibility
 
 - Existing `results.jsonl` files are fully compatible with the new `compute_unified_metrics()`.
-- `scripts/eval/unified_metrics.py` is a thin re-export; existing imports still work.
+- `anchorbench.eval.metrics` is a thin re-export; existing imports still work.
 - CLI args are preserved; shell scripts (`run_*_gpus.sh`) keep working.
 - Old `summary.json` files from External/RAG used the wrong formula; new runs produce correct ones.
 
 ### Deprecated
 
 - Local `compute_metrics()` functions in the old `run_external.py` and `run_rag.py` — removed entirely.
-- Direct imports from `mitigation_eval.runner` for parsing/IO in suite runners — replaced by `anchorbench_eval.*` imports.

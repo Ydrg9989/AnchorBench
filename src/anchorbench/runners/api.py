@@ -5,7 +5,7 @@ Supports all 5 suites (external, history, icl, rag, tool) with async
 concurrent API calls for maximum throughput and cost efficiency.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_api_benchmark.py \
+    python -m anchorbench.runners.api \
         --model_id openai/gpt-5.4-mini \
         --suites external history icl rag tool \
         --out_dir results/api_benchmark \
@@ -13,7 +13,7 @@ Usage:
         --max_items 10
 
     # Smoke test (10 items/suite, all 4 models):
-    PYTHONPATH=src python scripts/eval/run_api_benchmark.py \
+    python -m anchorbench.runners.api \
         --model_id openai/gpt-5.4-mini \
         --suites external icl rag tool \
         --out_dir results/api_smoke \

@@ -5,7 +5,7 @@ Reuses the same async API infrastructure as run_api_benchmark.py, pointing
 at the anchorbench_icl_dist_core dataset.
 
 Usage:
-    PYTHONPATH=src python scripts/eval/run_icl_dist_api.py \
+    python -m anchorbench.runners.icl_dist_api \
         --model_id openai/gpt-5.4-mini \
         --out_dir results/icl_numeric_api
 """

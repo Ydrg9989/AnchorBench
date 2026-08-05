@@ -45,10 +45,10 @@ From the repo root:
 
 ```bash
 # Pilot (all 6 domains, 5 items per domain × difficulty)
-PYTHONPATH=src python -m anchorbench_v1.generate --suites history --size pilot --seed 42 --out_dir datasets/anchorbench_history_pilot
+anchorbench generate data=history +size=pilot seed=42
 
 # Smoke (1 domain, quick check)
-PYTHONPATH=src python -m anchorbench_v1.generate --suites history --size smoke --seed 42 --out_dir datasets/anchorbench_history_smoke
+anchorbench generate data=history +size=smoke seed=42
 ```
 
 Outputs:
@@ -62,13 +62,16 @@ Outputs:
 Two-stage conditions require running Stage 1, then Stage 2 with the model's Stage 1 reply in the conversation:
 
 ```bash
-PYTHONPATH=src python scripts/eval/run_history.py \
-  --promptviews datasets/anchorbench_history_pilot/promptviews.jsonl \
-  --itemspecs datasets/anchorbench_history_pilot/itemspecs.jsonl \
+anchorbench eval data=history model=llama_8b
+
+# or invoke the runner directly, e.g. to pick a non-default baseline:
+python -m anchorbench.runners.history \
+  --promptviews datasets/anchorbench_history_core/promptviews.jsonl \
+  --itemspecs   datasets/anchorbench_history_core/itemspecs.jsonl \
   --model_id meta-llama/Llama-3.1-8B-Instruct \
-  --out_dir results/history_pilot \
-  --max_tokens 512 \
-  --llm_fallback --fallback_model Qwen/Qwen2.5-1.5B-Instruct
+  --out_dir results/history_check \
+  --backend vllm --max_tokens 512 \
+  --baseline_condition control_twostage
 ```
 
 - **Control**: One call per item (single-stage).
