@@ -14,7 +14,7 @@ the exact prompts a model saw.
 | Hub | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) (currently private) |
 | Checksums | `datasets/anchorbench_core_checksums.sha256` |
 | Raw generations | Zenodo (DOI: _pending upload_) |
-| HF revision | `548dff8427062b7f0b913453ef14f4a8e19a9006` (2026-08-05) |
+| HF revision | `85b6d4a26092868281f45b745fd1f5ccf02dd91b` (2026-08-05) |
 
 Generated with, for every suite:
 
@@ -77,5 +77,5 @@ not enough to reproduce the paper's own breakdowns: Figure 3 needs `offset`
 and `tab:difficulty` needs `difficulty`. It also published
 `anchorbench_tool_read_core/`, a suite removed in v2.0 that appears nowhere
 in the paper, and omitted `external_uncertain`, which backs Table 2 in the
-main paper. Replaced in one commit by `548dff842706`; the old files remain in
-the Hub's git history.
+main paper. Replaced in one commit by `548dff842706`, then `85b6d4a26092` corrected the
+homepage URL. The old files remain in the Hub's git history.
