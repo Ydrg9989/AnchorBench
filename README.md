@@ -27,8 +27,8 @@ shift but whether the shift is justified.
 ## Install
 
 ```bash
-git clone https://github.com/Ydrg9989/LLM_anchoring.git
-cd LLM_anchoring
+git clone https://github.com/Ydrg9989/AnchorBench.git
+cd AnchorBench
 pip install -e ".[all]"            # core + vllm + api + dev
 ```
 
@@ -123,7 +123,7 @@ with the command to re-measure each one.
 ## Repository structure
 
 ```
-LLM_anchoring/
+AnchorBench/
 |-- conf/                    # Hydra config tree (data, model, tier, decoding, experiment)
 |-- src/anchorbench/         # single consolidated package
 |   |-- data/                # ItemSpec generation, suite renderers, validators
