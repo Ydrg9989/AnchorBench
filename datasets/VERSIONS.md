@@ -11,9 +11,10 @@ the exact prompts a model saw.
 | Git tag | `colm2026-camera-ready` |
 | Suites | external, history, icl, rag, tool (360 items each) + external_uncertain |
 | Released files | `datasets/hf_release/*.jsonl` (14,400 rows) |
+| Hub | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) (currently private) |
 | Checksums | `datasets/anchorbench_core_checksums.sha256` |
 | Raw generations | Zenodo (DOI: _pending upload_) |
-| HF revision | _pending upload_ |
+| HF revision | `548dff8427062b7f0b913453ef14f4a8e19a9006` (2026-08-05) |
 
 Generated with, for every suite:
 
@@ -66,3 +67,15 @@ first, `tests/test_golden_artifacts.py` for the third, and
 - **vLLM is not bitwise reproducible at temperature 0.** Re-running a cell can
   move a metric by a few hundredths; see
   `results/rebuttal/cot_replication/README.md`.
+
+## Superseded Hub revisions
+
+`fbbadc1ed373` (2026-07-10) — the first upload. Its prompts were correct and
+byte-identical to the evaluated ones, but it carried only five fields
+(`item_id`, `condition`, `prompt_text`, `y_star`, `anchor_value`), which is
+not enough to reproduce the paper's own breakdowns: Figure 3 needs `offset`
+and `tab:difficulty` needs `difficulty`. It also published
+`anchorbench_tool_read_core/`, a suite removed in v2.0 that appears nowhere
+in the paper, and omitted `external_uncertain`, which backs Table 2 in the
+main paper. Replaced in one commit by `548dff842706`; the old files remain in
+the Hub's git history.

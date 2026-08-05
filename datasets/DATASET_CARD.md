@@ -1,6 +1,34 @@
-# AnchorBench
+---
+license: cc-by-4.0
+language:
+- en
+pretty_name: AnchorBench
+task_categories:
+- text-generation
+tags:
+- anchoring
+- anchoring-bias
+- cognitive-bias
+- llm-evaluation
+- benchmark
+size_categories:
+- 10K<n<100K
+configs:
+- config_name: external
+  data_files: data/external.jsonl
+- config_name: history
+  data_files: data/history.jsonl
+- config_name: icl
+  data_files: data/icl.jsonl
+- config_name: rag
+  data_files: data/rag.jsonl
+- config_name: tool
+  data_files: data/tool.jsonl
+- config_name: external_uncertain
+  data_files: data/external_uncertain.jsonl
+---
 
-> **Dataset card for Hugging Face.** Copy this content into the README of your HF dataset repo (e.g. `Yiderigun/LLM_anchoring`) so it appears as the dataset card.
+# AnchorBench
 
 **A multi-paradigm benchmark for anchoring bias in large language models.**
 

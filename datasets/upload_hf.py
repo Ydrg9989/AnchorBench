@@ -26,7 +26,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-RELEASE_DIR = ROOT / "datasets" / "hf_release"
+DATASETS = ROOT / "datasets"
+RELEASE_DIR = DATASETS / "hf_release"
 REPO_ID = "Yiderigun/LLM_anchoring"
 
 # The five core suites plus the uncertain variant, which backs Table 2 in the
@@ -34,7 +35,8 @@ REPO_ID = "Yiderigun/LLM_anchoring"
 SUITES = ("external", "history", "icl", "rag", "tool", "external_uncertain")
 
 # Shipped alongside the data so the Hub page documents itself.
-EXTRA_FILES = ("DATASET_CARD.md", "VERSIONS.md")
+# DATASET_CARD.md becomes README.md so the Hub renders it as the card.
+EXTRA_FILES = {"DATASET_CARD.md": "README.md", "VERSIONS.md": "VERSIONS.md"}
 
 
 def main() -> int:
@@ -54,34 +56,56 @@ def main() -> int:
             return 1
         uploads.append((src, f"data/{suite}.jsonl"))
 
-    for name in EXTRA_FILES:
+    corpus = DATASETS / "anchorbench_rag_core" / "anchorbench_corpus.jsonl"
+    if corpus.exists():
+        uploads.append((corpus, "data/rag_corpus.jsonl"))
+
+    for name, target in EXTRA_FILES.items():
         src = ROOT / "datasets" / name
         if src.exists():
-            uploads.append((src, name))
+            uploads.append((src, target))
         else:
             print(f"note: {name} not present, skipping")
 
-    for src, target in uploads:
-        size_kb = src.stat().st_size / 1024
-        print(f"  {str(src.relative_to(ROOT)):55s} -> {target:32s} {size_kb:8.0f} KiB")
-
-    if args.dry_run:
-        print(f"\ndry run: {len(uploads)} file(s) would go to {args.repo_id}")
-        return 0
-
-    from huggingface_hub import HfApi
+    from huggingface_hub import CommitOperationAdd, CommitOperationDelete, HfApi
 
     api = HfApi()
+
+    # Anything already on the Hub that the new layout does not produce. The
+    # first release used anchorbench_<suite>_core/promptviews.jsonl; leaving
+    # those beside data/<suite>.jsonl would publish two copies of the
+    # benchmark with different schemas. It also drops tool_read, a suite
+    # removed in v2.0 that appears nowhere in the paper.
+    keep = {t for _, t in uploads}
+    existing = {s.rfilename for s in
+                api.repo_info(args.repo_id, repo_type="dataset").siblings}
+    obsolete = sorted(f for f in existing - keep if not f.startswith("."))
+
     for src, target in uploads:
-        print(f"uploading {target} ...")
-        api.upload_file(
-            path_or_fileobj=str(src),
-            path_in_repo=target,
-            repo_id=args.repo_id,
-            repo_type="dataset",
-        )
-    print(f"\nDone. {len(uploads)} file(s) uploaded to {args.repo_id}.")
-    print("Record the resulting revision hash in datasets/VERSIONS.md.")
+        print(f"  + {str(src.relative_to(ROOT)):52s} -> {target:32s} "
+              f"{src.stat().st_size/1024:8.0f} KiB")
+    for f in obsolete:
+        print(f"  - {f}")
+
+    if args.dry_run:
+        print(f"\ndry run: {len(uploads)} added/updated, {len(obsolete)} removed "
+              f"on {args.repo_id}")
+        return 0
+
+    ops = [CommitOperationAdd(path_in_repo=t, path_or_fileobj=str(s))
+           for s, t in uploads]
+    ops += [CommitOperationDelete(path_in_repo=f) for f in obsolete]
+
+    # One commit, so the repo is never in a half-migrated state.
+    info = api.create_commit(
+        repo_id=args.repo_id,
+        repo_type="dataset",
+        operations=ops,
+        commit_message="Release anchorbench-v2.0-core: full schema, add uncertain suite, drop tool_read",
+    )
+    print(f"\nDone. {len(uploads)} added/updated, {len(obsolete)} removed.")
+    print(f"Revision: {info.oid}")
+    print("Record that hash in datasets/VERSIONS.md.")
     return 0
 
 
