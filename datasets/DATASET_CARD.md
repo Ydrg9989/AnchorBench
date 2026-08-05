@@ -6,13 +6,14 @@
 
 ## Dataset Description
 
-AnchorBench measures how much LLM numeric estimates shift toward salient reference numbers delivered through six interface channels (prompt text, conversation history, in-context demos, retrieved documents, tool outputs in JSON, tool outputs via function calling). Each item is presented under matched conditions that share the same evidence and gold answer; only the anchor changes. The benchmark distinguishes **irrelevant** anchors (transparently arbitrary) from **plausible** anchors (weakly credible), so you can measure both raw susceptibility and relevance discrimination.
+AnchorBench measures how much LLM numeric estimates shift toward salient reference numbers delivered through five pathways (prompt text, conversation history, in-context demonstrations, retrieved documents, tool outputs). Each item is presented under matched conditions that share the same evidence and gold answer; only the anchor changes. The benchmark distinguishes **irrelevant** anchors (transparently arbitrary) from **plausible** anchors (weakly credible), so you can measure both raw susceptibility and relevance discrimination.
 
-- **Homepage:** [Repository / paper link]
-- **Paper:** AnchorBench: A Theory-Grounded, Multi-Paradigm Benchmark for Anchoring Bias in Large Language Models (COLM 2026)
+- **Homepage:** https://github.com/Yiderigun/LLM_anchoring
+- **Paper:** AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs (COLM 2026)
 - **Language:** English
 - **Task:** Numeric estimation (0–100) under anchoring manipulations
-- **License:** [To be specified]
+- **License:** CC BY 4.0 (items are synthetic and author-generated)
+- **Splits:** none. AnchorBench is eval-only; every row is `split: test`.
 
 ## Two-Layer Structure
 
@@ -42,23 +43,25 @@ Suite-specific extended conditions for appendix analyses:
 | **History** | `control_twostage` | Matched two-stage neutral control |
 | **ICL** | `neutral_low/high` | Pure numeric priming (no semantic header) |
 | **RAG** | `*_order_first/last`, `*_nodiscl`, `*_authority` | Position, disclaimer, framing ablations |
-| **Tool / Tool-Read** | (none) | Core-only |
+| **Tool** | (none) | Core-only |
 
 **File:** `promptviews_ablation.jsonl` in each suite directory (where applicable).
 
 ## Suites (6)
 
-| Suite | Anchor channel | Items | Core views | Ablation views | Total views |
-|-------|----------------|-------|------------|----------------|-------------|
-| **external_core** | Sentence in prompt | 360 | 1,800 | 1,440 | 3,240 |
-| **history_core** | Prior turn in conversation | 120 | 600 | 120 | 720 |
-| **icl_core** | Demo header metadata | 360 | 1,800 | 720 | 2,520 |
+| Suite | Anchor pathway | Items | Core views | Ablation views | All views |
+|---|---|---:|---:|---:|---:|
+| **external_core** | Sentence in the prompt | 360 | 1,800 | 1,440 | 3,240 |
+| **history_core** | The model's own prior turn | 360 | 1,800 | 360 | 2,160 |
+| **icl_core** | Demonstration metadata | 360 | 1,800 | 720 | 2,520 |
 | **rag_core** | Retrieved document | 360 | 1,800 | 4,320 | 6,120 |
-| **tool_core** | Tool output (function calling) | 360 | 1,800 | 0 | 1,800 |
-| **tool_read_core** | Tool output (plain JSON) | 360 | 1,800 | 0 | 1,800 |
+| **tool_core** | Tool-call response | 360 | 1,800 | 0 | 1,800 |
+| **external_uncertain** | Prompt, with only k of 5 ratings visible | 360 | 5,400 | 0 | 5,400 |
 
-**Total core:** 1,920 items, 9,600 prompt views.
-**Total with ablations:** 1,920 items, 16,200 prompt views.
+**Total core:** 1,800 items, 9,000 core prompt views (5 suites).
+**With ablations:** 15,840 prompt views.
+**Released on the Hub:** 14,400 rows -- the 9,000 core views plus the 5,400
+uncertain views. `external_uncertain` backs Table 2 in the main paper.
 
 ## Data Schema
 
@@ -140,42 +143,82 @@ metrics = compute_extended_metrics(records)
 
 ## Dataset Structure
 
+Released layout on the Hub — one file per suite, 14,400 rows in total:
+
 ```
-external_core/
-  promptviews_core.jsonl        # 1,800 lines (core)
-  promptviews_ablation.jsonl    # 1,440 lines (placebo/authority)
-  promptviews.jsonl             # 3,240 lines (all)
-  itemspecs.jsonl               # 360 items
-
-history_core/
-  promptviews_core.jsonl        # 600 lines
-  promptviews_ablation.jsonl    # 120 lines (control_twostage)
-  promptviews.jsonl             # 720 lines
-  itemspecs.jsonl               # 120 items
-
-icl_core/
-  promptviews_core.jsonl        # 1,800 lines
-  promptviews_ablation.jsonl    # 720 lines (neutral)
-  promptviews.jsonl             # 2,520 lines
-  itemspecs.jsonl               # 360 items
-
-rag_core/
-  promptviews_core.jsonl        # 1,800 lines
-  promptviews_ablation.jsonl    # 4,320 lines (order/disclaimer/authority)
-  promptviews.jsonl             # 6,120 lines
-  anchorbench_corpus.jsonl      # RAG document corpus
-  itemspecs.jsonl               # 360 items
-
-tool_core/
-  promptviews_core.jsonl        # 1,800 lines
-  promptviews.jsonl             # 1,800 lines
-  itemspecs.jsonl               # 360 items
-
-tool_read_core/
-  promptviews_core.jsonl        # 1,800 lines
-  promptviews.jsonl             # 1,800 lines
-  itemspecs.jsonl               # 360 items
+data/external.jsonl              1,800 rows
+data/history.jsonl               1,800
+data/icl.jsonl                   1,800
+data/rag.jsonl                   1,800
+data/tool.jsonl                  1,800
+data/external_uncertain.jsonl    5,400   (360 items x 15 conditions)
 ```
 
-Total core: **9,600 lines** (5 conditions × ~1,920 items).
-Total with ablations: **16,200 lines**.
+The internal repository additionally carries `itemspecs.jsonl` and the
+ablation views for each suite; those are not part of this release. See the
+[code repository](https://github.com/Yiderigun/LLM_anchoring) for them.
+
+### Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `item_id` | string | Stable identifier. Encodes suite, domain, difficulty (`e`/`h`) and anchor offset, e.g. `EXT-pricing_wtp-e-off15-001`. |
+| `suite` | string | `external`, `history`, `icl`, `rag`, `tool`, `external_uncertain`. |
+| `condition` | string | One of the five matched conditions (15 for the uncertain suite). |
+| `relevance` | string | `none` for control, else `irrelevant` / `plausible` / `self_generated`. |
+| `anchor_polarity` | string \| null | `low` or `high`; null for control. |
+| `anchor_value` | int \| null | The number placed in the prompt. Null for control **and for all of History** — see below. |
+| `offset` | int \| null | Designed distance of the anchor from the evidence centre: 15, 25 or 40. |
+| `difficulty` | string | `easy` (5 ratings, low noise) or `hard` (3 of 5 shown, higher noise). |
+| `domain` | string | One of six business domains. |
+| `prompt_text` | string | The exact prompt the models were given. |
+| `y_star_evidence` | int | Gold answer: the rounded mean of the *full* five ratings. |
+| `split` | string | Always `test`. |
+
+**`anchor_value` is null for every History row, deliberately.** History's
+anchor is the model's *own* Stage-1 answer, so it is a property of the
+(item, model) run rather than of the item — the same item records 80 for
+Qwen-7B and 81 for Llama-8B. Publishing one number would misrepresent what the
+model saw. Take the realised value from the released results instead.
+
+### Loading
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("Yiderigun/LLM_anchoring", data_files="data/external.jsonl")["train"]
+
+# UAI needs the control answer for the same item, so group by item_id.
+row = ds[0]
+print(row["condition"], row["anchor_value"], row["y_star_evidence"])
+```
+
+Scoring an anchored response, given the model's control answer `y_ctrl` for
+the same `item_id`:
+
+```
+UAI = (y_anchored - y_ctrl) / (anchor_value - y_ctrl)
+```
+
+Items where `|anchor_value - y_ctrl| < 3` are excluded from UAI in the paper:
+the near-zero denominator makes the ratio unstable. Conclusions are stable
+across thresholds of 1, 3 and 5.
+
+### Known properties worth stating
+
+- **Eval-only.** No train or validation portion; every row is `split: test`.
+- **Three prompts repeat inside `uncertain_p1_control`** (6 of 360 items,
+  1.7%) with different gold answers. That is the design rather than a
+  collision: at k=1 the prompt shows one visible rating while gold stays the
+  mean of all five, so two items sharing a first rating give identical prompts
+  with different answers. The irreducible uncertainty is the point of that
+  condition.
+- **Synthetic by construction.** Items are instantiated from author-designed
+  templates; scenario text, evidence labels and anchor framings come from
+  pools generated with LLM assistance and then verified by the authors, while
+  the numeric evidence, anchor values and gold answers come from seeded
+  sampling. AnchorBench is a controlled diagnostic, not a sample of organic
+  user queries.
+
+Version history and the mapping from dataset version to paper tables is in
+[VERSIONS.md](VERSIONS.md).

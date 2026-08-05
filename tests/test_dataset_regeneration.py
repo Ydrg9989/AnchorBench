@@ -122,3 +122,62 @@ def test_itemspecs_reproduce_apart_from_provenance(regenerated):
         a = {k: v for k, v in a.items() if k != "generator_version"}
         b = {k: v for k, v in b.items() if k != "generator_version"}
         assert a == b, f"{suite}: itemspec {a.get('item_id')} changed beyond generator_version"
+
+
+def test_public_release_matches_the_evaluated_prompts():
+    """Every released prompt must be the prompt the models actually saw.
+
+    The previous exports had drifted badly -- only 90 to 165 of 1800 rows per
+    suite still matched their source promptviews, because the evidence labels
+    were regenerated after the exports were written. Publishing those would
+    have shipped prompts no model was ever run on.
+    """
+    import subprocess
+    import sys
+
+    proc = subprocess.run(
+        [sys.executable, "scripts/export_public_promptviews.py", "--check"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    assert proc.returncode == 0, (
+        "datasets/hf_release/ is stale; run scripts/export_public_promptviews.py\n"
+        f"{proc.stdout}\n{proc.stderr}"
+    )
+
+    release = ROOT / "datasets" / "hf_release"
+    if not release.exists():
+        pytest.skip("hf_release not generated")
+
+    for suite in ("external", "history", "icl", "rag", "tool"):
+        src_path = DATASETS / f"anchorbench_{suite}_core" / "promptviews_core.jsonl"
+        out_path = release / f"{suite}.jsonl"
+        if not (src_path.exists() and out_path.exists()):
+            continue
+        src = {}
+        for line in src_path.read_text().splitlines():
+            d = json.loads(line)
+            src[(d["item_id"], d["condition"])] = d["prompt_text"]
+        for line in out_path.read_text().splitlines():
+            r = json.loads(line)
+            key = (r["item_id"], r["condition"])
+            assert key in src, f"{suite}: released row {key} has no source promptview"
+            assert r["prompt_text"] == src[key], (
+                f"{suite}: released prompt for {key} differs from the evaluated one"
+            )
+
+
+def test_history_release_reports_no_static_anchor():
+    """History's anchor is the model's own Stage-1 answer, not an item property.
+
+    The same item records anchor_value 80 for Qwen-7B and 81 for Llama-8B, so
+    a single published value would misrepresent what the model saw. null is
+    the honest answer; the realised value lives in the released results.
+    """
+    path = ROOT / "datasets" / "hf_release" / "history.jsonl"
+    if not path.exists():
+        pytest.skip("hf_release not generated")
+    rows = [json.loads(line) for line in path.read_text().splitlines()]
+    assert rows, "history release is empty"
+    assert all(r["anchor_value"] is None for r in rows), (
+        "history rows must not carry a static anchor_value"
+    )

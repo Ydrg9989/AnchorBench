@@ -9,7 +9,7 @@
 | ICL      | `anchorbench_icl_core/` |
 | RAG      | `anchorbench_rag_core/` (+ `anchorbench_corpus.jsonl`) |
 | Tool     | `anchorbench_tool_core/` |
-| Tool-read| `anchorbench_tool_read_core/` |
+| Uncertain| `anchorbench_external_uncertain/` (backs Table 2; derived from external itemspecs) |
 
 Each folder contains:
 
@@ -74,3 +74,23 @@ Prior **smoke / pilot experiment outputs** live under **`results/archive/smoke_r
 
 - `hf_release/` — prior Hugging Face export snapshots  
 - `DATASET_CARD.md` — dataset documentation  
+
+## Public release
+
+The Hugging Face release is built from these directories, not shipped from
+them directly:
+
+```bash
+python scripts/export_public_promptviews.py     # -> datasets/hf_release/*.jsonl
+python datasets/upload_hf.py --dry-run          # inspect
+python datasets/upload_hf.py                    # upload
+```
+
+`hf_release/` carries one self-contained row per prompt (prompt text, anchor
+value, gold answer, metadata) so a user can run the benchmark and compute UAI
+without any internal file. See [DATASET_CARD.md](DATASET_CARD.md) for the
+field schema and [VERSIONS.md](VERSIONS.md) for the mapping from dataset
+version to paper tables.
+
+`tests/test_dataset_regeneration.py` asserts every released prompt is
+byte-identical to the prompt the models were evaluated on.

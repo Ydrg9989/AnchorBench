@@ -116,3 +116,6 @@ COLM*/*.log
 
 # Zenodo bundles (scripts/make_zenodo_bundles.sh); published, not committed
 /dist/
+
+# HF release build output (regenerate with scripts/export_public_promptviews.py)
+/datasets/hf_release/
