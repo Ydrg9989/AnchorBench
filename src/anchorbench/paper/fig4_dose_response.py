@@ -8,8 +8,8 @@ model via :func:`compute_by_offset`, then plots suite-mean curves with
 95% CIs (mean ± 1.96 * SE across models) for each tier.
 
 Outputs:
-    COLM/figures/fig4_dose_response.pdf
-    COLM/figures/fig4_dose_response.png
+    outputs/figures/fig4_dose_response.pdf
+    outputs/figures/fig4_dose_response.png
 
 Usage:
     python anchorbench.paper.fig4_dose_response

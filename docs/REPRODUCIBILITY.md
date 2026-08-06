@@ -139,7 +139,7 @@ appendix extensions under `results/rebuttal/` and `results/revision/`.
 
 | # | Label | Generator | Output |
 |---|---|---|---|
-| Figure 3 | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `COLM/figures/fig4_dose_response.{pdf,png}` |
+| Figure 3 | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `outputs/figures/fig4_dose_response.{pdf,png}` |
 | Table 1 | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results_revised.tex` |
 | Table 2 | `tab:uncertain-main` | `anchorbench.analysis.uncertain` | hand-condensed from `results/rebuttal/uncertain/` |
 
@@ -156,7 +156,7 @@ name macros and the caption are authored.
 | # | Label | Output |
 |---|---|---|
 | Table 3 | `tab:model-details` | `tab_model_details.tex` |
-| Figure 8 | `fig:acc-vs-disc` | `COLM/figures/fig5_acc_vs_disc.{pdf,png}` |
+| Figure 8 | `fig:acc-vs-disc` | `outputs/figures/fig5_acc_vs_disc.{pdf,png}` |
 | Tables 4-8 | `tab:app-{suite}` | `tab_app_{suite}.tex` |
 | Table 9 | `tab:uai_summary` | `tab_uai_summary.tex` |
 | Table 10 | `tab:stats_inference` | `tab_stats_inference.tex` |
@@ -189,7 +189,7 @@ Regenerate the last group with `anchorbench tables --appendix`; it needs
 `tab:history_matched` and `tab:tool_plaintext` were produced by runs that were
 never preserved. Both were re-run independently; the results and a
 published-vs-re-run comparison are in
-`COLM_camera_ready/addendum/ADDENDUM.md`. The published values stand.
+[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md). The published values stand.
 
 ## Checksums
 

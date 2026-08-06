@@ -41,7 +41,7 @@ hash_into "$GOLDEN/rebuttal_tables.sha256" results/rebuttal -name '*.tex'
 
 # Figures: PNG only. Matplotlib writes /CreationDate and /ID into PDFs, so
 # PDF hashes differ on every run even when the plot is identical -- verified.
-hash_into "$GOLDEN/figures.sha256" COLM/figures -name '*.png'
+hash_into "$GOLDEN/figures.sha256" outputs/figures -name '*.png'
 
 # The two unified summaries every table is derived from. Belt and braces:
 # catches an accidental regeneration of the inputs themselves.

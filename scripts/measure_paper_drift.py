@@ -19,12 +19,16 @@ comparison is against stale output.
 """
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-APPENDIX = ROOT / "COLM_camera_ready/sections/appendix.tex"
+# As in sync_paper_tables.py: the LaTeX source lives with the arXiv
+# submission, not here. ANCHORBENCH_PAPER_DIR points at a local checkout.
+APPENDIX = Path(os.environ.get("ANCHORBENCH_PAPER_DIR",
+                               ROOT / "COLM_camera_ready")) / "sections/appendix.tex"
 GEN_DIR = ROOT / "outputs/tables"
 
 # Paper label -> generator output. Only tables pasted inline in appendix.tex
@@ -130,6 +134,11 @@ def main() -> int:
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--verbose", action="store_true", help="list every differing cell")
     args = p.parse_args()
+
+    if not APPENDIX.is_file():
+        print(f"{APPENDIX} not found; set ANCHORBENCH_PAPER_DIR to a "
+              "checkout of the paper source.", file=sys.stderr)
+        return 1
 
     appendix = APPENDIX.read_text()
     print(f"{'paper table':26s} {'status':12s} detail")

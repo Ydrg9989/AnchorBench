@@ -10,8 +10,8 @@ nonparametric bootstrap 95% CI in the figure caption text printed to
 stdout.
 
 Outputs:
-    COLM/figures/fig5_acc_vs_disc.pdf
-    COLM/figures/fig5_acc_vs_disc.png
+    outputs/figures/fig5_acc_vs_disc.pdf
+    outputs/figures/fig5_acc_vs_disc.png
 
 Usage:
     python anchorbench.paper.fig5_acc_vs_disc

@@ -18,7 +18,7 @@ DEFAULT_OW_RESULTS = ROOT / "results" / "full_benchmark"
 DEFAULT_API_RESULTS = ROOT / "results" / "api_benchmark"
 DEFAULT_ICL_DIST_OW = ROOT / "results" / "icl_dist_core" / "icl"
 DEFAULT_ICL_DIST_API = ROOT / "results" / "icl_dist_api"
-DEFAULT_FIG_DIR = ROOT / "COLM" / "figures"
+DEFAULT_FIG_DIR = ROOT / "outputs" / "figures"
 DEFAULT_TABLE_DIR = ROOT / "outputs" / "tables"
 
 OW_MODELS_ORDER = [

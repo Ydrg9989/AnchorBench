@@ -22,12 +22,16 @@ this copies stale numbers.
 
 import argparse
 import re
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 GEN_DIR = ROOT / "outputs" / "tables"
-PAPER_DIR = ROOT / "COLM_camera_ready" / "tables"
+# The LaTeX source is not part of this repository -- it ships with the
+# arXiv submission. Point ANCHORBENCH_PAPER_DIR at a local checkout of it.
+PAPER_DIR = Path(os.environ.get("ANCHORBENCH_PAPER_DIR",
+                                ROOT / "COLM_camera_ready")) / "tables"
 
 # generator output -> body file \input-ed by appendix.tex.
 #
@@ -57,6 +61,11 @@ def main() -> int:
     p.add_argument("--check", action="store_true",
                    help="report staleness without writing; exit 1 if stale")
     args = p.parse_args()
+
+    if not PAPER_DIR.parent.is_dir():
+        print(f"{PAPER_DIR.parent} not found; set ANCHORBENCH_PAPER_DIR to a "
+              "checkout of the paper source.", file=sys.stderr)
+        return 1
 
     PAPER_DIR.mkdir(parents=True, exist_ok=True)
     stale = []

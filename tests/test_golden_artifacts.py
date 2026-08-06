@@ -12,7 +12,7 @@ change to generator output is intended.
 
 Three tiers, because not everything can be regenerated from a clean clone:
 
-* outputs/tables/ and COLM/figures/ are regenerated here and compared. Most
+* outputs/tables/ and outputs/figures/ are regenerated here and compared. Most
   need the full results/ tree, which is gitignored and published as tarballs,
   so those tests skip when it is absent.
 * results/rebuttal/*.tex are pinned but not regenerated: their inputs are the

@@ -7,7 +7,7 @@
 
 | | |
 | --- | --- |
-| Paper | *AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs* (COLM 2026) &middot; [PDF](COLM_camera_ready/colm2026_conference.pdf) &middot; [OpenReview](https://openreview.net/forum?id=keInIFu0gS) |
+| Paper | *AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs* (COLM 2026) &middot; [OpenReview](https://openreview.net/forum?id=keInIFu0gS) |
 | Dataset | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) on Hugging Face |
 | Raw results | [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing) |
 | Code license | Apache-2.0 &middot; **Dataset** CC BY 4.0 |
@@ -217,7 +217,7 @@ bash scripts/reproduce_paper.sh              # full run
 
 The script regenerates any missing `datasets/anchorbench_*_core/`, runs the
 frozen `paper_main` recipe (70 cells), recomputes `unified_all_suites.json`
-for both tiers, regenerates the figures and main tables into `COLM/figures/`
+for both tiers, regenerates the figures and main tables into `outputs/figures/`
 and `outputs/tables/`, and finishes with `anchorbench verify`, which fails if
 any numeric claim drifts.
 
@@ -278,7 +278,6 @@ AnchorBench/
 |   `-- cli/                 # `anchorbench` entry points
 |-- datasets/                # committed: the exact prompts the models saw
 |-- results/                 # bulk gitignored; unified summaries + tables committed
-|-- COLM_camera_ready/       # camera-ready LaTeX source, figures and PDF
 |-- scripts/                 # reproduce_paper.sh + thin wrappers
 |-- docs/                    # ARCHITECTURE, RECONCILIATION, APPENDIX_TABLES, ...
 `-- tests/

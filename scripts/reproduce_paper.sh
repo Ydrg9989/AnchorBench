@@ -75,5 +75,5 @@ anchorbench verify
 
 echo ""
 echo "============================================================"
-echo "  Done. Figures: COLM/figures/  Tables: outputs/tables/"
+echo "  Done. Figures: outputs/figures/  Tables: outputs/tables/"
 echo "============================================================"

@@ -475,7 +475,7 @@ gone stale against the generator.
 Re-ran on 2026-08-05, 2 x H100 (OLMo-32B at TP=2). All 15 cells parse at
 0.92-1.00. Results in `results/{history_matched,tool_plaintext}/`; the tables
 and a published-vs-re-run comparison are in
-`COLM_camera_ready/addendum/ADDENDUM.md`.
+[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md).
 
 **The published tables are unchanged.** These are an addendum: the original
 inputs were never preserved, so this is an independent re-run under a

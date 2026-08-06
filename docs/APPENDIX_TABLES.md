@@ -75,4 +75,4 @@ without them. Recorded as D5 in [RECONCILIATION.md](RECONCILIATION.md).
 Both were re-run independently on 2026-08-05
 (`bash scripts/run_stage3_reruns.sh`). The re-run tables and a
 published-vs-re-run comparison are in
-`../COLM_camera_ready/addendum/ADDENDUM.md`; the published values stand.
+[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md); the published values stand.
