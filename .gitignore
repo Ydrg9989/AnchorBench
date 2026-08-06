@@ -118,7 +118,6 @@ COLM*/*.log
 /dist/
 
 # HF release build output (regenerate with scripts/export_public_promptviews.py)
-/datasets/hf_release/
 
 # The paper source is not part of the code release: it ships with the arXiv
 # submission. Kept out of the tree so a local checkout never gets committed.

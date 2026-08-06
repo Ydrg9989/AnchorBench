@@ -135,6 +135,10 @@ def test_public_release_matches_the_evaluated_prompts():
     import subprocess
     import sys
 
+    release = ROOT / "datasets" / "hf_release"
+    if not release.exists():
+        pytest.skip("hf_release not generated")
+
     proc = subprocess.run(
         [sys.executable, "scripts/export_public_promptviews.py", "--check"],
         cwd=ROOT, capture_output=True, text=True,
@@ -144,9 +148,6 @@ def test_public_release_matches_the_evaluated_prompts():
         f"{proc.stdout}\n{proc.stderr}"
     )
 
-    release = ROOT / "datasets" / "hf_release"
-    if not release.exists():
-        pytest.skip("hf_release not generated")
 
     for suite in ("external", "history", "icl", "rag", "tool"):
         src_path = DATASETS / f"anchorbench_{suite}_core" / "promptviews_core.jsonl"
