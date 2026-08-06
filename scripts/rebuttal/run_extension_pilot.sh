@@ -15,4 +15,4 @@ P2=$!
 P3=$!
 
 wait $P0 $P1 $P2 $P3
-echo "[$(date -Iseconds)] REVIEWER-2 extension pilot complete."
+echo "[$(date -Iseconds)] Extension pilot complete."

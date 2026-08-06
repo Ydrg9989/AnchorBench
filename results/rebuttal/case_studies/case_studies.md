@@ -1,6 +1,6 @@
-# Per-item case studies (REVIEWER-5)
+# Per-item case studies
 
-Mechanically-extracted paired triples from the published External suite. For each model in the standard 4-OW panel we surface the top discriminative items where the plausible-anchor shift clearly exceeds the irrelevant-anchor shift, so reviewers can inspect the actual model behaviour under each condition for the same underlying item.
+Mechanically-extracted paired triples from the published External suite. For each model in the standard 4-OW panel we surface the top discriminative items where the plausible-anchor shift clearly exceeds the irrelevant-anchor shift, so a reader can inspect the actual model behaviour under each condition for the same underlying item.
 
 Notation:
 - `y_c` = control answer (no anchor)

@@ -26,6 +26,6 @@ echo "[$(date -Iseconds)] P5 uncertain-judgment analyzer"
 PYTHONPATH=src python -m anchorbench.analysis.uncertain
 
 echo "[$(date -Iseconds)] Refreshing rebuttal deliverables"
-PYTHONPATH=src python -m anchorbench.analysis.rebuttal_deliverables
+: # (rebuttal_deliverables removed: it only assembled the review-cycle bundle)
 
 echo "[$(date -Iseconds)] WRAP_UP done."

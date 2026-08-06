@@ -52,7 +52,7 @@ PYTHONPATH=src bash scripts/run_with_env.sh \
 PYTHONPATH=src bash scripts/run_with_env.sh \
     python -m anchorbench.analysis.medical_pilot 2>&1 | tee -a "$LOG"
 PYTHONPATH=src bash scripts/run_with_env.sh \
-    python -m anchorbench.analysis.rebuttal_deliverables 2>&1 | tee -a "$LOG"
+    : # (rebuttal_deliverables removed: it only assembled the review-cycle bundle)
 set -e
 
 echo "[$(date -Iseconds)] wrap_up: ALL DONE" | tee -a "$LOG"

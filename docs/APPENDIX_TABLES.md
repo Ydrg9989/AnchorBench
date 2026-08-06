@@ -21,22 +21,22 @@ byte-for-byte (`tests/test_golden_artifacts.py`).
 
 | # | Paper table | Generator module | Results dir | Producing script |
 |---|---|---|---|---|
-| 1 | `tab:rebuttal_implied_w` | `analysis.bayesian_bound` | `rebuttal/bayesian_bound/` | — (reads `full_benchmark` + `api_benchmark`) |
-| 2 | `tab:rebuttal_excess_uai` | `analysis.bayesian_bound` | `rebuttal/bayesian_bound/` | — (same run) |
-| 3 | `tab:rebuttal_spectrum` | `analysis.spectrum` | `rebuttal/spectrum/` | `_b2_one_model.sh` |
-| 4 | `tab:rebuttal_uncertain` | `analysis.uncertain` | `rebuttal/uncertain/` | `_p5_*.sh` |
-| 5 | `tab:rebuttal_intensity_pathway` | `analysis.intensity_pathway` | `rebuttal/intensity{,_rag,_history}/` | `_d1_one_model.sh` |
-| 6 | `tab:rebuttal_extension_pilot` | `analysis.extension_pilot` | `rebuttal/extension_pilot/`, `rebuttal/medical/` | `_extension_pilot_*.sh`, `_c1_one_model.sh` |
-| 7 | `tab:rebuttal_wmean` | `analysis.weighted_mean` | `rebuttal/weighted_mean/` | — |
-| 8 | `tab:rebuttal_cot_extended` | `analysis.cot_reasoning_extended` | `rebuttal/cot_extended/` | `_b1_*.sh`, `_chain_after_b1.sh` |
-| 9 | `tab:rebuttal_task_spec` | `analysis.task_spec` | `rebuttal/task_spec/` | `_p4_one_model.sh` |
-| 10 | `tab:rebuttal_rag_realism` | `analysis.rag_realism` | `rebuttal/rag_realism/` | `run_p2_rag_realism.sh` |
-| 11 | `tab:rebuttal_tool_realism` | `analysis.tool_realism` | `rebuttal/tool_realism/` | `run_p3_tool_realism.sh` |
+| 1 | `tab:implied_weight` | `analysis.bayesian_bound` | `rebuttal/bayesian_bound/` | — (reads `full_benchmark` + `api_benchmark`) |
+| 2 | `tab:excess_uai` | `analysis.bayesian_bound` | `rebuttal/bayesian_bound/` | — (same run) |
+| 3 | `tab:plausibility_spectrum` | `analysis.spectrum` | `rebuttal/spectrum/` | `_b2_one_model.sh` |
+| 4 | `tab:uncertain_k` | `analysis.uncertain` | `rebuttal/uncertain/` | `_p5_*.sh` |
+| 5 | `tab:intensity_pathway` | `analysis.intensity_pathway` | `rebuttal/intensity{,_rag,_history}/` | `_d1_one_model.sh` |
+| 6 | `tab:extension_pilot` | `analysis.extension_pilot` | `rebuttal/extension_pilot/`, `rebuttal/medical/` | `_extension_pilot_*.sh`, `_c1_one_model.sh` |
+| 7 | `tab:weighted_mean` | `analysis.weighted_mean` | `rebuttal/weighted_mean/` | — |
+| 8 | `tab:cot_extended` | `analysis.cot_reasoning_extended` | `rebuttal/cot_extended/` | `_b1_*.sh`, `_chain_after_b1.sh` |
+| 9 | `tab:task_spec` | `analysis.task_spec` | `rebuttal/task_spec/` | `_p4_one_model.sh` |
+| 10 | `tab:rag_realism` | `analysis.rag_realism` | `rebuttal/rag_realism/` | `run_p2_rag_realism.sh` |
+| 11 | `tab:tool_realism` | `analysis.tool_realism` | `rebuttal/tool_realism/` | `run_p3_tool_realism.sh` |
 | 12 | `tab:large_panel_results` | `analysis.large_panel` | `rebuttal/large_{api,ow}/` | `_large_api_full.sh` |
-| 13 | `tab:rebuttal_case_studies` | `analysis.case_studies` | `full_benchmark/external/` | — (reads raw records) |
+| 13 | `tab:case_studies` | `analysis.case_studies` | `full_benchmark/external/` | — (reads raw records) |
 
 `analysis.cohens_d` also runs under `--appendix`. It produces
-`rebuttal/cohens_d/cohens_d_table.tex`, from which `tab:rebuttal_cohens_d` is
+`rebuttal/cohens_d/cohens_d_table.tex`, from which `tab:cohens_d` is
 a hand-condensed suite-mean summary — the paper table is not emitted directly
 by any script.
 
@@ -65,9 +65,6 @@ unused code.
 | `analysis/cot_reasoning.py` | `cot_reasoning_extended.py` | `_b1_*.sh` |
 | `analysis/medical_pilot.py` | `extension_pilot.py` | `_c1_one_model.sh` |
 
-`analysis/rebuttal_deliverables.py` is not a generator at all — it is a
-`shutil.copy` manifest that assembled the rebuttal handoff bundle. It is the
-closest thing to a provenance record in the repo, so it stays.
 
 ## Two tables that cannot be regenerated
 

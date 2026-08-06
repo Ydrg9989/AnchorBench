@@ -30,9 +30,9 @@ EXTENDED_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("authority_high", "authority", "high"),
 ]
 
-# Rebuttal-only D1 conditions for the plausible-intensity probe (Cluster H).
-# Used only by the dedicated D1 dataset generator; the core External dataset
-# is unchanged.
+# Extension-only conditions for the plausible-intensity probe. Used only by
+# the dedicated intensity dataset generator; the core External dataset is
+# unchanged.
 INTENSITY_CONDITIONS: list[tuple[str, str, str]] = CONDITIONS + [
     ("plausible_mild_low",    "plausible_mild",   "low"),
     ("plausible_mild_high",   "plausible_mild",   "high"),

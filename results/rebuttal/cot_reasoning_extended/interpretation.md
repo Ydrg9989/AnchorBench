@@ -1,4 +1,4 @@
-# Reasoning-allowed CoT extension (Cluster F / B1)
+# Reasoning-allowed CoT extension
 
 Extended from 2 to 5 models and from 2 suites to 3 suites (External, RAG, History).
 

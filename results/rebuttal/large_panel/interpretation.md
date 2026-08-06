@@ -1,6 +1,6 @@
 # Extended large-model panel — interpretation
 
-Five additional models evaluated post-submission to address reviewer scale concerns (REVIEWER, REVIEWER): three frontier API models (`openai/gpt-5.4`, `anthropic/claude-sonnet-4.6`, `x-ai/grok-4.3`) and two 70B-class open-weight models (`meta-llama/Llama-3.3-70B-Instruct`, `Qwen/Qwen2.5-72B-Instruct`).
+Five additional models evaluated to probe whether the pattern holds at scale: three frontier API models (`openai/gpt-5.4`, `anthropic/claude-sonnet-4.6`, `x-ai/grok-4.3`) and two 70B-class open-weight models (`meta-llama/Llama-3.3-70B-Instruct`, `Qwen/Qwen2.5-72B-Instruct`).
 
 ## Per-suite headline metrics
 
@@ -32,9 +32,9 @@ Five additional models evaluated post-submission to address reviewer scale conce
 | \textsc{Grok-4.3} | rag | 0.958 | +0.024 | +0.177 |
 | \textsc{Grok-4.3} | tool | 0.906 | +0.105 | +0.247 |
 
-## Takeaways for the rebuttal
+## Takeaways
 
 1. **Scaling does NOT eliminate plausible-anchor sensitivity.** Across the five large models, UAI_pls is positive on 21 of 25 suite-model cells and exceeds 0.10 on the majority of External-suite evaluations.
-2. **Irrelevant anchors remain near-zero** in expectation (mean |UAI_irr| across the panel is small), reinforcing the binary relevance distinction questioned by reviewer REVIEWER.
+2. **Irrelevant anchors remain near-zero** in expectation (mean |UAI_irr| across the panel is small), reinforcing the binary irrelevant-vs-plausible relevance distinction.
 3. **Frontier API models are NOT immune.** Even `openai/gpt-5.4` (Acc10 ~1.00 on every suite) shows UAI_pls > 0 — the smallest of the panel but still strictly positive on 4/5 suites — consistent with the Bayesian-bound analysis: an ideal updater should produce UAI_pls close to the implied-weight lower bound, not zero.
 4. **Open-weight 70B remains the worst-case.** Llama-3.3-70B on External shows UAI_pls = 0.23 (largest in the extended panel), while Qwen2.5-72B reaches 0.16 on External — comparable to the original Llama-3-8B baseline in the main paper.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P3 - Tool realism ablation (Cluster REVIEWER-3).
+"""Tool realism ablation.
 
 Renders 8 new conditions per Tool item (plausible/irrelevant x low/high x
 elicited/noisy) and combines them with the existing core Tool baseline

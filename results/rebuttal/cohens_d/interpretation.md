@@ -1,4 +1,4 @@
-# Cohen's d translation (REVIEWER-4)
+# Cohen's d translation
 
 LLM anchoring magnitudes expressed in **|Cohen's d|** (averaged variance, paired within item, magnitude per anchor direction averaged) so they can be compared directly with the human anchoring literature.
 
@@ -64,4 +64,4 @@ LLM anchoring magnitudes expressed in **|Cohen's d|** (averaged variance, paired
 
 ### Headline interpretation
 
-On the External suite the open-weight 4-model panel reaches |d_pls| in the 0.2–0.5 range and |d_hi-lo| in the 0.3–0.9 range — directly comparable to the human anchoring d ≈ 0.55 reported by Furnham & Boo (2011) and the d ≈ 0.79 reported by Tversky & Kahneman (1974). Irrelevant-anchor effects on External (|d_irr| ≈ 0.0–0.4) are within range of the d ≈ 0.45 irrelevant-anchor effect of Strack & Mussweiler (1997). The pattern (|d_pls| > |d_irr|, plausible > irrelevant) replicates across RAG, Tool, and History pathways, with smaller magnitudes on the indirect pathways. This translation lets reviewers position LLM anchoring on the same effect-size axis used in the behavioural-economics literature without requiring a paired human study.
+On the External suite the open-weight 4-model panel reaches |d_pls| in the 0.2–0.5 range and |d_hi-lo| in the 0.3–0.9 range — directly comparable to the human anchoring d ≈ 0.55 reported by Furnham & Boo (2011) and the d ≈ 0.79 reported by Tversky & Kahneman (1974). Irrelevant-anchor effects on External (|d_irr| ≈ 0.0–0.4) are within range of the d ≈ 0.45 irrelevant-anchor effect of Strack & Mussweiler (1997). The pattern (|d_pls| > |d_irr|, plausible > irrelevant) replicates across RAG, Tool, and History pathways, with smaller magnitudes on the indirect pathways. This translation lets readers position LLM anchoring on the same effect-size axis used in the behavioural-economics literature without requiring a paired human study.

@@ -1,4 +1,4 @@
-# Weighted-mean gold-standard probe (Cluster J)
+# Weighted-mean gold-standard probe
 
 ## Headline numbers
 

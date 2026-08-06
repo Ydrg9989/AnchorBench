@@ -65,8 +65,8 @@ def _make_authority_preambles(metric: str) -> list[str]:
     ]
 
 
-# ── Rebuttal extension: plausible-intensity preambles (Cluster H / D1) ──
-# Added for the COLM 2026 rebuttal to test whether anchoring scales with
+# ── Extension: plausible-intensity preambles ────────────────────────────
+# Added to test whether anchoring scales with
 # the *strength* of the plausible framing (i.e., the credibility of the
 # fictional source). Mild = single, hedged, low-confidence source;
 # Strong = multiple convergent, high-confidence sources.
@@ -446,9 +446,8 @@ DOMAINS: dict[str, DomainConfig] = {
 }
 
 
-# ── Rebuttal extension: medical domains (COLM 2026 Cluster B) ─────────
-# Added for the COLM 2026 rebuttal in response to reviewer Cluster B
-# (4 reviewers, weight 15): "business-only domains feel unrealistic."
+# ── Extension: medical domains ───────────────────────────────────────
+# Added so the panel is not business-only.
 # Structurally identical to the six business domains so per-domain numbers
 # are directly comparable across the medical/business split. These domains
 # are NOT included in the locked frozen core; they are generated into a
@@ -628,8 +627,8 @@ _MEDICAL_DOMAINS: dict[str, DomainConfig] = {
     ),
 }
 
-# ── Other rebuttal-extension domains (law + consumer) ────────────────
-# Added to address reviewer REVIEWER-2: extend beyond business + medical with
+# ── Further extension domains (law + consumer) ───────────────────────
+# Extend beyond business + medical with
 # non-numerical-aggregation-as-domain settings (legal compliance triage,
 # consumer purchase decisions). Same DomainConfig pattern as medical.
 

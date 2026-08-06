@@ -1,6 +1,6 @@
 # Extending AnchorBench
 
-This guide describes the five most common rebuttal-time extensions:
+This guide describes the five most common extensions:
 adding a model, a suite, a condition, a metric, or a named experiment.
 Each section is self-contained and lists the minimum set of files to
 touch in the v2.0 layout.
@@ -160,10 +160,10 @@ irrelevant, plausible, plus optional ablations such as `placebo_*`,
 
 ## Add a Named Experiment
 
-Useful when a rebuttal asks for a self-contained run that is more than
+Useful for a self-contained run that is more than
 a single (model, suite) cell.
 
-1. Create `conf/experiment/rebuttal_long_anchor.yaml`:
+1. Create `conf/experiment/ext_long_anchor.yaml`:
 
    ```yaml
    defaults:
@@ -173,13 +173,13 @@ a single (model, suite) cell.
    description: Long anchor sentences ablation
    suites: [external]
    tiers:  [medium]
-   out_dir: results/rebuttal/long_anchor
+   out_dir: results/extensions/long_anchor
    ```
 
 2. Run it:
 
    ```bash
-   anchorbench experiment +experiment=rebuttal_long_anchor
+   anchorbench experiment +experiment=ext_long_anchor
    ```
 
 3. (Optional) Pin its expected outputs under

@@ -1,6 +1,6 @@
-# P5 — Uncertain-judgment
+# Uncertain-judgment
 
-Addresses reviewer **REVIEWER-1** (anchoring requires genuine judgment under uncertainty; the published task is arithmetic mean of visible numbers). We render External items with only k of 5 ratings visible, but score against the original full-5 mean. Now there is true epistemic uncertainty, and we can compare measured anchoring against the rational Bayesian ceiling.
+Tests whether anchoring requires genuine judgment under uncertainty; the published task is arithmetic mean of visible numbers). We render External items with only k of 5 ratings visible, but score against the original full-5 mean. Now there is true epistemic uncertainty, and we can compare measured anchoring against the rational Bayesian ceiling.
 
 ## Rational Bayesian baseline (anchor weighted as 1 extra rating)
 

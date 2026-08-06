@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""CoT (reasoning-allowed) extension runner for the COLM 2026 rebuttal.
+"""CoT (reasoning-allowed) extension runner.
 
-Addresses reviewer Cluster F (REVIEWER #1): does anchoring persist when the model
-is allowed to reason before answering, rather than being forced to output a
-single integer?
+Tests whether anchoring persists when the model is allowed to reason before
+answering, rather than being forced to output a single integer.
 
 Extends the existing ``mitigation_headroom.py`` runner from
 {External, RAG} x {Qwen-7B, Llama-8B} to {External, RAG, History} x the
@@ -68,7 +67,7 @@ REBUTTAL_STRATEGIES: dict[str, str] = {
         "your estimate from that evidence only, then provide your final "
         "numeric answer on the last line."
     ),
-    # P4 task-specification ablation (closes REVIEWER-2).
+    # Task-specification ablation suffixes.
     "rule": (
         "\n\nYour estimate should be the unweighted arithmetic mean of "
         "the visible ratings, rounded to the nearest integer."

@@ -35,7 +35,7 @@ if [ "$DEVICES" = "api" ]; then
     [ -d "$OW_OUT" ] && cp -f "$OW_OUT"/* "$DST/" || true
     # NOTE: above api runner uses the regular dataset; this means B3 API
     # results are NOT actually weighted-mean. Skip the API model for B3
-    # by default --- the cluster J question is about the SCORING function,
+    # by default --- the question here is about the SCORING function,
     # which mainly matters when comparing models that produce numeric
     # estimates, so 4 open-weight models is sufficient.
 else

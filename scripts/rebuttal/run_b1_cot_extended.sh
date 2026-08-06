@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Tier B1 — CoT (reasoning-allowed) extension on the locked 5-model panel.
 #
-# Cluster F (REVIEWER #1): does anchoring persist when models are allowed to
+# Does anchoring persist when models are allowed to
 # reason before answering?
 #
 # Runs four open-weight models locally (via vLLM) and one API model

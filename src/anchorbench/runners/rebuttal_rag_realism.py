@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P2 - RAG realism ablation (Cluster REVIEWER-2).
+"""RAG realism ablation.
 
 Renders 12 new conditions per RAG item (4 plausible/irrelevant x low/high x
 rank1 / rank5 / rank5_distract) and evaluates them against the existing

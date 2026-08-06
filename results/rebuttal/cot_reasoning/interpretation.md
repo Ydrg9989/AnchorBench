@@ -1,6 +1,6 @@
-# CoT (reasoning-allowed) vs. baseline analysis (Cluster F response)
+# CoT (reasoning-allowed) vs. baseline analysis
 ## Context
-REVIEWER asked: does anchoring persist when the model is allowed to
+Does anchoring persist when the model is allowed to
 reason before answering, rather than being forced to output a
 single integer on the last line? The existing
 `mitigation_headroom` runs already include a CoT condition
@@ -36,7 +36,7 @@ and RAG. The numbers below come from those existing runs.
   - mean delta UAI_pls = -0.079.
 - mean delta Acc10 (control accuracy) = +0.146; reasoning generally *also* improves accuracy.
 
-## Rebuttal-text framing (suggestion)
+## Summary
 Reasoning-allowed prompting *attenuates* anchoring but does not
 eliminate it. On Qwen-7B (External) UAI_pls drops from 0.27 to 0.15
 (-45%) while control accuracy rises from 73% to 96%; on RAG the same

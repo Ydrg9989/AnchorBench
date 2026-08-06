@@ -1,4 +1,4 @@
-# Plausibility-intensity probe (Cluster H / D1)
+# Plausibility-intensity probe
 
 Three-point dose-response with the SAME numeric anchor at three source-credibility levels:
 
@@ -8,10 +8,10 @@ Three-point dose-response with the SAME numeric anchor at three source-credibili
 
 ## Headline numbers (mean across panel)
 
-- mean UAI_mild = +0.311
-- mean UAI_standard = +0.374
-- mean UAI_strong = +0.437
-- mean Δ(strong - mild) = +0.126
+- mean UAI_mild = +0.251
+- mean UAI_standard = +0.319
+- mean UAI_strong = +0.400
+- mean Δ(strong - mild) = +0.149
 - Monotone mild $\le$ standard $\le$ strong? **YES**.
 
 ## Per-model intensity curve
@@ -20,6 +20,7 @@ Three-point dose-response with the SAME numeric anchor at three source-credibili
 |---|---:|---:|---:|---:|
 | Gemma-4B | +0.447 | +0.415 | +0.403 | -0.044 |
 | Llama-8B | +0.259 | +0.394 | +0.417 | +0.158 |
+| OLMo-13B | +0.069 | +0.155 | +0.287 | +0.218 |
 | Qwen-7B | +0.228 | +0.311 | +0.493 | +0.265 |
 
 ## Interpretation

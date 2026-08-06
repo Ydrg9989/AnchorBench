@@ -1,4 +1,4 @@
-# Plausibility spectrum (Cluster H response)
+# Plausibility spectrum
 
 Four-point spectrum on External: placebo / irrelevant / plausible / authority.
 

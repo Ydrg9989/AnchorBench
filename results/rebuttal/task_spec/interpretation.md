@@ -1,6 +1,6 @@
-# P4 — Task-specification ablation
+# Task-specification ablation
 
-Addresses reviewer **REVIEWER-2** (weak-model low control accuracy may reflect task confusion rather than anchoring) and reinforces answers to **REVIEWER-1** (gold = arithmetic mean) and **REVIEWER-1** (task realism).
+Tests whether the weak models' low control accuracy reflects task confusion rather than anchoring, by making the aggregation rule explicit in the prompt.
 
 Two new prompt suffixes on External, alongside the published baseline prompt:
 

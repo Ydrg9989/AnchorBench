@@ -1,4 +1,4 @@
-"""External-uncertain suite (P5 / REVIEWER-1 response).
+"""External-uncertain suite.
 
 Identical to the External suite except evidence is *partially withheld*,
 creating genuine epistemic uncertainty: the gold answer remains the

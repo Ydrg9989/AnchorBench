@@ -10,6 +10,16 @@
     "n_strong": 716
   },
   {
+    "model": "OLMo-13B",
+    "model_slug": "allenai_OLMo-2-1124-13B-Instruct",
+    "uai_mild": 0.06908527623438192,
+    "uai_standard": 0.15503929833430985,
+    "uai_strong": 0.28667095998247943,
+    "n_mild": 710,
+    "n_standard": 711,
+    "n_strong": 705
+  },
+  {
     "model": "Gemma-4B",
     "model_slug": "google_gemma-3-4b-it",
     "uai_mild": 0.4468776936270878,

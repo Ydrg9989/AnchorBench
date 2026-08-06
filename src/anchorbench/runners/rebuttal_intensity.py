@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Plausible-intensity probe (D1 / Cluster H, extended for P1 cross-pathway).
+"""Plausible-intensity probe, extended for the cross-pathway comparison.
 
 Renders four new conditions on top of the existing core itemspecs for the
 requested suite::

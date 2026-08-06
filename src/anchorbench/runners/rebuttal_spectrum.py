@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Plausibility-spectrum runner for the COLM 2026 rebuttal.
+"""Plausibility-spectrum runner.
 
-Addresses reviewer Cluster H (REVIEWER #2): "The benchmark uses a binary
-relevance axis (irrelevant vs plausible); a richer plausibility spectrum
-would let you measure dose-response of anchor credibility."
+The core benchmark uses a binary relevance axis (irrelevant vs plausible);
+a richer plausibility spectrum lets us measure the dose-response of anchor
+credibility.
 
 Evaluates the four ablation conditions (placebo_low/high, authority_low/high)
 that already exist in ``datasets/anchorbench_external_core/promptviews_ablation.jsonl``

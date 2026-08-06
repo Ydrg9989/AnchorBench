@@ -1,6 +1,6 @@
-# P3 — Tool realism ablation
+# Tool realism ablation
 
-Addresses reviewer **REVIEWER-3** by varying two tool-realism axes:
+Varies two tool-realism axes:
 
 - **Elicited**: a synthetic assistant turn announces the lookup before the tool call, framing the response as model-initiated.
 - **Noisy**: the tool response wraps the anchor value in a realistic envelope with extra metadata fields (`confidence`, `freshness_days`, `sample_size_n`, `request_timestamp_ms`, etc.) to test salience-of-number.

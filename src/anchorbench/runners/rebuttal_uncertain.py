@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""P5 - Uncertain-judgment runner (Cluster REVIEWER-1).
+"""Uncertain-judgment runner.
 
 Builds 15 conditions per External itemspec by withholding evidence
 (see ``anchorbench.data.suites.external_uncertain``) and runs single-stage

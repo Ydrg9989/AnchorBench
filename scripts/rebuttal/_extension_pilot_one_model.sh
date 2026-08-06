@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# REVIEWER-2 extension pilot: run the law + consumer pilot datasets for one
+# Extension pilot: run the law + consumer pilot datasets for one
 # model on one GPU. Mirrors _c1_one_model.sh but uses the *_other_pilot
 # datasets.
 #
@@ -21,12 +21,12 @@ mkdir -p "$LOG_DIR"
 SLUG="${MODEL_ID//\//_}"
 LOG="$LOG_DIR/${SLUG}.log"
 
-echo "[$(date -Iseconds)] REVIEWER-2 starting $MODEL_ID on $DEVICES" | tee -a "$LOG"
+echo "[$(date -Iseconds)] extension-pilot starting $MODEL_ID on $DEVICES" | tee -a "$LOG"
 echo "  ext dataset: $EXT_DATASET" | tee -a "$LOG"
 echo "  hist dataset: $HIST_DATASET" | tee -a "$LOG"
 
 export CUDA_VISIBLE_DEVICES="$DEVICES"
-echo "[$(date -Iseconds)] REVIEWER-2/external $MODEL_ID" | tee -a "$LOG"
+echo "[$(date -Iseconds)] extension-pilot/external $MODEL_ID" | tee -a "$LOG"
 bash scripts/run_with_env.sh \
     python -m anchorbench.runners.external \
         --promptviews "$EXT_DATASET/promptviews_core.jsonl" \
@@ -39,7 +39,7 @@ bash scripts/run_with_env.sh \
         --batch_size 32 \
         --max_tokens 512 2>&1 | tee -a "$LOG"
 
-echo "[$(date -Iseconds)] REVIEWER-2/history $MODEL_ID" | tee -a "$LOG"
+echo "[$(date -Iseconds)] extension-pilot/history $MODEL_ID" | tee -a "$LOG"
 bash scripts/run_with_env.sh \
     python -m anchorbench.runners.history \
         --promptviews "$HIST_DATASET/promptviews.jsonl" \
@@ -53,5 +53,5 @@ bash scripts/run_with_env.sh \
         --batch_size 1 \
         --max_tokens 512 2>&1 | tee -a "$LOG"
 
-echo "[$(date -Iseconds)] REVIEWER-2 done $MODEL_ID" | tee -a "$LOG"
+echo "[$(date -Iseconds)] extension-pilot done $MODEL_ID" | tee -a "$LOG"
 touch "$LOG_DIR/${SLUG}.done"

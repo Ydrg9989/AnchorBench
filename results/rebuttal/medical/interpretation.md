@@ -1,4 +1,4 @@
-# Medical-domain pilot (Cluster B response)
+# Medical-domain pilot
 
 ## External
 

@@ -1,6 +1,6 @@
-# P1 — Cross-pathway plausibility-intensity
+# Cross-pathway plausibility-intensity
 
-Addresses reviewer **REVIEWER-2** (matched intensity across pathways) and reinforces **REVIEWER-1** (graded relevance).
+Matched source-credibility intensity across pathways, on the same graded-relevance axis.
 
 Same 3-point source-credibility scale (mild / standard / strong) applied to three pathways:
 

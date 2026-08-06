@@ -1,4 +1,4 @@
-# Bayesian-Bound Analysis (Cluster A response)
+# Bayesian-Bound Analysis
 ## Setup
 - n_evidence = 5 (visible ratings on easy items)
 - Reference w = 1.0 (anchor worth one evidence item)
@@ -65,7 +65,7 @@
   - Llama-8B: UAI_pls=0.149 => w_imp=0.88
   - Llama-3B: UAI_pls=0.135 => w_imp=0.78
 
-## Headline numbers for the rebuttal
+## Headline numbers
 Across 55 non-ICL (model, suite) cells:
 - **16/55 cells (29%) have the 95% CI of UAI_pls entirely above the rational ceiling (0.167, w=1).** This is the primary headline.
 - median implied w (point estimate) = 0.94 (reference = 1; mean is skewed by tail outliers).

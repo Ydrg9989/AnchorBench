@@ -1,4 +1,4 @@
-# Extension-domain pilot (REVIEWER-2)
+# Extension-domain pilot
 
 Law + consumer pilot vs. business + medical panel.
 

@@ -1,6 +1,6 @@
-# P2 — RAG realism ablation
+# RAG realism ablation
 
-Addresses reviewer **REVIEWER-2**: the RAG suite varies document rank (1 vs 5), adds plausible distractors, and optionally exposes synthetic relevance scores.
+The RAG suite varies document rank (1 vs 5), adds plausible distractors, and optionally exposes synthetic relevance scores.
 
 ## Mean UAI across the panel
 
