@@ -123,3 +123,7 @@ COLM*/*.log
 # submission. Kept out of the tree so a local checkout never gets committed.
 /COLM/
 /COLM_camera_ready/
+
+# arXiv bundle, assembled from the (untracked) paper source
+/arxiv_submission/
+/anchorbench_arxiv.tar.gz

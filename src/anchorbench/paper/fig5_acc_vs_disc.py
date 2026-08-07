@@ -24,6 +24,12 @@ import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+
+# Embed real TrueType outlines instead of matplotlib's default Type 3
+# fonts, which are not embedded as a FontFile and which arXiv and most
+# venues flag. Affects the PDF only; the golden PNGs are unchanged.
+plt.rcParams["pdf.fonttype"] = 42
+plt.rcParams["ps.fonttype"] = 42
 import numpy as np
 
 from ._common import (

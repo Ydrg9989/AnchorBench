@@ -356,6 +356,9 @@ def _plot_stacked_bar(per_model_suite: list[dict], all_items: list[dict],
     try:
         import matplotlib
         matplotlib.use("Agg")
+        # See fig4_dose_response.py: avoid non-embedded Type 3 fonts.
+        matplotlib.rcParams["pdf.fonttype"] = 42
+        matplotlib.rcParams["ps.fonttype"] = 42
         import matplotlib.pyplot as plt
     except ImportError:
         print("WARNING: matplotlib not available, skipping figures")
