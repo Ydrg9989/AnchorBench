@@ -73,8 +73,8 @@ through OpenRouter:
 
 ### Headline numbers — External suite
 
-Accuracy is exact-rounding accuracy on the anchor-free control. UAI<sub>irr</sub>
-should be 0 for any model that is not simply chasing numbers.
+Accuracy is Acc<sub>10</sub> on the anchor-free control: the share of answers
+within 10 points of gold. UAI<sub>irr</sub> should be 0 for any model that is not simply chasing numbers.
 
 | Model | Acc | UAI<sub>irr</sub> | UAI<sub>pls</sub> |
 | --- | ---: | ---: | ---: |
@@ -135,8 +135,8 @@ pathway matters as much as the model.
 (80%) show greater susceptibility to plausible than irrelevant anchors, rising
 to 48/55 (87%) once the deliberately weak ICL manipulation is excluded.
 
-**3. Influence decays with distance.** Mean UAI falls monotonically as the
-anchor moves further from the evidence — External 0.32 → 0.26 → 0.18 and RAG
+**3. Influence decreases with anchor offset.** Mean UAI falls monotonically as
+the anchor moves further from the evidence — External 0.32 → 0.26 → 0.18 and RAG
 0.23 → 0.15 → 0.06 at offsets of 15, 25 and 40.
 
 ![Dose-response](assets/dose_response.png)
@@ -148,9 +148,10 @@ External and still show positive discrimination (0.05–0.16).
 
 ![Accuracy versus discrimination](assets/accuracy_vs_discrimination.png)
 
-**5. It survives genuine uncertainty.** Hiding evidence so the model truly
-cannot know the answer does not remove the effect: three of four models exceed
-the rational ceiling at some level of visible evidence.
+**Stress test: it survives partial evidence.** The four findings above use the
+full-evidence task. Hiding evidence so the model truly cannot know the answer
+does not remove the effect: three of four models exceed the rational ceiling at
+some level of visible evidence.
 
 ## How much anchoring is too much?
 
