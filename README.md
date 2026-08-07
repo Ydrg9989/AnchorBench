@@ -321,8 +321,9 @@ If you find this repository useful, please consider citing our paper:
                Effect in {LLM}s},
   author    = {Borjigin, Yiderigun and Hermann, Alexander and
                Cyron, Christian and Aydin, Roland},
-  booktitle = {Proceedings of the Conference on Language Modeling (COLM)},
-  year      = {2026}
+  booktitle = {Third Conference on Language Modeling},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=keInIFu0gS}
 }
 ```
 
