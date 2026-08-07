@@ -1,36 +1,37 @@
-# AnchorBench
+# [COLM 2026] AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs
 
-> A multi-pathway benchmark for the anchoring effect in large language
-> models. **14 models &times; 5 anchor pathways &times; 3 relevance
-> conditions** = 9,000 condition-controlled prompts per model, 70 evaluation
-> cells, one command to reproduce.
+<p align="center">
+  <a href="https://openreview.net/forum?id=keInIFu0gS"><img src="https://img.shields.io/badge/COLM%202026-OpenReview-b31b1b.svg" alt="OpenReview"></a>
+  <a href="https://huggingface.co/datasets/Yiderigun/LLM_anchoring"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg" alt="Hugging Face dataset"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache--2.0-green.svg" alt="Apache-2.0"></a>
+  <a href="datasets/DATASET_CARD.md"><img src="https://img.shields.io/badge/Data-CC%20BY%204.0-blue.svg" alt="CC BY 4.0"></a>
+  <img src="https://img.shields.io/badge/Python-%E2%89%A5%203.10-blue.svg" alt="Python >= 3.10">
+</p>
 
-| | |
-| --- | --- |
-| Paper | *AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs* (COLM 2026) &middot; [OpenReview](https://openreview.net/forum?id=keInIFu0gS) |
-| Dataset | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) on Hugging Face |
-| Raw results | [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing) |
-| Code license | Apache-2.0 &middot; **Dataset** CC BY 4.0 |
-| Python | &ge; 3.10 |
-| Status | Release v2.0 |
+Official repository for **AnchorBench**, a benchmark measuring how strongly an
+irrelevant or plausible numeric "anchor" pulls a model's estimate, across five
+delivery pathways: **External** prompt context, conversation **History**,
+**In-Context Learning** demonstrations, **Retrieval-Augmented Generation**
+documents, and **Tool** outputs.
 
-AnchorBench measures how strongly an irrelevant or plausible numeric "anchor"
-pulls a model's estimate, across five delivery pathways: **External** prompt
-context, conversation **History**, **In-Context Learning** demonstrations,
-**Retrieval-Augmented Generation** documents, and **Tool** outputs. Every item
+**14 models &times; 5 anchor pathways &times; 3 relevance conditions** = 9,000
+condition-controlled prompts per model, across 70 evaluation cells. Every item
 carries structured numeric evidence and a deterministic gold answer, so the
 benchmark measures not just whether outputs shift but whether the shift is
 *justified*.
 
-![AnchorBench overview](assets/overview.png)
+## 📢 News
 
-## What the paper is about
+- 🎉 **AnchorBench** is accepted to **COLM 2026**!
+- 🚀 **(2026-08)** Code, benchmark data and the [Hugging Face dataset](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) released.
+
+## 🤔 Why AnchorBench?
 
 The **anchoring effect** is a cognitive bias in which an initial reference
 value pulls a later judgment toward itself. It is well established in human
-judgment and decision-making, and recent work suggests LLMs behave similarly.
-But existing LLM studies test a narrow set of conditions, and — more
-importantly — rarely separate two very different things:
+judgment, and recent work suggests LLMs behave similarly. But existing LLM
+studies test a narrow set of anchor pathways, and — more importantly — rarely
+separate two very different things:
 
 - an **irrelevant** anchor carries no task information, so *any* movement
   toward it is unjustified bias;
@@ -38,17 +39,36 @@ importantly — rarely separate two very different things:
   movement is rational and only an excessive shift is a failure.
 
 Collapsing those two makes "the model anchored" unfalsifiable. AnchorBench
-separates them by construction: the irrelevant and plausible conditions of an
-item carry the **same number in the same position**, and differ only in the
-sentence that introduces it. It then delivers that anchor through five
-pathways that mirror how context actually reaches a deployed model, and scores
-every answer against a gold value fixed by the evidence alone.
+separates them **by construction**: the irrelevant and plausible conditions of
+an item carry the **same number in the same position**, and differ only in the
+sentence that introduces it. It then delivers that anchor through five pathways
+that mirror how context actually reaches a deployed model, and scores every
+answer against a gold value fixed by the evidence alone.
+
+![AnchorBench overview](assets/overview.png)
 
 The result is a diagnostic that says not just *whether* a model moved, but
-whether the move was defensible — measured against an explicit rational
+whether the move was **defensible** — measured against an explicit rational
 ceiling rather than an ad-hoc effect-size cutoff.
 
-## The five pathways
+## 📋 Table of Contents
+
+- [The five pathways](#-the-five-pathways)
+- [Models evaluated](#-models-evaluated)
+- [The design in one item](#-the-design-in-one-item)
+- [What we find](#-what-we-find)
+- [How much anchoring is too much?](#%EF%B8%8F-how-much-anchoring-is-too-much)
+- [Quick Start](#-quick-start)
+  - [Installation](#installation)
+  - [Add API keys](#add-api-keys)
+  - [Run the code](#run-the-code)
+- [Reproduce the paper](#-reproduce-the-paper)
+- [Verify without re-running anything](#-verify-without-re-running-anything)
+- [Extending](#-extending)
+- [Repository structure](#-repository-structure)
+- [Citation](#-citation)
+
+## 🧭 The five pathways
 
 | Suite | How the anchor arrives | Notes |
 | --- | --- | --- |
@@ -62,7 +82,7 @@ External and RAG are free of format confounds and carry the strongest
 cross-model comparisons; History and Tool are read qualitatively, and the
 paper quantifies both confounds in the appendix.
 
-## Models evaluated
+## 🤖 Models evaluated
 
 Ten open-weight models served locally with vLLM, and four frontier API models
 through OpenRouter:
@@ -74,7 +94,8 @@ through OpenRouter:
 ### Headline numbers — External suite
 
 Accuracy is Acc<sub>10</sub> on the anchor-free control: the share of answers
-within 10 points of gold. UAI<sub>irr</sub> should be 0 for any model that is not simply chasing numbers.
+within 10 points of gold. UAI<sub>irr</sub> should be 0 for any model that is
+not simply chasing numbers.
 
 | Model | Acc | UAI<sub>irr</sub> | UAI<sub>pls</sub> |
 | --- | ---: | ---: | ---: |
@@ -98,7 +119,7 @@ and ignores the irrelevant anchor entirely — yet still moves 12% of the way
 toward a plausibly framed one. Gemma-4B moves 20% of the way toward a number
 it has been told is a case ID.
 
-## The design in one item
+## 🧪 The design in one item
 
 Every item appears under five matched conditions. The scenario, the evidence,
 the question and the answer instruction are byte-identical across all five —
@@ -123,7 +144,7 @@ $$\mathrm{UAI} = \frac{y_{\text{anchored}} - y_{\text{control}}}{a - y_{\text{co
 
 0 means no movement, 1 means full capitulation to the anchor.
 
-## What we find
+## 📊 What we find
 
 **1. Anchoring is strongly pathway-dependent.** External and RAG show the
 broadest positive effects; ICL is near zero; History and Tool vary by model
@@ -153,7 +174,7 @@ full-evidence task. Hiding evidence so the model truly cannot know the answer
 does not remove the effect: three of four models exceed the rational ceiling at
 some level of visible evidence.
 
-## How much anchoring is too much?
+## ⚖️ How much anchoring is too much?
 
 A positive UAI is not automatically a failure — some movement toward a
 plausible value is rational. Treating the anchor as one extra rating among
@@ -166,9 +187,9 @@ more credible than all five displayed ratings combined. A placebo framing —
 the same number presented as a document's age — still moves External answers
 (UAI 0.09), which no purely rational account predicts.
 
----
+## 🚀 Quick Start
 
-## Install
+### Installation
 
 ```bash
 git clone https://github.com/Ydrg9989/AnchorBench.git
@@ -182,15 +203,20 @@ pip install -e ".[all]"            # core + vllm + api + dev
 | `[api]`  | aiohttp | OpenRouter API models (GPT, Claude, Gemini, Grok) |
 | `[dev]`  | pytest, ruff | tests and linting |
 
-**API credentials.** Put `OPENROUTER_API_KEY` in
-`~/.config/anchorbench/env`, not in the repo — `scripts/run_with_env.sh`
-sources it from there. A key inside the working tree gets shipped by any
-folder upload or tarball; `tests/test_no_secrets.py` fails if one reappears.
-See `.env.example`.
+### Add API keys
 
----
+Put `OPENROUTER_API_KEY` in `~/.config/anchorbench/env`, **not in the repo** —
+`scripts/run_with_env.sh` sources it from there. A key inside the working tree
+gets shipped by any folder upload or tarball; `tests/test_no_secrets.py` fails
+if one reappears. See [`.env.example`](.env.example).
 
-## Quick start
+```bash
+mkdir -p ~/.config/anchorbench
+echo 'OPENROUTER_API_KEY=sk-or-v1-...' > ~/.config/anchorbench/env
+chmod 600 ~/.config/anchorbench/env
+```
+
+### Run the code
 
 ```bash
 # 1. Generate the External suite at "smoke" size (CPU only, ~10s)
@@ -203,13 +229,11 @@ anchorbench eval data=external model=qwen_7b
 anchorbench tables --paper
 ```
 
-`anchorbench` is the single console script, exposing Hydra-driven
-subcommands (`eval`, `experiment`, `generate`, `tables`, `verify`,
-`add-model`), so any cell, recipe or override is one line.
+`anchorbench` is the single console script, exposing Hydra-driven subcommands
+(`eval`, `experiment`, `generate`, `tables`, `verify`, `add-model`), so any
+cell, recipe or override is one line.
 
----
-
-## Reproduce the paper
+## 🔁 Reproduce the paper
 
 ```bash
 DRY_RUN=1 bash scripts/reproduce_paper.sh    # validate + dry-run every cell
@@ -231,11 +255,10 @@ bash scripts/run_stage3_reruns.sh # the two re-run experiments (addendum)
 
 Approximate cost: ~24 h on 4x A100 plus roughly $300 of OpenRouter spend at
 full size. The appendix tables additionally need `results/rebuttal/`, which
-is published as tarballs on Google Drive rather than committed.
+is published as [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing)
+rather than committed.
 
----
-
-## Verifying without re-running anything
+## ✅ Verify without re-running anything
 
 Most of the repository can be checked on a clean clone in seconds, because
 the two unified summaries and every generated table are committed:
@@ -250,9 +273,7 @@ python scripts/measure_paper_drift.py     # paper tables vs generator output
 divergence between the paper, the committed artifacts and the current code,
 with the command to re-measure each one.
 
----
-
-## Extending
+## 🧩 Extending
 
 | You want to... | Look at | Doc |
 | --- | --- | --- |
@@ -262,9 +283,7 @@ with the command to re-measure each one.
 | Add an experiment | `conf/experiment/*.yaml` | [EXTENDING.md](docs/EXTENDING.md) |
 | Register a model in one shot | `anchorbench add-model openai/gpt-5o` | — |
 
----
-
-## Repository structure
+## 📁 Repository structure
 
 ```
 AnchorBench/
@@ -292,9 +311,9 @@ Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the package map
 and data flow, and [docs/APPENDIX_TABLES.md](docs/APPENDIX_TABLES.md) for
 which module produces which appendix table.
 
----
+## 📖 Citation
 
-## Citation
+If you find this repository useful, please consider citing our paper:
 
 ```bibtex
 @inproceedings{borjigin2026anchorbench,
@@ -307,7 +326,7 @@ which module produces which appendix table.
 }
 ```
 
-## License
+## 📜 License
 
 Code is Apache-2.0 (see [LICENSE](LICENSE)). The benchmark dataset is
 released under CC BY 4.0; see
