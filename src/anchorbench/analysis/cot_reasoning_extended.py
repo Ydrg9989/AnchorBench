@@ -146,10 +146,14 @@ def write_latex(rows: list[dict], path: Path) -> None:
             r"\caption{Reasoning-allowed (Chain-of-Thought) prompting"
             r" vs.\ ``final answer only'' baseline across the locked"
             r" 5-model panel and all three suites (External, RAG, History)."
-            r" CoT reliably reduces both irrelevant- and plausible-anchor"
-            r" influence (negative $\Delta$) but never eliminates it."
-            r" The persistence of UAI$>0$ under CoT shows the effect is"
-            r" not an artifact of the answer-only protocol.}"
+            r" CoT lowers plausible-anchor influence in 11 of the 15"
+            r" model--suite cells, but the effect is model- and"
+            r" pathway-dependent rather than uniform: it lowers both"
+            r" UAI$_{\mathrm{irr}}$ and UAI$_{\mathrm{pls}}$ in only 6"
+            r" cells, and raises UAI$_{\mathrm{pls}}$ in 4."
+            r" UAI$_{\mathrm{pls}}$ remains positive in 13 of 15 cells,"
+            r" so anchoring is attenuated but not an artifact of the"
+            r" answer-only protocol.}"
         ),
         r"\label{tab:cot_extended}",
         r"\end{table}",

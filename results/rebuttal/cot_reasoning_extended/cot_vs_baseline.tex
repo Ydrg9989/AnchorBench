@@ -27,6 +27,6 @@ rag & GPT-5.4-mini & 0.00 & -0.00 & -0.01 & 0.09 & 0.08 & -0.01 & 0.09 & 0.08 & 
  & Qwen-7B & -0.00 & -0.00 & +0.00 & 0.19 & 0.03 & -0.16 & 0.19 & 0.03 & -0.16 \\
 \bottomrule
 \end{tabular}
-\caption{Reasoning-allowed (Chain-of-Thought) prompting vs.\ ``final answer only'' baseline across the locked 5-model panel and all three suites (External, RAG, History). CoT reliably reduces both irrelevant- and plausible-anchor influence (negative $\Delta$) but never eliminates it. The persistence of UAI$>0$ under CoT shows the effect is not an artifact of the answer-only protocol.}
+\caption{Reasoning-allowed (Chain-of-Thought) prompting vs.\ ``final answer only'' baseline across the locked 5-model panel and all three suites (External, RAG, History). CoT lowers plausible-anchor influence in 11 of the 15 model--suite cells, but the effect is model- and pathway-dependent rather than uniform: it lowers both UAI$_{\mathrm{irr}}$ and UAI$_{\mathrm{pls}}$ in only 6 cells, and raises UAI$_{\mathrm{pls}}$ in 4. UAI$_{\mathrm{pls}}$ remains positive in 13 of 15 cells, so anchoring is attenuated but not an artifact of the answer-only protocol.}
 \label{tab:cot_extended}
 \end{table}
