@@ -73,6 +73,6 @@ were never preserved; `tables_appendix.py` emits `---` and a single row
 without them. Recorded as D5 in [RECONCILIATION.md](RECONCILIATION.md).
 
 Both were re-run independently on 2026-08-05
-(`bash scripts/run_stage3_reruns.sh`). The re-run tables and a
-published-vs-re-run comparison are in
-[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md); the published values stand.
+(`bash scripts/run_stage3_reruns.sh`). The published values stand; what the
+re-run does and does not reproduce is recorded under D5 in
+[RECONCILIATION.md](RECONCILIATION.md).

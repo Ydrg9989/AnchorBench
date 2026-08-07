@@ -189,7 +189,7 @@ Regenerate the last group with `anchorbench tables --appendix`; it needs
 `tab:history_matched` and `tab:tool_plaintext` were produced by runs that were
 never preserved. Both were re-run independently; the results and a
 published-vs-re-run comparison are in
-[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md). The published values stand.
+D5 in [RECONCILIATION.md](RECONCILIATION.md). The published values stand.
 
 ## Checksums
 

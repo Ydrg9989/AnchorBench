@@ -473,13 +473,30 @@ gone stale against the generator.
 ## D5 resolution — both experiments re-run
 
 Re-ran on 2026-08-05, 2 x H100 (OLMo-32B at TP=2). All 15 cells parse at
-0.92-1.00. Results in `results/{history_matched,tool_plaintext}/`; the tables
-and a published-vs-re-run comparison are in
-[docs/addendum/ADDENDUM.md](addendum/ADDENDUM.md).
+0.92-1.00. Results in `results/{history_matched,tool_plaintext}/`.
 
 **The published tables are unchanged.** These are an addendum: the original
 inputs were never preserved, so this is an independent re-run under a
 documented configuration rather than a reproduction of a known recipe.
+
+What the re-run says about each table:
+
+* **`tab:tool_plaintext`** — the claim that plaintext rendering lowers
+  discrimination relative to structured tool messages holds:
+  `Disc_plain < Disc_struct` for 3 of 5 models in the re-run against 4 of 5
+  as published, and Qwen-7B reproduces exactly. Control-condition MAE moves
+  substantially for two models (Qwen-1.5B 11.34 -> 26.17, Llama-8B
+  5.47 -> 12.15).
+* **`tab:history_matched`** — the main-text claim holds. `findings.tex` says
+  matched-format analysis "reduces Disc_Delta by up to 70% for some models";
+  the published table lowers Disc for 3 of 10 models with a largest reduction
+  of 70%, the re-run for 4 of 10 with a largest reduction of 89%. Direction
+  and the "for some models" framing are unchanged; only magnitudes move.
+
+**No per-cell reading carries over.** OLMo-32B's `Disc_std` moves from 0.12
+to 1.06 and Qwen-1.5B's `MAE_std` from 5.49 to 19.05. Anyone citing an
+individual number from either table should cite the published value and note
+that an independent re-run did not reproduce it.
 
 Three bugs had to be fixed before the recipes could run at all, each an
 independent reason these tables were unreproducible:
