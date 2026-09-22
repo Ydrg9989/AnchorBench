@@ -24,12 +24,13 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D5](#d5) | Two appendix tables cannot be regenerated | **RESOLVED** | no — published values kept, re-runs added as addendum |
 | [D6](#d6) | Inline appendix tables vs current output (measured) | RESOLVED | yes — 4 tables now generated |
 | [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
-| [D8](#d8) | API-tier History cells are scored against the two-stage control | **OPEN** | interpretation of Table 1's History caveat for the four API rows |
-| [D9](#d9) | API-tier History Stage 2 was one quoted message, not a chat | **OPEN** | interpretation of the History pathway for the four API rows |
-| [D10](#d10) | Sampled decoding never applied top-p 0.9 | **OPEN** | the decoding description of Table 18 |
+| [D8](#d8) | API-tier History cells are scored against the two-stage control | ACCEPTED | no — the four API History values are near zero either way |
+| [D9](#d9) | API-tier History Stage 2 was one quoted message, not a chat | ACCEPTED | no — recorded; new runs use the chat rendering |
+| [D10](#d10) | Sampled decoding never applied top-p 0.9 | ACCEPTED | no — the check ran with more noise than described, not less |
 
 `verify.py::KNOWN_DIVERGENCES` is **empty**, and all three verify modes
-report zero mismatches. That is the goal state, not an unused mechanism: the
+report zero mismatches. D8 to D10 are interpretation notes on frozen cells,
+not numeric mismatches. That is the goal state, not an unused mechanism: the
 table still fails the run if an entry stops firing, so a divergence cannot be
 recorded and then quietly swallowed by a tolerance.
 
@@ -529,7 +530,7 @@ that an independent re-run did not reproduce them.
 
 | | |
 |---|---|
-| **Status** | **OPEN** — needs a decision |
+| **Status** | ACCEPTED — recorded, not repaired (decision of 2026-09-22) |
 | **Affects** | Table 1 History columns for the four API models; the API rows of `tab:app-history` |
 | **Severity** | Interpretation only; every number is correct for the baseline it was computed against |
 
@@ -556,10 +557,16 @@ builder were merged into `cli/cells.py`.
 
 `cli/cells.py` deliberately keeps *not* forwarding `baseline_condition` to
 API cells, so `paper_main` reproduces the committed API numbers rather than
-silently changing them. Two ways to close this row: (a) state in the Table 1
-caveat that the API tier's History baseline is the two-stage control, or (b)
-re-run the four API History cells with `--history_baseline_condition control`
-as a versioned addendum, as D5 did, and record the comparison here.
+silently changing them.
+
+### Decision
+
+The authors judged this immaterial to the paper's conclusions: the four API
+History values are near zero under either baseline, History is read
+qualitatively throughout, and Table 1's caveat already warns that the History
+column carries format confounds. No re-run and no text change. Anyone
+comparing the API and open-weight History rows should know the baselines
+differ; this row is the record of that.
 
 Re-measure:
 
@@ -581,7 +588,7 @@ PY
 
 | | |
 |---|---|
-| **Status** | **OPEN** — needs a decision |
+| **Status** | ACCEPTED — recorded, not repaired (decision of 2026-09-22) |
 | **Affects** | Table 1 History columns for the four API models; the API rows of `tab:app-history` |
 | **Severity** | Interpretation only; no number changes |
 
@@ -614,10 +621,15 @@ refactor that put every backend behind one evaluation loop.
 `run_history_two_stage(chat_format=...)` now supports both renderings.
 The default, `messages`, is the real chat every backend gets from now on;
 `flat` reproduces the published API protocol exactly
-(`anchorbench.runners.api --history_chat_format flat`). Decision needed:
-either state in the Table 1 caveat that the API tier's History used a
-single-turn rendering, or re-run the four API History cells with the chat
-rendering as an addendum, together with D8.
+(`anchorbench.runners.api --history_chat_format flat`).
+
+### Decision
+
+The authors judged this immaterial to the paper's conclusions and chose
+neither a re-run nor a text change. The published API History cells stand
+as measured under the quoted-transcript rendering; any future API History
+run uses the real chat rendering by default, so new numbers should not be
+compared with the published API rows without noting this difference.
 
 ---
 
@@ -627,7 +639,7 @@ rendering as an addendum, together with D8.
 
 | | |
 |---|---|
-| **Status** | **OPEN** — needs a decision |
+| **Status** | ACCEPTED — recorded, not repaired (decision of 2026-09-22) |
 | **Affects** | Appendix Table 18 (`tab:sampling_robustness`) and the decoding protocol text |
 | **Severity** | The description is wrong; the published sampled cells ran at temperature 0.7 with the backends' default top-p |
 
@@ -642,9 +654,15 @@ records carry only `temperature` and `seed_idx`.
 
 ### Disposition
 
-Behaviour is unchanged on purpose. Two ways to close this row: (a) describe
-the sampled runs as temperature 0.7 with default top-p, or (b) add a top-p
-parameter to the backends and re-run the six sampled cells as an addendum.
+Behaviour is unchanged on purpose.
+
+### Decision
+
+The authors judged this immaterial: the table exists to show the conclusions
+survive sampling noise, and running without nucleus truncation adds noise
+rather than removing it, so the check was harsher than described. The
+sampled cells stand as run at temperature 0.7 with default top-p; the
+repository documents that here and in `conf/decoding/sample_t07.yaml`.
 
 Re-measure:
 

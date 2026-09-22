@@ -85,7 +85,7 @@ A named recipe (add `+dry_run=true` to print the cells without launching):
 
 | Recipe | What it runs | Backs |
 |---|---|---|
-| `paper_main` | 14 models x 5 suites, greedy; API History cells use the runner's two-stage control (D8) | Table 1, Figures 3 and 8, most appendix tables |
+| `paper_main` | 14 models x 5 suites, greedy; API History cells use the runner's two-stage control (ledger D8, D9) | Table 1, Figures 3 and 8, most appendix tables |
 | `paper_icl_dist` | ICL distribution-matching variant | Table 14 |
 | `paper_history_matched` | History with the two-stage control | Table 13 (re-run, see D5) |
 | `paper_tool_plaintext` | Tool suite forced to plaintext, 5 models | Table 15 (re-run, see D5) |

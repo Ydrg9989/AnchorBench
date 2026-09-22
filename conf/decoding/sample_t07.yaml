@@ -1,6 +1,7 @@
-# Sampling-robustness profile (Appendix, Table 18): temperature 0.7, top-p 0.9,
-# one sample per seed for three seeds. n_samples is informational; the sweep is
-# runners/sampling.py, whose --n_seeds defaults to 3.
+# Sampling-robustness profile (Appendix, Table 18): temperature 0.7, one sample
+# per seed for three seeds (runners/sampling.py, --n_seeds 3). top_p is the value
+# the paper states; the published runs did not apply it, because no backend takes
+# a top-p argument -- see docs/RECONCILIATION.md D10. Neither key is read by code.
 name: sample_t07
 temperature: 0.7
 top_p: 0.9

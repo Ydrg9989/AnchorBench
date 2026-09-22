@@ -73,14 +73,14 @@ table and figure regenerates identically (`tests/golden/`), and
 - `pyproject.toml` lists the authors; version 2.1.0.
 - `conf/decoding/sample_t07.yaml` says three seeds; its unconsumed
   `n_samples: 5` contradicted the sampling runner's default and the paper.
-- `docs/RECONCILIATION.md` gains **D9 (OPEN)**, the API tier's single-message
-  History rendering, and **D10 (OPEN)**, the sampled runs never applied the
-  top-p 0.9 the appendix describes.
-- `docs/RECONCILIATION.md` gains **D8 (OPEN)**: the four API-tier History
-  cells were scored against the two-stage control while the open-weight
-  cells used the single-stage control. `paper_main` reproduces the
-  committed numbers unchanged; the ledger asks for a decision on the
-  Table 1 caveat.
+- `docs/RECONCILIATION.md` gains **D9**, the API tier's single-message
+  History rendering, and **D10**, the sampled runs never applied the top-p 0.9
+  the appendix describes. Both are recorded as accepted: the authors judged
+  them immaterial to the conclusions.
+- `docs/RECONCILIATION.md` gains **D8**: the four API-tier History cells
+  were scored against the two-stage control while the open-weight cells
+  used the single-stage control. `paper_main` reproduces the committed
+  numbers unchanged; recorded as accepted.
 
 ### Added
 
