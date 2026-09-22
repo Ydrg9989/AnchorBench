@@ -35,7 +35,7 @@ for domain in DOMAIN_IDS:            # 6 business domains
 
 | Size | `n_per_cell` | Items per suite |
 |---|---|---|
-| `smoke` | 1 | 36 |
+| `smoke` | 1, one domain | 6 |
 | `pilot` | 5 | 180 |
 | `core` | 10 | 360 |
 

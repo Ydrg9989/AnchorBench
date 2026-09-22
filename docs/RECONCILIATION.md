@@ -25,6 +25,8 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D6](#d6) | Inline appendix tables vs current output (measured) | RESOLVED | yes — 4 tables now generated |
 | [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
 | [D8](#d8) | API-tier History cells are scored against the two-stage control | **OPEN** | interpretation of Table 1's History caveat for the four API rows |
+| [D9](#d9) | API-tier History Stage 2 was one quoted message, not a chat | **OPEN** | interpretation of the History pathway for the four API rows |
+| [D10](#d10) | Sampled decoding never applied top-p 0.9 | **OPEN** | the decoding description of Table 18 |
 
 `verify.py::KNOWN_DIVERGENCES` is **empty**, and all three verify modes
 report zero mismatches. That is the goal state, not an unused mechanism: the
@@ -569,4 +571,84 @@ for run in ("full_benchmark", "api_benchmark"):
         if d["suite"] == "History":
             print(run, d["model"], d["baseline_condition"])
 PY
+```
+
+---
+
+<a id="d9"></a>
+
+## D9 — API-tier History Stage 2 was one quoted message, not a chat
+
+| | |
+|---|---|
+| **Status** | **OPEN** — needs a decision |
+| **Affects** | Table 1 History columns for the four API models; the API rows of `tab:app-history` |
+| **Severity** | Interpretation only; no number changes |
+
+### What happens
+
+The paper describes History as a two-stage conversation whose Stage-2 turn
+follows the model's own Stage-1 answer. The open-weight runner did exactly
+that (a user / assistant / user chat). The API runner instead sent Stage 2
+as a **single user message** that quoted the exchange:
+
+```
+Previous conversation:
+User: <stage-1 prompt>
+Assistant: <stage-1 reply>
+
+User: <stage-2 prompt>
+```
+
+So for the four API models the "conversation history" pathway was emulated
+inside one turn, and the model saw its earlier answer as quoted text rather
+than as its own assistant turn.
+
+### Root cause
+
+`runners/api.py` had its own copy of the History loop. Surfaced by the v2.1
+refactor that put every backend behind one evaluation loop.
+
+### Disposition
+
+`run_history_two_stage(chat_format=...)` now supports both renderings.
+The default, `messages`, is the real chat every backend gets from now on;
+`flat` reproduces the published API protocol exactly
+(`anchorbench.runners.api --history_chat_format flat`). Decision needed:
+either state in the Table 1 caveat that the API tier's History used a
+single-turn rendering, or re-run the four API History cells with the chat
+rendering as an addendum, together with D8.
+
+---
+
+<a id="d10"></a>
+
+## D10 — Sampled decoding never applied top-p 0.9
+
+| | |
+|---|---|
+| **Status** | **OPEN** — needs a decision |
+| **Affects** | Appendix Table 18 (`tab:sampling_robustness`) and the decoding protocol text |
+| **Severity** | The description is wrong; the published sampled cells ran at temperature 0.7 with the backends' default top-p |
+
+### What happens
+
+The appendix and `conf/decoding/sample_t07.yaml` describe the sampled runs
+as temperature 0.7, top-p 0.9. `runners/sampling.py` defines
+`SAMPLING_TOP_P = 0.9` but never passes it: no backend in the package takes a
+top-p argument. vLLM's `SamplingParams` therefore ran at its default
+`top_p = 1.0`, and the hosted API at the provider default. The published
+records carry only `temperature` and `seed_idx`.
+
+### Disposition
+
+Behaviour is unchanged on purpose. Two ways to close this row: (a) describe
+the sampled runs as temperature 0.7 with default top-p, or (b) add a top-p
+parameter to the backends and re-run the six sampled cells as an addendum.
+
+Re-measure:
+
+```bash
+grep -n "top_p" src/anchorbench/runners/sampling.py src/anchorbench/eval/backends.py \
+    src/anchorbench/inference/*.py
 ```

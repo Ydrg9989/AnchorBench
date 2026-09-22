@@ -98,9 +98,13 @@ anchorbench experiment +experiment=paper_main
 ```
 
 Any config key can be overridden on the command line, for example
-`batch_size=64` or `decoding.max_tokens=256`. Open-weight cells go through
-vLLM in a subprocess per model; API cells go through `runners.api` with
-bounded concurrency.
+`batch_size=64` or `decoding.max_tokens=256`. Every cell runs in a subprocess
+through the same evaluator loop; open-weight models load through vLLM, API
+models through the OpenRouter backend with bounded concurrency. Every runner
+accepts `--backend openrouter`, so any suite can be pointed at a hosted model
+directly. History on the API defaults to a real three-turn chat for Stage 2;
+`--history_chat_format flat` reproduces the single-message rendering the
+published API cells used (D9).
 
 ### 4. Recompute the unified summaries
 
@@ -144,7 +148,8 @@ summaries. It runs on a clean clone.
 All paper experiments use `conf/decoding/greedy.yaml`: temperature 0,
 `max_tokens` 512, no system prompt, and the instruction to return a single
 integer 0 to 100 on the last line. The sampling-robustness check uses
-`conf/decoding/sample_t07.yaml`: temperature 0.7, top-p 0.9, three seeds.
+`conf/decoding/sample_t07.yaml`: temperature 0.7, three seeds; the top-p 0.9 it
+lists was never applied by the runner (D10 in the ledger).
 vLLM is not bitwise reproducible at temperature 0; re-running a cell can move
 a metric by a few hundredths (`results/rebuttal/cot_replication/README.md`).
 
