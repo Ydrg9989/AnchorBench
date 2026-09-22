@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install the package
+        # CPU wheels for torch: the default index resolves to CUDA builds,
+        # which are several GB and useless on a CI runner. vLLM is not
+        # installed; nothing in the test suite loads a model.
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -e ".[api,dev]"
+
+      - name: Lint
+        run: ruff check src tests scripts datasets
+
+      - name: Test
+        # Regenerates all six suites and checks them byte-for-byte against
+        # the committed prompts, runs the parsing and metric unit tests, and
+        # smoke-tests the claim verifier on the committed summaries. Tests
+        # that need the bulk results tree skip on a clean clone.
+        run: python -m pytest -q
+
+      - name: Verify every numeric paper claim
+        run: python -m anchorbench.paper.verify --strict

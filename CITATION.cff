@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use AnchorBench, please cite the COLM 2026 paper."
+title: "AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs"
+type: software
+version: 2.1.0
+license: Apache-2.0
+repository-code: "https://github.com/Ydrg9989/AnchorBench"
+url: "https://openreview.net/forum?id=keInIFu0gS"
+authors:
+  - given-names: Yiderigun
+    family-names: Borjigin
+    affiliation: Saarland University
+    email: yiderigun.borjigin@uni-saarland.de
+  - given-names: Alexander
+    family-names: Hermann
+    affiliation: Hamburg University of Technology
+  - given-names: Christian J.
+    family-names: Cyron
+    affiliation: Helmholtz-Zentrum Hereon; Hamburg University of Technology
+  - given-names: Roland
+    family-names: Aydin
+    affiliation: Saarland University; German Research Centre for Artificial Intelligence (DFKI)
+    email: roland.aydin@uni-saarland.de
+preferred-citation:
+  type: conference-paper
+  title: "AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs"
+  authors:
+    - given-names: Yiderigun
+      family-names: Borjigin
+    - given-names: Alexander
+      family-names: Hermann
+    - given-names: Christian J.
+      family-names: Cyron
+    - given-names: Roland
+      family-names: Aydin
+  collection-title: Third Conference on Language Modeling
+  year: 2026
+  url: "https://openreview.net/forum?id=keInIFu0gS"

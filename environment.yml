@@ -1,0 +1,10 @@
+# Conda environment used for the paper runs. `scripts/run_with_env.sh`
+# activates it by name. Plain pip works too: `pip install -e ".[all]"`.
+name: LLM_anchoring
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - -e .[all]

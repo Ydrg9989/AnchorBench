@@ -1,6 +1,7 @@
 # [COLM 2026] AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs
 
 <p align="center">
+  <a href="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml"><img src="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://openreview.net/forum?id=keInIFu0gS"><img src="https://img.shields.io/badge/COLM%202026-OpenReview-b31b1b.svg" alt="OpenReview"></a>
   <a href="https://huggingface.co/datasets/Yiderigun/LLM_anchoring"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg" alt="Hugging Face dataset"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache--2.0-green.svg" alt="Apache-2.0"></a>
