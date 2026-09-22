@@ -4,3 +4,8 @@ slug: anthropic_claude-haiku-4.5
 short: Claude-H4.5
 backend: openrouter
 api_concurrency: 8
+# Table metadata: family and its LaTeX macro, parameter count (open-weight),
+# and the LaTeX macro that prints `short` in the paper's tables.
+family: Anthropic
+family_latex: '\claude'
+latex: '\claudehaiku'

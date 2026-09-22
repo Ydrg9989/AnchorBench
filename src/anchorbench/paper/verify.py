@@ -35,32 +35,19 @@ from pathlib import Path
 
 import numpy as np
 
+from anchorbench import registry
 from anchorbench.paths import RESULTS_DIR
 
 RESULTS = RESULTS_DIR
 
-SUITE_NAME_MAP = {"ICL": "Icl", "RAG": "Rag"}
+# Paper labels ("ICL") -> unified_all_suites.json spellings ("Icl").
+SUITE_NAME_MAP = {s.label: s.unified_key for s in registry.suites()}
 
-MODEL_ORDER = [
-    ("Qwen-1.5B", "Qwen_Qwen2.5-1.5B-Instruct"),
-    ("Qwen-3B", "Qwen_Qwen2.5-3B-Instruct"),
-    ("Qwen-7B", "Qwen_Qwen2.5-7B-Instruct"),
-    ("Llama-1B", "meta-llama_Llama-3.2-1B-Instruct"),
-    ("Llama-3B", "meta-llama_Llama-3.2-3B-Instruct"),
-    ("Llama-8B", "meta-llama_Llama-3.1-8B-Instruct"),
-    ("Gemma-1B", "google_gemma-3-1b-it"),
-    ("Gemma-4B", "google_gemma-3-4b-it"),
-    ("OLMo-13B", "allenai_OLMo-2-1124-13B-Instruct"),
-    ("OLMo-32B", "allenai_OLMo-2-0325-32B-Instruct"),
-    ("GPT-5.4-mini", "openai_gpt-5.4-mini"),
-    ("Claude-Haiku", "anthropic_claude-haiku-4.5"),
-    ("Gemini-Flash", "google_gemini-2.5-flash"),
-    ("Grok-3-mini", "x-ai_grok-3-mini-beta"),
-]
-OW_SLUGS = {s for _, s in MODEL_ORDER[:10]}
-API_SLUGS = {s for _, s in MODEL_ORDER[10:]}
+MODEL_ORDER = [(m.short, m.slug) for m in registry.models()]
+OW_SLUGS = {m.slug for m in registry.open_weight_models()}
+API_SLUGS = {m.slug for m in registry.api_models()}
 ALL_SLUGS = OW_SLUGS | API_SLUGS
-SUITES = ["External", "History", "ICL", "RAG", "Tool"]
+SUITES = [s.label for s in registry.suites()]
 
 
 @dataclass

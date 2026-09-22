@@ -2,3 +2,8 @@ suite: history
 dataset_dir: datasets/anchorbench_history_core
 promptviews_file: promptviews_core.jsonl
 itemspecs_file: itemspecs.jsonl
+# Display metadata: table label, the key used in unified_all_suites.json,
+# and the LaTeX macro for the suite name.
+label: History
+unified_key: History
+latex: '\historysuite'

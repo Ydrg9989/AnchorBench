@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from pathlib import Path
 
-from anchorbench.eval.constants import MODEL_SHORT
+from anchorbench import registry
 from anchorbench.paths import OUTPUTS_DIR, RESULTS_DIR, ROOT
 
 DEFAULT_OW_RESULTS = RESULTS_DIR / "full_benchmark"
@@ -19,70 +19,23 @@ DEFAULT_ICL_DIST_API = RESULTS_DIR / "icl_dist_api"
 DEFAULT_FIG_DIR = OUTPUTS_DIR / "figures"
 DEFAULT_TABLE_DIR = OUTPUTS_DIR / "tables"
 
-OW_MODELS_ORDER = [
-    "Qwen-1.5B", "Qwen-3B", "Qwen-7B",
-    "Llama-1B", "Llama-3B", "Llama-8B",
-    "Gemma-1B", "Gemma-4B",
-    "OLMo-13B", "OLMo-32B",
-]
-
-API_MODELS_ORDER = [
-    "GPT-5.4-mini", "Claude-H4.5", "Gemini-2.5-Flash", "Grok-3-mini",
-]
-
+OW_MODELS_ORDER = [m.short for m in registry.open_weight_models()]
+API_MODELS_ORDER = [m.short for m in registry.api_models()]
 ALL_MODELS_ORDER = OW_MODELS_ORDER + API_MODELS_ORDER
 
-OW_SLUGS = [
-    "Qwen_Qwen2.5-1.5B-Instruct",
-    "Qwen_Qwen2.5-3B-Instruct",
-    "Qwen_Qwen2.5-7B-Instruct",
-    "meta-llama_Llama-3.2-1B-Instruct",
-    "meta-llama_Llama-3.2-3B-Instruct",
-    "meta-llama_Llama-3.1-8B-Instruct",
-    "google_gemma-3-1b-it",
-    "google_gemma-3-4b-it",
-    "allenai_OLMo-2-1124-13B-Instruct",
-    "allenai_OLMo-2-0325-32B-Instruct",
-]
+OW_SLUGS = [m.slug for m in registry.open_weight_models()]
+API_SLUGS = [m.slug for m in registry.api_models()]
 
-API_SLUGS = [
-    "openai_gpt-5.4-mini",
-    "anthropic_claude-haiku-4.5",
-    "google_gemini-2.5-flash",
-    "x-ai_grok-3-mini-beta",
-]
+# Suites by their unified_all_suites.json spelling, in paper order.
+SUITES = [s.unified_key for s in registry.suites()]
+SUITE_LATEX = {s.unified_key: s.latex for s in registry.suites()}
 
-SUITES = ["External", "History", "Icl", "Rag", "Tool"]
-
-SUITE_LATEX = {
-    "External": r"\externalsuite",
-    "History": r"\historysuite",
-    "Icl": r"\iclsuite",
-    "Rag": r"\ragsuite",
-    "Tool": r"\toolsuite",
-}
-
-MODEL_LATEX = {
-    "Qwen-1.5B":      r"\qwenonefive",
-    "Qwen-3B":        r"\qwenthree",
-    "Qwen-7B":        r"\qwenseven",
-    "Llama-1B":       r"\llamaone",
-    "Llama-3B":       r"\llamathree",
-    "Llama-8B":       r"\llamaeight",
-    "Gemma-1B":       r"\gemmaone",
-    "Gemma-4B":       r"\gemmafour",
-    "OLMo-13B":       r"\olmothirteen",
-    "OLMo-32B":       r"\olmonthirtytwo",
-    "GPT-5.4-mini":   r"\gptfivefourmini",
-    "Claude-H4.5":    r"\claudehaiku",
-    "Gemini-2.5-Flash": r"\geminiflash",
-    "Grok-3-mini":    r"\grokthreemini",
-}
+MODEL_LATEX = {m.short: m.latex for m in registry.models() if m.latex}
 
 
 def slug_to_short(slug: str) -> str:
     """Map a model slug (e.g. 'Qwen_Qwen2.5-7B-Instruct') to its short name."""
-    return MODEL_SHORT.get(slug, slug)
+    return registry.short_for_slug(slug)
 
 
 def short_to_latex(name: str) -> str:

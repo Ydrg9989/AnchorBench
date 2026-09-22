@@ -4,3 +4,8 @@ slug: google_gemini-2.5-flash
 short: Gemini-2.5-Flash
 backend: openrouter
 api_concurrency: 8
+# Table metadata: family and its LaTeX macro, parameter count (open-weight),
+# and the LaTeX macro that prints `short` in the paper's tables.
+family: Google
+family_latex: '\gemini'
+latex: '\geminiflash'

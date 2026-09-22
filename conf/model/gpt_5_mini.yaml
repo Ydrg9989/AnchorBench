@@ -4,3 +4,8 @@ slug: openai_gpt-5.4-mini
 short: GPT-5.4-mini
 backend: openrouter
 api_concurrency: 8
+# Table metadata: family and its LaTeX macro, parameter count (open-weight),
+# and the LaTeX macro that prints `short` in the paper's tables.
+family: OpenAI
+family_latex: '\openai'
+latex: '\gptfivefourmini'

@@ -23,6 +23,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+from anchorbench import registry
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_by_offset
 
@@ -40,7 +41,8 @@ from ._common import (
 plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 
-SUITES = [("external", "External"), ("rag", "RAG"), ("icl", "ICL")]
+# Suites with designer-controlled offsets; History and Tool are excluded (Figure 3 caption).
+SUITES = [(k, registry.suite(k).label) for k in ("external", "rag", "icl")]
 OFFSETS = [15, 25, 40]
 
 

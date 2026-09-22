@@ -2,3 +2,8 @@ suite: icl
 dataset_dir: datasets/anchorbench_icl_core
 promptviews_file: promptviews_core.jsonl
 itemspecs_file: itemspecs.jsonl
+# Display metadata: table label, the key used in unified_all_suites.json,
+# and the LaTeX macro for the suite name.
+label: ICL
+unified_key: Icl
+latex: '\iclsuite'

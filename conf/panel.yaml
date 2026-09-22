@@ -1,0 +1,7 @@
+# The published panel, in the order the paper's tables print it.
+# Keys are the stems of conf/model/*.yaml and conf/data/*.yaml.
+# anchorbench.registry reads this file; nothing else defines an order.
+open_weight: [qwen_1_5b, qwen_3b, qwen_7b, llama_1b, llama_3b, llama_8b, gemma_1b, gemma_4b, olmo_13b, olmo_32b]
+api: [gpt_5_mini, claude_haiku_4_5, gemini_2_5_flash, grok_3_mini]
+suites: [external, history, icl, rag, tool]
+variants: [icl_dist]

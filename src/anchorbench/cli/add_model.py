@@ -54,6 +54,14 @@ def main() -> int:
         print(f"Already exists: {out_path}")
         return 0
 
+    family = model_id.split("/")[0]
+    meta = (
+        "# Table metadata read by anchorbench.registry: edit family/family_latex,\n"
+        "# params (open-weight) and latex (macro printing `short`) before adding the\n"
+        "# model to conf/panel.yaml, which is what puts it into the paper tables.\n"
+        f"family: {family}\n"
+        f"latex: '{short}'\n"
+    )
     if is_api:
         body = (
             f"name: {name}\n"
@@ -62,7 +70,7 @@ def main() -> int:
             f"short: {short}\n"
             f"backend: openrouter\n"
             f"api_concurrency: 8\n"
-        )
+        ) + meta
     else:
         body = (
             f"name: {name}\n"
@@ -74,12 +82,13 @@ def main() -> int:
             f"gpu_memory_utilization: 0.9\n"
             f"max_model_len: 4096\n"
             f"dtype: bfloat16\n"
-        )
+        ) + meta
     out_path.write_text(body)
     print(f"Created {out_path}")
     print()
     print("Smoke test:")
     print(f"  anchorbench eval data=external model={fname}")
+    print("To include it in the paper tables, add the key to conf/panel.yaml.")
     return 0
 
 

@@ -26,6 +26,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
+from anchorbench import registry
+
 from ._common import (
     API_MODELS_ORDER,
     DEFAULT_API_RESULTS,
@@ -49,13 +51,7 @@ SUITE_COLORS = {
     "Tool":     "#9467bd",
 }
 
-SUITE_LABELS = {
-    "External": "External",
-    "History":  "History",
-    "Icl":      "ICL",
-    "Rag":      "RAG",
-    "Tool":     "Tool",
-}
+SUITE_LABELS = {s.unified_key: s.label for s in registry.suites()}
 
 
 def load_unified(path: Path) -> list[dict]:

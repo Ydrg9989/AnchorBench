@@ -7,3 +7,9 @@ tensor_parallel_size: 1
 gpu_memory_utilization: 0.9
 max_model_len: 4096
 dtype: bfloat16
+# Table metadata: family and its LaTeX macro, parameter count (open-weight),
+# and the LaTeX macro that prints `short` in the paper's tables.
+family: Llama
+family_latex: '\llama'
+params: 3B
+latex: '\llamathree'
