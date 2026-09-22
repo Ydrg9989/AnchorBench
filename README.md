@@ -246,7 +246,8 @@ for both tiers, regenerates the figures and main tables into `outputs/figures/`
 and `outputs/tables/`, and finishes with `anchorbench verify`, which fails if
 any numeric claim drifts.
 
-Two things it does **not** cover:
+Two things it does **not** cover (see
+[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for the table-to-module map):
 
 ```bash
 anchorbench tables --appendix     # the 13 \input-ed appendix tables
@@ -277,10 +278,10 @@ with the command to re-measure each one.
 
 | You want to... | Look at | Doc |
 | --- | --- | --- |
-| Add a model | `conf/model/*.yaml` | [EXTENDING.md](docs/EXTENDING.md) |
-| Add a suite | `src/anchorbench/data/suites/` | [EXTENDING.md](docs/EXTENDING.md) |
-| Add a metric | `src/anchorbench/eval/metrics.py` | [EXTENDING.md](docs/EXTENDING.md) |
-| Add an experiment | `conf/experiment/*.yaml` | [EXTENDING.md](docs/EXTENDING.md) |
+| Add a model | `conf/model/*.yaml` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
+| Add a suite | `src/anchorbench/data/suites/` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
+| Add a metric | `src/anchorbench/eval/metrics.py` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
+| Add an experiment | `conf/experiment/*.yaml` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
 | Register a model in one shot | `anchorbench add-model openai/gpt-5o` | — |
 
 ## 📁 Repository structure
@@ -299,7 +300,8 @@ AnchorBench/
 |-- datasets/                # committed: the exact prompts the models saw
 |-- results/                 # bulk gitignored; unified summaries + tables committed
 |-- scripts/                 # reproduce_paper.sh + thin wrappers
-|-- docs/                    # ARCHITECTURE, RECONCILIATION, APPENDIX_TABLES, ...
+|-- experiments/             # the launchers that produced the appendix experiments (provenance)
+|-- docs/                    # ARCHITECTURE, REPRODUCIBILITY, DATA, RECONCILIATION
 `-- tests/
 ```
 
@@ -307,9 +309,10 @@ AnchorBench/
 restructured after the paper's data was generated, so the committed prompts
 are ground truth and regenerating them is a check rather than a build step.
 
-Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the package map
-and data flow, and [docs/APPENDIX_TABLES.md](docs/APPENDIX_TABLES.md) for
-which module produces which appendix table.
+Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the package map,
+data flow and extension points; [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md)
+for every command and for which module produces which paper table;
+[docs/DATA.md](docs/DATA.md) for the record schemas and the generation pipeline.
 
 ## 📖 Citation
 
