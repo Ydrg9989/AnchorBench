@@ -27,7 +27,7 @@ def _print_help() -> int:
         "\n"
         "Examples:\n"
         "  anchorbench eval data=external model=qwen_7b\n"
-        "  anchorbench experiment=paper_main\n"
+        "  anchorbench experiment +experiment=paper_main\n"
         "  anchorbench tables --paper\n"
         "  anchorbench verify --quick\n"
     )

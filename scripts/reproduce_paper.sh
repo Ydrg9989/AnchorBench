@@ -24,14 +24,8 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
-# Use the installed console script when present; otherwise run the package
-# straight from src/ so a checkout without `pip install -e .` still works.
-if command -v anchorbench >/dev/null 2>&1; then
-    ANCHORBENCH=(anchorbench)
-else
-    export PYTHONPATH="$REPO_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
-    ANCHORBENCH=(python -m anchorbench.cli.main)
-fi
+# shellcheck source=scripts/_env.sh
+source "$SCRIPT_DIR/_env.sh"   # sets ANCHORBENCH and PYTHONPATH
 
 DRY_RUN_FLAG=""
 if [[ "${DRY_RUN:-0}" == "1" ]]; then

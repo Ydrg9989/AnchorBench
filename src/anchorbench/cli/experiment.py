@@ -8,7 +8,7 @@ same builder ``anchorbench eval`` uses.
 Usage::
 
     anchorbench experiment +experiment=paper_main
-    anchorbench experiment +experiment=paper_sampling --dry_run
+    anchorbench experiment +experiment=paper_sampling +dry_run=true
 """
 
 from __future__ import annotations
@@ -72,13 +72,15 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
 
     suite_data = {s: _resolve_data(s, cfg) for s in suites}
 
+    def out_for(model: dict, suite: str) -> Path:
+        # API results are flat per suite under api_out; local ones nest by suite.
+        return api_out if is_api_model(model) else base_out / suite
+
     if explicit_models:
         for model_name in explicit_models:
             model = _resolve_model(model_name)
             for suite in suites:
-                data = suite_data[suite]
-                out = (api_out if is_api_model(model) else base_out / suite)
-                cells.append((model, data, None, out))
+                cells.append((model, suite_data[suite], None, out_for(model, suite)))
         return cells
 
     for tier_name in tiers:
@@ -88,9 +90,7 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
             model = _resolve_model(model_name)
             gpu = gpu_slots[i % len(gpu_slots)] if gpu_slots else None
             for suite in suites:
-                data = suite_data[suite]
-                out = (api_out if is_api_model(model) else base_out / suite)
-                cells.append((model, data, gpu, out))
+                cells.append((model, suite_data[suite], gpu, out_for(model, suite)))
     return cells
 
 

@@ -9,7 +9,7 @@ Usage::
 
     anchorbench eval data=external model=qwen_7b
     anchorbench eval data=icl_dist model=llama_8b decoding=greedy
-    anchorbench eval data=external model=qwen_7b model.batch_size=128
+    anchorbench eval data=external model=qwen_7b batch_size=128 decoding.max_tokens=256
     anchorbench eval data=tool model=qwen_7b +tool_plaintext=true
 """
 

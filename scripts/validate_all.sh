@@ -21,6 +21,9 @@
 
 set -euo pipefail
 
+# shellcheck source=scripts/_env.sh
+source "$(dirname "$0")/_env.sh"   # puts src/ on PYTHONPATH
+
 SIZE="${1:-pilot}"
 BASE="datasets"
 if [[ "$SIZE" == "smoke" ]]; then

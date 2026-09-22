@@ -26,6 +26,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 # Backends that mean "call a hosted endpoint" rather than "load weights here".
 API_BACKENDS = frozenset({"openrouter", "api"})
+API_RUNNER = "anchorbench.runners.api"
 
 
 def is_api_model(model: Mapping[str, Any]) -> bool:
@@ -45,13 +46,15 @@ def is_api_model(model: Mapping[str, Any]) -> bool:
 
 
 def runner_module(model: Mapping[str, Any], data: Mapping[str, Any]) -> str:
-    """Name of the ``anchorbench.runners`` module that evaluates this cell."""
+    """Name of the ``anchorbench.runners`` module that evaluates this cell.
+
+    Local cells go to the runner named after ``data["suite"]``. A variant
+    such as ``icl_dist`` keeps ``suite: icl`` in its data config and only
+    changes the dataset, so it reaches the ``icl`` runner the same way.
+    """
     if is_api_model(model):
-        return "anchorbench.runners.api"
-    suite = data["suite"]
-    variant = data.get("variant")
-    # icl_dist ships the same five condition names as icl and reuses its runner.
-    return f"anchorbench.runners.{'icl' if (variant or suite) == 'icl' else suite}"
+        return API_RUNNER
+    return f"anchorbench.runners.{data['suite']}"
 
 
 def build_cell_cmd(
@@ -60,7 +63,6 @@ def build_cell_cmd(
     decoding: Mapping[str, Any],
     out_dir: Path,
     *,
-    root: Path = ROOT,
     batch_size: int | None = None,
     seed: int | None = None,
     baseline_condition: str | None = None,
@@ -75,22 +77,24 @@ def build_cell_cmd(
     the same command when the values coincide.
     """
     suite = data["suite"]
-    variant = data.get("variant")
     module = runner_module(model, data)
 
-    if module == "anchorbench.runners.api":
-        cmd = [
+    if is_api_model(model):
+        # runners.api takes the suite *name* and resolves the dataset itself,
+        # so a variant is passed as its own suite name (icl_dist), not as a
+        # flag. ``baseline_condition`` is deliberately not forwarded: the
+        # published API-tier History numbers were scored against the runner's
+        # default two-stage control, and paper_main must keep reproducing
+        # them (docs/RECONCILIATION.md D8).
+        return [
             sys.executable, "-m", module,
             "--model_id", model["hf_id"],
-            "--suite", suite,
+            "--suites", data.get("variant") or suite,
             "--out_dir", str(out_dir),
             "--max_tokens", str(decoding["max_tokens"]),
         ]
-        if variant:
-            cmd += ["--variant", variant]
-        return cmd
 
-    dataset_dir = root / data["dataset_dir"]
+    dataset_dir = ROOT / data["dataset_dir"]
     cmd = [
         sys.executable, "-m", module,
         "--model_id", model["hf_id"],

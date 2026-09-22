@@ -11,6 +11,9 @@
 
 set -euo pipefail
 
+# shellcheck source=scripts/_env.sh
+source "$(dirname "$0")/_env.sh"   # sets ANCHORBENCH and PYTHONPATH
+
 SIZE="${1:-core}"
 SEED="${2:-42}"
 
@@ -21,7 +24,7 @@ echo "============================================================"
 for suite in external history icl icl_dist rag tool; do
     echo ""
     echo "--- Generating ${suite} ---"
-    anchorbench generate "data=${suite}" "+size=${SIZE}" "seed=${SEED}"
+    "${ANCHORBENCH[@]}" generate "data=${suite}" "+size=${SIZE}" "seed=${SEED}"
 done
 
 echo ""
