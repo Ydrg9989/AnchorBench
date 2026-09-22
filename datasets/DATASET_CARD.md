@@ -162,10 +162,14 @@ metrics = compute_extended_metrics(records)
 ## Citation
 
 ```bibtex
-@inproceedings{anchorbench2026,
-  title     = {AnchorBench: A Theory-Grounded, Multi-Paradigm Benchmark for Anchoring Bias in Large Language Models},
-  booktitle = {Proceedings of the Conference on Language Modeling (COLM)},
+@inproceedings{borjigin2026anchorbench,
+  title     = {AnchorBench: A Multi-Pathway Benchmark for the Anchoring
+               Effect in {LLM}s},
+  author    = {Borjigin, Yiderigun and Hermann, Alexander and
+               Cyron, Christian and Aydin, Roland},
+  booktitle = {Third Conference on Language Modeling},
   year      = {2026},
+  url       = {https://openreview.net/forum?id=keInIFu0gS}
 }
 ```
 

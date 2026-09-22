@@ -14,7 +14,7 @@ authors:
   - given-names: Alexander
     family-names: Hermann
     affiliation: Hamburg University of Technology
-  - given-names: Christian J.
+  - given-names: Christian
     family-names: Cyron
     affiliation: Helmholtz-Zentrum Hereon; Hamburg University of Technology
   - given-names: Roland
@@ -29,7 +29,7 @@ preferred-citation:
       family-names: Borjigin
     - given-names: Alexander
       family-names: Hermann
-    - given-names: Christian J.
+    - given-names: Christian
       family-names: Cyron
     - given-names: Roland
       family-names: Aydin
