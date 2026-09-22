@@ -268,14 +268,12 @@ Most of the repository can be checked on a clean clone in seconds, because
 the two unified summaries and every generated table are committed:
 
 ```bash
-pytest                                    # 256 tests; 4 skip without the results tarballs
+pytest                                    # 297 tests; 3 skip without the results tarballs
 anchorbench verify --strict               # every numeric paper claim
-python scripts/measure_paper_drift.py     # paper tables vs generator output
 ```
 
 [docs/RECONCILIATION.md](docs/RECONCILIATION.md) is the ledger of every known
-divergence between the paper, the committed artifacts and the current code,
-with the command to re-measure each one.
+divergence between the paper, the committed artifacts and the current code.
 
 ## 🧩 Extending
 

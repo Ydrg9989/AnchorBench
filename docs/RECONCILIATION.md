@@ -39,7 +39,7 @@ How to re-measure:
 ```bash
 python -m pytest tests/test_dataset_regeneration.py   # D1, D2, D3
 python -m pytest tests/test_golden_artifacts.py       # generator self-consistency
-python scripts/measure_paper_drift.py --verbose       # D6
+# D6 was measured with scripts/measure_paper_drift.py, removed with the paper source
 python -m anchorbench.paper.verify --strict           # paper claims
 ```
 
@@ -299,7 +299,7 @@ cell in `results/rebuttal/cot_replication/README.md`.
 | | |
 |---|---|
 | **Status** | **RESOLVED** — the four drifting tables are now generated, not pasted |
-| **Measured with** | `python scripts/measure_paper_drift.py [--verbose]` |
+| **Measured with** | `scripts/measure_paper_drift.py` (removed in v2.1 together with the LaTeX source it read) |
 
 The 13 `\input{}`-ed tables cannot drift by construction. Of the 14 tables
 pasted inline in `appendix.tex`, **8 match current output exactly**, 4 carry

@@ -90,6 +90,8 @@ table and figure regenerates identically (`tests/golden/`), and
 
 ### Removed
 
+- `scripts/measure_paper_drift.py` and `scripts/sync_paper_tables.py`: both
+  read the LaTeX source, which is not part of this repository.
 - `scripts/data_gen/gen_syn_anchors_local.py` (the pre-benchmark SynAnchors
   v0 generator), `scripts/export_raw_texts.py` (debug helper) and
   `scripts/validate_smoke_results.sh` (called a script deleted in v2.0).
