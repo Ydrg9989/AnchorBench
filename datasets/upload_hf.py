@@ -10,6 +10,10 @@ then upload:
     python datasets/upload_hf.py --dry-run     # list what would go, change nothing
     python datasets/upload_hf.py
 
+To refresh only the dataset card and the version notes (no data, no deletions):
+
+    python datasets/upload_hf.py --card-only --message "Update dataset card"
+
 The suite list is explicit on purpose. This used to glob
 ``anchorbench_*_core`` for a file named ``promptviews_public.jsonl`` while the
 exporter wrote ``{dir.name}_promptviews_public.jsonl``, so the glob matched
@@ -45,10 +49,15 @@ def main() -> int:
     ap.add_argument("--dry-run", action="store_true",
                     help="List the uploads without contacting the Hub.")
     ap.add_argument("--repo_id", default=REPO_ID)
+    ap.add_argument("--card-only", action="store_true",
+                    help="Upload README.md and VERSIONS.md only; leave data files and "
+                         "never delete anything.")
+    ap.add_argument("--message", default=None,
+                    help="Commit message on the Hub (default depends on the mode).")
     args = ap.parse_args()
 
     uploads = []
-    for suite in SUITES:
+    for suite in () if args.card_only else SUITES:
         src = RELEASE_DIR / f"{suite}.jsonl"
         if not src.exists():
             print(f"missing: {src.relative_to(ROOT)} -- run "
@@ -57,7 +66,7 @@ def main() -> int:
         uploads.append((src, f"data/{suite}.jsonl"))
 
     corpus = DATASETS / "anchorbench_rag_core" / "anchorbench_corpus.jsonl"
-    if corpus.exists():
+    if corpus.exists() and not args.card_only:
         uploads.append((corpus, "data/rag_corpus.jsonl"))
 
     for name, target in EXTRA_FILES.items():
@@ -79,7 +88,8 @@ def main() -> int:
     keep = {t for _, t in uploads}
     existing = {s.rfilename for s in
                 api.repo_info(args.repo_id, repo_type="dataset").siblings}
-    obsolete = sorted(f for f in existing - keep if not f.startswith("."))
+    obsolete = [] if args.card_only else sorted(
+        f for f in existing - keep if not f.startswith("."))
 
     for src, target in uploads:
         print(f"  + {str(src.relative_to(ROOT)):52s} -> {target:32s} "
@@ -101,11 +111,14 @@ def main() -> int:
         repo_id=args.repo_id,
         repo_type="dataset",
         operations=ops,
-        commit_message="Release anchorbench-v2.0-core: full schema, add uncertain suite, drop tool_read",
+        commit_message=args.message or (
+            "Update dataset card and version notes" if args.card_only else
+            "Release anchorbench-v2.0-core: full schema, add uncertain suite, drop tool_read"),
     )
     print(f"\nDone. {len(uploads)} added/updated, {len(obsolete)} removed.")
     print(f"Revision: {info.oid}")
-    print("Record that hash in datasets/VERSIONS.md.")
+    if not args.card_only:
+        print("Record that hash in datasets/VERSIONS.md.")
     return 0
 
 
