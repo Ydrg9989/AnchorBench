@@ -55,8 +55,8 @@ from anchorbench.eval.evaluator import (
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.paths import ROOT
 
-ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 REBUTTAL_STRATEGIES: dict[str, str] = {

@@ -13,6 +13,7 @@ import pytest
 
 PUBLIC_MODULES = [
     "anchorbench",
+    "anchorbench.paths",
     "anchorbench.data",
     "anchorbench.data.domains",
     "anchorbench.data.generate",

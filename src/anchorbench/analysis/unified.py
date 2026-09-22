@@ -31,6 +31,7 @@ from anchorbench.eval.runner_utils import (
     fmt,
     fmt_pct,
 )
+from anchorbench.paths import RESULTS_DIR
 
 
 def main() -> None:
@@ -39,7 +40,7 @@ def main() -> None:
     )
     p.add_argument(
         "--results_dir", type=Path,
-        default=Path(__file__).resolve().parents[3] / "results" / "full_benchmark",
+        default=RESULTS_DIR / "full_benchmark",
     )
     p.add_argument("--epsilon", type=float, default=3.0)
     args = p.parse_args()

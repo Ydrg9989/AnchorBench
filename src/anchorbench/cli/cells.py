@@ -21,8 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from anchorbench.eval.constants import API_MODEL_IDS
-
-ROOT = Path(__file__).resolve().parents[3]
+from anchorbench.paths import ROOT
 
 # Backends that mean "call a hosted endpoint" rather than "load weights here".
 API_BACKENDS = frozenset({"openrouter", "api"})
@@ -94,7 +93,7 @@ def build_cell_cmd(
             "--max_tokens", str(decoding["max_tokens"]),
         ]
 
-    dataset_dir = ROOT / data["dataset_dir"]
+    dataset_dir = ROOT / data["dataset_dir"]  # conf paths are repo-relative
     cmd = [
         sys.executable, "-m", module,
         "--model_id", model["hf_id"],

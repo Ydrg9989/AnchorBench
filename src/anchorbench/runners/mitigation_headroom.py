@@ -39,7 +39,6 @@ from anchorbench.eval.evaluator import (
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 from anchorbench.eval.metrics import compute_unified_metrics
 
-ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 SUITE_DATASETS = {k: v for k, v in _ALL.items() if k in ("external", "rag")}

@@ -36,8 +36,6 @@ import numpy as np
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 
-ROOT = Path(__file__).resolve().parents[3]
-
 SUITES = ["external", "history", "icl", "rag", "tool"]
 ANCHORED_CONDITIONS = [
     "irrelevant_low", "irrelevant_high", "plausible_low", "plausible_high",

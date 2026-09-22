@@ -21,8 +21,8 @@ import numpy as np
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.paths import ROOT
 
-ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 METRIC_KEYS = [

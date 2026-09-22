@@ -18,11 +18,11 @@ import argparse
 import logging
 import subprocess
 import sys
-from pathlib import Path
+
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[3]
 
 # The 13 tables COLM_camera_ready/sections/appendix.tex \input-s, in the order
 # they appear there. Each module already knows its own input and output paths;
@@ -76,7 +76,7 @@ def main() -> int:
 
     rc = 0
     if args.appendix:
-        if not (ROOT / "results" / "rebuttal").is_dir():
+        if not (RESULTS_DIR / "rebuttal").is_dir():
             print("results/rebuttal/ is absent; fetch the results bundles first "
                   "(scripts/make_result_bundles.sh).", file=sys.stderr)
             return 1

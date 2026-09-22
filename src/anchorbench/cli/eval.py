@@ -24,7 +24,8 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from anchorbench.cli.cells import ROOT, build_cell_cmd
+from anchorbench.cli.cells import build_cell_cmd
+from anchorbench.paths import CONF_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +52,7 @@ def _build_cmd(cfg: DictConfig) -> list[str]:
     )
 
 
-@hydra.main(version_base=None, config_path=str(ROOT / "conf"), config_name="config")
+@hydra.main(version_base=None, config_path=str(CONF_DIR), config_name="config")
 def _hydra_main(cfg: DictConfig) -> int:
     log.info("Resolved config:\n%s", OmegaConf.to_yaml(cfg))
     cmd = _build_cmd(cfg)

@@ -22,11 +22,11 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from anchorbench.cli.cells import ROOT, build_cell_cmd, is_api_model
+from anchorbench.cli.cells import build_cell_cmd, is_api_model
+from anchorbench.paths import CONF_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
-CONF_DIR = ROOT / "conf"
 
 
 def _load_yaml(rel: str) -> dict:

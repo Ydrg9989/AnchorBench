@@ -19,6 +19,8 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.paths import ROOT
+
 log = logging.getLogger(__name__)
 
 SUITES = ["external", "history", "icl", "rag", "tool"]
@@ -213,7 +215,7 @@ def main(argv: list[str] | None = None) -> None:
                    default=Path("results/rebuttal/large_panel"))
     args = p.parse_args(argv)
 
-    repo_root = Path(__file__).resolve().parents[3]
+    repo_root = ROOT
     out_dir = args.out_dir if args.out_dir.is_absolute() else repo_root / args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
 

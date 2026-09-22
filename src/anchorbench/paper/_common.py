@@ -10,16 +10,14 @@ from collections.abc import Iterable
 from pathlib import Path
 
 from anchorbench.eval.constants import MODEL_SHORT
+from anchorbench.paths import OUTPUTS_DIR, RESULTS_DIR, ROOT
 
-ROOT = Path(__file__).resolve().parents[3]
-SRC = ROOT / "src"
-
-DEFAULT_OW_RESULTS = ROOT / "results" / "full_benchmark"
-DEFAULT_API_RESULTS = ROOT / "results" / "api_benchmark"
-DEFAULT_ICL_DIST_OW = ROOT / "results" / "icl_dist_core" / "icl"
-DEFAULT_ICL_DIST_API = ROOT / "results" / "icl_dist_api"
-DEFAULT_FIG_DIR = ROOT / "outputs" / "figures"
-DEFAULT_TABLE_DIR = ROOT / "outputs" / "tables"
+DEFAULT_OW_RESULTS = RESULTS_DIR / "full_benchmark"
+DEFAULT_API_RESULTS = RESULTS_DIR / "api_benchmark"
+DEFAULT_ICL_DIST_OW = RESULTS_DIR / "icl_dist_core" / "icl"
+DEFAULT_ICL_DIST_API = RESULTS_DIR / "icl_dist_api"
+DEFAULT_FIG_DIR = OUTPUTS_DIR / "figures"
+DEFAULT_TABLE_DIR = OUTPUTS_DIR / "tables"
 
 OW_MODELS_ORDER = [
     "Qwen-1.5B", "Qwen-3B", "Qwen-7B",

@@ -15,10 +15,10 @@ from __future__ import annotations
 import argparse
 import re
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-CONF_MODEL_DIR = ROOT / "conf" / "model"
+from anchorbench.paths import CONF_DIR
+
+CONF_MODEL_DIR = CONF_DIR / "model"
 
 API_PREFIXES = ("openai/", "anthropic/", "google/", "x-ai/", "mistralai/", "meta/")
 

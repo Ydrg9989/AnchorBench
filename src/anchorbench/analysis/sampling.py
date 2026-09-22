@@ -20,7 +20,6 @@ from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
 
-ROOT = Path(__file__).resolve().parents[3]
 SUITES = ["external", "rag", "icl_dist"]
 METRIC_KEYS = ["uai_irr", "uai_plaus", "disc_delta", "mae_control",
                "acc10_control", "tar_irr", "tar_plaus", "parse_rate"]

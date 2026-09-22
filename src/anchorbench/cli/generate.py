@@ -13,17 +13,15 @@ from __future__ import annotations
 
 import logging
 import sys
-from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
 from anchorbench.data.generate import generate_suite_dataset
+from anchorbench.paths import CONF_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
-ROOT = Path(__file__).resolve().parents[3]
-CONF_DIR = ROOT / "conf"
 
 
 @hydra.main(version_base=None, config_path=str(CONF_DIR), config_name="config")
