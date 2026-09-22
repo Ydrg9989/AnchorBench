@@ -11,13 +11,13 @@ import argparse
 import logging
 from pathlib import Path
 
-from .backends import HFBackend, VLLMBackend
+from .backends import Backend, HFBackend, VLLMBackend
 from .constants import MODEL_SHORT, SUITES
 from .parsing import XML_TAG_INSTRUCTION, LLMFallbackExtractor
 
 log = logging.getLogger(__name__)
 
-Backend = HFBackend | VLLMBackend
+BACKENDS = ("hf", "vllm", "openrouter")
 
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
@@ -48,9 +48,13 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--structured", action="store_true")
 
     parser.add_argument(
-        "--backend", type=str, choices=["hf", "vllm"], default="hf",
-        help="Inference backend: hf (Transformers) or vllm",
+        "--backend", type=str, choices=list(BACKENDS), default="hf",
+        help="Inference backend: hf (Transformers), vllm, or openrouter (hosted API)",
     )
+    parser.add_argument("--max_concurrent", type=int, default=50,
+                        help="openrouter: max concurrent requests")
+    parser.add_argument("--api_key", type=str, default=None,
+                        help="openrouter: API key (default: OPENROUTER_API_KEY)")
     parser.add_argument("--tensor_parallel_size", type=int, default=1,
                         help="vLLM: number of GPUs for tensor parallelism")
     parser.add_argument("--gpu_memory_utilization", type=float, default=0.9,
@@ -59,23 +63,57 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
                         help="vLLM: max sequence length")
 
 
-def make_backend(args: argparse.Namespace) -> Backend:
-    """Build HF or vLLM backend from parsed CLI arguments."""
-    log.info("Loading model %s (%s backend)...", args.model_id, args.backend)
-    if args.backend == "vllm":
+def build_backend(
+    backend: str,
+    model_id: str,
+    *,
+    device: str = "auto",
+    device_map: str | None = None,
+    dtype: str = "bfloat16",
+    tensor_parallel_size: int = 1,
+    gpu_memory_utilization: float = 0.9,
+    max_model_len: int = 4096,
+    max_concurrent: int = 50,
+    api_key: str | None = None,
+) -> Backend:
+    """Construct the backend named by ``backend`` for ``model_id``.
+
+    The one place that knows how each backend is built. Runners with their
+    own argument parsers call this directly; :func:`make_backend` adapts the
+    namespace produced by :func:`add_common_args`.
+    """
+    log.info("Loading model %s (%s backend)...", model_id, backend)
+    if backend == "vllm":
         return VLLMBackend(
-            args.model_id,
-            tensor_parallel_size=args.tensor_parallel_size,
-            gpu_memory_utilization=args.gpu_memory_utilization,
-            max_model_len=args.max_model_len,
-            dtype=args.dtype,
+            model_id,
+            tensor_parallel_size=tensor_parallel_size,
+            gpu_memory_utilization=gpu_memory_utilization,
+            max_model_len=max_model_len,
+            dtype=dtype,
             trust_remote_code=True,
         )
-    return HFBackend(
+    if backend in ("openrouter", "api"):
+        from anchorbench.inference.openrouter_backend import OpenRouterBackend
+
+        return OpenRouterBackend(model_id, api_key=api_key, max_concurrent=max_concurrent)
+    if backend == "hf":
+        return HFBackend(model_id, device=device, device_map=device_map, dtype=dtype)
+    raise ValueError(f"unknown backend {backend!r}; expected one of {BACKENDS}")
+
+
+def make_backend(args: argparse.Namespace) -> Backend:
+    """Build the backend from the namespace :func:`add_common_args` produces."""
+    return build_backend(
+        args.backend,
         args.model_id,
-        device=args.device,
+        device=getattr(args, "device", "auto"),
         device_map=getattr(args, "device_map", None),
-        dtype=args.dtype,
+        dtype=getattr(args, "dtype", "bfloat16"),
+        tensor_parallel_size=getattr(args, "tensor_parallel_size", 1),
+        gpu_memory_utilization=getattr(args, "gpu_memory_utilization", 0.9),
+        max_model_len=getattr(args, "max_model_len", 4096),
+        max_concurrent=getattr(args, "max_concurrent", 50),
+        api_key=getattr(args, "api_key", None),
     )
 
 

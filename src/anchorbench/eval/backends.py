@@ -3,10 +3,10 @@
 HFBackend   — local HuggingFace Transformers inference
 VLLMBackend — vLLM inference (PagedAttention, high GPU utilization)
 
-All support generate(), generate_batch(), and generate_for_extraction().
-HFBackend and VLLMBackend also support generate_chat() and generate_batch_tool().
-
-API models use AsyncOpenRouterClient directly (see run_api_benchmark.py).
+Hosted models are served by
+:class:`anchorbench.inference.openrouter_backend.OpenRouterBackend`, which
+implements the same :class:`Backend` protocol, so the evaluation loop in
+:mod:`anchorbench.eval.evaluator` does not know which kind it is driving.
 """
 
 from __future__ import annotations
@@ -19,15 +19,48 @@ log = logging.getLogger(__name__)
 
 @runtime_checkable
 class Backend(Protocol):
-    """Minimal interface that HFBackend and APIBackend both satisfy."""
+    """What the evaluation loop needs from a model, local or hosted.
+
+    :class:`HFBackend`, :class:`VLLMBackend` and
+    :class:`anchorbench.inference.openrouter_backend.OpenRouterBackend` all
+    satisfy it, as does the ``FakeBackend`` the tests use. ``batch_size`` is
+    a hint for backends that batch locally; hosted backends may ignore it.
+    """
 
     model_id: str
-    supports_structured: bool
+
+    @property
+    def supports_structured(self) -> bool: ...
+
+    @property
+    def supports_tool_messages(self) -> bool:
+        """Whether native tool-call messages can be sent (else use plaintext)."""
+        ...
 
     def generate(
         self, prompt: str, *, max_tokens: int = 512,
         temperature: float = 0.0, structured: bool = False,
     ) -> str: ...
+
+    def generate_chat(
+        self, messages: list[dict], *, max_tokens: int = 512,
+        temperature: float = 0.0,
+    ) -> str: ...
+
+    def generate_batch(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]: ...
+
+    def generate_chat_batch(
+        self, messages_list: list[list[dict]], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]: ...
+
+    def generate_batch_tool(
+        self, messages_list: list[list[dict]], tools: list[dict] | None = None,
+        max_tokens: int = 64, temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]: ...
 
     def generate_for_extraction(
         self, raw_output: str, extraction_prompt: str,
@@ -123,67 +156,26 @@ class HFBackend:
         )
         return self._encode_and_generate(text, max_tokens, temperature)
 
-    def generate_batch(
-        self, prompts: list[str], *, max_tokens: int = 512,
-        temperature: float = 0.0, batch_size: int = 16,
-    ) -> list[str]:
-        results: list[str] = []
-        for i in range(0, len(prompts), batch_size):
-            batch = prompts[i : i + batch_size]
-            texts = []
-            for p in batch:
-                messages = [{"role": "user", "content": p}]
-                texts.append(
-                    self.tokenizer.apply_chat_template(
-                        messages, tokenize=False, add_generation_prompt=True,
-                    )
-                )
-            enc = self.tokenizer(
-                texts, return_tensors="pt", padding=True,
-                truncation=True, add_special_tokens=False,
-            )
-            enc = {k: v.to(self.model.device) for k, v in enc.items()}
-            prompt_len = enc["input_ids"].shape[1]
+    @property
+    def supports_tool_messages(self) -> bool:
+        return True
 
-            gen_kwargs: dict[str, Any] = {
-                "max_new_tokens": max_tokens,
-                "do_sample": temperature > 0,
-            }
-            if temperature > 0:
-                gen_kwargs["temperature"] = temperature
-
-            with self._torch.no_grad():
-                out = self.model.generate(
-                    **enc, **gen_kwargs,
-                    pad_token_id=self.tokenizer.eos_token_id,
-                )
-            decoded = self.tokenizer.batch_decode(
-                out[:, prompt_len:], skip_special_tokens=True,
-            )
-            results.extend(decoded)
-        return results
-
-    def generate_batch_tool(
-        self,
-        messages_list: list[list[dict]],
-        tools: list[dict] | None = None,
-        max_tokens: int = 64,
-        temperature: float = 0.0,
-        batch_size: int = 16,
-    ) -> list[str]:
-        texts = []
-        for messages in messages_list:
+    def _template(self, messages: list[dict], tools: list[dict] | None = None) -> str:
+        if tools is not None:
             try:
-                t = self.tokenizer.apply_chat_template(
-                    messages, tools=tools,
-                    tokenize=False, add_generation_prompt=True,
+                return self.tokenizer.apply_chat_template(
+                    messages, tools=tools, tokenize=False, add_generation_prompt=True,
                 )
             except TypeError:
-                t = self.tokenizer.apply_chat_template(
-                    messages, tokenize=False, add_generation_prompt=True,
-                )
-            texts.append(t)
+                pass  # template without tool support: fall through
+        return self.tokenizer.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True,
+        )
 
+    def _generate_texts(
+        self, texts: list[str], max_tokens: int, temperature: float, batch_size: int,
+    ) -> list[str]:
+        """Left-padded batched generation over already-templated texts."""
         results: list[str] = []
         for i in range(0, len(texts), batch_size):
             batch = texts[i : i + batch_size]
@@ -206,11 +198,35 @@ class HFBackend:
                     **enc, **gen_kwargs,
                     pad_token_id=self.tokenizer.eos_token_id,
                 )
-            decoded = self.tokenizer.batch_decode(
+            results.extend(self.tokenizer.batch_decode(
                 out[:, prompt_len:], skip_special_tokens=True,
-            )
-            results.extend(decoded)
+            ))
         return results
+
+    def generate_batch(
+        self, prompts: list[str], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        texts = [self._template([{"role": "user", "content": p}]) for p in prompts]
+        return self._generate_texts(texts, max_tokens, temperature, batch_size)
+
+    def generate_chat_batch(
+        self, messages_list: list[list[dict]], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        texts = [self._template(m) for m in messages_list]
+        return self._generate_texts(texts, max_tokens, temperature, batch_size)
+
+    def generate_batch_tool(
+        self,
+        messages_list: list[list[dict]],
+        tools: list[dict] | None = None,
+        max_tokens: int = 64,
+        temperature: float = 0.0,
+        batch_size: int = 16,
+    ) -> list[str]:
+        texts = [self._template(m, tools=tools) for m in messages_list]
+        return self._generate_texts(texts, max_tokens, temperature, batch_size)
 
     def generate_for_extraction(
         self, raw_output: str, extraction_prompt: str,
@@ -275,6 +291,10 @@ class VLLMBackend:
     def supports_structured(self) -> bool:
         return False
 
+    @property
+    def supports_tool_messages(self) -> bool:
+        return True
+
     def _sampling(self, max_tokens: int, temperature: float = 0.0) -> Any:
         from vllm import SamplingParams
         return SamplingParams(
@@ -315,6 +335,20 @@ class VLLMBackend:
         prompt_strings = [self._prompt_for_user(p) for p in prompts]
         sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
         outputs = self._llm.generate(prompt_strings, sampling)
+        return [o.outputs[0].text for o in outputs]
+
+    def generate_chat_batch(
+        self, messages_list: list[list[dict]], *, max_tokens: int = 512,
+        temperature: float = 0.0, batch_size: int = 16,
+    ) -> list[str]:
+        texts = [
+            self._tokenizer.apply_chat_template(
+                m, tokenize=False, add_generation_prompt=True,
+            )
+            for m in messages_list
+        ]
+        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
+        outputs = self._llm.generate(texts, sampling)
         return [o.outputs[0].text for o in outputs]
 
     def generate_batch_tool(
