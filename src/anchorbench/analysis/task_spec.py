@@ -15,6 +15,8 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt_latex, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 DEFAULT_IN = Path("results/rebuttal/task_spec/external")
@@ -52,34 +54,6 @@ def gather(in_dir: Path) -> list[dict]:
     return rows
 
 
-def _fmt(v: float | None) -> str:
-    if v is None:
-        return "---"
-    s = f"{v:+.2f}"
-    if s.startswith("-"):
-        return f"$-${s[1:]}"
-    if s.startswith("+"):
-        return s[1:]
-    return s
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    if not rows:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-
-
 def write_latex(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
@@ -102,7 +76,7 @@ def write_latex(rows: list[dict], path: Path) -> None:
         cells = [r["model"]]
         for metric in ("uai_pls", "uai_irr"):
             for strat in STRATEGIES:
-                cells.append(_fmt(r.get(f"{metric}_{strat}")))
+                cells.append(fmt_latex(r.get(f"{metric}_{strat}")))
         lines.append("  " + " & ".join(cells) + r" \\")
 
     def _col_mean(key: str) -> float | None:
@@ -113,7 +87,7 @@ def write_latex(rows: list[dict], path: Path) -> None:
     mean_cells = ["Mean"]
     for metric in ("uai_pls", "uai_irr"):
         for strat in STRATEGIES:
-            mean_cells.append(f"\\textbf{{{_fmt(_col_mean(f'{metric}_{strat}'))}}}")
+            mean_cells.append(f"\\textbf{{{fmt_latex(_col_mean(f'{metric}_{strat}'))}}}")
     lines.append(r"\midrule")
     lines.append("  " + " & ".join(mean_cells) + r" \\")
 
@@ -192,9 +166,9 @@ def write_markdown(rows: list[dict], path: Path) -> None:
     for metric, label in (("uai_pls", "UAI_plausible"), ("uai_irr", "UAI_irrelevant")):
         lines.append(
             f"| {label} | "
-            f"{_fmt(_col_mean(f'{metric}_baseline'))} | "
-            f"{_fmt(_col_mean(f'{metric}_rule'))} | "
-            f"{_fmt(_col_mean(f'{metric}_judgment'))} |\n"
+            f"{fmt_latex(_col_mean(f'{metric}_baseline'))} | "
+            f"{fmt_latex(_col_mean(f'{metric}_rule'))} | "
+            f"{fmt_latex(_col_mean(f'{metric}_judgment'))} |\n"
         )
     lines.append(
         "\n## Interpretation\n\n"

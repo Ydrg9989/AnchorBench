@@ -19,6 +19,7 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt_pct
 from anchorbench.paths import ROOT
 
 log = logging.getLogger(__name__)
@@ -47,12 +48,6 @@ MODELS = [
     (r"\textsc{Grok-4.3}",          "x-ai_grok-4.3",
      "results/rebuttal/large_api", "api"),
 ]
-
-
-def _fmt_pct(x: float | None) -> str:
-    if x is None:
-        return "---"
-    return f"{round(x * 100):d}\\%"
 
 
 def _fmt_uai(x: float | None) -> str:
@@ -134,7 +129,7 @@ def to_latex(table: dict) -> str:
         for suite in SUITES:
             d = per.get(suite, {})
             cells.extend([
-                _fmt_pct(d.get("acc10")),
+                fmt_pct(d.get("acc10")),
                 _fmt_uai(d.get("uai_irr")),
                 _fmt_uai(d.get("uai_pls")),
             ])

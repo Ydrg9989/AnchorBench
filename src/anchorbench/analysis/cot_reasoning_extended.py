@@ -15,10 +15,10 @@ Outputs are written to ``results/rebuttal/cot_reasoning_extended/``.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
-import math
 from pathlib import Path
+
+from anchorbench.analysis._io import fmt, load_summary, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -33,12 +33,6 @@ METRIC_KEYS = (
 )
 
 
-def _load_summary(p: Path) -> dict | None:
-    if not p.exists():
-        return None
-    return json.loads(p.read_text())
-
-
 def gather_pairs(in_dir: Path) -> list[dict]:
     """For every (suite, model) with both baseline and cot, return a paired row."""
     from anchorbench.eval.constants import MODEL_SHORT
@@ -51,8 +45,8 @@ def gather_pairs(in_dir: Path) -> list[dict]:
             if not slug_dir.is_dir() or slug_dir.name.startswith("_"):
                 continue
             slug = slug_dir.name
-            b = _load_summary(slug_dir / "baseline" / "summary.json")
-            c = _load_summary(slug_dir / "cot" / "summary.json")
+            b = load_summary(slug_dir / "baseline" / "summary.json")
+            c = load_summary(slug_dir / "cot" / "summary.json")
             if not b or not c:
                 log.warning("Skipping %s/%s: missing baseline or cot summary",
                             suite, slug)
@@ -73,37 +67,6 @@ def gather_pairs(in_dir: Path) -> list[dict]:
                 )
             rows.append(row)
     return rows
-
-
-def _fmt(v: float | None, prec: int = 3) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def _fmt_signed(v: float | None, prec: int = 3) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:+.{prec}f}"
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
 
 
 def write_latex(rows: list[dict], path: Path) -> None:
@@ -132,12 +95,12 @@ def write_latex(rows: list[dict], path: Path) -> None:
         prev = r["suite"]
         lines.append(
             f"{suite} & {r['model']} & "
-            f"{_fmt(r['uai_irr_baseline'], 2)} & {_fmt(r['uai_irr_cot'], 2)} "
-            f"& {_fmt_signed(r['uai_irr_delta'], 2)} & "
-            f"{_fmt(r['uai_plaus_baseline'], 2)} & {_fmt(r['uai_plaus_cot'], 2)} "
-            f"& {_fmt_signed(r['uai_plaus_delta'], 2)} & "
-            f"{_fmt(r['disc_delta_baseline'], 2)} & {_fmt(r['disc_delta_cot'], 2)} "
-            f"& {_fmt_signed(r['disc_delta_delta'], 2)} \\\\"
+            f"{fmt(r['uai_irr_baseline'], 2)} & {fmt(r['uai_irr_cot'], 2)} "
+            f"& {fmt(r['uai_irr_delta'], 2, signed=True)} & "
+            f"{fmt(r['uai_plaus_baseline'], 2)} & {fmt(r['uai_plaus_cot'], 2)} "
+            f"& {fmt(r['uai_plaus_delta'], 2, signed=True)} & "
+            f"{fmt(r['disc_delta_baseline'], 2)} & {fmt(r['disc_delta_cot'], 2)} "
+            f"& {fmt(r['disc_delta_delta'], 2, signed=True)} \\\\"
         )
     lines.extend([
         r"\bottomrule",
@@ -197,12 +160,12 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         for r in sorted(rs, key=lambda x: x["model"]):
             lines.append(
                 f"| {r['model']} | "
-                f"{_fmt(r['uai_plaus_baseline'], 2)} | "
-                f"{_fmt(r['uai_plaus_cot'], 2)} | "
-                f"{_fmt_signed(r['uai_plaus_delta'], 2)} | "
-                f"{_fmt(r['disc_delta_baseline'], 2)} | "
-                f"{_fmt(r['disc_delta_cot'], 2)} | "
-                f"{_fmt_signed(r['disc_delta_delta'], 2)} |\n"
+                f"{fmt(r['uai_plaus_baseline'], 2)} | "
+                f"{fmt(r['uai_plaus_cot'], 2)} | "
+                f"{fmt(r['uai_plaus_delta'], 2, signed=True)} | "
+                f"{fmt(r['disc_delta_baseline'], 2)} | "
+                f"{fmt(r['disc_delta_cot'], 2)} | "
+                f"{fmt(r['disc_delta_delta'], 2, signed=True)} |\n"
             )
         lines.append("\n")
 

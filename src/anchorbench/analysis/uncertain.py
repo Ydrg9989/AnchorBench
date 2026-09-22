@@ -25,6 +25,8 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt_latex, fmt_pct, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 DEFAULT_IN = Path("results/rebuttal/uncertain")
@@ -144,50 +146,6 @@ def gather(in_dir: Path, core_dir: Path) -> dict:
     }
 
 
-def _fmt(v: float | None) -> str:
-    if v is None:
-        return "---"
-    s = f"{v:+.2f}"
-    if s.startswith("-"):
-        return f"$-${s[1:]}"
-    if s.startswith("+"):
-        return s[1:]
-    return s
-
-
-def _fmt_pct(v: float | None) -> str:
-    if v is None:
-        return "---"
-    return f"{round(v * 100):d}\\%"
-
-
-def write_csv(out: dict, path: Path) -> None:
-    import csv
-    flat = []
-    for r in out["rows"]:
-        for k in K_LEVELS:
-            d = r["per_k"].get(k, {})
-            flat.append({
-                "model": r["model"], "model_slug": r["model_slug"],
-                "k": k, "acc10": d.get("acc10"),
-                "uai_pls": d.get("uai_pls"), "uai_irr": d.get("uai_irr"),
-                "rational_ceiling_w1": d.get("rational_ceiling_w1"),
-                "n_items": d.get("n_items"),
-            })
-    if not flat:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(flat[0].keys()))
-        w.writeheader()
-        w.writerows(flat)
-
-
-def write_json(out: dict, path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(out, indent=2))
-
-
 def write_latex(out: dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rows = out["rows"]
@@ -209,8 +167,8 @@ def write_latex(out: dict, path: Path) -> None:
     ]
     for r in sorted(rows, key=lambda r: r["model"]):
         cells = [r["model"]]
-        for metric, fmt in (("acc10", _fmt_pct),
-                            ("uai_pls", _fmt), ("uai_irr", _fmt)):
+        for metric, fmt in (("acc10", fmt_pct),
+                            ("uai_pls", fmt_latex), ("uai_irr", fmt_latex)):
             for k in K_LEVELS:
                 cells.append(fmt(r["per_k"].get(k, {}).get(metric)))
         lines.append("  " + " & ".join(cells) + r" \\")
@@ -219,7 +177,7 @@ def write_latex(out: dict, path: Path) -> None:
     rb = out["rational_baseline"]
     rb_cells = [r"Rational ceiling ($w{=}1$)", "---", "---", "---"]
     for k in K_LEVELS:
-        rb_cells.append(_fmt(rb[str(k)]))
+        rb_cells.append(fmt_latex(rb[str(k)]))
     rb_cells += ["---", "---", "---"]
     lines.append("  " + " & ".join(rb_cells) + r" \\")
     lines.extend([
@@ -299,9 +257,9 @@ def write_markdown(out: dict, path: Path) -> None:
         per_k = r["per_k"]
         lines.append(
             f"| {r['model']} | "
-            f"{_fmt(per_k.get(1, {}).get('uai_pls'))} | "
-            f"{_fmt(per_k.get(2, {}).get('uai_pls'))} | "
-            f"{_fmt(per_k.get(3, {}).get('uai_pls'))} |\n"
+            f"{fmt_latex(per_k.get(1, {}).get('uai_pls'))} | "
+            f"{fmt_latex(per_k.get(2, {}).get('uai_pls'))} | "
+            f"{fmt_latex(per_k.get(3, {}).get('uai_pls'))} |\n"
         )
     lines.append(
         "\n## Interpretation\n\n"
@@ -324,6 +282,20 @@ def write_markdown(out: dict, path: Path) -> None:
     path.write_text("".join(lines))
 
 
+
+def _flatten_rows(out: dict) -> list[dict]:
+    """One CSV row per (model, k) from the nested per-model summary."""
+    flat = []
+    for r in out["rows"]:
+        for k in K_LEVELS:
+            d = r["per_k"].get(k, {})
+            flat.append({
+                "model": r["model"], "model_slug": r["model_slug"], "k": k,
+                "acc10": d.get("acc10"), "uai_pls": d.get("uai_pls"), "uai_irr": d.get("uai_irr"),
+                "rational_ceiling_w1": d.get("rational_ceiling_w1"), "n_items": d.get("n_items"),
+            })
+    return flat
+
 def main(argv: list[str] | None = None) -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s",
@@ -337,7 +309,7 @@ def main(argv: list[str] | None = None) -> None:
     out = gather(args.in_dir, args.core_dir)
     log.info("Gathered %d models", len(out["rows"]))
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    write_csv(out, args.out_dir / "uncertain.csv")
+    write_csv(_flatten_rows(out), args.out_dir / "uncertain.csv")
     write_json(out, args.out_dir / "uncertain.json")
     write_latex(out, args.out_dir / "uncertain_table.tex")
     write_figure(out, args.out_dir / "uncertain.png")

@@ -15,6 +15,8 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt_latex, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 SUITES = ("external", "rag", "history")
@@ -65,33 +67,6 @@ def gather() -> list[dict]:
     return rows
 
 
-def _fmt(v: float | None) -> str:
-    if v is None:
-        return "---"
-    s = f"{v:+.2f}"
-    if s.startswith("-"):
-        return f"$-${s[1:]}"
-    if s.startswith("+"):
-        return s[1:]
-    return s
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    if not rows:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-        w.writeheader()
-        w.writerows(rows)
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-
-
 def write_latex(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     # Group by model -> suite -> {mild,standard,strong}
@@ -120,9 +95,9 @@ def write_latex(rows: list[dict], path: Path) -> None:
         cells = [model]
         for suite in SUITES:
             r = by_model[model].get(suite, {})
-            cells.append(_fmt(r.get("uai_mild")))
-            cells.append(_fmt(r.get("uai_standard")))
-            cells.append(_fmt(r.get("uai_strong")))
+            cells.append(fmt_latex(r.get("uai_mild")))
+            cells.append(fmt_latex(r.get("uai_standard")))
+            cells.append(fmt_latex(r.get("uai_strong")))
         lines.append("  " + " & ".join(cells) + r" \\")
 
     # Mean row per suite
@@ -143,9 +118,9 @@ def write_latex(rows: list[dict], path: Path) -> None:
     lines.append(r"\midrule")
     mean_cells = ["Mean"]
     for suite in SUITES:
-        mean_cells.append(f"\\textbf{{{_fmt(mm[suite])}}}")
-        mean_cells.append(f"\\textbf{{{_fmt(ms[suite])}}}")
-        mean_cells.append(f"\\textbf{{{_fmt(mg[suite])}}}")
+        mean_cells.append(f"\\textbf{{{fmt_latex(mm[suite])}}}")
+        mean_cells.append(f"\\textbf{{{fmt_latex(ms[suite])}}}")
+        mean_cells.append(f"\\textbf{{{fmt_latex(mg[suite])}}}")
     lines.append("  " + " & ".join(mean_cells) + r" \\")
 
     lines.extend([
@@ -235,8 +210,8 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         mm, ms, mg = _mean("uai_mild"), _mean("uai_standard"), _mean("uai_strong")
         delta = (mg - mm) if (mg is not None and mm is not None) else None
         lines.append(
-            f"| {SUITE_LABEL[suite]} | {_fmt(mm)} | {_fmt(ms)} | "
-            f"{_fmt(mg)} | {_fmt(delta)} |\n"
+            f"| {SUITE_LABEL[suite]} | {fmt_latex(mm)} | {fmt_latex(ms)} | "
+            f"{fmt_latex(mg)} | {fmt_latex(delta)} |\n"
         )
     lines.append("\n## Interpretation\n\n")
     lines.append(

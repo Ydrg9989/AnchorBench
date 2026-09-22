@@ -15,6 +15,8 @@ import json
 import logging
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 DEFAULT_IN = Path("results/rebuttal/intensity")
@@ -54,31 +56,6 @@ def gather(in_dir: Path) -> list[dict]:
     return rows
 
 
-def _fmt(v: float | None) -> str:
-    if v is None:
-        return "---"
-    return f"{v:+.3f}"
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
-
-
 def write_latex(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
@@ -102,9 +79,9 @@ def write_latex(rows: list[dict], path: Path) -> None:
             else None
         )
         lines.append(
-            f"{r['model']} & {_fmt(r['uai_mild'])} & "
-            f"{_fmt(r['uai_standard'])} & {_fmt(r['uai_strong'])} & "
-            f"{_fmt(delta)} \\\\"
+            f"{r['model']} & {fmt(r['uai_mild'], 3, signed=True)} & "
+            f"{fmt(r['uai_standard'], 3, signed=True)} & {fmt(r['uai_strong'], 3, signed=True)} & "
+            f"{fmt(delta, 3, signed=True)} \\\\"
         )
     # Mean row
     def _mean(key: str) -> float | None:
@@ -115,8 +92,8 @@ def write_latex(rows: list[dict], path: Path) -> None:
     md = (msg - mm) if (msg is not None and mm is not None) else None
     lines.append(r"\midrule")
     lines.append(
-        f"Mean & \\textbf{{{_fmt(mm)}}} & \\textbf{{{_fmt(ms)}}} & "
-        f"\\textbf{{{_fmt(msg)}}} & \\textbf{{{_fmt(md)}}} \\\\"
+        f"Mean & \\textbf{{{fmt(mm, 3, signed=True)}}} & \\textbf{{{fmt(ms, 3, signed=True)}}} & "
+        f"\\textbf{{{fmt(msg, 3, signed=True)}}} & \\textbf{{{fmt(md, 3, signed=True)}}} \\\\"
     )
     lines.extend([
         r"\bottomrule",
@@ -196,13 +173,13 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         "- **Strong**: \"Three independent peer-reviewed studies have "
         "converged on ...\"\n\n",
         "## Headline numbers (mean across panel)\n\n",
-        f"- mean UAI_mild = {_fmt(mm)}\n",
-        f"- mean UAI_standard = {_fmt(ms)}\n",
-        f"- mean UAI_strong = {_fmt(msg)}\n",
+        f"- mean UAI_mild = {fmt(mm, 3, signed=True)}\n",
+        f"- mean UAI_standard = {fmt(ms, 3, signed=True)}\n",
+        f"- mean UAI_strong = {fmt(msg, 3, signed=True)}\n",
     ]
     if all(v is not None for v in (mm, ms, msg)):
         lines.append(
-            f"- mean \u0394(strong - mild) = {_fmt(msg - mm)}\n"
+            f"- mean \u0394(strong - mild) = {fmt(msg - mm, 3, signed=True)}\n"
         )
         monotone = mm <= ms <= msg
         lines.append(
@@ -217,9 +194,9 @@ def write_markdown(rows: list[dict], path: Path) -> None:
              if r.get("uai_strong") is not None
              and r.get("uai_mild") is not None else None)
         lines.append(
-            f"| {r['model']} | {_fmt(r['uai_mild'])} | "
-            f"{_fmt(r['uai_standard'])} | {_fmt(r['uai_strong'])} | "
-            f"{_fmt(d)} |\n"
+            f"| {r['model']} | {fmt(r['uai_mild'], 3, signed=True)} | "
+            f"{fmt(r['uai_standard'], 3, signed=True)} | {fmt(r['uai_strong'], 3, signed=True)} | "
+            f"{fmt(d, 3, signed=True)} |\n"
         )
     lines.append(
         "\n## Interpretation\n\n"

@@ -41,12 +41,13 @@ Outputs are written to ``results/rebuttal/cohens_d/``.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import math
 import statistics
 from collections import defaultdict
 from pathlib import Path
+
+from anchorbench.analysis._io import fmt, load_records, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -91,19 +92,6 @@ HUMAN_REFERENCES = [
         "kind": "d_pls",
     },
 ]
-
-
-def _load_records(p: Path) -> list[dict]:
-    if not p.exists():
-        return []
-    out = []
-    with open(p) as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            out.append(json.loads(line))
-    return out
 
 
 def _group_by_item(records: list[dict]) -> dict[str, dict[str, dict]]:
@@ -221,7 +209,7 @@ def gather(business_dir: Path) -> list[dict]:
             res_path = suite_dir / slug / "results.jsonl"
             if not res_path.exists():
                 continue
-            records = _load_records(res_path)
+            records = load_records(res_path)
             if not records:
                 continue
             baseline = _detect_baseline(records)
@@ -249,30 +237,6 @@ def gather(business_dir: Path) -> list[dict]:
                 "d_irr_z": d_irr["d_z"] if d_irr else None,
             })
     return rows
-
-
-def _fmt(v: float | None, prec: int = 2) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    if not rows:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
 
 
 def write_latex(rows: list[dict], path: Path) -> None:
@@ -303,8 +267,8 @@ def write_latex(rows: list[dict], path: Path) -> None:
             prev = suite
             lines.append(
                 f"{suite_cell} & {r['model']} & "
-                f"{_fmt(r['d_pls'])} & {_fmt(r['d_irr'])} & "
-                f"{_fmt(r['d_hi_lo'])} \\\\"
+                f"{fmt(r['d_pls'])} & {fmt(r['d_irr'])} & "
+                f"{fmt(r['d_hi_lo'])} \\\\"
             )
     lines.append(r"\midrule")
     lines.append(
@@ -377,8 +341,8 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         )
         for r in sorted(by_suite[suite], key=lambda x: x["model"]):
             lines.append(
-                f"| {r['model']} | {_fmt(r['d_pls'])} | "
-                f"{_fmt(r['d_irr'])} | {_fmt(r['d_hi_lo'])} | "
+                f"| {r['model']} | {fmt(r['d_pls'])} | "
+                f"{fmt(r['d_irr'])} | {fmt(r['d_hi_lo'])} | "
                 f"{r['n_items']} |\n"
             )
         for k in ("d_pls", "d_irr", "d_hi_lo"):

@@ -11,11 +11,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 from pathlib import Path
 
 import numpy as np
 
+from anchorbench.analysis._io import fmt, write_csv
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
@@ -87,7 +87,7 @@ def build_summary_table(rows: list[dict], out_dir: Path):
             table_rows.append(row)
 
     csv_path = out_dir / "sampling_robustness_summary.csv"
-    _write_csv(table_rows, csv_path)
+    write_csv(table_rows, csv_path)
     print(f"Wrote {csv_path}")
 
     # LaTeX
@@ -102,16 +102,6 @@ def _r(v, d=4):
     if v is None:
         return None
     return round(v, d)
-
-
-def _write_csv(rows, path):
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
 
 
 def _write_latex(table_rows, path):
@@ -137,30 +127,18 @@ def _write_latex(table_rows, path):
     for row in table_rows:
         suite = row["suite"]
         model = row["model"]
-        dg = _fmt(row.get("disc_delta_greedy"), 3)
-        dd = _fmt_delta(row.get("disc_delta_delta"), 3)
-        ug = _fmt(row.get("uai_plaus_greedy"), 3)
-        ud = _fmt_delta(row.get("uai_plaus_delta"), 3)
-        mg = _fmt(row.get("mae_control_greedy"), 1)
-        md = _fmt_delta(row.get("mae_control_delta"), 1)
+        dg = fmt(row.get("disc_delta_greedy"), 3)
+        dd = fmt(row.get("disc_delta_delta"), 3, signed=True)
+        ug = fmt(row.get("uai_plaus_greedy"), 3)
+        ud = fmt(row.get("uai_plaus_delta"), 3, signed=True)
+        mg = fmt(row.get("mae_control_greedy"), 1)
+        md = fmt(row.get("mae_control_delta"), 1, signed=True)
         lines.append(
             f"{suite} & {model} & {dg} & {dd} & {ug} & {ud} & {mg} & {md} \\\\"
         )
 
     lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}"])
     path.write_text("\n".join(lines))
-
-
-def _fmt(v, prec=3):
-    if v is None:
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def _fmt_delta(v, prec=3):
-    if v is None:
-        return "---"
-    return f"{v:+.{prec}f}"
 
 
 def make_figure(rows: list[dict], fig_dir: Path):

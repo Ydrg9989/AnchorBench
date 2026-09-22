@@ -32,6 +32,8 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
+from anchorbench.analysis._io import load_records, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
@@ -48,13 +50,6 @@ SUITE = "external"
 
 # How many case studies to surface per model.
 TOP_K_PER_MODEL = 3
-
-
-def _load_records(p: Path) -> list[dict]:
-    if not p.exists():
-        return []
-    with open(p) as f:
-        return [json.loads(line) for line in f if line.strip()]
 
 
 def _load_promptviews(p: Path) -> dict[tuple[str, str], dict]:
@@ -179,7 +174,7 @@ def gather(
     out: list[dict] = []
     for slug in PANEL_SLUGS:
         res_path = business_dir / SUITE / slug / "results.jsonl"
-        records = _load_records(res_path)
+        records = load_records(res_path)
         if not records:
             log.warning("No records for %s; skipping", slug)
             continue
@@ -197,25 +192,6 @@ def _fmt(v) -> str:
     if isinstance(v, float) and not math.isfinite(v):
         return "---"
     return str(v)
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    if not rows:
-        return
-    path.parent.mkdir(parents=True, exist_ok=True)
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
 
 
 def write_markdown(rows: list[dict], path: Path) -> None:

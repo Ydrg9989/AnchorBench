@@ -26,13 +26,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
 
+from anchorbench.analysis._io import write_csv
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 
@@ -196,12 +196,12 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
 
     # --- Per-model-suite CSV ---
     csv_path = out_dir / "gold_shift_per_model_suite.csv"
-    _write_csv(per_model_suite, csv_path)
+    write_csv(per_model_suite, csv_path)
     print(f"Wrote {csv_path} ({len(per_model_suite)} rows)")
 
     # --- Item-level CSV (for reproducibility) ---
     item_csv = out_dir / "gold_shift_item_level.csv"
-    _write_csv(all_item_rows, item_csv)
+    write_csv(all_item_rows, item_csv)
     print(f"Wrote {item_csv} ({len(all_item_rows)} rows)")
 
     # --- Aggregated cross-model table ---
@@ -247,7 +247,7 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
     agg_rows.append(grand)
 
     agg_csv = out_dir / "gold_shift_aggregated.csv"
-    _write_csv(agg_rows, agg_csv)
+    write_csv(agg_rows, agg_csv)
     print(f"Wrote {agg_csv}")
 
     # --- JSON export ---
@@ -286,16 +286,6 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
         "```\n"
     )
     print(f"Wrote {readme}")
-
-
-def _write_csv(rows: list[dict], path: Path):
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
 
 
 def _write_latex_table(agg_rows: list[dict], path: Path):

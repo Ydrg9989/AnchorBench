@@ -18,6 +18,7 @@ from pathlib import Path
 
 import numpy as np
 
+from anchorbench.analysis._io import fmt
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
@@ -56,18 +57,6 @@ def discover_results(base_dir: Path) -> list[dict]:
                     row[k] = m.get(k)
                 rows.append(row)
     return rows
-
-
-def _fmt(v, prec=3):
-    if v is None:
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def _fmt_delta(v, prec=3):
-    if v is None:
-        return "---"
-    return f"{v:+.{prec}f}"
 
 
 def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
@@ -126,8 +115,8 @@ def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
                 prev_suite = suite
                 lines.append(
                     f"{suite_label} & {model} & {strat} "
-                    f"& {_fmt(r.get('disc_delta'),3)} & {_fmt(r.get('uai_plaus'),3)} "
-                    f"& {_fmt(r.get('mae_control'),1)} & {_fmt(r.get('parse_rate'),3)} \\\\"
+                    f"& {fmt(r.get('disc_delta'), 3)} & {fmt(r.get('uai_plaus'), 3)} "
+                    f"& {fmt(r.get('mae_control'), 1)} & {fmt(r.get('parse_rate'), 3)} \\\\"
                 )
         if suite != suites[-1]:
             lines.append(r"\midrule")
@@ -152,9 +141,9 @@ def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
                 ilines.append("- No baseline data\n")
                 continue
             b = base[0]
-            ilines.append(f"- Baseline: Disc={_fmt(b.get('disc_delta'),3)}, "
-                          f"MAE={_fmt(b.get('mae_control'),1)}, "
-                          f"Parse={_fmt(b.get('parse_rate'),3)}\n")
+            ilines.append(f"- Baseline: Disc={fmt(b.get('disc_delta'), 3)}, "
+                          f"MAE={fmt(b.get('mae_control'), 1)}, "
+                          f"Parse={fmt(b.get('parse_rate'), 3)}\n")
 
             for strat in strategies:
                 if strat == "baseline":
@@ -176,9 +165,9 @@ def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
                 acc_eff = "hurts accuracy" if mae_d > 0.5 else \
                           "improves accuracy" if mae_d < -0.5 else "neutral on accuracy"
 
-                ilines.append(f"- {strat}: Disc={_fmt(s.get('disc_delta'),3)} "
+                ilines.append(f"- {strat}: Disc={fmt(s.get('disc_delta'), 3)} "
                               f"(Δ={disc_d:+.3f}), "
-                              f"MAE={_fmt(s.get('mae_control'),1)} "
+                              f"MAE={fmt(s.get('mae_control'), 1)} "
                               f"(Δ={mae_d:+.1f}) → **{effect}**, {acc_eff}\n")
 
     ilines.append("\n## Key Takeaways\n")

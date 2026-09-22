@@ -17,9 +17,10 @@ results for each model.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 from pathlib import Path
+
+from anchorbench.analysis._io import load_summary, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -39,12 +40,6 @@ SPECTRUM_LABELS = {
     "plaus": "Plausible",
     "authority": "Authority",
 }
-
-
-def _load_summary(p: Path) -> dict | None:
-    if not p.exists():
-        return None
-    return json.loads(p.read_text())
 
 
 def _format_ci(c: dict | None) -> str:
@@ -67,7 +62,7 @@ def gather_rows(in_dir: Path) -> list[dict]:
             continue
         slug = model_dir.name
         short = MODEL_SHORT.get(slug, slug)
-        summary = _load_summary(model_dir / "summary_extended.json")
+        summary = load_summary(model_dir / "summary_extended.json")
         if summary is None:
             log.warning("Missing summary_extended.json for %s", slug)
             continue
@@ -88,25 +83,6 @@ def gather_rows(in_dir: Path) -> list[dict]:
                 row[f"uai_{k}"] = summary.get(f"uai_{k}")
         rows.append(row)
     return rows
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not rows:
-        return
-    keys = sorted({k for r in rows for k in r.keys()})
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
 
 
 def write_latex(rows: list[dict], path: Path) -> None:
@@ -285,7 +261,7 @@ def main(argv: list[str] | None = None) -> None:
         raise SystemExit(1)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    write_csv(rows, args.out_dir / "spectrum.csv")
+    write_csv(rows, args.out_dir / "spectrum.csv", fieldnames=sorted({k for r in rows for k in r}))
     write_json(rows, args.out_dir / "spectrum.json")
     write_latex(rows, args.out_dir / "spectrum_table.tex")
     write_figure(rows, args.out_dir / "spectrum.png")

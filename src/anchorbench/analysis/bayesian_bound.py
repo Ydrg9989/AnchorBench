@@ -48,6 +48,8 @@ from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt, write_csv, write_json
+
 log = logging.getLogger(__name__)
 
 # Default n: number of visible evidence items. Easy items: 5; hard: 3.
@@ -87,6 +89,12 @@ class CellBound:
     # of "above rational"). None if no CI was available.
     w_implied_plaus_ci_lo: float | None
 
+
+CSV_KEYS = [
+    "model", "suite", "n_evidence", "uai_irr_observed", "uai_plaus_observed",
+    "uai_plaus_ci_lo", "uai_plaus_ci_hi", "w_implied_irr", "w_implied_plaus",
+    "reference_w", "excess_irr_vs_zero", "excess_plaus_vs_ref", "plaus_above_rational_ci",
+]
 
 def rational_uai_max(w: float, n: int) -> float:
     """Rational UAI ceiling under one extra Gaussian observation of weight w."""
@@ -183,39 +191,6 @@ def analyze_unified(
 # --- Reporters --------------------------------------------------------------
 
 _PRIMARY_SUITES = ("External", "History", "Rag", "Tool", "Icl")
-
-
-def _fmt(v: float | None, prec: int = 2, dash: str = "---") -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return dash
-    return f"{v:.{prec}f}"
-
-
-def write_json(bounds: list[CellBound], path: Path) -> None:
-    payload = [asdict(b) for b in bounds]
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2))
-    log.info("Wrote %s (%d cells)", path, len(payload))
-
-
-def write_csv(bounds: list[CellBound], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    keys = [
-        "model", "suite", "n_evidence",
-        "uai_irr_observed", "uai_plaus_observed",
-        "uai_plaus_ci_lo", "uai_plaus_ci_hi",
-        "w_implied_irr", "w_implied_plaus",
-        "reference_w", "excess_irr_vs_zero", "excess_plaus_vs_ref",
-        "plaus_above_rational_ci",
-    ]
-    with open(path, "w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(keys)
-        for b in bounds:
-            row = [getattr(b, k) for k in keys]
-            w.writerow(row)
-    log.info("Wrote %s", path)
 
 
 def write_latex_table(
@@ -438,7 +413,7 @@ def write_markdown_report(
             lines.append("- top 3 implied weights:\n")
             for c in sorted_cells:
                 lines.append(
-                    f"  - {c.model}: UAI_pls={_fmt(c.uai_plaus_observed,3)} "
+                    f"  - {c.model}: UAI_pls={fmt(c.uai_plaus_observed,3)} "
                     f"=> w_imp={c.w_implied_plaus:.2f}\n"
                 )
         lines.append("\n")
@@ -528,8 +503,8 @@ def main(argv: list[str] | None = None) -> None:
 
     out_dir = args.out_dir
     out_dir.mkdir(parents=True, exist_ok=True)
-    write_json(bounds, out_dir / "bayesian_bound.json")
-    write_csv(bounds, out_dir / "bayesian_bound.csv")
+    write_json([asdict(b) for b in bounds], out_dir / "bayesian_bound.json")
+    write_csv([asdict(b) for b in bounds], out_dir / "bayesian_bound.csv", fieldnames=CSV_KEYS)
     write_latex_table(
         bounds, out_dir / "implied_weight_table.tex",
         reference_w=args.reference_w, n_evidence=args.n_evidence,

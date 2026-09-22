@@ -10,11 +10,11 @@ Outputs are written to ``results/rebuttal/medical/``.
 from __future__ import annotations
 
 import argparse
-import json
 import logging
-import math
 from collections import defaultdict
 from pathlib import Path
+
+from anchorbench.analysis._io import fmt, load_records, safe_metrics, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -23,35 +23,6 @@ DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
 DEFAULT_OUT = Path("results/rebuttal/medical")
 
 SUITES = ("external", "history")
-
-
-def _load_records(p: Path) -> list[dict]:
-    if not p.exists():
-        return []
-    out = []
-    with open(p) as f:
-        for line in f:
-            line = line.strip()
-            if not line:
-                continue
-            out.append(json.loads(line))
-    return out
-
-
-def _safe_metrics(records: list[dict], baseline: str) -> dict:
-    """Compute metrics, falling back to ``control`` if the requested
-    baseline condition isn't present (e.g. published history runs used
-    ``control`` rather than ``control_twostage``).
-    """
-    from anchorbench.eval.metrics import compute_unified_metrics
-    if not records:
-        return {}
-    present = {r.get("condition") for r in records}
-    effective_baseline = baseline if baseline in present else "control"
-    if effective_baseline not in present:
-        log.warning("No suitable baseline in records (have %s); "
-                    "metrics may be partial", sorted(present))
-    return compute_unified_metrics(records, baseline_condition=effective_baseline)
 
 
 def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
@@ -68,8 +39,8 @@ def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
             if not slug_dir.is_dir():
                 continue
             slug = slug_dir.name
-            med_records = _load_records(slug_dir / "results.jsonl")
-            bus_records = _load_records(bus_suite / slug / "results.jsonl")
+            med_records = load_records(slug_dir / "results.jsonl")
+            bus_records = load_records(bus_suite / slug / "results.jsonl")
             if not med_records:
                 log.warning("Skipping %s/%s: no medical records", suite, slug)
                 continue
@@ -77,8 +48,8 @@ def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
                 log.info("%s/%s has no business comparator (e.g., API "
                          "model not in published benchmark); emitting "
                          "medical-only row.", suite, slug)
-            med = _safe_metrics(med_records, baseline)
-            bus = _safe_metrics(bus_records, baseline) if bus_records else {}
+            med = safe_metrics(med_records, baseline)
+            bus = safe_metrics(bus_records, baseline) if bus_records else {}
             row = {
                 "suite": suite,
                 "model": MODEL_SHORT.get(slug, slug),
@@ -107,31 +78,6 @@ def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
     return rows
 
 
-def _fmt(v: float | None, prec: int = 2) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
-
-
 def write_latex(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rows_sorted = sorted(rows, key=lambda r: (r["suite"], r["model"]))
@@ -158,9 +104,9 @@ def write_latex(rows: list[dict], path: Path) -> None:
         prev = r["suite"]
         lines.append(
             f"{suite_cell} & {r['model']} & "
-            f"{_fmt(r['uai_irr_medical'])} & {_fmt(r['uai_irr_business'])} & "
-            f"{_fmt(r['uai_pls_medical'])} & {_fmt(r['uai_pls_business'])} & "
-            f"{_fmt(r['disc_medical'])} & {_fmt(r['disc_business'])} \\\\"
+            f"{fmt(r['uai_irr_medical'])} & {fmt(r['uai_irr_business'])} & "
+            f"{fmt(r['uai_pls_medical'])} & {fmt(r['uai_pls_business'])} & "
+            f"{fmt(r['disc_medical'])} & {fmt(r['disc_business'])} \\\\"
         )
     lines.extend([
         r"\bottomrule",
@@ -212,9 +158,9 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         lines.append("|---|---:|---:|---:|---:|\n")
         for r in rs:
             lines.append(
-                f"| {r['model']} | {_fmt(r['uai_pls_medical'])} | "
-                f"{_fmt(r['uai_pls_business'])} | "
-                f"{_fmt(r['disc_medical'])} | {_fmt(r['disc_business'])} |\n"
+                f"| {r['model']} | {fmt(r['uai_pls_medical'])} | "
+                f"{fmt(r['uai_pls_business'])} | "
+                f"{fmt(r['disc_medical'])} | {fmt(r['disc_business'])} |\n"
             )
         lines.append("\n")
     path.write_text("".join(lines))

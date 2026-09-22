@@ -18,8 +18,9 @@ from __future__ import annotations
 import argparse
 import json
 import logging
-import math
 from pathlib import Path
+
+from anchorbench.analysis._io import fmt, write_csv
 
 log = logging.getLogger(__name__)
 
@@ -33,6 +34,9 @@ METRIC_KEYS = (
     "mae_control", "acc10_control",
     "tar_irr", "tar_plaus", "parse_rate",
 )
+CSV_FIELDS = ["suite", "model"] + [
+    f"{k}_{which}" for k in METRIC_KEYS for which in ("baseline", "cot", "delta")
+]
 
 
 def _key(row: dict) -> tuple[str, str, str]:
@@ -70,33 +74,6 @@ def build_pairs(rows: list[dict]) -> list[dict]:
     return out
 
 
-def _fmt(v: float | None, prec: int = 3) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:.{prec}f}"
-
-
-def _fmt_signed(v: float | None, prec: int = 3) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:+.{prec}f}"
-
-
-def write_csv(pairs: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fields = ["suite", "model"] + [
-        f"{k}_{which}" for k in METRIC_KEYS
-        for which in ("baseline", "cot", "delta")
-    ]
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
-        w.writeheader()
-        for r in pairs:
-            w.writerow(r)
-    log.info("Wrote %s (%d rows)", path, len(pairs))
-
-
 def write_latex_table(pairs: list[dict], path: Path) -> None:
     """Two-row-per-cell table: baseline / cot for each (model, suite)."""
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -127,29 +104,29 @@ def write_latex_table(pairs: list[dict], path: Path) -> None:
         # baseline row
         lines.append(
             f"{suite_cell} & {r['model']} & baseline "
-            f"& {_fmt(r['uai_irr_baseline'])} "
-            f"& {_fmt(r['uai_plaus_baseline'])} "
-            f"& {_fmt(r['disc_delta_baseline'])} "
-            f"& {_fmt(r['mae_control_baseline'], 1)} "
-            f"& {_fmt(r['acc10_control_baseline'])} \\\\"
+            f"& {fmt(r['uai_irr_baseline'], 3)} "
+            f"& {fmt(r['uai_plaus_baseline'], 3)} "
+            f"& {fmt(r['disc_delta_baseline'], 3)} "
+            f"& {fmt(r['mae_control_baseline'], 1)} "
+            f"& {fmt(r['acc10_control_baseline'], 3)} \\\\"
         )
         # cot row
         lines.append(
             f" &  & + reasoning "
-            f"& {_fmt(r['uai_irr_cot'])} "
-            f"& {_fmt(r['uai_plaus_cot'])} "
-            f"& {_fmt(r['disc_delta_cot'])} "
-            f"& {_fmt(r['mae_control_cot'], 1)} "
-            f"& {_fmt(r['acc10_control_cot'])} \\\\"
+            f"& {fmt(r['uai_irr_cot'], 3)} "
+            f"& {fmt(r['uai_plaus_cot'], 3)} "
+            f"& {fmt(r['disc_delta_cot'], 3)} "
+            f"& {fmt(r['mae_control_cot'], 1)} "
+            f"& {fmt(r['acc10_control_cot'], 3)} \\\\"
         )
         # delta row
         lines.append(
             f" &  & $\\Delta$ "
-            f"& {_fmt_signed(r['uai_irr_delta'])} "
-            f"& {_fmt_signed(r['uai_plaus_delta'])} "
-            f"& {_fmt_signed(r['disc_delta_delta'])} "
-            f"& {_fmt_signed(r['mae_control_delta'], 1)} "
-            f"& {_fmt_signed(r['acc10_control_delta'])} \\\\"
+            f"& {fmt(r['uai_irr_delta'], 3, signed=True)} "
+            f"& {fmt(r['uai_plaus_delta'], 3, signed=True)} "
+            f"& {fmt(r['disc_delta_delta'], 3, signed=True)} "
+            f"& {fmt(r['mae_control_delta'], 1, signed=True)} "
+            f"& {fmt(r['acc10_control_delta'], 3, signed=True)} \\\\"
         )
         lines.append(r"\addlinespace")
     lines.extend([
@@ -198,21 +175,21 @@ def write_markdown(pairs: list[dict], path: Path) -> None:
     for r in sorted(pairs, key=lambda x: (x["suite"], x["model"])):
         lines.append(
             f"### {r['suite']} / {r['model']}\n"
-            f"- baseline:  UAI_irr={_fmt(r['uai_irr_baseline'])}, "
-            f"UAI_pls={_fmt(r['uai_plaus_baseline'])}, "
-            f"Disc={_fmt(r['disc_delta_baseline'])}, "
-            f"MAE_ctrl={_fmt(r['mae_control_baseline'],1)}, "
-            f"Acc10={_fmt(r['acc10_control_baseline'])}\n"
-            f"- + reasoning: UAI_irr={_fmt(r['uai_irr_cot'])}, "
-            f"UAI_pls={_fmt(r['uai_plaus_cot'])}, "
-            f"Disc={_fmt(r['disc_delta_cot'])}, "
-            f"MAE_ctrl={_fmt(r['mae_control_cot'],1)}, "
-            f"Acc10={_fmt(r['acc10_control_cot'])}\n"
+            f"- baseline:  UAI_irr={fmt(r['uai_irr_baseline'], 3)}, "
+            f"UAI_pls={fmt(r['uai_plaus_baseline'], 3)}, "
+            f"Disc={fmt(r['disc_delta_baseline'], 3)}, "
+            f"MAE_ctrl={fmt(r['mae_control_baseline'], 1)}, "
+            f"Acc10={fmt(r['acc10_control_baseline'], 3)}\n"
+            f"- + reasoning: UAI_irr={fmt(r['uai_irr_cot'], 3)}, "
+            f"UAI_pls={fmt(r['uai_plaus_cot'], 3)}, "
+            f"Disc={fmt(r['disc_delta_cot'], 3)}, "
+            f"MAE_ctrl={fmt(r['mae_control_cot'], 1)}, "
+            f"Acc10={fmt(r['acc10_control_cot'], 3)}\n"
             f"- delta:    "
-            f"UAI_pls={_fmt_signed(r['uai_plaus_delta'])}, "
-            f"Disc={_fmt_signed(r['disc_delta_delta'])}, "
-            f"MAE_ctrl={_fmt_signed(r['mae_control_delta'],1)}, "
-            f"Acc10={_fmt_signed(r['acc10_control_delta'])}\n"
+            f"UAI_pls={fmt(r['uai_plaus_delta'], 3, signed=True)}, "
+            f"Disc={fmt(r['disc_delta_delta'], 3, signed=True)}, "
+            f"MAE_ctrl={fmt(r['mae_control_delta'], 1, signed=True)}, "
+            f"Acc10={fmt(r['acc10_control_delta'], 3, signed=True)}\n"
         )
 
     # Headline summary
@@ -278,7 +255,7 @@ def main(argv: list[str] | None = None) -> None:
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     (args.out_dir / "pairs.json").write_text(json.dumps(pairs, indent=2))
-    write_csv(pairs, args.out_dir / "pairs.csv")
+    write_csv(pairs, args.out_dir / "pairs.csv", fieldnames=CSV_FIELDS)
     write_latex_table(pairs, args.out_dir / "cot_vs_baseline.tex")
     write_markdown(pairs, args.out_dir / "interpretation.md")
 

@@ -15,22 +15,16 @@ Weighted-mean:          y_star = round(weighted_mean(visible, [1,1,1.5,1.5,2]))
 from __future__ import annotations
 
 import argparse
-import json
 import logging
-import math
 from pathlib import Path
+
+from anchorbench.analysis._io import fmt, load_summary, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
 DEFAULT_MEAN_DIR = Path("results/full_benchmark/external")
 DEFAULT_WMEAN_DIR = Path("results/rebuttal/weighted_mean/external")
 DEFAULT_OUT = Path("results/rebuttal/weighted_mean")
-
-
-def _load_summary(p: Path) -> dict | None:
-    if not p.exists():
-        return None
-    return json.loads(p.read_text())
 
 
 def gather(mean_dir: Path, wmean_dir: Path) -> list[dict]:
@@ -43,10 +37,10 @@ def gather(mean_dir: Path, wmean_dir: Path) -> list[dict]:
         d.name for d in mean_dir.iterdir() if d.is_dir()
     })
     for slug in slugs:
-        m = _load_summary(mean_dir / slug / "unified_summary.json") or \
-            _load_summary(mean_dir / slug / "summary.json")
-        w = _load_summary(wmean_dir / slug / "unified_summary.json") or \
-            _load_summary(wmean_dir / slug / "summary.json")
+        m = load_summary(mean_dir / slug / "unified_summary.json") or \
+            load_summary(mean_dir / slug / "summary.json")
+        w = load_summary(wmean_dir / slug / "unified_summary.json") or \
+            load_summary(wmean_dir / slug / "summary.json")
         if not m or not w:
             log.warning("Skipping %s: missing summary(ies)", slug)
             continue
@@ -75,31 +69,6 @@ def gather(mean_dir: Path, wmean_dir: Path) -> list[dict]:
     return out
 
 
-def write_csv(rows: list[dict], path: Path) -> None:
-    import csv
-    path.parent.mkdir(parents=True, exist_ok=True)
-    if not rows:
-        return
-    keys = list(rows[0].keys())
-    with open(path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-        w.writeheader()
-        w.writerows(rows)
-    log.info("Wrote %s (%d rows)", path, len(rows))
-
-
-def write_json(rows: list[dict], path: Path) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(rows, indent=2))
-    log.info("Wrote %s", path)
-
-
-def _fmt(v: float | None, prec: int = 2) -> str:
-    if v is None or not (isinstance(v, (int, float)) and math.isfinite(v)):
-        return "---"
-    return f"{v:.{prec}f}"
-
-
 def write_latex(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     rows_sorted = sorted(rows, key=lambda r: r["model"])
@@ -122,9 +91,9 @@ def write_latex(rows: list[dict], path: Path) -> None:
     for r in rows_sorted:
         lines.append(
             f"{r['model']} & "
-            f"{_fmt(r['uai_irr_mean'])} & {_fmt(r['uai_irr_wmean'])} & "
-            f"{_fmt(r['uai_pls_mean'])} & {_fmt(r['uai_pls_wmean'])} & "
-            f"{_fmt(r['disc_mean'])} & {_fmt(r['disc_wmean'])} \\\\"
+            f"{fmt(r['uai_irr_mean'])} & {fmt(r['uai_irr_wmean'])} & "
+            f"{fmt(r['uai_pls_mean'])} & {fmt(r['uai_pls_wmean'])} & "
+            f"{fmt(r['disc_mean'])} & {fmt(r['disc_wmean'])} \\\\"
         )
     lines.extend([
         r"\bottomrule",
@@ -152,10 +121,10 @@ def write_markdown(rows: list[dict], path: Path) -> None:
     ]
     for r in sorted(rows, key=lambda r: r["model"]):
         lines.append(
-            f"- **{r['model']}**: UAI_pls mean={_fmt(r['uai_pls_mean'])} "
-            f"wmean={_fmt(r['uai_pls_wmean'])} (\u0394="
-            f"{_fmt(r['delta_uai_pls'])});"
-            f" Disc mean={_fmt(r['disc_mean'])} wmean={_fmt(r['disc_wmean'])}\n"
+            f"- **{r['model']}**: UAI_pls mean={fmt(r['uai_pls_mean'])} "
+            f"wmean={fmt(r['uai_pls_wmean'])} (\u0394="
+            f"{fmt(r['delta_uai_pls'])});"
+            f" Disc mean={fmt(r['disc_mean'])} wmean={fmt(r['disc_wmean'])}\n"
         )
     deltas = [r["delta_uai_pls"] for r in rows
               if r.get("delta_uai_pls") is not None]
