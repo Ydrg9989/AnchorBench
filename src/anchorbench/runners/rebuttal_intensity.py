@@ -35,8 +35,6 @@ import logging
 from collections.abc import Callable
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-
 from anchorbench.data.schema import ItemSpec
 from anchorbench.data.suites._shared import INTENSITY_CONDITIONS
 from anchorbench.data.suites.external import (

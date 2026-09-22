@@ -14,8 +14,6 @@ import json
 import logging
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-
 from anchorbench.data.schema import ItemSpec
 from anchorbench.data.suites.tool import build_realism_promptviews
 from anchorbench.eval.evaluator import run_single_stage

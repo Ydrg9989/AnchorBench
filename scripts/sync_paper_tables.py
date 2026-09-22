@@ -21,8 +21,8 @@ this copies stale numbers.
 """
 
 import argparse
-import re
 import os
+import re
 import sys
 from pathlib import Path
 

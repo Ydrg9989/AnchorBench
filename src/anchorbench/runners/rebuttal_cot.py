@@ -45,8 +45,6 @@ import json
 import logging
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-
 from anchorbench.eval.constants import SUITE_DATASETS as _ALL_SUITE_DATASETS
 from anchorbench.eval.evaluator import (
     CONDITIONS,
@@ -58,6 +56,7 @@ from anchorbench.eval.evaluator import (
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 from anchorbench.eval.metrics import compute_unified_metrics
 
+ROOT = Path(__file__).resolve().parents[3]
 log = logging.getLogger(__name__)
 
 REBUTTAL_STRATEGIES: dict[str, str] = {

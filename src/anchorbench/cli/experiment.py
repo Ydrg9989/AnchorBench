@@ -104,7 +104,6 @@ def _hydra_main(cfg: DictConfig) -> int:
     baseline = cfg.get("baseline_condition")
     tool_plaintext = bool(cfg.get("tool_plaintext", False))
     for i, (model, data, gpu, out_dir) in enumerate(cells, 1):
-        out_dir.mkdir(parents=True, exist_ok=True)
         cmd = build_cell_cmd(model, data, decoding, out_dir,
                              baseline_condition=baseline,
                              tool_plaintext=tool_plaintext)
@@ -112,6 +111,7 @@ def _hydra_main(cfg: DictConfig) -> int:
         if cfg.get("dry_run"):
             print(tag, " ".join(cmd))
             continue
+        out_dir.mkdir(parents=True, exist_ok=True)
         env = os.environ.copy()
         if gpu is not None:
             env["CUDA_VISIBLE_DEVICES"] = gpu

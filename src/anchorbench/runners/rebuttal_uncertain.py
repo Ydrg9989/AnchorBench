@@ -21,8 +21,6 @@ import json
 import logging
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
-
 from anchorbench.data.schema import ItemSpec
 from anchorbench.data.suites.external_uncertain import (
     K_LEVELS,
