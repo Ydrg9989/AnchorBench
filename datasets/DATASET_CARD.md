@@ -37,7 +37,7 @@ configs:
 AnchorBench measures how much LLM numeric estimates shift toward salient reference numbers delivered through five pathways (prompt text, conversation history, in-context demonstrations, retrieved documents, tool outputs). Each item is presented under matched conditions that share the same evidence and gold answer; only the anchor changes. The benchmark distinguishes **irrelevant** anchors (transparently arbitrary) from **plausible** anchors (weakly credible), so you can measure both raw susceptibility and relevance discrimination.
 
 - **Homepage:** https://github.com/Ydrg9989/AnchorBench
-- **Paper:** AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs (COLM 2026)
+- **Paper:** AnchorBench: A Multi-Pathway Benchmark for the Anchoring Effect in LLMs (COLM 2026) · [OpenReview](https://openreview.net/forum?id=keInIFu0gS) · [arXiv:2608.14320](https://arxiv.org/abs/2608.14320)
 - **Language:** English
 - **Task:** Numeric estimation (0–100) under anchoring manipulations
 - **License:** CC BY 4.0 (items are synthetic and author-generated)
@@ -169,7 +169,9 @@ metrics = compute_extended_metrics(records)
                Cyron, Christian and Aydin, Roland},
   booktitle = {Third Conference on Language Modeling},
   year      = {2026},
-  url       = {https://openreview.net/forum?id=keInIFu0gS}
+  url       = {https://openreview.net/forum?id=keInIFu0gS},
+  eprint    = {2608.14320},
+  archiveprefix = {arXiv}
 }
 ```
 

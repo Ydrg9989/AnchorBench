@@ -3,6 +3,7 @@
 <p align="center">
   <a href="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml"><img src="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://openreview.net/forum?id=keInIFu0gS"><img src="https://img.shields.io/badge/COLM%202026-OpenReview-b31b1b.svg" alt="OpenReview"></a>
+  <a href="https://arxiv.org/abs/2608.14320"><img src="https://img.shields.io/badge/arXiv-2608.14320-b31b1b.svg" alt="arXiv"></a>
   <a href="https://huggingface.co/datasets/Yiderigun/AnchorBench"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg" alt="Hugging Face dataset"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache--2.0-green.svg" alt="Apache-2.0"></a>
   <a href="datasets/DATASET_CARD.md"><img src="https://img.shields.io/badge/Data-CC%20BY%204.0-blue.svg" alt="CC BY 4.0"></a>
@@ -328,9 +329,13 @@ If you find this repository useful, please consider citing our paper:
                Cyron, Christian and Aydin, Roland},
   booktitle = {Third Conference on Language Modeling},
   year      = {2026},
-  url       = {https://openreview.net/forum?id=keInIFu0gS}
+  url       = {https://openreview.net/forum?id=keInIFu0gS},
+  eprint    = {2608.14320},
+  archiveprefix = {arXiv}
 }
 ```
+
+The preprint is on arXiv as [2608.14320](https://arxiv.org/abs/2608.14320).
 
 ## 📜 License
 

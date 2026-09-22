@@ -6,6 +6,10 @@ version: 2.1.0
 license: Apache-2.0
 repository-code: "https://github.com/Ydrg9989/AnchorBench"
 url: "https://openreview.net/forum?id=keInIFu0gS"
+identifiers:
+  - type: doi
+    value: 10.48550/arXiv.2608.14320
+    description: "arXiv preprint (v1, 14 Aug 2026)"
 authors:
   - given-names: Yiderigun
     family-names: Borjigin
