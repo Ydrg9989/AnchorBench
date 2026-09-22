@@ -3,7 +3,7 @@
 # B3 (weighted-mean) is skipped for the API model (the api runner reads
 # from the standard SUITE_DATASETS["external"] path).
 #
-# Usage: bash scripts/rebuttal/_chain_after_b1.sh <model_id> <gpu|api>
+# Usage: bash experiments/rebuttal/_chain_after_b1.sh <model_id> <gpu|api>
 
 set -euo pipefail
 
@@ -23,13 +23,13 @@ echo "[$(date -Iseconds)] chain: B1 done for $MODEL_ID"
 
 # --- B2: plausibility spectrum -----------------------------------------
 echo "[$(date -Iseconds)] chain: launching B2 for $MODEL_ID"
-bash scripts/rebuttal/_b2_one_model.sh "$MODEL_ID" "$DEVICES" || \
+bash experiments/rebuttal/_b2_one_model.sh "$MODEL_ID" "$DEVICES" || \
     echo "[$(date -Iseconds)] WARN: B2 failed for $MODEL_ID"
 
 # --- B3: weighted-mean (open-weight only) ------------------------------
 if [ "$DEVICES" != "api" ]; then
     echo "[$(date -Iseconds)] chain: launching B3 for $MODEL_ID"
-    bash scripts/rebuttal/_b3_one_model.sh "$MODEL_ID" "$DEVICES" || \
+    bash experiments/rebuttal/_b3_one_model.sh "$MODEL_ID" "$DEVICES" || \
         echo "[$(date -Iseconds)] WARN: B3 failed for $MODEL_ID"
 else
     echo "[$(date -Iseconds)] chain: skipping B3 for API model"
@@ -37,7 +37,7 @@ fi
 
 # --- C1: medical pilot --------------------------------------------------
 echo "[$(date -Iseconds)] chain: launching C1 for $MODEL_ID"
-bash scripts/rebuttal/_c1_one_model.sh "$MODEL_ID" "$DEVICES" || \
+bash experiments/rebuttal/_c1_one_model.sh "$MODEL_ID" "$DEVICES" || \
     echo "[$(date -Iseconds)] WARN: C1 failed for $MODEL_ID"
 
 echo "[$(date -Iseconds)] chain: ALL DONE for $MODEL_ID"

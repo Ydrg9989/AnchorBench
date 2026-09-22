@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # P2 (RAG realism) launcher for a single open-weight model.
-# Usage: bash scripts/rebuttal/_p2_one_model.sh <model_id> <gpu_index>
+# Usage: bash experiments/rebuttal/_p2_one_model.sh <model_id> <gpu_index>
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

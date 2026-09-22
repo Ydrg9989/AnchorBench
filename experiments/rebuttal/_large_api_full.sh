@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Full-panel run for ONE large frontier API model across all 5 suites.
-# Usage: bash scripts/rebuttal/_large_api_full.sh <model_id>
+# Usage: bash experiments/rebuttal/_large_api_full.sh <model_id>
 #
 # Output: results/rebuttal/large_api/<suite>/<slug>/
 

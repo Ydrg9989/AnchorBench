@@ -3,7 +3,7 @@
 # ICL, Tool) using tensor parallelism on a pair of GPUs.
 #
 # Usage:
-#   bash scripts/rebuttal/_large_ow_all_suites.sh <model_id> <devices>
+#   bash experiments/rebuttal/_large_ow_all_suites.sh <model_id> <devices>
 #     devices: comma-separated GPU indices, e.g. "0,1" for TP=2
 #
 # Output layout (matches the published benchmark layout, so downstream

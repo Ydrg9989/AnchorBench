@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 # The 13 tables COLM_camera_ready/sections/appendix.tex \input-s, in the order
 # they appear there. Each module already knows its own input and output paths;
-# they were reachable only from scripts/rebuttal/*.sh, so regenerating the
+# they were reachable only from experiments/rebuttal/*.sh, so regenerating the
 # appendix meant running them by hand. See docs/APPENDIX_TABLES.md for the
 # table -> module -> input mapping.
 #

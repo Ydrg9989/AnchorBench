@@ -16,11 +16,11 @@
 # gpu_ids, which only pin CUDA_VISIBLE_DEVICES per cell.
 #
 # Usage:
-#   bash scripts/run_stage3_reruns.sh                 # GPUs 2,3, both experiments
-#   PHASES=history bash scripts/run_stage3_reruns.sh  # history only
-#   PHASES=tool    bash scripts/run_stage3_reruns.sh  # tool only
-#   GPU_A=0 GPU_B=1 bash scripts/run_stage3_reruns.sh
-#   WAIT=1 bash scripts/run_stage3_reruns.sh          # wait for them to free up
+#   bash experiments/run_stage3_reruns.sh                 # GPUs 2,3, both experiments
+#   PHASES=history bash experiments/run_stage3_reruns.sh  # history only
+#   PHASES=tool    bash experiments/run_stage3_reruns.sh  # tool only
+#   GPU_A=0 GPU_B=1 bash experiments/run_stage3_reruns.sh
+#   WAIT=1 bash experiments/run_stage3_reruns.sh          # wait for them to free up
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"

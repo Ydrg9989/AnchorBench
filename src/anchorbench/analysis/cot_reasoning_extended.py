@@ -1,7 +1,7 @@
 """Extended CoT analysis.
 
 Walks the directory produced by ``anchorbench.runners.rebuttal_cot`` and the
-API helper (`scripts/rebuttal/_b1_api_model.sh`), which both reshape outputs
+API helper (`experiments/rebuttal/_b1_api_model.sh`), which both reshape outputs
 into ``results/rebuttal/cot_extended/<suite>/<model_slug>/<strategy>/``, and
 produces a 5-model x 3-suite baseline-vs-CoT comparison.
 

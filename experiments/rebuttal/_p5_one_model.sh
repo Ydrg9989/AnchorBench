@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # P5 (uncertain-judgment) launcher for a single open-weight model.
-# Usage: bash scripts/rebuttal/_p5_one_model.sh <model_id> <gpu> [max_items]
+# Usage: bash experiments/rebuttal/_p5_one_model.sh <model_id> <gpu> [max_items]
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

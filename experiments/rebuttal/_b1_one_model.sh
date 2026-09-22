@@ -4,7 +4,7 @@
 # log file under <OUT_DIR>/_logs/.
 #
 # Usage:
-#   bash scripts/rebuttal/_b1_one_model.sh <model_id> <cuda_visible_devices> [extra args...]
+#   bash experiments/rebuttal/_b1_one_model.sh <model_id> <cuda_visible_devices> [extra args...]
 
 set -euo pipefail
 

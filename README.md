@@ -250,7 +250,7 @@ Two things it does **not** cover:
 
 ```bash
 anchorbench tables --appendix     # the 13 \input-ed appendix tables
-bash scripts/run_stage3_reruns.sh # the two re-run experiments (addendum)
+bash experiments/run_stage3_reruns.sh # the two re-run experiments (addendum)
 ```
 
 Approximate cost: ~24 h on 4x A100 plus roughly $300 of OpenRouter spend at

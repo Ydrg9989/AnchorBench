@@ -2,7 +2,7 @@
 # Run P2 -> P3 -> P4 -> P5 sequentially on ONE GPU for ONE model.
 # Each step writes its own logs and .done marker; the chain just orders them.
 #
-# Usage: bash scripts/rebuttal/_chain_p2_to_p5.sh <model_id> <gpu_index>
+# Usage: bash experiments/rebuttal/_chain_p2_to_p5.sh <model_id> <gpu_index>
 
 set -euo pipefail
 
@@ -19,10 +19,10 @@ CHAIN_LOG="$CHAIN_LOG_DIR/${SLUG}.log"
 
 echo "[$(date -Iseconds)] CHAIN start $MODEL_ID on GPU $DEVICES" | tee -a "$CHAIN_LOG"
 
-steps=("p2:scripts/rebuttal/_p2_one_model.sh"
-       "p3:scripts/rebuttal/_p3_one_model.sh"
-       "p4:scripts/rebuttal/_p4_one_model.sh"
-       "p5:scripts/rebuttal/_p5_one_model.sh")
+steps=("p2:experiments/rebuttal/_p2_one_model.sh"
+       "p3:experiments/rebuttal/_p3_one_model.sh"
+       "p4:experiments/rebuttal/_p4_one_model.sh"
+       "p5:experiments/rebuttal/_p5_one_model.sh")
 
 for step in "${steps[@]}"; do
     NAME="${step%%:*}"

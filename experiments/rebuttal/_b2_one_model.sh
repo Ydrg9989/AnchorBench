@@ -3,7 +3,7 @@
 # placebo+authority eval) for a single model on one GPU (or via OpenRouter).
 #
 # Usage:
-#   bash scripts/rebuttal/_b2_one_model.sh <model_id> <cuda_or_api>
+#   bash experiments/rebuttal/_b2_one_model.sh <model_id> <cuda_or_api>
 #     cuda_or_api: an integer (GPU index) for open-weight, or the literal
 #     string "api" to use OpenRouter.
 

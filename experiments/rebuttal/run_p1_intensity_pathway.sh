@@ -22,7 +22,7 @@ run_model_suites() {
     local suites=("$@")
     for suite in "${suites[@]}"; do
         echo "[$(date -Iseconds)] launching $model_id on GPU $gpu (suite=$suite)"
-        bash scripts/rebuttal/_d1_one_model.sh "$model_id" "$gpu" "$suite"
+        bash experiments/rebuttal/_d1_one_model.sh "$model_id" "$gpu" "$suite"
     done
 }
 

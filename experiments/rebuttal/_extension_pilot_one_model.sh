@@ -3,7 +3,7 @@
 # model on one GPU. Mirrors _c1_one_model.sh but uses the *_other_pilot
 # datasets.
 #
-# Usage: bash scripts/rebuttal/_extension_pilot_one_model.sh <model_id> <gpu>
+# Usage: bash experiments/rebuttal/_extension_pilot_one_model.sh <model_id> <gpu>
 
 set -euo pipefail
 

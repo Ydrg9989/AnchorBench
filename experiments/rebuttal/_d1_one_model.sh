@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Plausibility-intensity probe (D1 / P1) launcher for a single open-weight model.
 # Usage:
-#   bash scripts/rebuttal/_d1_one_model.sh <model_id> <gpu_index> [suite]
+#   bash experiments/rebuttal/_d1_one_model.sh <model_id> <gpu_index> [suite]
 # If suite is omitted, runs External (original D1).
 
 set -euo pipefail

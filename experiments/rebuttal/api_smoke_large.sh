@@ -5,7 +5,7 @@
 # - Output layout matches the rest of the pipeline so analyzers pick it up.
 #
 # Usage:
-#   bash scripts/rebuttal/api_smoke_large.sh [n_items]
+#   bash experiments/rebuttal/api_smoke_large.sh [n_items]
 
 set -euo pipefail
 

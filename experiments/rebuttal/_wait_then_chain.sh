@@ -2,7 +2,7 @@
 # Wait for the P1 history run to finish for a given model, THEN start the
 # P2->P5 chain on the same GPU.
 #
-# Usage: bash scripts/rebuttal/_wait_then_chain.sh <model_id> <gpu_index>
+# Usage: bash experiments/rebuttal/_wait_then_chain.sh <model_id> <gpu_index>
 
 set -euo pipefail
 
@@ -19,4 +19,4 @@ while [ ! -f "$DONE_FILE" ]; do
     sleep 30
 done
 echo "[$(date -Iseconds)] WAIT cleared; chaining P2-P5 for $MODEL_ID on GPU $DEVICES"
-bash scripts/rebuttal/_chain_p2_to_p5.sh "$MODEL_ID" "$DEVICES"
+bash experiments/rebuttal/_chain_p2_to_p5.sh "$MODEL_ID" "$DEVICES"
