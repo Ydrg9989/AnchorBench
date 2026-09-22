@@ -11,7 +11,7 @@ the exact prompts a model saw.
 | Git tag | `colm2026-camera-ready` |
 | Suites | external, history, icl, rag, tool (360 items each) + external_uncertain |
 | Released files | `datasets/hf_release/*.jsonl` (14,400 rows) |
-| Hub | [Yiderigun/LLM_anchoring](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) (private) |
+| Hub | [Yiderigun/AnchorBench](https://huggingface.co/datasets/Yiderigun/AnchorBench) (public) |
 | Code | [Ydrg9989/AnchorBench](https://github.com/Ydrg9989/AnchorBench) (public) |
 | Checksums | `datasets/anchorbench_core_checksums.sha256` |
 | Raw generations | [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing) |

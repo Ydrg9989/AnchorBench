@@ -1,10 +1,15 @@
 [project]
 name = "anchorbench"
-version = "2.0.0"
+version = "2.1.0"
 description = "AnchorBench: Measuring LLM Susceptibility to Numeric Anchoring Across Interface Paradigms"
 requires-python = ">=3.10"
 license = {text = "Apache-2.0"}
-authors = [{name = "AnchorBench Authors"}]
+authors = [
+    {name = "Yiderigun Borjigin", email = "yiderigun.borjigin@uni-saarland.de"},
+    {name = "Alexander Hermann"},
+    {name = "Christian J. Cyron"},
+    {name = "Roland Aydin", email = "roland.aydin@uni-saarland.de"},
+]
 readme = "README.md"
 keywords = ["llm", "benchmark", "anchoring", "evaluation", "nlp"]
 classifiers = [

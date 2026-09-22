@@ -28,7 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATASETS = ROOT / "datasets"
 RELEASE_DIR = DATASETS / "hf_release"
-REPO_ID = "Yiderigun/LLM_anchoring"
+REPO_ID = "Yiderigun/AnchorBench"
 
 # The five core suites plus the uncertain variant, which backs Table 2 in the
 # main paper. Ablation datasets under datasets/ are deliberately excluded.

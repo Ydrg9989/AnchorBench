@@ -116,7 +116,7 @@ from huggingface_hub import hf_hub_download
 import json
 
 path = hf_hub_download(
-    repo_id="Yiderigun/LLM_anchoring",
+    repo_id="Yiderigun/AnchorBench",
     filename="external_core/promptviews_core.jsonl",
     repo_type="dataset",
 )
@@ -214,7 +214,7 @@ model saw. Take the realised value from the released results instead.
 ```python
 from datasets import load_dataset
 
-ds = load_dataset("Yiderigun/LLM_anchoring", data_files="data/external.jsonl")["train"]
+ds = load_dataset("Yiderigun/AnchorBench", data_files="data/external.jsonl")["train"]
 
 # UAI needs the control answer for the same item, so group by item_id.
 row = ds[0]

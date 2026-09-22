@@ -3,7 +3,7 @@
 <p align="center">
   <a href="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml"><img src="https://github.com/Ydrg9989/AnchorBench/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://openreview.net/forum?id=keInIFu0gS"><img src="https://img.shields.io/badge/COLM%202026-OpenReview-b31b1b.svg" alt="OpenReview"></a>
-  <a href="https://huggingface.co/datasets/Yiderigun/LLM_anchoring"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg" alt="Hugging Face dataset"></a>
+  <a href="https://huggingface.co/datasets/Yiderigun/AnchorBench"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-yellow.svg" alt="Hugging Face dataset"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Code-Apache--2.0-green.svg" alt="Apache-2.0"></a>
   <a href="datasets/DATASET_CARD.md"><img src="https://img.shields.io/badge/Data-CC%20BY%204.0-blue.svg" alt="CC BY 4.0"></a>
   <img src="https://img.shields.io/badge/Python-%E2%89%A5%203.10-blue.svg" alt="Python >= 3.10">
@@ -24,7 +24,8 @@ benchmark measures not just whether outputs shift but whether the shift is
 ## 📢 News
 
 - 🎉 **AnchorBench** is accepted to **COLM 2026**!
-- 🚀 **(2026-08)** Code, benchmark data and the [Hugging Face dataset](https://huggingface.co/datasets/Yiderigun/LLM_anchoring) released.
+- 🚀 **(2026-08)** Code, benchmark data and the [Hugging Face dataset](https://huggingface.co/datasets/Yiderigun/AnchorBench) released.
+- 🧹 **(2026-09)** v2.1.0: eval routing fix, consolidated docs, CI, `experiments/` for the appendix launchers. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 ## 🤔 Why AnchorBench?
 
@@ -266,7 +267,7 @@ Most of the repository can be checked on a clean clone in seconds, because
 the two unified summaries and every generated table are committed:
 
 ```bash
-pytest                                    # 239 tests
+pytest                                    # 244 tests; 4 skip without the results tarballs
 anchorbench verify --strict               # every numeric paper claim
 python scripts/measure_paper_drift.py     # paper tables vs generator output
 ```

@@ -1,4 +1,66 @@
-# Release Notes — AnchorBench v2.0.0
+# Release Notes — AnchorBench
+
+## v2.1.0 (2026-09) — repository cleanup after the camera-ready
+
+No experiment logic, metric, prompt or dataset byte changed. Every committed
+table and figure regenerates identically (`tests/golden/`), and
+`anchorbench verify --strict` reports zero mismatches.
+
+### Fixed
+
+- **`anchorbench eval` sent Gemma to the API runner.** The routing rule
+  prefix-matched `hf_id` against `google/`, so `eval data=external
+  model=gemma_4b` launched `runners.api` and would have produced an empty
+  summary. The August fix had only reached `anchorbench experiment`. Both
+  commands now build their cell command through `anchorbench.cli.cells`,
+  which routes by the model's declared `backend`; `tests/test_model_routing.py`
+  covers the rule and both commands.
+- **Dry runs created result directories.** `anchorbench experiment
+  +dry_run=true` left empty `results/full_benchmark/<suite>/` behind, which
+  is the marker the golden tests use to decide the bulk results are present,
+  so they stopped skipping and failed on a clean clone after any dry run.
+- **33 ruff errors** (all import order) in the rebuttal runners, the two
+  figure scripts and `scripts/sync_paper_tables.py`.
+
+### Changed
+
+- `runners/external.py`, `icl.py` and `rag.py` were three copies of one
+  loop; the body now lives once in `runners/_single_stage.py`. The
+  pass-through `runners/base.py` is removed; import the helpers from
+  `anchorbench.eval.runner_utils`.
+- `anchorbench eval` accepts `+tool_plaintext=true`, as `experiment` did.
+- The 25 appendix-experiment launchers moved from `scripts/rebuttal/` to
+  `experiments/rebuttal/`, with `experiments/run_stage3_reruns.sh` beside
+  them and a README mapping each launcher to the table it backs. `scripts/`
+  now holds only user-facing entry points.
+- `docs/` is four guides instead of eleven files: `ARCHITECTURE.md` (package
+  map, evaluation internals, extending), `REPRODUCIBILITY.md` (every command,
+  results policy, the full artifact-to-module map), `DATA.md` (pipeline,
+  record schemas, History design, HF release) and the unchanged
+  `RECONCILIATION.md` ledger.
+- `datasets/README.md` rewritten; it described scripts and modules that no
+  longer exist.
+- Hugging Face dataset id is `Yiderigun/AnchorBench` (renamed from
+  `Yiderigun/LLM_anchoring`; the old id redirects).
+- `pyproject.toml` lists the authors; version 2.1.0.
+
+### Added
+
+- GitHub Actions CI: ruff, the full test suite and `anchorbench verify
+  --strict` on every push and pull request.
+- `CITATION.cff` and `environment.yml`.
+
+### Removed
+
+- `scripts/data_gen/gen_syn_anchors_local.py` (the pre-benchmark SynAnchors
+  v0 generator), `scripts/export_raw_texts.py` (debug helper) and
+  `scripts/validate_smoke_results.sh` (called a script deleted in v2.0).
+- `docs/benchmark_spec_v1_frozen.md`, `docs/EVALUATION_PIPELINE.md`,
+  `docs/ENVIRONMENT.md`, `docs/EXTENDING.md`, `docs/APPENDIX_TABLES.md`,
+  `docs/DATASET_GENERATION_PIPELINE.md`, `docs/data_objects_reference.md`,
+  `docs/history_suite.md` (merged into the four guides above).
+
+## v2.0.0 (2026-08) — release refactor for COLM 2026
 
 Release-quality refactor of the AnchorBench repository for COLM 2026.
 Three previously separate Python packages (`anchorbench_v1`,
@@ -12,7 +74,7 @@ recompute byte-identically from the same per-record `results.jsonl`
 files, and `anchorbench verify` reproduces every paper claim from the
 checked-in summaries.
 
-## Highlights
+### Highlights
 
 - **One package, one CLI.** `pip install -e ".[all]"` exposes a single
   `anchorbench` console script with `eval`, `experiment`, `generate`,
@@ -29,7 +91,7 @@ checked-in summaries.
   `docs/ARCHITECTURE.md` with a data-flow diagram, and retargeted
   `docs/REPRODUCIBILITY.md` and `docs/EXTENDING.md`.
 
-## New layout
+### New layout
 
 ```
 src/anchorbench/
@@ -49,7 +111,7 @@ scripts/
   run_with_env.sh
 ```
 
-## Added
+### Added
 
 - **`anchorbench` console script** (`pyproject.toml`) with subcommands:
   `eval`, `experiment`, `generate`, `tables`, `add-model`, `verify`.
@@ -66,7 +128,7 @@ scripts/
   unified summaries.
 - **Hydra + OmegaConf** added to required dependencies.
 
-## Changed
+### Changed
 
 - **Package layout consolidated** to a single `src/anchorbench/`. The
   three pre-2.0 package names (`anchorbench_v1`, `anchorbench_eval`,
@@ -85,7 +147,7 @@ scripts/
 - **Tests** updated to import from the new package paths; pytest now
   reports 200 passing.
 
-## Removed
+### Removed
 
 - **`configs/benchmark.yaml`** (replaced by `conf/`).
 - **`scripts/eval/run_*.py`** (promoted into `anchorbench.runners`).
@@ -107,7 +169,7 @@ scripts/
 - **64 MB `archive_pre_rerun_20260328.tar.gz`** (legacy archive; not
   needed for reproduction).
 
-## Migration
+### Migration
 
 Old import sites do **not** keep working -- the pre-2.0 packages were
 removed, not shimmed (see Changed, above). Rewrite them as follows:
@@ -132,7 +194,7 @@ Old shell entry points map onto the new CLI as follows:
 | `python scripts/eval/recompute_all_unified.py` | `python -m anchorbench.analysis.unified` |
 | `python scripts/verify_paper_tables.py`  | `anchorbench verify`                       |
 
-## Validation gate
+### Validation gate
 
 Before tagging the release, all four checks pass on `release/v2.0`:
 
@@ -145,7 +207,7 @@ Before tagging the release, all four checks pass on `release/v2.0`:
    produces a **byte-identical** `unified_all_suites.json` to the
    pre-refactor copy. Same for `results/api_benchmark`.
 
-## Unchanged (intentionally)
+### Unchanged (intentionally)
 
 - Experiment logic: suite renderers, ItemSpec generation, prompt
   construction.
@@ -156,7 +218,7 @@ Before tagging the release, all four checks pass on `release/v2.0`:
 - Per-record `results/.../results.jsonl` outputs.
 - COLM 2026 paper source (`COLM/`).
 
-## Import migration (pre-2.0 → 2.0)
+### Import migration (pre-2.0 → 2.0)
 
 | Old import | New import |
 |---|---|
