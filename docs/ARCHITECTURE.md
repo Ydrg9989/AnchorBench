@@ -10,6 +10,8 @@ generation pipeline, see [DATA.md](DATA.md).
 ```
 src/anchorbench/
 |-- __init__.py                 # __version__
+|-- paths.py                    # repo root and conf/datasets/results/outputs dirs (env-overridable)
+|-- registry.py                 # Model and Suite records read from conf/; conf/panel.yaml gives the order
 |-- data/                       # dataset generation
 |   |-- schema.py                   # ItemSpec / PromptView / RAGDoc dataclasses, JSONL I/O
 |   |-- domains.py                  # 6 business domains (+ medical/other pilot domains)
@@ -23,22 +25,23 @@ src/anchorbench/
 |       |-- external.py, history.py, icl.py, icl_dist.py, rag.py, tool.py
 |       `-- external_uncertain.py       # k-of-5 visible-evidence re-render (Table 2)
 |-- eval/                       # everything a runner needs to score a model
-|   |-- backends.py                 # HFBackend, VLLMBackend (generate / chat / tool messages)
+|   |-- backends.py                 # the Backend protocol; HFBackend, VLLMBackend
 |   |-- parsing.py                  # numeric answer extraction cascade + LLM fallback
 |   |-- evaluator.py                # prepare_items, run_single_stage, run_history_two_stage,
-|   |                               # build_record, write_and_summarize
+|   |                               # build_record, write_and_summarize: the one loop every runner uses
 |   |-- metrics.py                  # UAI, TAR, Disc_delta, MAE, Acc10, bootstrap CI, Wilcoxon, BH
 |   |-- io.py                       # load_promptviews / load_itemspecs / load_records
-|   |-- constants.py                # dataset paths, model slug -> short name, API model ids
-|   `-- runner_utils.py             # shared argparse flags, backend factory, result discovery
+|   |-- constants.py                # long-standing names, now views over registry
+|   `-- runner_utils.py             # shared argparse flags, build_backend (hf | vllm | openrouter), result discovery
 |-- inference/
-|   `-- async_api.py                # AsyncOpenRouterClient (bounded concurrency, retries)
+|   |-- async_api.py                # AsyncOpenRouterClient (bounded concurrency, retries)
+|   `-- openrouter_backend.py       # OpenRouterBackend: the hosted API behind the Backend protocol
 |-- runners/                    # python -m anchorbench.runners.<name>
 |   |-- _single_stage.py            # the one body behind external, icl and rag
 |   |-- external.py, icl.py, rag.py # label-only wrappers around _single_stage
 |   |-- history.py                  # two-stage protocol; anchor = the model's own Stage-1 answer
 |   |-- tool.py                     # chat-template tool messages, plaintext fallback (Gemma, OLMo)
-|   |-- api.py                      # OpenRouter benchmark, all suites, async
+|   |-- api.py                      # a hosted model on any suites, through the shared loops
 |   |-- icl_dist_api.py             # ICL-dist on API models
 |   |-- sampling.py                 # temperature 0.7 / top-p 0.9 robustness sweep
 |   |-- mitigation_baseline.py, mitigation_headroom.py   # prompt-based mitigation probes
@@ -80,9 +83,10 @@ Two pieces of the tree are deliberately not code:
 ```
 conf/
 |-- config.yaml               # defaults: data=external, model=qwen_7b, decoding=greedy
-|-- data/                     # one file per suite: dataset_dir, promptviews_file, itemspecs_file
+|-- panel.yaml                # the published 14-model panel and the suites, in table order
+|-- data/                     # one file per suite: dataset paths, label, unified_key, latex
 |   `-- external, history, icl, icl_dist, rag, tool
-|-- model/                    # one file per model: hf_id, slug, short, backend, vLLM settings
+|-- model/                    # one file per model: hf_id, slug, short, backend, vLLM settings, table metadata
 |   |-- qwen_{1_5b,3b,7b}, llama_{1b,3b,8b}, gemma_{1b,4b}, olmo_{13b,32b}
 |   `-- gpt_5_mini, claude_haiku_4_5, gemini_2_5_flash, grok_3_mini
 |-- tier/                     # model groups with GPU slots: small_a, small_b, medium, large, xlarge, api
@@ -120,7 +124,7 @@ flowchart LR
     Gen --> ItemSpec --> Renderer["data.suites"] --> PromptView["datasets/…/promptviews*.jsonl"]
     CLI -->|eval / experiment| Cells["cli.cells"] -->|python -m| Runner["runners.<suite>"]
     PromptView --> Runner
-    Runner --> Backend["eval.backends / inference.async_api"]
+    Runner --> Backend["Backend: HFBackend / VLLMBackend / OpenRouterBackend"]
     Backend --> Records["results/<run>/<suite>/<model>/results.jsonl + summary.json"]
     Records --> Unified["analysis.unified → unified_all_suites.json"]
     Records --> Appendix["analysis.* → results/rebuttal/**/*.tex"]
@@ -134,6 +138,20 @@ model at a time. `cli.cells.build_cell_cmd` is the only place that knows the
 runner argument set.
 
 ## Evaluation internals
+
+**Backends and the loop.** `eval.backends.Backend` is the protocol every
+model speaks: `generate`, `generate_chat`, `generate_batch`,
+`generate_chat_batch`, `generate_batch_tool` and a `supports_tool_messages`
+flag. `HFBackend` and `VLLMBackend` load weights locally;
+`inference.openrouter_backend.OpenRouterBackend` puts the hosted API behind
+the same interface, so `evaluator.run_single_stage` and
+`evaluator.run_history_two_stage` are the only evaluation loops in the
+package and every runner, local or hosted, calls them. Both loops make one
+batched round trip per stage, copy per-request token usage into
+`api_usage` when the backend reports it, and record `ERROR: ...` rows
+instead of aborting when a backend call fails. `tests/fakes.py` provides a
+`FakeBackend` at the same seam, which is how the loops and the runners are
+tested end to end without a model.
 
 **Items.** `evaluator.prepare_items` joins promptviews with itemspecs and
 keeps only items that have every required condition (the five core ones by
@@ -191,7 +209,9 @@ and the by-offset and by-difficulty breakdowns used in the appendix.
 - **`unified_all_suites.json` is a pure function of the records.**
   Recomputing it from the same `results.jsonl` files is byte-identical.
 - **One model, one config file.** Code refers to models by config name
-  (`qwen_7b`), so swapping a checkpoint is a YAML edit.
+  (`qwen_7b`), so swapping a checkpoint is a YAML edit, and `registry`
+  derives every table label, macro and slug from the same file.
+  `conf/panel.yaml` is the only place that orders the panel.
 - **Every paper number is a `Claim`.** `paper.verify` reads the committed
   summaries and fails on drift; CI runs it in `--strict` mode. Divergences
   that are understood rather than fixed are recorded in
@@ -214,9 +234,11 @@ and the by-offset and by-difficulty breakdowns used in the appendix.
    For an OpenRouter model set `backend: openrouter`; the helper does this
    for the known provider prefixes. Local models use `backend: vllm` (or `hf`).
 
-2. Open-weight only: add the config name to a tier in `conf/tier/*.yaml` so
-   `paper_main` picks it up, and add the slug to `MODEL_SHORT` in
-   `eval/constants.py` so tables print the short name.
+2. Fill in the table metadata in that file (`family`, `family_latex`,
+   `params` for open-weight models, `latex`), add the key to
+   `conf/panel.yaml` under `open_weight` or `api` so the tables print it in
+   the right place, and, for open-weight models, add it to a tier in
+   `conf/tier/*.yaml` so `paper_main` picks it up.
 
 3. Smoke-test one suite, then run all five:
 
@@ -243,7 +265,8 @@ A suite is a renderer, an item generator, a runner and a data config.
    `main()` calling `_main("<Label>")`. `cli.cells` dispatches
    `data=<suite>` to `anchorbench.runners.<suite>` by name.
 4. **Config**: `conf/data/<suite>.yaml` with `suite`, `dataset_dir`,
-   `promptviews_file`, `itemspecs_file`.
+   `promptviews_file`, `itemspecs_file`, plus `label`, `unified_key` and
+   `latex` for the tables; then list the key in `conf/panel.yaml`.
 5. Generate, validate, run:
 
    ```bash
@@ -296,6 +319,8 @@ anchorbench experiment +experiment=ext_long_anchor                 # run them
 |---|---|
 | Model, tier, decoding, recipe config | `conf/{model,tier,decoding,experiment}/*.yaml` |
 | Cell dispatch and routing | `src/anchorbench/cli/cells.py` |
+| Model panel and suite metadata | `conf/panel.yaml`, `src/anchorbench/registry.py` |
+| Backends and the evaluation loop | `src/anchorbench/eval/{backends,evaluator}.py`, `src/anchorbench/inference/openrouter_backend.py` |
 | Suite renderers | `src/anchorbench/data/suites/` |
 | Item generation | `src/anchorbench/data/{itemspec_gen,generate}.py` |
 | Parsing | `src/anchorbench/eval/parsing.py` |

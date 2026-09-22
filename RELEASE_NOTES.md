@@ -38,6 +38,25 @@ table and figure regenerates identically (`tests/golden/`), and
   pass-through `runners/base.py` is removed; import the helpers from
   `anchorbench.eval.runner_utils`.
 - `anchorbench eval` accepts `+tool_plaintext=true`, as `experiment` did.
+- **One evaluation loop.** The hosted-API tier used to bypass the evaluator
+  with its own copy of the parse / record / write loop, and four more
+  runners carried further copies. `eval.backends.Backend` is now the full
+  protocol, `inference.openrouter_backend.OpenRouterBackend` implements it
+  over the async client, and `run_single_stage` / `run_history_two_stage`
+  serve every backend. Every runner accepts `--backend openrouter`. History
+  on the API now sends Stage 2 as a real three-turn chat, like the local
+  runner; `--history_chat_format flat` reproduces the published rendering
+  (D9). A `FakeBackend` in `tests/fakes.py` lets the loops and runners run
+  end to end in the test suite.
+- **One registry.** `conf/model/*.yaml` carry `family`, `family_latex`,
+  `params` and `latex`; `conf/data/*.yaml` carry `label`, `unified_key` and
+  `latex`; `conf/panel.yaml` orders the panel. `anchorbench.registry` reads
+  them and `eval.constants`, `paper._common`, `paper.tables_appendix`,
+  `paper.verify` and the figure scripts derive from it. Every regenerated
+  table, figure and unified summary is byte-identical to before.
+- `anchorbench.paths` resolves the repository root once, with
+  `ANCHORBENCH_ROOT` / `_CONF` / `_DATASETS` / `_RESULTS` / `_OUTPUTS`
+  overrides, replacing thirteen `parents[N]` climbs.
 - The 25 appendix-experiment launchers moved from `scripts/rebuttal/` to
   `experiments/rebuttal/`, with `experiments/run_stage3_reruns.sh` beside
   them and a README mapping each launcher to the table it backs. `scripts/`
@@ -54,6 +73,9 @@ table and figure regenerates identically (`tests/golden/`), and
 - `pyproject.toml` lists the authors; version 2.1.0.
 - `conf/decoding/sample_t07.yaml` says three seeds; its unconsumed
   `n_samples: 5` contradicted the sampling runner's default and the paper.
+- `docs/RECONCILIATION.md` gains **D9 (OPEN)**, the API tier's single-message
+  History rendering, and **D10 (OPEN)**, the sampled runs never applied the
+  top-p 0.9 the appendix describes.
 - `docs/RECONCILIATION.md` gains **D8 (OPEN)**: the four API-tier History
   cells were scored against the two-stage control while the open-weight
   cells used the single-stage control. `paper_main` reproduces the
