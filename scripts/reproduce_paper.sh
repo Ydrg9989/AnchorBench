@@ -24,6 +24,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
 
+# Use the installed console script when present; otherwise run the package
+# straight from src/ so a checkout without `pip install -e .` still works.
+if command -v anchorbench >/dev/null 2>&1; then
+    ANCHORBENCH=(anchorbench)
+else
+    export PYTHONPATH="$REPO_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+    ANCHORBENCH=(python -m anchorbench.cli.main)
+fi
+
 DRY_RUN_FLAG=""
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
     DRY_RUN_FLAG="+dry_run=true"
@@ -50,7 +59,7 @@ fi
 
 echo ""
 echo "[2/5] Running paper_main experiment recipe ..."
-anchorbench experiment +experiment=paper_main ${DRY_RUN_FLAG}
+"${ANCHORBENCH[@]}" experiment +experiment=paper_main ${DRY_RUN_FLAG}
 
 if [[ "${DRY_RUN:-0}" == "1" ]]; then
     echo ""
@@ -67,11 +76,11 @@ python -m anchorbench.analysis.unified --results_dir results/api_benchmark
 
 echo ""
 echo "[4/5] Regenerating paper figures and LaTeX tables ..."
-anchorbench tables --paper
+"${ANCHORBENCH[@]}" tables --paper
 
 echo ""
 echo "[5/5] Verifying every numeric claim ..."
-anchorbench verify
+"${ANCHORBENCH[@]}" verify
 
 echo ""
 echo "============================================================"
