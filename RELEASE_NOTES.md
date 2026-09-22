@@ -21,6 +21,15 @@ table and figure regenerates identically (`tests/golden/`), and
   so they stopped skipping and failed on a clean clone after any dry run.
 - **33 ruff errors** (all import order) in the rebuttal runners, the two
   figure scripts and `scripts/sync_paper_tables.py`.
+- **API cells emitted flags the API runner rejects.** Both CLI copies of
+  the cell builder passed `--suite` and `--variant`; `runners.api` takes
+  `--suites` and has no variant flag, so `eval data=icl_dist
+  model=gemini_2_5_flash` failed at argument parsing. The shared builder
+  passes the variant as the suite name, and a test checks that every flag
+  a built command emits is declared by the runner it targets.
+- `scripts/reproduce_paper.sh`, `generate_all.sh` and `validate_all.sh`
+  fall back to `python -m anchorbench.cli.main` with `src/` on
+  `PYTHONPATH` when the console script is not installed (`scripts/_env.sh`).
 
 ### Changed
 
@@ -43,6 +52,13 @@ table and figure regenerates identically (`tests/golden/`), and
 - Hugging Face dataset id is `Yiderigun/AnchorBench` (renamed from
   `Yiderigun/LLM_anchoring`; the old id redirects).
 - `pyproject.toml` lists the authors; version 2.1.0.
+- `conf/decoding/sample_t07.yaml` says three seeds; its unconsumed
+  `n_samples: 5` contradicted the sampling runner's default and the paper.
+- `docs/RECONCILIATION.md` gains **D8 (OPEN)**: the four API-tier History
+  cells were scored against the two-stage control while the open-weight
+  cells used the single-stage control. `paper_main` reproduces the
+  committed numbers unchanged; the ledger asks for a decision on the
+  Table 1 caveat.
 
 ### Added
 

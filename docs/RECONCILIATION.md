@@ -24,6 +24,7 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D5](#d5) | Two appendix tables cannot be regenerated | **RESOLVED** | no — published values kept, re-runs added as addendum |
 | [D6](#d6) | Inline appendix tables vs current output (measured) | RESOLVED | yes — 4 tables now generated |
 | [D7](#d7) | `verify_anchored_mae` verified nothing at all | RESOLVED | no — check was dead |
+| [D8](#d8) | API-tier History cells are scored against the two-stage control | **OPEN** | interpretation of Table 1's History caveat for the four API rows |
 
 `verify.py::KNOWN_DIVERGENCES` is **empty**, and all three verify modes
 report zero mismatches. That is the goal state, not an unused mechanism: the
@@ -517,3 +518,55 @@ the main-text claim — matched-format analysis lowers Disc for a minority of
 models (3/10 published, 4/10 re-run) with a largest reduction of 70% against
 89%. Per-cell values from that table should be cited as published, noting
 that an independent re-run did not reproduce them.
+
+---
+
+<a id="d8"></a>
+
+## D8 — API-tier History cells are scored against the two-stage control
+
+| | |
+|---|---|
+| **Status** | **OPEN** — needs a decision |
+| **Affects** | Table 1 History columns for the four API models; the API rows of `tab:app-history` |
+| **Severity** | Interpretation only; every number is correct for the baseline it was computed against |
+
+### What happens
+
+`results/api_benchmark/unified_all_suites.json` records
+`baseline_condition: control_twostage` for all four API History entries
+(their `parse_by_condition` lists `control_twostage`, not `control`), while
+the ten open-weight entries in `results/full_benchmark/` record `control`.
+Table 1's caveat says "History uses a single-stage control", and the
+matched two-stage control appears in the paper as a follow-up analysis
+(Table 13), not as the baseline of any Table 1 cell.
+
+### Root cause
+
+`runners.api` defaults `--history_baseline_condition` to `control_twostage`;
+the open-weight History runner defaults to `control`. The `paper_main` recipe
+sets `baseline_condition: control`, which reaches the local runner but was
+never forwarded to the API runner, so the published API run used the runner
+default. Surfaced by the v2.1 code review when the two CLI copies of the cell
+builder were merged into `cli/cells.py`.
+
+### Disposition
+
+`cli/cells.py` deliberately keeps *not* forwarding `baseline_condition` to
+API cells, so `paper_main` reproduces the committed API numbers rather than
+silently changing them. Two ways to close this row: (a) state in the Table 1
+caveat that the API tier's History baseline is the two-stage control, or (b)
+re-run the four API History cells with `--history_baseline_condition control`
+as a versioned addendum, as D5 did, and record the comparison here.
+
+Re-measure:
+
+```bash
+python - <<'PY'
+import json
+for run in ("full_benchmark", "api_benchmark"):
+    for d in json.load(open(f"results/{run}/unified_all_suites.json")):
+        if d["suite"] == "History":
+            print(run, d["model"], d["baseline_condition"])
+PY
+```

@@ -215,7 +215,7 @@ committed because they are the prompts the models saw.
 | Directory | Built by | Backs |
 |---|---|---|
 | `anchorbench_external_uncertain/` | `runners.rebuttal_uncertain.build_uncertain_promptviews`: each External item re-rendered with k = 1, 2, 3 visible ratings, gold unchanged (15 conditions, 5,400 rows) | Table 2, `tab:uncertain_k` |
-| `anchorbench_external_weighted_mean_core/` | `generate` with `--scoring_function weighted_mean` | `tab:weighted_mean` |
+| `anchorbench_external_weighted_mean_core/` | `python -m anchorbench.data.generate --suite external --size core --seed 42 --scoring_function weighted_mean` | `tab:weighted_mean` |
 | `anchorbench_{external,history}_medical_pilot/`, `..._other_pilot/` | `generate` with the extension domains | `tab:extension_pilot` |
 | `anchorbench_{external,history,rag}_d1/` | `runners.rebuttal_intensity` (mild / standard / strong credibility) | `tab:intensity_pathway` |
 | `anchorbench_rag_p2/`, `anchorbench_tool_p3/` | `data.suites.{rag,tool}.build_realism_promptviews` | `tab:rag_realism`, `tab:tool_realism` |

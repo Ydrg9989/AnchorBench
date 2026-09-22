@@ -267,7 +267,7 @@ Most of the repository can be checked on a clean clone in seconds, because
 the two unified summaries and every generated table are committed:
 
 ```bash
-pytest                                    # 244 tests; 4 skip without the results tarballs
+pytest                                    # 256 tests; 4 skip without the results tarballs
 anchorbench verify --strict               # every numeric paper claim
 python scripts/measure_paper_drift.py     # paper tables vs generator output
 ```

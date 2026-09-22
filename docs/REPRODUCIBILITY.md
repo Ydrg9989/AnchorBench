@@ -57,7 +57,7 @@ non-zero if any numeric claim drifts.
 ### 1. Generate the datasets
 
 ```bash
-anchorbench generate data=external              # one suite, size and seed from conf/
+anchorbench generate data=external              # one suite; +size=smoke|pilot|core (default core), seed=42 from conf/config.yaml
 bash scripts/generate_all.sh core 42            # external history icl icl_dist rag tool
 ```
 
@@ -85,7 +85,7 @@ A named recipe (add `+dry_run=true` to print the cells without launching):
 
 | Recipe | What it runs | Backs |
 |---|---|---|
-| `paper_main` | 14 models x 5 suites, greedy | Table 1, Figures 3 and 8, most appendix tables |
+| `paper_main` | 14 models x 5 suites, greedy; API History cells use the runner's two-stage control (D8) | Table 1, Figures 3 and 8, most appendix tables |
 | `paper_icl_dist` | ICL distribution-matching variant | Table 14 |
 | `paper_history_matched` | History with the two-stage control | Table 13 (re-run, see D5) |
 | `paper_tool_plaintext` | Tool suite forced to plaintext, 5 models | Table 15 (re-run, see D5) |
