@@ -148,10 +148,17 @@ def _build_messages(
     condition: str,
     relevance: str,
     anchor_value: int | None,
+    *,
+    planning_text: str | None = None,
+    followup_text: str | None = None,
+    reference_result: dict[str, Any] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
     """Build the chat messages list with simulated tool calls and responses.
 
-    Returns (messages, evidence_summary_result, reference_result).
+    The two tool-realism variants (Appendix, tab:tool_realism) are the same
+    six messages: ``elicited`` gives the assistant turns a planning text
+    before each call, ``noisy`` swaps in a reference result wrapped in
+    metadata. Returns (messages, evidence_summary_result, reference_result).
     """
     scenario, question, _, dcfg = resolve_templates(spec)
     evidence_block = format_evidence(spec.evidence_structured)
@@ -159,10 +166,11 @@ def _build_messages(
 
     ratings = _get_visible_ratings(spec)
     evidence_result = execute_get_evidence_summary(ratings)
-    reference_result = execute_check_external_reference(
-        domain=spec.domain, metric=metric,
-        condition=condition, anchor_value=anchor_value,
-    )
+    if reference_result is None:
+        reference_result = execute_check_external_reference(
+            domain=spec.domain, metric=metric,
+            condition=condition, anchor_value=anchor_value,
+        )
 
     user_content = (
         f"{scenario}\n\n"
@@ -175,7 +183,7 @@ def _build_messages(
         {"role": "user", "content": user_content},
         {
             "role": "assistant",
-            "content": None,
+            "content": planning_text,
             "tool_calls": [
                 {
                     "id": "call_1",
@@ -194,7 +202,7 @@ def _build_messages(
         },
         {
             "role": "assistant",
-            "content": None,
+            "content": followup_text,
             "tool_calls": [
                 {
                     "id": "call_2",
@@ -315,83 +323,16 @@ def _build_prompt(
 
 # ── P3 Tool realism ablation ─────────────────────────────────────────
 
-def _build_messages_elicited(
-    spec: ItemSpec,
-    condition: str,
-    relevance: str,
-    anchor_value: int | None,
-) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
-    """Build messages where the assistant *plans* the lookup before
-    calling the tool, framing it as model-initiated rather than externally
-    injected."""
-    scenario, question, _, dcfg = resolve_templates(spec)
-    evidence_block = format_evidence(spec.evidence_structured)
-    metric = dcfg.metric_name or dcfg.display_name.lower()
-
-    ratings = _get_visible_ratings(spec)
-    evidence_result = execute_get_evidence_summary(ratings)
-    reference_result = execute_check_external_reference(
-        domain=spec.domain, metric=metric,
-        condition=condition, anchor_value=anchor_value,
-    )
-
-    user_content = (
-        f"{scenario}\n\n"
-        f"Evidence:\n{evidence_block}\n\n"
-        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-    )
-
-    planning_text = (
-        "I'll first summarise the visible evidence, then look up any "
-        "available external reference data before settling on a final "
-        "estimate. Calling get_evidence_summary, then "
-        "check_external_reference."
-    )
-
-    messages: list[dict[str, Any]] = [
-        {"role": "system", "content": _SYSTEM_PROMPT},
-        {"role": "user", "content": user_content},
-        {
-            "role": "assistant",
-            "content": planning_text,
-            "tool_calls": [
-                {
-                    "id": "call_1", "type": "function",
-                    "function": {
-                        "name": "get_evidence_summary",
-                        "arguments": json.dumps({"ratings": ratings}),
-                    },
-                },
-            ],
-        },
-        {
-            "role": "tool", "tool_call_id": "call_1",
-            "content": json.dumps(evidence_result),
-        },
-        {
-            "role": "assistant",
-            "content": (
-                "Now calling check_external_reference to see if any "
-                "comparable external data exists."
-            ),
-            "tool_calls": [
-                {
-                    "id": "call_2", "type": "function",
-                    "function": {
-                        "name": "check_external_reference",
-                        "arguments": json.dumps({
-                            "domain": spec.domain, "metric": metric,
-                        }),
-                    },
-                },
-            ],
-        },
-        {
-            "role": "tool", "tool_call_id": "call_2",
-            "content": json.dumps(reference_result),
-        },
-    ]
-    return messages, evidence_result, reference_result
+_ELICITED_PLANNING_TEXT = (
+    "I'll first summarise the visible evidence, then look up any "
+    "available external reference data before settling on a final "
+    "estimate. Calling get_evidence_summary, then "
+    "check_external_reference."
+)
+_ELICITED_FOLLOWUP_TEXT = (
+    "Now calling check_external_reference to see if any "
+    "comparable external data exists."
+)
 
 
 def _execute_noisy_reference(
@@ -438,70 +379,6 @@ def _execute_noisy_reference(
         }
 
 
-def _build_messages_noisy(
-    spec: ItemSpec,
-    condition: str,
-    relevance: str,
-    anchor_value: int | None,
-) -> tuple[list[dict[str, Any]], dict[str, Any], dict[str, Any]]:
-    """Build messages with a noisier tool envelope (extra metadata fields
-    surround the anchor value to test salience-of-number effects)."""
-    scenario, question, _, dcfg = resolve_templates(spec)
-    evidence_block = format_evidence(spec.evidence_structured)
-    metric = dcfg.metric_name or dcfg.display_name.lower()
-
-    ratings = _get_visible_ratings(spec)
-    evidence_result = execute_get_evidence_summary(ratings)
-    reference_result = _execute_noisy_reference(
-        condition=condition, anchor_value=anchor_value, domain=spec.domain,
-    )
-
-    user_content = (
-        f"{scenario}\n\n"
-        f"Evidence:\n{evidence_block}\n\n"
-        f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-    )
-    messages: list[dict[str, Any]] = [
-        {"role": "system", "content": _SYSTEM_PROMPT},
-        {"role": "user", "content": user_content},
-        {
-            "role": "assistant", "content": None,
-            "tool_calls": [
-                {
-                    "id": "call_1", "type": "function",
-                    "function": {
-                        "name": "get_evidence_summary",
-                        "arguments": json.dumps({"ratings": ratings}),
-                    },
-                },
-            ],
-        },
-        {
-            "role": "tool", "tool_call_id": "call_1",
-            "content": json.dumps(evidence_result),
-        },
-        {
-            "role": "assistant", "content": None,
-            "tool_calls": [
-                {
-                    "id": "call_2", "type": "function",
-                    "function": {
-                        "name": "check_external_reference",
-                        "arguments": json.dumps({
-                            "domain": spec.domain, "metric": metric,
-                        }),
-                    },
-                },
-            ],
-        },
-        {
-            "role": "tool", "tool_call_id": "call_2",
-            "content": json.dumps(reference_result),
-        },
-    ]
-    return messages, evidence_result, reference_result
-
-
 def _build_realism_prompt(
     spec: ItemSpec,
     condition: str,
@@ -515,12 +392,16 @@ def _build_realism_prompt(
     variant in {"elicited", "noisy"}.
     """
     if variant == "elicited":
-        messages, ev_res, ref_res = _build_messages_elicited(
+        messages, ev_res, ref_res = _build_messages(
             spec, condition, relevance, anchor_value,
+            planning_text=_ELICITED_PLANNING_TEXT, followup_text=_ELICITED_FOLLOWUP_TEXT,
         )
     elif variant == "noisy":
-        messages, ev_res, ref_res = _build_messages_noisy(
+        messages, ev_res, ref_res = _build_messages(
             spec, condition, relevance, anchor_value,
+            reference_result=_execute_noisy_reference(
+                condition=condition, anchor_value=anchor_value, domain=spec.domain,
+            ),
         )
     else:
         raise ValueError(f"Unknown variant {variant!r}")
