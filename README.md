@@ -202,7 +202,8 @@ pip install -e ".[all]"            # core + vllm + api + dev
 
 | Extra | Pulls in | When to use |
 | --- | --- | --- |
-| `[vllm]` | vLLM | open-weight models (Qwen, Llama, Gemma, OLMo) |
+| `[hf]`   | torch, transformers | open-weight models through Transformers |
+| `[vllm]` | vLLM (plus `[hf]`) | open-weight models (Qwen, Llama, Gemma, OLMo) |
 | `[api]`  | aiohttp | OpenRouter API models (GPT, Claude, Gemini, Grok) |
 | `[dev]`  | pytest, ruff | tests and linting |
 

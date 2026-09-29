@@ -26,15 +26,15 @@ dependencies = [
     "matplotlib>=3.7",
     "pandas>=2.0",
     "pyyaml>=6.0",
-    "tqdm>=4.65",
-    "torch>=2.1",
-    "transformers>=4.36",
     "hydra-core>=1.3",
     "omegaconf>=2.3",
 ]
 
 [project.optional-dependencies]
-vllm = ["vllm>=0.6.0"]
+# The importable core (generation, parsing, metrics, tables, the verifier)
+# needs none of these; the backends import them where they are used.
+hf = ["torch>=2.1", "transformers>=4.36"]
+vllm = ["anchorbench[hf]", "vllm>=0.6.0"]
 api = ["aiohttp>=3.9"]
 dev = ["pytest>=7.0", "ruff>=0.4"]
 all = ["anchorbench[vllm,api,dev]"]
