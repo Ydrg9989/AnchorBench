@@ -16,7 +16,6 @@ Outputs (per model):
 from __future__ import annotations
 
 import argparse
-import dataclasses
 import json
 import logging
 from pathlib import Path
@@ -40,12 +39,6 @@ for rel in ("plausible", "irrelevant"):
             NEW_CONDITIONS.append(f"{rel}_{direction}_{tag}")
 
 
-def _spec_from_dict(d: dict) -> ItemSpec:
-    field_names = {f.name for f in dataclasses.fields(ItemSpec)}
-    kwargs = {k: v for k, v in d.items() if k in field_names}
-    return ItemSpec(**kwargs)
-
-
 def build_p2_promptviews(core_dir: Path, out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
     specs_path = core_dir / "itemspecs.jsonl"
@@ -54,7 +47,7 @@ def build_p2_promptviews(core_dir: Path, out_dir: Path) -> Path:
     with open(specs_path) as fin, open(out_path, "w") as fout:
         for line in fin:
             d = json.loads(line)
-            spec = _spec_from_dict(d)
+            spec = ItemSpec.from_dict(d)
             if spec.suite != "rag":
                 continue
             for pv in build_realism_promptviews(spec):

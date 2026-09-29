@@ -29,7 +29,6 @@ for backward compatibility with the existing D1 artifacts.
 from __future__ import annotations
 
 import argparse
-import dataclasses
 import json
 import logging
 from collections.abc import Callable
@@ -88,12 +87,6 @@ SUITE_CONFIG = {
 }
 
 
-def _spec_from_dict(d: dict) -> ItemSpec:
-    field_names = {f.name for f in dataclasses.fields(ItemSpec)}
-    kwargs = {k: v for k, v in d.items() if k in field_names}
-    return ItemSpec(**kwargs)
-
-
 def _build_external_intensity_views(spec: ItemSpec):
     """Render the 4 intensity conditions on External using the standard
     plausible-preamble pathway (same mechanism as the published plausible
@@ -125,7 +118,7 @@ def build_d1_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
     with open(specs_path) as fin, open(out_path, "w") as fout:
         for line in fin:
             d = json.loads(line)
-            spec = _spec_from_dict(d)
+            spec = ItemSpec.from_dict(d)
             if spec.suite != suite:
                 continue
             for pv in builder(spec):
