@@ -57,6 +57,7 @@ from anchorbench.eval.io import (
     splice_core_records,
     write_records,
 )
+from anchorbench.eval.metrics import baseline_condition, compute_unified_metrics
 from anchorbench.eval.runner_utils import add_backend_args, make_backend
 from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
@@ -123,15 +124,28 @@ def build_d1_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
                                 SUITE_VIEW_BUILDER[suite])
 
 
+def scoring_baseline(all_recs: list[dict], prefer: str) -> str:
+    """The one control condition both the summary and the curve score against.
+
+    History prefers ``control_twostage``, which only the matched-format
+    re-run carries (ledger D8); an older core run has ``control`` alone, and
+    the shared rule in metrics.baseline_condition takes it. Scoring the
+    summary against a condition the records lack used to give a summary of
+    all-None metrics next to a curve computed against ``control``.
+    """
+    present = {r["condition"] for r in all_recs}
+    cond = baseline_condition(all_recs, prefer=prefer)
+    if cond not in present:
+        raise ValueError(f"no control records to score against (have {sorted(present)})")
+    if cond != prefer:
+        log.warning("no %s records in the core run; scoring against %s", prefer, cond)
+    return cond
+
+
 def _compute_intensity_curve(
     all_recs: list[dict], baseline_cond: str,
 ) -> dict:
-    """Per-intensity mean UAI vs the per-item baseline.
-
-    Tries ``baseline_cond`` first; if no records match (e.g. History
-    full_benchmark only has single-stage ``control``), falls back to
-    ``control``.
-    """
+    """Per-intensity mean UAI vs the per-item ``baseline_cond`` answer."""
     def _collect(cond: str) -> dict[str, float]:
         out: dict[str, float] = {}
         for r in all_recs:
@@ -144,9 +158,6 @@ def _compute_intensity_curve(
         return out
 
     by_item_ctrl = _collect(baseline_cond)
-    if not by_item_ctrl and baseline_cond != "control":
-        log.info("No %s baseline; falling back to 'control'", baseline_cond)
-        by_item_ctrl = _collect("control")
 
     by_cond: dict[str, list[float]] = {c: [] for c in (
         "plausible_low", "plausible_high",
@@ -240,7 +251,7 @@ def main(argv: list[str] | None = None) -> None:
     )
     write_records(all_recs, out_dir / "results_combined.jsonl")
 
-    from anchorbench.eval.metrics import compute_unified_metrics
+    baseline_cond = scoring_baseline(all_recs, prefer=baseline_cond)
     metrics = compute_unified_metrics(all_recs, baseline_condition=baseline_cond)
     (out_dir / "summary_combined.json").write_text(
         json.dumps(metrics, indent=2, default=str)

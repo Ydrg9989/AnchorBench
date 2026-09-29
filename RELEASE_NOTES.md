@@ -28,6 +28,18 @@ generator). The metrics layer is pinned by a new clean-clone golden
   Table 2 dataset; `decoding=sample_t07` is refused (no cell runner samples).
 - The validators assert that the irrelevant and plausible framings share
   the anchor value, and every validator has a failing test.
+- `anchorbench eval` writes where `experiment` and `analysis.unified`
+  look (`<out_dir>/<suite>/<slug>/`); it used to nest the slug twice.
+- A chat template that rejects tool schemas is an error naming
+  `--tool_plaintext`, not a silent render without the schema; a promptview
+  without an itemspec is an error, not gold `None` with a made-up
+  difficulty.
+- The History intensity runner scores its summary and its curve against
+  the same control condition. The committed
+  `results/rebuttal/intensity_history/*/summary_combined.json` files were
+  written by the old code and carry all-None metrics next to curves
+  computed against `control`; the curves (the only input to Table 17) are
+  unaffected.
 
 ### Changed
 
