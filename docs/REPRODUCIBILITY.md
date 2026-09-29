@@ -90,7 +90,7 @@ A named recipe (add `+dry_run=true` to print the cells without launching):
 | `paper_history_matched` | History with the two-stage control | Table 13 (re-run, see D5) |
 | `paper_tool_plaintext` | Tool suite forced to plaintext, 5 models | Table 15 (re-run, see D5) |
 | `python -m anchorbench.runners.sampling --model_id <hf_id> --n_seeds 3` | temperature 0.7, 3 seeds; not a recipe, because no cell runner takes a temperature | Table 18 |
-| `paper_mitigation_headroom` | prompt-based mitigation strategies | Table 19 |
+| `python -m anchorbench.runners.mitigation_headroom --model_id <hf_id> --suites external rag` | prompt-based mitigation strategies; not a recipe, because a cell has no prompt suffix | Table 19 |
 
 ```bash
 anchorbench experiment +experiment=paper_main
