@@ -477,7 +477,7 @@ def compute_extended_metrics(
         )
         for key in ("irr", "plaus"):
             if ts_vectors[key]:
-                mean, lo, hi = bootstrap_ci(ts_vectors[key])
+                mean, lo, hi = bootstrap_ci(list(ts_vectors[key].values()))
                 twostage_metrics[f"uai_{key}_ts"] = round(mean, 4)
                 twostage_metrics[f"uai_{key}_ts_ci"] = {
                     "mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4),

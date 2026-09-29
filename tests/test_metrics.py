@@ -6,6 +6,7 @@ from anchorbench.eval.metrics import (
     _collect_item_uai_vectors,
     bh_correction,
     bootstrap_ci,
+    compute_extended_metrics,
     compute_unified_metrics,
     paired_wilcoxon,
 )
@@ -129,6 +130,25 @@ class TestComputeUnifiedMetrics:
         m = compute_unified_metrics([])
         assert m["n_items"] == 0
         assert m["parse_rate"] == 0.0
+
+
+def test_extended_metrics_with_both_control_conditions():
+    """A results file that carries control and control_twostage (the
+    matched-format History re-run) must yield the two-stage CI, not crash:
+    the two-stage vectors are dicts keyed by (item, direction) and the
+    bootstrap wants their values."""
+    records = [
+        _make_record("A", "control", 50),
+        _make_record("A", "control_twostage", 52),
+        _make_record("A", "plausible_high", 60, anchor_value=70),
+        _make_record("B", "control", 40),
+        _make_record("B", "control_twostage", 41),
+        _make_record("B", "plausible_high", 55, anchor_value=70),
+    ]
+    m = compute_extended_metrics(records)                     # baseline: control
+    # (60-52)/(70-52) = 0.4444 and (55-41)/(70-41) = 0.4828 against the two-stage control
+    np.testing.assert_allclose(m["uai_plaus_ts"], 0.4636, atol=1e-4)
+    assert m["uai_plaus_ts_ci"]["lo"] <= m["uai_plaus_ts"] <= m["uai_plaus_ts_ci"]["hi"]
 
 
 class TestBootstrapCI:
