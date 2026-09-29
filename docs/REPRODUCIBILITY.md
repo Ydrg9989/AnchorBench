@@ -237,7 +237,7 @@ Thirteen tables are read by the paper straight from generated `.tex` files.
 committed, so the tables are in git even when the generations are not, and
 `tests/test_golden_artifacts.py` pins their hashes.
 
-| # | Paper table | Generator module | Reads | Launcher in `experiments/rebuttal/` |
+| # | Paper table | Generator module | Reads | Launcher (`git show pre-refactor-2026-09-29:experiments/rebuttal/<name>`) |
 |---|---|---|---|---|
 | 1 | `tab:implied_weight` | `analysis.bayesian_bound` | `full_benchmark`, `api_benchmark` | — |
 | 2 | `tab:excess_uai` | `analysis.bayesian_bound` | same run | — |
@@ -273,8 +273,10 @@ and `extension_pilot.py` are the generators of the tables the paper uses.
 ### Not reproducible from the release
 
 `tab:history_matched` and `tab:tool_plaintext` were produced by runs whose
-inputs were not preserved. Both were re-run independently with
-`experiments/run_stage3_reruns.sh`; the published values stand, and the
+inputs were not preserved. Both were re-run independently with the
+`paper_history_matched` and `paper_tool_plaintext` recipes (the launcher,
+`run_stage3_reruns.sh`, is at `git show pre-refactor-2026-09-29:experiments/`); the
+published values stand, and the
 published-vs-re-run comparison is D5 in [RECONCILIATION.md](RECONCILIATION.md).
 
 ## Checks that run without a GPU

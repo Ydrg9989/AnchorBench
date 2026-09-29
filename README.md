@@ -255,7 +255,8 @@ Two things it does **not** cover (see
 
 ```bash
 anchorbench tables --appendix     # the 13 \input-ed appendix tables
-bash experiments/run_stage3_reruns.sh # the two re-run experiments (addendum)
+anchorbench experiment +experiment=paper_history_matched   # the two re-run
+anchorbench experiment +experiment=paper_tool_plaintext    # experiments (addendum)
 ```
 
 Approximate cost: ~24 h on 4x A100 plus roughly $300 of OpenRouter spend at
@@ -302,7 +303,6 @@ AnchorBench/
 |-- datasets/                # committed: the exact prompts the models saw
 |-- results/                 # bulk gitignored; unified summaries + tables committed
 |-- scripts/                 # reproduce_paper.sh + thin wrappers
-|-- experiments/             # the launchers that produced the appendix experiments (provenance)
 |-- docs/                    # ARCHITECTURE, REPRODUCIBILITY, DATA, RECONCILIATION
 `-- tests/
 ```

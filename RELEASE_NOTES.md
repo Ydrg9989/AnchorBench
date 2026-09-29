@@ -1,5 +1,56 @@
 # Release Notes — AnchorBench
 
+## Unreleased — code clean-up on the `refactor/clear-code` branch
+
+No published number changed: `anchorbench verify --strict` reports zero
+mismatches, every committed dataset re-renders byte-for-byte, and every
+appendix table that regenerates from the shipped tree is byte-identical
+(the two realism tables differ only in the comment line naming their
+generator). The metrics layer is pinned by a new clean-clone golden
+(`tests/golden/metrics_synthetic.json`).
+
+### Fixed
+
+- The Hydra CLI commands (`eval`, `experiment`, `generate`) exit with the
+  runner's code; `tables` folds every generator's code in; an empty
+  experiment plan, a missing analysis input and a missing dataset suite are
+  errors instead of a green exit.
+- The parser recognises `... index is: N` as a declared answer, so an
+  out-of-range declaration is a parse failure instead of an evidence value.
+- A backend exception aborts the run instead of writing a complete-looking
+  results file of `ERROR:` rows; a missing API key is refused up front; a
+  failed API request is an `ERROR: HTTP <status>` answer, not an empty one.
+- `add-model` takes `--backend` instead of guessing from the id prefix.
+- `compute_extended_metrics` no longer crashes on a results file with both
+  control conditions (two-stage CI passed a dict to the bootstrap).
+- The claim verifier reports a NaN p-value and stale ledger rows.
+- `--max_items` on the uncertain runner no longer overwrites the committed
+  Table 2 dataset; `decoding=sample_t07` is refused (no cell runner samples).
+- The validators assert that the irrelevant and plausible framings share
+  the anchor value, and every validator has a failing test.
+
+### Changed
+
+- One implementation each for UAI (`metrics.item_uai`), the condition
+  table, the gold answer, the results loader, the number formatters, the
+  baseline rule, the Pearson bootstrap, the prompt suffixes and the
+  promptviews-file choice; the RAG/Tool realism runners and analyses, the
+  CoT and mitigation runners, and the three Tool message builders are each
+  one parameterised module.
+- `compute_unified_metrics`, `parse_response`, `run_history_two_stage`,
+  `unified.main`, `stats_inference_values`, `mitigation.write_outputs` and
+  `bayesian_bound`'s report are split into named parts.
+- torch and transformers are the `[hf]` extra; every results and dataset
+  default is anchored on the repository (`anchorbench.paths`).
+
+### Removed
+
+- The LLM-enhance path (imported a module that never existed), the second
+  parser cascade and the clamp option, four unused `Backend` members and
+  `--structured`, three superseded analyses, unread config keys, the
+  `paper_sampling` and `paper_gold_shift` recipes, and the `experiments/`
+  launchers (provenance; at tag `pre-refactor-2026-09-29`).
+
 ## v2.1.0 (2026-09) — repository cleanup after the camera-ready
 
 No experiment logic, metric, prompt or dataset byte changed. Every committed

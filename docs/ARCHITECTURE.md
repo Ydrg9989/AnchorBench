@@ -43,9 +43,10 @@ src/anchorbench/
 |   |-- api.py                      # a hosted model on any suites, through the shared loops
 |   |-- icl_dist_api.py             # ICL-dist on API models
 |   |-- sampling.py                 # temperature 0.7 / top-p 0.9 robustness sweep
-|   |-- mitigation_baseline.py, mitigation_headroom.py   # prompt-based mitigation probes
-|   `-- rebuttal_{cot,intensity,rag_realism,spectrum,tool_realism,uncertain}.py
-|                                   # appendix experiments (launched from experiments/rebuttal/)
+|   |-- mitigation_baseline.py      # the "ignore other numbers" reminder on every suite
+|   |-- mitigation_headroom.py      # prompt-suffix probes: mitigation headroom, CoT, task spec
+|   |-- realism.py                  # RAG and Tool realism ablations (--suite rag|tool)
+|   `-- rebuttal_{intensity,spectrum,uncertain}.py   # the other appendix experiments
 |-- analysis/                   # results.jsonl -> tables, CSV, JSON; no inference
 |   |-- unified.py                  # rebuilds results/<run>/unified_all_suites.json
 |   |-- gold_shift.py, sampling.py, mitigation.py         # Appendix Tables 16, 18, 19
@@ -69,12 +70,27 @@ src/anchorbench/
     `-- add_model.py                # write conf/model/<slug>.yaml
 ```
 
-Two pieces of the tree are deliberately not code:
+`conf/` is deliberately not code: it holds the Hydra configuration (below).
 
-- `conf/` holds the Hydra configuration (below).
-- `experiments/` holds the shell launchers that produced the appendix
-  experiments. They are provenance, not entry points; see
-  [experiments/README.md](../experiments/README.md).
+## Public boundary
+
+Two layers share the package. The **core** is what a user of the benchmark
+needs to generate items, run a model and score it: `paths`, `registry`,
+`conf/`, `data/`, `eval/`, `inference/`, the five suite runners plus
+`runners/{api,icl_dist_api,sampling}.py`, `analysis/{_io,unified}.py`,
+`cli/` and `paper/{_common,tables_main,fig4,fig5,verify}.py`. The
+**reproduction layer** exists only to regenerate paper tables:
+`runners/{mitigation_baseline,mitigation_headroom,realism,rebuttal_*}.py`,
+the rest of `analysis/`, and `paper/tables_appendix.py`. Nothing in the
+core imports the reproduction layer; it is reached through
+`anchorbench tables --appendix` and the commands in
+[REPRODUCIBILITY.md](REPRODUCIBILITY.md).
+
+The shell launchers that produced the appendix experiments on the paper's
+cluster (GPU indices, tmux, `.done`-file polling, a machine-specific conda
+path) are provenance, not entry points, and no longer ship in the tree.
+They are at the tag the cleanup started from:
+`git show pre-refactor-2026-09-29:experiments/README.md` lists them.
 
 ## Hydra config tree
 
