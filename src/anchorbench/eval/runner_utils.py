@@ -46,8 +46,18 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--fallback_model", type=str, default=None)
     parser.add_argument("--fallback_device", type=str, default="auto")
 
+    add_backend_args(parser)
+
+
+def add_backend_args(parser: argparse.ArgumentParser, default: str = "hf") -> None:
+    """The flags :func:`make_backend` reads: which backend, and its knobs.
+
+    Every runner that loads a model takes exactly these, so a flag learned on
+    one runner works on all of them. The vLLM memory fraction and the API
+    concurrency only affect loading and throughput, never a record.
+    """
     parser.add_argument(
-        "--backend", type=str, choices=list(BACKENDS), default="hf",
+        "--backend", type=str, choices=list(BACKENDS), default=default,
         help="Inference backend: hf (Transformers), vllm, or openrouter (hosted API)",
     )
     parser.add_argument("--max_concurrent", type=int, default=50,

@@ -41,7 +41,7 @@ from anchorbench.eval.io import (
     write_records,
 )
 from anchorbench.eval.metrics import compute_extended_metrics
-from anchorbench.eval.runner_utils import build_backend
+from anchorbench.eval.runner_utils import add_backend_args, make_backend
 from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
@@ -71,13 +71,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_tokens", type=int, default=512)
     p.add_argument("--batch_size", type=int, default=32)
-    p.add_argument("--backend",
-                   choices=["hf", "vllm", "openrouter"], default="vllm")
-    p.add_argument("--tensor_parallel_size", type=int, default=1)
-    p.add_argument("--gpu_memory_utilization", type=float, default=0.85)
-    p.add_argument("--max_model_len", type=int, default=4096)
-    p.add_argument("--max_concurrent", type=int, default=16,
-                   help="OpenRouter concurrency")
+    add_backend_args(p, default="vllm")
     args = p.parse_args(argv)
 
     pv_path = args.dataset_dir / "promptviews_ablation.jsonl"
@@ -93,13 +87,7 @@ def main(argv: list[str] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     abl_path = out_dir / "results_ablation.jsonl"
 
-    backend = build_backend(
-        args.backend, args.model_id,
-        tensor_parallel_size=args.tensor_parallel_size,
-        gpu_memory_utilization=args.gpu_memory_utilization,
-        max_model_len=args.max_model_len,
-        max_concurrent=args.max_concurrent,
-    )
+    backend = make_backend(args)
     new_records = run_single_stage(
         backend, items, abl_path, conditions=ABLATION_CONDITIONS,
         max_tokens=args.max_tokens, batch_size=args.batch_size,

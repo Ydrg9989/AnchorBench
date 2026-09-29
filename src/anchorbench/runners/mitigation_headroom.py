@@ -40,7 +40,7 @@ from anchorbench.eval.evaluator import (
     write_and_summarize,
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews, load_records, suite_files
-from anchorbench.eval.runner_utils import PROMPT_SUFFIXES, build_backend
+from anchorbench.eval.runner_utils import PROMPT_SUFFIXES, add_backend_args, make_backend
 from anchorbench.paths import RESULTS_DIR, ROOT
 
 log = logging.getLogger(__name__)
@@ -94,20 +94,12 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_tokens", type=int, default=512)
     p.add_argument("--batch_size", type=int, default=64)
-    p.add_argument("--backend", choices=["hf", "vllm"], default="vllm")
-    p.add_argument("--tensor_parallel_size", type=int, default=1)
-    p.add_argument("--gpu_memory_utilization", type=float, default=0.9)
-    p.add_argument("--max_model_len", type=int, default=4096)
+    add_backend_args(p, default="vllm")
     p.add_argument("--force", action="store_true",
                    help="Re-run cells whose summary.json already exists")
     args = p.parse_args(argv)
 
-    backend = build_backend(
-        args.backend, args.model_id,
-        tensor_parallel_size=args.tensor_parallel_size,
-        gpu_memory_utilization=args.gpu_memory_utilization,
-        max_model_len=args.max_model_len,
-    )
+    backend = make_backend(args)
     for suite in args.suites:
         pv_file, spec_file = suite_files(ROOT / SUITE_DATASETS[suite], prefer_full=suite == "history")
         conditions = HISTORY_CONDITIONS if suite == "history" else None

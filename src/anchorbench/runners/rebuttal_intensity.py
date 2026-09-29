@@ -57,7 +57,7 @@ from anchorbench.eval.io import (
     splice_core_records,
     write_records,
 )
-from anchorbench.eval.runner_utils import build_backend
+from anchorbench.eval.runner_utils import add_backend_args, make_backend
 from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
@@ -196,10 +196,7 @@ def main(argv: list[str] | None = None) -> None:
                    help="override; defaults to SUITE_CONFIG[suite].dataset_dir")
     p.add_argument("--max_tokens", type=int, default=512)
     p.add_argument("--batch_size", type=int, default=32)
-    p.add_argument("--backend", choices=["hf", "vllm"], default="vllm")
-    p.add_argument("--tensor_parallel_size", type=int, default=1)
-    p.add_argument("--gpu_memory_utilization", type=float, default=0.85)
-    p.add_argument("--max_model_len", type=int, default=4096)
+    add_backend_args(p, default="vllm")
     args = p.parse_args(argv)
 
     cfg = SUITE_CONFIG[args.suite]
@@ -225,12 +222,7 @@ def main(argv: list[str] | None = None) -> None:
     out_dir = out_dir_base / model_slug
     out_dir.mkdir(parents=True, exist_ok=True)
     new_path = out_dir / "results_d1.jsonl"
-    backend = build_backend(
-        args.backend, args.model_id,
-        tensor_parallel_size=args.tensor_parallel_size,
-        gpu_memory_utilization=args.gpu_memory_utilization,
-        max_model_len=args.max_model_len,
-    )
+    backend = make_backend(args)
     if args.suite == "history":
         new_records = run_history_two_stage(
             backend, items, new_path, conditions=NEW_CONDITIONS, max_tokens=args.max_tokens,
