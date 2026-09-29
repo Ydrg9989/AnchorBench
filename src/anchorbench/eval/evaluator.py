@@ -258,6 +258,24 @@ def flatten_conversation(stage1_prompt: str, stage1_raw: str, stage2_prompt: str
     )
 
 
+def _partition_history_tasks(tasks: list[Task]) -> tuple[list[Task], list[Task], list[Task]]:
+    """(control, two_stage, missing): single-turn control, items with both
+    stage messages, and items whose promptview lacks one of them."""
+    control: list[Task] = []
+    two_stage: list[Task] = []
+    missing: list[Task] = []
+    for task in tasks:
+        _, cond, pv = task
+        comp = pv.get("prompt_components", {})
+        if cond == "control":
+            control.append(task)
+        elif comp.get("stage1_user_message") and comp.get("stage2_user_message"):
+            two_stage.append(task)
+        else:
+            missing.append(task)
+    return control, two_stage, missing
+
+
 def run_history_two_stage(
     backend: Backend,
     items: list[dict],
@@ -306,19 +324,7 @@ def run_history_two_stage(
         file_mode = "w"
 
     tasks = [t for t in _tasks(items, conds) if (items[t[0]]["item_id"], t[1]) not in done_keys]
-
-    control: list[Task] = []
-    two_stage: list[Task] = []
-    missing: list[Task] = []
-    for task in tasks:
-        _, cond, pv = task
-        comp = pv.get("prompt_components", {})
-        if cond == "control":
-            control.append(task)
-        elif comp.get("stage1_user_message") and comp.get("stage2_user_message"):
-            two_stage.append(task)
-        else:
-            missing.append(task)
+    control, two_stage, missing = _partition_history_tasks(tasks)
 
     def gen_batch(prompts: list[str]) -> list[str]:
         return backend.generate_batch(
@@ -377,34 +383,33 @@ def run_history_two_stage(
     s2_usage = _usage_for(backend, len(two_stage)) if two_stage else None
 
     # -- records, in items x conditions order --------------------------------
+    def emit(task: Task, raw: str, parse_text: str, usage: dict | None, **stage) -> dict:
+        i, cond, pv = task
+        answer, parsed_ok, strategy = parse_response(
+            raw, parse_text, use_llm_fallback=use_llm_fallback,
+            fallback_extractor=fallback_extractor,
+        )
+        rec = build_record(backend.model_id, items[i], cond, pv, answer, parsed_ok, strategy,
+                           raw, **stage, **extras)
+        if usage is not None:
+            rec["api_usage"] = usage
+        return rec
+
     built: dict[tuple[int, str], dict] = {}
-    for k, ((i, cond, pv), raw) in enumerate(zip(control, ctrl_raws)):
-        answer, parsed_ok, strategy = parse_response(
-            raw, ctrl_prompts[k], use_llm_fallback=use_llm_fallback,
-            fallback_extractor=fallback_extractor,
-        )
-        rec = build_record(
-            backend.model_id, items[i], cond, pv, answer, parsed_ok, strategy, raw,
-            anchor_value=None, stage1_answer=None, stage1_raw_text=None, **extras,
-        )
-        if ctrl_usage is not None:
-            rec["api_usage"] = ctrl_usage[k]
-        built[(i, cond)] = rec
-    for k, ((i, cond, pv), s2_raw) in enumerate(zip(two_stage, s2_raws)):
-        answer, parsed_ok, strategy = parse_response(
-            s2_raw, s2_parse_text[k], use_llm_fallback=use_llm_fallback,
-            fallback_extractor=fallback_extractor,
-        )
-        stage1_answer = s1_answers[k]
-        anchor = stage1_answer if cond.startswith(("plausible_", "irrelevant_")) else None
-        rec = build_record(
-            backend.model_id, items[i], cond, pv, answer, parsed_ok, strategy, s2_raw,
-            anchor_value=anchor, stage1_answer=stage1_answer, stage1_raw_text=s1_raws[k],
-            **extras,
-        )
-        if s1_usage is not None and s2_usage is not None:
-            rec["api_usage"] = _sum_usage(s1_usage[k], s2_usage[k])
-        built[(i, cond)] = rec
+    for k, task in enumerate(control):
+        built[task[:2]] = emit(task, ctrl_raws[k], ctrl_prompts[k],
+                               ctrl_usage[k] if ctrl_usage is not None else None,
+                               anchor_value=None, stage1_answer=None, stage1_raw_text=None)
+    for k, task in enumerate(two_stage):
+        cond = task[1]
+        # The Stage-1 estimate is the anchor of an anchored condition; the
+        # qualitative Stage 1 of control_twostage yields none.
+        anchor = s1_answers[k] if cond.startswith(("plausible_", "irrelevant_")) else None
+        usage = (_sum_usage(s1_usage[k], s2_usage[k])
+                 if s1_usage is not None and s2_usage is not None else None)
+        built[task[:2]] = emit(task, s2_raws[k], s2_parse_text[k], usage,
+                               anchor_value=anchor, stage1_answer=s1_answers[k],
+                               stage1_raw_text=s1_raws[k])
     for i, cond, pv in missing:
         built[(i, cond)] = build_record(
             backend.model_id, items[i], cond, pv, None, False, "failed",
