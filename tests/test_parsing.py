@@ -5,12 +5,12 @@ Includes regression tests derived from actual smoke-test failures
 """
 
 
-from anchorbench.eval.evaluator import parse_response
 from anchorbench.eval.parsing import (
     is_tool_call_output,
     parse_answer_int,
     parse_final_answer,
     parse_last_number,
+    parse_response,
     parse_structured,
     parse_xml_answer,
 )

@@ -1,6 +1,6 @@
 """The tiers of the answer parser.
 
-The cascade that orders them is ``evaluator.parse_response``:
+The cascade that orders them is ``parse_response`` at the end of this module:
 
     structured (JSON handed in as structured_raw; no runner produces it)
     -> xml_tag -> final_answer
@@ -395,3 +395,54 @@ XML_TAG_INSTRUCTION = (
     "XML tags exactly like this: <answer>42</answer>"
 )
 
+
+def parse_response(
+    raw_text: str,
+    prompt_text: str,
+    *,
+    structured_raw: str | None = None,
+    use_llm_fallback: bool = False,
+    fallback_extractor: LLMFallbackExtractor | None = None,
+) -> tuple[int | None, bool, str]:
+    """Run the parsing cascade; return (answer, parsed_ok, parse_strategy).
+
+    Order: structured -> xml_tag -> final_answer -> [guards] -> regex ->
+    last_number -> llm_fallback. Two guards stop the cascade before the
+    permissive tiers: a declared answer that is out of range (the model did
+    answer, and the answer is invalid) and a response that looks truncated
+    (a stray number from scratch work must not become the answer). Tool-call
+    JSON is rejected inside the regex and last_number tiers. An out-of-range
+    value is never pulled into [0, 100]; it is a parse failure.
+    """
+    fallback = fallback_extractor if use_llm_fallback else None
+
+    def give_up() -> tuple[int | None, bool, str]:
+        if fallback is not None:
+            answer, ok = fallback.try_extract(raw_text)
+            if ok:
+                return answer, True, "llm_fallback"
+        return None, False, "failed"
+
+    if structured_raw is not None:
+        answer, ok = parse_structured(structured_raw)
+        if ok:
+            return answer, True, "structured"
+    answer, ok = parse_xml_answer(raw_text)
+    if ok:
+        return answer, True, "xml_tag"
+    answer, ok = parse_final_answer(raw_text)
+    if ok:
+        return answer, True, "final_answer"
+    if has_explicit_final_answer(raw_text):
+        log.debug("Final-answer phrase found but value out of range; skipping regex/last_number")
+        return give_up()
+    if looks_incomplete_response(raw_text or ""):
+        log.debug("Response looks truncated; skipping regex/last_number")
+        return give_up()
+    answer, ok = parse_answer_int(raw_text, prompt_text)
+    if ok:
+        return answer, True, "regex"
+    answer, ok = parse_last_number(raw_text)
+    if ok:
+        return answer, True, "last_number"
+    return give_up()

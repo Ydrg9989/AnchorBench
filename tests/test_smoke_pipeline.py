@@ -16,8 +16,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from anchorbench.eval.evaluator import build_record, parse_response, write_and_summarize
+from anchorbench.eval.evaluator import build_record, write_and_summarize
 from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.eval.parsing import parse_response
 from anchorbench.eval.runner_utils import (
     build_suffix,
     discover_results,
