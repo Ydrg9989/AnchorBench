@@ -50,6 +50,28 @@ class Backend(Protocol):
         max_tokens: int = 64, temperature: float = 0.0, batch_size: int = 16,
     ) -> list[str]: ...
 
+def render_chat(tokenizer, messages: list[dict], tools: list[dict] | None = None) -> str:
+    """The prompt string a chat template produces for ``messages``, with the
+    tool schemas when given.
+
+    A template that rejects the ``tools`` argument is an error here, not a
+    reason to render without them: a Tool-suite prompt without the schema is
+    a different experiment under the same suite name. Models without native
+    tool support take the plaintext rendering (runners.tool --tool_plaintext).
+    """
+    if tools is None:
+        return tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+    try:
+        return tokenizer.apply_chat_template(
+            messages, tools=tools, tokenize=False, add_generation_prompt=True,
+        )
+    except TypeError as e:
+        raise ValueError(
+            "this model's chat template does not accept tool schemas; run the "
+            "Tool suite with --tool_plaintext"
+        ) from e
+
+
 class HFBackend:
     """Local HuggingFace model backend."""
 
@@ -88,16 +110,7 @@ class HFBackend:
         return True
 
     def _template(self, messages: list[dict], tools: list[dict] | None = None) -> str:
-        if tools is not None:
-            try:
-                return self.tokenizer.apply_chat_template(
-                    messages, tools=tools, tokenize=False, add_generation_prompt=True,
-                )
-            except TypeError:
-                pass  # template without tool support: fall through
-        return self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True,
-        )
+        return render_chat(self.tokenizer, messages, tools)
 
     def _generate_texts(
         self, texts: list[str], max_tokens: int, temperature: float, batch_size: int,
@@ -220,10 +233,7 @@ class VLLMBackend:
         )
 
     def _prompt_for_user(self, prompt: str) -> str:
-        messages = [{"role": "user", "content": prompt}]
-        return self._tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True,
-        )
+        return render_chat(self._tokenizer, [{"role": "user", "content": prompt}])
 
     def generate_batch(
         self, prompts: list[str], *, max_tokens: int = 512,
@@ -238,12 +248,7 @@ class VLLMBackend:
         self, messages_list: list[list[dict]], *, max_tokens: int = 512,
         temperature: float = 0.0, batch_size: int = 16,
     ) -> list[str]:
-        texts = [
-            self._tokenizer.apply_chat_template(
-                m, tokenize=False, add_generation_prompt=True,
-            )
-            for m in messages_list
-        ]
+        texts = [render_chat(self._tokenizer, m) for m in messages_list]
         sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
         outputs = self._llm.generate(texts, sampling)
         return [o.outputs[0].text for o in outputs]
@@ -256,18 +261,7 @@ class VLLMBackend:
         temperature: float = 0.0,
         batch_size: int = 16,
     ) -> list[str]:
-        texts = []
-        for messages in messages_list:
-            try:
-                t = self._tokenizer.apply_chat_template(
-                    messages, tools=tools,
-                    tokenize=False, add_generation_prompt=True,
-                )
-            except TypeError:
-                t = self._tokenizer.apply_chat_template(
-                    messages, tokenize=False, add_generation_prompt=True,
-                )
-            texts.append(t)
+        texts = [render_chat(self._tokenizer, messages, tools) for messages in messages_list]
         sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
         outputs = self._llm.generate(texts, sampling)
         return [o.outputs[0].text for o in outputs]
