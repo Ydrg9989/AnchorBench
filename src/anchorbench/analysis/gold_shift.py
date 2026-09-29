@@ -139,6 +139,27 @@ def aggregate_shares(item_rows: list[dict]) -> dict:
     }
 
 
+def stratified_shares(item_rows: list[dict], proximities: tuple[str, ...]) -> dict:
+    """Harmful/helpful/neutral shares by relevance and by anchor proximity,
+    as the flat <stratum>_<share> keys the CSV and LaTeX tables print."""
+    out: dict = {}
+    for rel in ("irrelevant", "plausible"):
+        s = aggregate_shares([r for r in item_rows if r["relevance"] == rel])
+        out[f"{rel}_harmful_pct"] = s["harmful_pct"]
+        out[f"{rel}_helpful_pct"] = s["helpful_pct"]
+        out[f"{rel}_neutral_pct"] = s["neutral_pct"]
+        out[f"{rel}_n"] = s["n"]
+    for prox in proximities:
+        s = aggregate_shares([r for r in item_rows if r["anchor_proximity"] == prox])
+        out[f"{prox}_harmful_pct"] = s["harmful_pct"]
+        out[f"{prox}_helpful_pct"] = s["helpful_pct"]
+        out[f"{prox}_n"] = s["n"]
+    return out
+
+
+PROXIMITIES = ("anchor_closer", "anchor_farther", "anchor_equidistant")
+
+
 def run_analysis(results_dirs: list[Path], tolerance: float,
                  out_dir: Path, fig_dir: Path):
     all_item_rows = []
@@ -169,22 +190,7 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
                 shares = aggregate_shares(item_rows)
                 shares["model"] = short
                 shares["suite"] = suite
-
-                for rel in ["irrelevant", "plausible"]:
-                    sub = [r for r in item_rows if r["relevance"] == rel]
-                    s = aggregate_shares(sub)
-                    shares[f"{rel}_harmful_pct"] = s["harmful_pct"]
-                    shares[f"{rel}_helpful_pct"] = s["helpful_pct"]
-                    shares[f"{rel}_neutral_pct"] = s["neutral_pct"]
-                    shares[f"{rel}_n"] = s["n"]
-
-                for prox in ["anchor_closer", "anchor_farther", "anchor_equidistant"]:
-                    sub = [r for r in item_rows if r["anchor_proximity"] == prox]
-                    s = aggregate_shares(sub)
-                    shares[f"{prox}_harmful_pct"] = s["harmful_pct"]
-                    shares[f"{prox}_helpful_pct"] = s["helpful_pct"]
-                    shares[f"{prox}_n"] = s["n"]
-
+                shares.update(stratified_shares(item_rows, PROXIMITIES))
                 per_model_suite.append(shares)
 
     if not all_item_rows:
@@ -209,41 +215,12 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
         suite_items = [r for r in all_item_rows if r["suite"] == suite]
         if not suite_items:
             continue
-        row = {"suite": suite, **aggregate_shares(suite_items)}
+        # The cross-model table leaves out the equidistant stratum.
+        agg_rows.append({"suite": suite, **aggregate_shares(suite_items),
+                         **stratified_shares(suite_items, PROXIMITIES[:2])})
 
-        for rel in ["irrelevant", "plausible"]:
-            sub = [r for r in suite_items if r["relevance"] == rel]
-            s = aggregate_shares(sub)
-            row[f"{rel}_harmful_pct"] = s["harmful_pct"]
-            row[f"{rel}_helpful_pct"] = s["helpful_pct"]
-            row[f"{rel}_neutral_pct"] = s["neutral_pct"]
-            row[f"{rel}_n"] = s["n"]
-
-        for prox in ["anchor_closer", "anchor_farther"]:
-            sub = [r for r in suite_items if r["anchor_proximity"] == prox]
-            s = aggregate_shares(sub)
-            row[f"{prox}_harmful_pct"] = s["harmful_pct"]
-            row[f"{prox}_helpful_pct"] = s["helpful_pct"]
-            row[f"{prox}_n"] = s["n"]
-
-        agg_rows.append(row)
-
-    # Grand total
-    grand = {"suite": "ALL", **aggregate_shares(all_item_rows)}
-    for rel in ["irrelevant", "plausible"]:
-        sub = [r for r in all_item_rows if r["relevance"] == rel]
-        s = aggregate_shares(sub)
-        grand[f"{rel}_harmful_pct"] = s["harmful_pct"]
-        grand[f"{rel}_helpful_pct"] = s["helpful_pct"]
-        grand[f"{rel}_neutral_pct"] = s["neutral_pct"]
-        grand[f"{rel}_n"] = s["n"]
-    for prox in ["anchor_closer", "anchor_farther"]:
-        sub = [r for r in all_item_rows if r["anchor_proximity"] == prox]
-        s = aggregate_shares(sub)
-        grand[f"{prox}_harmful_pct"] = s["harmful_pct"]
-        grand[f"{prox}_helpful_pct"] = s["helpful_pct"]
-        grand[f"{prox}_n"] = s["n"]
-    agg_rows.append(grand)
+    agg_rows.append({"suite": "ALL", **aggregate_shares(all_item_rows),
+                     **stratified_shares(all_item_rows, PROXIMITIES[:2])})
 
     agg_csv = out_dir / "gold_shift_aggregated.csv"
     write_csv(agg_rows, agg_csv)
