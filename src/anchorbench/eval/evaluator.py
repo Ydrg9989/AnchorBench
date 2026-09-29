@@ -49,15 +49,23 @@ def prepare_items(
     seed: int,
     conditions: list[str] | None = None,
 ) -> list[dict]:
-    """Build list of items with all required conditions present."""
+    """Build list of items with all required conditions present.
+
+    An item whose views lack one of the requested conditions is left out and
+    counted in the log (History shards ship extra conditions, so a subset is
+    normal); an item with no itemspec is an error, because the gold answer
+    and the difficulty come from it.
+    """
     cond_set = set(conditions or CONDITIONS)
     items: list[dict] = []
+    skipped = 0
     for item_id, cond_views in views.items():
-        # History shards may ship extra conditions (e.g. control_twostage for
-        # ablations); evaluate only the requested cond_set.
         if not cond_set.issubset(cond_views.keys()):
+            skipped += 1
             continue
-        spec = specs.get(item_id, {})
+        if item_id not in specs:
+            raise KeyError(f"no itemspec for {item_id!r}: promptviews and itemspecs disagree")
+        spec = specs[item_id]
         # Every view of an item shares suite and domain; the appendix
         # experiments evaluate condition sets without a control view.
         first = cond_views[min(cond_set)]
@@ -65,10 +73,8 @@ def prepare_items(
             "item_id": item_id,
             "suite": first["suite"],
             "domain": first["domain"],
-            "difficulty": spec.get("difficulty", "standard"),
-            "y_star_evidence": spec.get(
-                "y_star_evidence", spec.get("y_star")
-            ),
+            "difficulty": spec["difficulty"],
+            "y_star_evidence": spec["y_star_evidence"],
             "y_star_theta": spec.get("y_star_theta"),
             "anchors": spec.get("anchors", {}),
             "spec": spec,
@@ -77,6 +83,9 @@ def prepare_items(
             item[c] = cond_views[c]
         items.append(item)
 
+    if skipped:
+        log.info("%d of %d items lack one of %s and are left out",
+                 skipped, len(views), sorted(cond_set))
     if max_items and max_items < len(items):
         rng = np.random.RandomState(seed)
         rng.shuffle(items)
