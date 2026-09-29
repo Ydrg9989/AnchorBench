@@ -115,8 +115,9 @@ conf/
 A model's `backend` key decides where it runs: `vllm` or `hf` load weights
 locally, `openrouter` calls the hosted API. Routing never looks at the
 `hf_id` prefix, because `google/gemma-*` (open-weight) and
-`google/gemini-*` (API) share a namespace; `tests/test_model_routing.py`
-pins this for every config file and for both CLI commands.
+`google/gemini-*` (API) share a namespace. The engineering test suite,
+kept outside the release, pins this for every config file and for both CLI
+commands.
 
 Anything in a YAML file can be overridden on the command line:
 

@@ -270,7 +270,7 @@ Most of the repository can be checked on a clean clone in seconds, because
 the two unified summaries and every generated table are committed:
 
 ```bash
-pytest                                    # 297 tests; 3 skip without the results tarballs
+pytest                                    # the science: metrics, parsing, generation, golden pins
 anchorbench verify --strict               # every numeric paper claim
 ```
 

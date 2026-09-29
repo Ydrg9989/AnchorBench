@@ -282,7 +282,7 @@ published-vs-re-run comparison is D5 in [RECONCILIATION.md](RECONCILIATION.md).
 ## Checks that run without a GPU
 
 ```bash
-pytest                                    # regeneration, parsing, metrics, routing, verifier smoke
+pytest                                    # regeneration, parsing, metrics, golden pins
 ruff check src tests scripts datasets
 anchorbench verify --strict
 sha256sum -c datasets/anchorbench_core_checksums.sha256
