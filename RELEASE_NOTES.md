@@ -2,8 +2,7 @@
 
 ## Unreleased — code clean-up on the `refactor/clear-code` branch
 
-No published number changed: `anchorbench verify --strict` reports zero
-mismatches, every committed dataset re-renders byte-for-byte, and every
+No published number changed: the claim verifier reports zero mismatches, every committed dataset re-renders byte-for-byte, and every
 appendix table that regenerates from the shipped tree is byte-identical
 (the two realism tables differ only in the comment line naming their
 generator). The metrics layer is pinned by a new clean-clone golden
@@ -12,7 +11,7 @@ generator). The metrics layer is pinned by a new clean-clone golden
 ### Fixed
 
 - The Hydra CLI commands (`eval`, `experiment`, `generate`) exit with the
-  runner's code; `tables` folds every generator's code in; an empty
+  runner's code; an empty
   experiment plan, a missing analysis input and a missing dataset suite are
   errors instead of a green exit.
 - The parser recognises `... index is: N` as a declared answer, so an
@@ -59,6 +58,11 @@ generator). The metrics layer is pinned by a new clean-clone golden
 
 ### Removed
 
+- The paper layer: `src/anchorbench/paper/` (figure and table generators,
+  the claim verifier), the `tables` and `verify` subcommands, the golden
+  table and figure pins and the reconciliation ledger now live in a private
+  repository the authors maintain. This repository ships the benchmark and
+  the unified summaries those generators read.
 - The LLM-enhance path (imported a module that never existed), the second
   parser cascade and the clamp option, four unused `Backend` members and
   `--structured`, three superseded analyses, unread config keys, the

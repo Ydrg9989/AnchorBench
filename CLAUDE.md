@@ -21,7 +21,7 @@ This is a research repo; the code must stay small enough for its author to read 
 
 ```
 python -m pytest -q
-PYTHONPATH=src python -m anchorbench.paper.verify --strict
+(cd /data/yiderigun/AnchorBench-paper && python -m pytest -q)   # paper layer (private): golden pins + claim verifier
 python -m ruff check src tests scripts datasets
 ```
 

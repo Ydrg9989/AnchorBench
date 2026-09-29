@@ -52,5 +52,5 @@ One line per term. Paper section refers to `sections/benchmark.tex` of the COLM 
 - **generate**: seed to itemspecs to prompt views (`anchorbench generate`, `data/generate.py`). Committed prompt views are ground truth; regeneration is a check.
 - **runner**: an argv wrapper that loads prompt views, calls a **backend** (`HFBackend`, `VLLMBackend`, `OpenRouterBackend` behind the `Backend` protocol) through one of two **loops** (`run_single_stage`, `run_history_two_stage`) and writes `results.jsonl` + `summary.json`.
 - **unified summary**: `unified_all_suites.json`, one row per run x suite x model, the sole input of Table 1, the figures and the claim verifier (`analysis/unified.py`).
-- **claim**: one paper number pinned in `paper/verify.py`; a **known divergence** is a claim that disagrees by a recorded amount, with a row in `docs/RECONCILIATION.md` (the **ledger**).
+- **claim**: one paper number pinned in the authors' private verifier; a **known divergence** is a claim that disagrees by a recorded amount, with a row in their reconciliation **ledger** (D1, D2, ... in comments here refer to its rows).
 - **tier**: a GPU grouping of models for launching (`conf/tier/`), not a paper concept. **Open-weight** and **API** are the two model panels the paper reports separately.

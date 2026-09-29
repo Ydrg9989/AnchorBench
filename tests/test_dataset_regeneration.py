@@ -2,7 +2,7 @@
 
 These are the prompts the models actually saw, so if the generator drifts away
 from them the paper stops being reproducible. Stage 1.1 of the camera-ready
-audit established this baseline; see docs/RECONCILIATION.md D1-D3.
+audit established this baseline; see ledger D1-D3.
 
 Two comparisons, for different reasons:
 
@@ -74,7 +74,7 @@ def test_promptviews_reproduce_byte_for_byte(regenerated):
         assert (out / name).exists(), f"{suite}: regeneration did not produce {name}"
         assert _sha256(out / name) == _sha256(committed / name), (
             f"{suite}/{name} no longer regenerates byte-for-byte. The committed file is "
-            f"the paper's ground truth -- do not overwrite it. See docs/RECONCILIATION.md."
+            f"the paper's ground truth -- do not overwrite it (ledger D1-D3)."
         )
         checked += 1
     assert checked, f"{suite}: no promptview files were compared"
@@ -116,7 +116,7 @@ def test_itemspecs_reproduce_apart_from_provenance(regenerated):
     old, new = _rows(committed / "itemspecs.jsonl"), _rows(out / "itemspecs.jsonl")
     assert len(old) == len(new), (
         f"{suite}: itemspec count changed {len(old)} -> {len(new)}. "
-        f"Check the n_per_cell recipe in this file against docs/RECONCILIATION.md D1."
+        f"Check the n_per_cell recipe in this file against ledger D1."
     )
     for a, b in zip(old, new):
         a = {k: v for k, v in a.items() if k != "generator_version"}

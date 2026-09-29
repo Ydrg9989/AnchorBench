@@ -53,20 +53,13 @@ src/anchorbench/
 |   |-- bayesian_bound.py, spectrum.py, uncertain.py, intensity_pathway.py,
 |   |   extension_pilot.py, weighted_mean.py, cot_reasoning_extended.py,
 |   |   task_spec.py, realism.py, large_panel.py,
-|   |   case_studies.py, cohens_d.py                       # the 13 \input-ed appendix tables
+|   |   case_studies.py, cohens_d.py                       # the 13 rebuttal tables
 |   `-- api_cost_estimate.py           # a cost projection; not a paper table
-|-- paper/                      # figures, LaTeX tables and the claim verifier
-|   |-- _common.py                  # paths, model order, LaTeX macros, formatting helpers
-|   |-- fig4_dose_response.py, fig5_acc_vs_disc.py
-|   |-- tables_main.py              # Table 1
-|   |-- tables_appendix.py          # per-suite tables, model panel, stats, distribution, ...
-|   `-- verify.py                   # every numeric paper claim as Claim(...); exits non-zero on drift
 `-- cli/                        # the `anchorbench` console script
     |-- main.py                     # peels off the subcommand, dispatches
     |-- cells.py                    # (model, data, decoding) -> runner argv; the one routing rule
     |-- eval.py, experiment.py      # Hydra apps: one cell / a named recipe of cells
     |-- generate.py                 # Hydra app around data.generate.generate_suite_dataset
-    |-- tables.py                   # regenerate figures + tables (+ --appendix)
     `-- add_model.py                # write conf/model/<slug>.yaml
 ```
 
@@ -78,12 +71,11 @@ Two layers share the package. The **core** is what a user of the benchmark
 needs to generate items, run a model and score it: `paths`, `registry`,
 `conf/`, `data/`, `eval/`, `inference/`, the five suite runners plus
 `runners/{api,icl_dist_api,sampling}.py`, `analysis/{_io,unified}.py`,
-`cli/` and `paper/{_common,tables_main,fig4,fig5,verify}.py`. The
+and `cli/`. The
 **reproduction layer** exists only to regenerate paper tables:
 `runners/{mitigation_baseline,mitigation_headroom,realism,rebuttal_*}.py`,
-the rest of `analysis/`, and `paper/tables_appendix.py`. Nothing in the
-core imports the reproduction layer; it is reached through
-`anchorbench tables --appendix` and the commands in
+and the rest of `analysis/`. Nothing in the
+core imports the reproduction layer; it is reached through the commands in
 [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
 
 The shell launchers that produced the appendix experiments on the paper's
@@ -142,8 +134,6 @@ flowchart LR
     Backend --> Records["results/<run>/<suite>/<model>/results.jsonl + summary.json"]
     Records --> Unified["analysis.unified → unified_all_suites.json"]
     Records --> Appendix["analysis.* → results/rebuttal/**/*.tex"]
-    Unified --> Paper["paper.tables_* / paper.fig* → outputs/"]
-    Unified --> Verify["paper.verify"]
 ```
 
 Each cell runs in a **subprocess** (`python -m anchorbench.runners.<suite>`)
@@ -229,13 +219,11 @@ and the by-offset and by-difficulty breakdowns used in the appendix.
   (`qwen_7b`), so swapping a checkpoint is a YAML edit, and `registry`
   derives every table label, macro and slug from the same file.
   `conf/panel.yaml` is the only place that orders the panel.
-- **Every paper number is a `Claim`.** `paper.verify` reads the committed
-  summaries and fails on drift; CI runs it in `--strict` mode. Divergences
-  that are understood rather than fixed are recorded in
-  [RECONCILIATION.md](RECONCILIATION.md), never hidden in a tolerance.
-- **Generator output is pinned.** `tests/golden/*.sha256` catch an
-  unintended change to any table or figure; refresh them with
-  `scripts/update_golden.sh` only when the change is intended.
+- **The metrics layer is pinned.** `tests/golden/metrics_synthetic.json`
+  is what `compute_unified_metrics` emits for a synthetic run; it runs on a
+  clean clone. The paper's table and figure generators and the verifier of
+  every numeric claim read the committed summaries; the authors keep them,
+  with their own golden pins, outside this repository.
 
 ## Extending
 
@@ -265,7 +253,6 @@ and the by-offset and by-difficulty breakdowns used in the appendix.
    anchorbench eval data=external model=my_model_7b batch_size=8
    for s in external history icl rag tool; do anchorbench eval data=$s model=my_model_7b; done
    python -m anchorbench.analysis.unified --results_dir results/scratch
-   anchorbench tables --paper
    ```
 
 ### Add a suite
@@ -294,7 +281,6 @@ A suite is a renderer, an item generator, a runner and a data config.
    anchorbench eval data=<suite> model=qwen_7b
    ```
 
-6. Give the suite a per-suite table in `paper/tables_appendix.py`.
 
 ### Add a condition
 
@@ -309,9 +295,7 @@ column has to be run.
 
 Define it in `eval/metrics.py` (reuse `bootstrap_ci`, `paired_wilcoxon`,
 `bh_correction`), add it to `compute_unified_metrics` or
-`compute_extended_metrics`, recompute the unified summaries, add a column in
-the relevant `paper/tables_*.py` builder, and, if the paper quotes it,
-register a `Claim` in `paper/verify.py`.
+`compute_extended_metrics`, and recompute the unified summaries.
 
 ### Add a named experiment
 
@@ -345,5 +329,3 @@ anchorbench experiment +experiment=ext_long_anchor                 # run them
 | Parsing | `src/anchorbench/eval/parsing.py` |
 | Metrics and statistics | `src/anchorbench/eval/metrics.py` |
 | Unified summary | `src/anchorbench/analysis/unified.py` |
-| Figures and tables | `src/anchorbench/paper/` |
-| Numeric claims | `src/anchorbench/paper/verify.py` |

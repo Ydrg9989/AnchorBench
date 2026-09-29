@@ -3,7 +3,7 @@
 # takes a temperature, so `anchorbench eval decoding=sample_t07` refuses to
 # run; the sweep is `python -m anchorbench.runners.sampling --n_seeds 3`.
 # top_p is the value the paper states; the published runs did not apply it
-# (docs/RECONCILIATION.md D10).
+# (ledger D10).
 name: sample_t07
 temperature: 0.7
 top_p: 0.9

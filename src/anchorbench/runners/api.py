@@ -13,7 +13,7 @@ through the same evaluator loops as the local models; this module only picks
 datasets and output directories. History defaults to the two-stage control
 (``--history_baseline_condition``) and sends Stage 2 as a real three-turn
 chat; ``--history_chat_format flat`` reproduces the single-message rendering
-the published API cells used (docs/RECONCILIATION.md D9).
+the published API cells used (ledger D9).
 """
 
 from __future__ import annotations

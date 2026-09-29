@@ -7,7 +7,6 @@ The package is organized into clearly-scoped submodules:
     anchorbench.inference   -- shared inference helpers (OpenRouter async client)
     anchorbench.runners     -- per-suite and per-variant runners
     anchorbench.analysis    -- post-processing aggregators (unified, gold-shift, ...)
-    anchorbench.paper       -- COLM 2026 figure + table generators and verifier
     anchorbench.cli         -- Hydra-driven entry points (`anchorbench` console script)
 
 A frozen Hydra config tree lives at ``conf/`` in the repository root.

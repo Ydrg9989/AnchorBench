@@ -256,7 +256,7 @@ def flatten_conversation(stage1_prompt: str, stage1_raw: str, stage2_prompt: str
 
     This is how the published API-tier History cells were run: the model saw
     its own Stage-1 turn quoted inside one user message rather than as a real
-    assistant turn (docs/RECONCILIATION.md D9). Kept so those numbers stay
+    assistant turn (ledger D9). Kept so those numbers stay
     reproducible with ``chat_format="flat"``.
     """
     return (

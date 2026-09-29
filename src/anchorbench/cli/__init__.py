@@ -6,9 +6,7 @@ The main entry point is exposed via the ``anchorbench`` console script
     anchorbench eval data=external model=qwen_7b
     anchorbench eval data=icl_dist model=llama_8b
     anchorbench experiment +experiment=paper_main
-    anchorbench tables --paper
     anchorbench generate data=external +size=smoke
-    anchorbench verify --strict
     anchorbench add-model openai/gpt-5o
 
 Any key of the composed config can be overridden with Hydra syntax

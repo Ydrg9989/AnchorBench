@@ -18,16 +18,12 @@ def _print_help() -> int:
         "Subcommands:\n"
         "  eval         Run one (model, data) cell.\n"
         "  experiment   Run a named recipe (e.g. experiment=paper_main).\n"
-        "  tables       Regenerate paper figures and LaTeX tables.\n"
         "  generate     Generate a dataset for a given suite.\n"
-        "  verify       Verify every numeric paper claim against unified data.\n"
         "  add-model    Append a new model to conf/model/*.yaml.\n"
         "\n"
         "Examples:\n"
         "  anchorbench eval data=external model=qwen_7b\n"
         "  anchorbench experiment +experiment=paper_main\n"
-        "  anchorbench tables --paper\n"
-        "  anchorbench verify --quick\n"
     )
     return 0
 
@@ -46,15 +42,9 @@ def main() -> int:
     if cmd == "experiment":
         from .experiment import main as run
         return run()
-    if cmd == "tables":
-        from .tables import main as run
-        return run()
     if cmd == "generate":
         from .generate import main as run
         return run()
-    if cmd == "verify":
-        from anchorbench.paper import verify as v
-        return v.main()
     if cmd in ("add-model", "add_model"):
         from .add_model import main as run
         return run()

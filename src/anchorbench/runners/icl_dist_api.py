@@ -2,7 +2,7 @@
 """Run the ICL-dist (distribution-matching) variant on hosted API models.
 
 Writes ``<out_dir>/<model_slug>/results.jsonl`` for each model, the layout
-``anchorbench.paper`` reads for Appendix Table 14 (``DEFAULT_ICL_DIST_API``).
+the Appendix Table 14 generator reads.
 
 Usage:
     python -m anchorbench.runners.icl_dist_api \\

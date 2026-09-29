@@ -42,7 +42,7 @@ for domain in DOMAIN_IDS:            # 6 business domains
 History has no offset dimension: its anchor is the model's own Stage-1 answer
 rather than a designer-chosen value, so its grid is domain x difficulty and
 `generate.py` multiplies `n_per_cell` by three for it. Every suite therefore
-reaches 360 items at `core` from the same command (RECONCILIATION D1).
+reaches 360 items at `core` from the same command.
 
 Per item:
 
@@ -117,7 +117,7 @@ to the master seed so the suites stay independent:
 compares `promptviews*.jsonl` by hash and `itemspecs.jsonl` field by field.
 Two provenance fields are excluded from that comparison on purpose:
 `generator_version` stamps the git HEAD at generation time, so it changes on
-every commit (RECONCILIATION D2), and `manifest.json` carries a timestamp.
+every commit, and `manifest.json` carries a timestamp.
 `render_version` (`"2.1.0"` in `itemspec_gen.py`) is different: it is part of
 the data and must not be bumped with the package version.
 

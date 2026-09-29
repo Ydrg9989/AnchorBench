@@ -75,7 +75,7 @@ _SIZE_PARAMS = {
 # 120 instead of 360 at --size core. The published History suite has 360, so
 # the documented recipe silently generated a third of the benchmark.
 # Scale the preset instead of expecting callers to pass --n_per_cell 30.
-# See docs/RECONCILIATION.md D1.
+# See ledger D1.
 _SUITES_WITHOUT_OFFSET_GRID = {"history"}
 
 

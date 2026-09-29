@@ -73,7 +73,7 @@ def build_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
 def realism_curve(records: list[dict], variants: tuple[str, ...]) -> dict:
     """Mean UAI per (relevance, variant) over the spliced records, with the
     published conditions as the ``baseline`` variant. UAI is the paper's
-    (metrics.item_uai, epsilon = 3); see RECONCILIATION D11 for the curves
+    (metrics.item_uai, epsilon = 3); see ledger D11 for the curves
     the rebuttal was computed with.
     """
     ctrl: dict[str, float] = {}

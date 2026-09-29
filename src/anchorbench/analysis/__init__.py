@@ -1,5 +1,5 @@
 """Post-processing analyses that aggregate raw results into the
-unified JSON files consumed by ``anchorbench.paper`` artifact generators.
+unified JSON files the paper's table and figure generators read.
 
 Modules:
     unified     -- recompute ``unified_all_suites.json`` for a results tree

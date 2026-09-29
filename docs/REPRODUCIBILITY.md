@@ -1,10 +1,9 @@
 # Reproducibility guide
 
-How to regenerate the dataset, re-run the benchmark, rebuild every figure and
-table of the COLM 2026 paper, and check the numbers without running anything.
-The package layout is in [ARCHITECTURE.md](ARCHITECTURE.md); the data objects
-are in [DATA.md](DATA.md); known paper-vs-code divergences are recorded in
-[RECONCILIATION.md](RECONCILIATION.md).
+How to regenerate the dataset, re-run the benchmark of the COLM 2026 paper,
+recompute its unified summaries, and check the science without running
+anything. The package layout is in [ARCHITECTURE.md](ARCHITECTURE.md); the
+data objects are in [DATA.md](DATA.md).
 
 ## Requirements
 
@@ -48,9 +47,7 @@ bash scripts/reproduce_paper.sh              # roughly 24 h on 4x A100 plus ~$30
 ```
 
 The script regenerates any missing core dataset, runs the `paper_main` recipe
-(14 models x 5 suites), recomputes both unified summaries, regenerates the
-figures and main tables, and finishes with `anchorbench verify`, which exits
-non-zero if any numeric claim drifts.
+(14 models x 5 suites) and recomputes both unified summaries.
 
 ## Step by step
 
@@ -115,32 +112,11 @@ python -m anchorbench.analysis.unified --results_dir results/api_benchmark
 Each writes `unified_all_suites.json` next to the per-model `results.jsonl`
 files. Output is byte-identical for identical inputs.
 
-### 5. Regenerate figures and tables
+### 5. Figures, tables and the claim check
 
-```bash
-anchorbench tables --paper              # figures + tables + gold-shift/sampling/mitigation + verify
-anchorbench tables --figures            # Figure 3 and Figure 8 only
-anchorbench tables --tables-only        # tables_main + tables_appendix only
-anchorbench tables --skip-extensions    # figures + tables, skip the slow analysis modules
-anchorbench tables --appendix           # the 13 \input-ed appendix tables (needs results/rebuttal/)
-anchorbench tables --dry-run            # print the commands
-```
-
-Figures land in `outputs/figures/`, tables in `outputs/tables/`. Both
-directories are gitignored; their contents are pinned by
-`tests/golden/*.sha256` instead.
-
-### 6. Verify the numbers
-
-```bash
-anchorbench verify              # every claim
-anchorbench verify --quick      # main-table claims only
-anchorbench verify --strict     # tighter tolerances; this is what CI runs
-```
-
-`paper/verify.py` holds every number the paper quotes as a
-`Claim(suite, metric, value, tolerance)` and re-reads it from the committed
-summaries. It runs on a clean clone.
+The figure and table generators and the verifier of every numeric claim
+read the two `unified_all_suites.json` files and the analysis outputs under
+`results/`. The authors maintain them outside this repository.
 
 ## Decoding protocol
 
@@ -187,39 +163,11 @@ Numbers are as printed in the camera-ready. Open-weight results live under
 `results/full_benchmark/`, API results under `results/api_benchmark/`, the
 appendix extensions under `results/rebuttal/` and `results/revision/`.
 
-### Main paper
+### Main paper and the `outputs/tables/` appendix tables
 
-| # | Label | Generator | Output |
-|---|---|---|---|
-| Figure 3 | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `outputs/figures/fig4_dose_response.{pdf,png}` |
-| Table 1 | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results.tex` (the `_revised` file next to it is an alternative layout with absolute UAI columns, not in the paper) |
-| Table 2 | `tab:uai-pathway` | `anchorbench.paper.tables_appendix` | hand-condensed from `tab_uai_summary.tex` and `tab_stats_inference.tex`; `anchorbench verify --quick` checks its cells |
-
-Figures 1 and 2 are hand-drawn. Table 1 is generated but hand-styled: the
-numbers match the generated file cell for cell, while the bolding, the model
-name macros and the caption are authored.
-
-### Appendix, generated into `outputs/tables/`
-
-| # | Label | Output |
-|---|---|---|
-| Table 3 | `tab:model-details` | `tab_model_details.tex` |
-| Figure 8 | `fig:acc-vs-disc` | `outputs/figures/fig5_acc_vs_disc.{pdf,png}` |
-| Tables 4-8 | `tab:app-{suite}` | `tab_app_{suite}.tex` |
-| Table 9 | `tab:uai_summary` | `tab_uai_summary.tex` |
-| Table 10 | `tab:stats_inference` | `tab_stats_inference.tex` |
-| Table 11 | `tab:uai_distribution` | `tab_uai_distribution.tex` |
-| Table 12 | `tab:anchored_mae` | `tab_anchored_mae.tex` |
-| Table 13 | `tab:history_matched` | `tab_history_matched.tex` |
-| Table 14 | `tab:icl_dist` | `tab_icl_dist.tex` |
-| Table 15 | `tab:tool_plaintext` | `tab_tool_plaintext.tex` |
-| Table 17 | `tab:difficulty` | `tab_difficulty.tex` |
-| — | `tab:boundary` | `tab_boundary.tex` |
-
-All from `anchorbench.paper.tables_appendix`. Tables 10, 11, 12 and 17 are
-`\input`-ed by the paper from copies of these bodies; the rest are pasted
-inline. The LaTeX source ships with the arXiv submission rather than this
-repository, and the scripts that synced and compared against it went with it.
+Figures 3 and 8, Table 1 and appendix Tables 3 to 15 and 17 are built from
+the two `unified_all_suites.json` files by generators the authors keep
+outside this repository. Figures 1 and 2 are hand-drawn.
 
 ### Appendix, generated by `analysis/`
 
@@ -233,10 +181,9 @@ repository, and the scripts that synced and compared against it went with it.
 
 Thirteen tables were generated for the rebuttal and dropped from the
 camera-ready for the page limit; they are kept as provenance.
-`anchorbench tables --appendix` runs the modules below in order; it needs the
+Run each module as `python -m anchorbench.analysis.<module>`; they need the
 `rebuttal` tarball extracted into `results/rebuttal/`. The `.tex` outputs are
-committed, so the tables are in git even when the generations are not, and
-`tests/test_golden_artifacts.py` pins their hashes.
+committed, so the tables are in git even when the generations are not.
 
 | # | Label | Generator module | Reads | Launcher (`git show pre-refactor-2026-09-29:experiments/rebuttal/<name>`) |
 |---|---|---|---|---|
@@ -277,19 +224,15 @@ and `extension_pilot.py` are the generators of the tables the paper uses.
 inputs were not preserved. Both were re-run independently with the
 `paper_history_matched` and `paper_tool_plaintext` recipes (the launcher,
 `run_stage3_reruns.sh`, is at `git show pre-refactor-2026-09-29:experiments/`); the
-published values stand, and the
-published-vs-re-run comparison is D5 in [RECONCILIATION.md](RECONCILIATION.md).
+published values stand.
 
 ## Checks that run without a GPU
 
 ```bash
-pytest                                    # regeneration, parsing, metrics, golden pins
+pytest                                    # regeneration, parsing, metrics, the metrics golden
 ruff check src tests scripts datasets
-anchorbench verify --strict
 sha256sum -c datasets/anchorbench_core_checksums.sha256
 ```
 
-`tests/golden/*.sha256` pin what the table and figure generators emit; the
-tests that need the bulk results skip when the tarballs are absent. Refresh
-the manifests with `scripts/update_golden.sh` only when a change to generator
-output is intended, and say why in the commit message.
+`tests/golden/metrics_synthetic.json` pins what `compute_unified_metrics`
+emits for a synthetic run and needs no results tree.

@@ -41,7 +41,7 @@ SAMPLING_TEMP = 0.7
 # The paper describes the sampled runs as top-p 0.9, but no backend in this
 # package takes a top-p argument and this runner never passed one, so the
 # published sampled cells ran at the backends' default top-p. Recorded as
-# D10 in docs/RECONCILIATION.md; kept here as documentation of the intent.
+# ledger D10; kept here as documentation of the intent.
 SAMPLING_TOP_P = 0.9
 
 

@@ -30,10 +30,5 @@ jobs:
 
       - name: Test
         # Regenerates all six suites and checks them byte-for-byte against
-        # the committed prompts, runs the parsing and metric unit tests, and
-        # smoke-tests the claim verifier on the committed summaries. Tests
-        # that need the bulk results tree skip on a clean clone.
+        # the committed prompts and runs the parsing and metric unit tests.
         run: python -m pytest -q
-
-      - name: Verify every numeric paper claim
-        run: python -m anchorbench.paper.verify --strict

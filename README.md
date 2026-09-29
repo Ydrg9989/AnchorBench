@@ -228,13 +228,10 @@ anchorbench generate data=external +size=smoke
 
 # 2. Evaluate Qwen-7B on it (GPU)
 anchorbench eval data=external model=qwen_7b
-
-# 3. Re-render every paper figure and table from existing results
-anchorbench tables --paper
 ```
 
 `anchorbench` is the single console script, exposing Hydra-driven subcommands
-(`eval`, `experiment`, `generate`, `tables`, `verify`, `add-model`), so any
+(`eval`, `experiment`, `generate`, `add-model`), so any
 cell, recipe or override is one line.
 
 ## 🔁 Reproduce the paper
@@ -245,16 +242,14 @@ bash scripts/reproduce_paper.sh              # full run
 ```
 
 The script regenerates any missing `datasets/anchorbench_*_core/`, runs the
-frozen `paper_main` recipe (70 cells), recomputes `unified_all_suites.json`
-for both tiers, regenerates the figures and main tables into `outputs/figures/`
-and `outputs/tables/`, and finishes with `anchorbench verify`, which fails if
-any numeric claim drifts.
+frozen `paper_main` recipe (70 cells) and recomputes `unified_all_suites.json`
+for both tiers. The figure and table generators and the verifier of every
+numeric claim read those summaries; the authors maintain them outside this
+repository.
 
-Two things it does **not** cover (see
-[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for the table-to-module map):
+Two things it does **not** cover:
 
 ```bash
-anchorbench tables --appendix     # the 13 \input-ed appendix tables
 anchorbench experiment +experiment=paper_history_matched   # the two re-run
 anchorbench experiment +experiment=paper_tool_plaintext    # experiments (addendum)
 ```
@@ -264,18 +259,13 @@ full size. The appendix tables additionally need `results/rebuttal/`, which
 is published as [tarballs on Google Drive](https://drive.google.com/drive/folders/1Befi102mkvXQomB1zwCPS_m0_4OlKH2M?usp=sharing)
 rather than committed.
 
-## ✅ Verify without re-running anything
+## ✅ Check without re-running anything
 
-Most of the repository can be checked on a clean clone in seconds, because
-the two unified summaries and every generated table are committed:
+The science can be checked on a clean clone in seconds:
 
 ```bash
-pytest                                    # the science: metrics, parsing, generation, golden pins
-anchorbench verify --strict               # every numeric paper claim
+pytest          # metrics, parsing, byte-for-byte dataset regeneration, the metrics golden
 ```
-
-[docs/RECONCILIATION.md](docs/RECONCILIATION.md) is the ledger of every known
-divergence between the paper, the committed artifacts and the current code.
 
 ## 🧩 Extending
 
@@ -298,12 +288,11 @@ AnchorBench/
 |   |-- inference/           # OpenRouter async client
 |   |-- runners/             # per-suite runners
 |   |-- analysis/            # unified metrics + the appendix analyses
-|   |-- paper/               # figure/table generators + claim verifier
 |   `-- cli/                 # `anchorbench` entry points
 |-- datasets/                # committed: the exact prompts the models saw
 |-- results/                 # bulk gitignored; unified summaries + tables committed
 |-- scripts/                 # reproduce_paper.sh + thin wrappers
-|-- docs/                    # ARCHITECTURE, REPRODUCIBILITY, DATA, RECONCILIATION
+|-- docs/                    # ARCHITECTURE, REPRODUCIBILITY, DATA
 `-- tests/
 ```
 
@@ -313,7 +302,7 @@ are ground truth and regenerating them is a check rather than a build step.
 
 Start with [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the package map,
 data flow and extension points; [docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md)
-for every command and for which module produces which paper table;
+for every command and for what is committed;
 [docs/DATA.md](docs/DATA.md) for the record schemas and the generation pipeline.
 
 ## 📖 Citation

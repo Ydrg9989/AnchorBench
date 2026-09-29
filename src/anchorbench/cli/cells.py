@@ -89,7 +89,7 @@ def build_cell_cmd(
         # flag. ``baseline_condition`` is deliberately not forwarded: the
         # published API-tier History numbers were scored against the runner's
         # default two-stage control, and paper_main must keep reproducing
-        # them (docs/RECONCILIATION.md D8).
+        # them (ledger D8).
         return [
             sys.executable, "-m", module,
             "--model_id", model["hf_id"],

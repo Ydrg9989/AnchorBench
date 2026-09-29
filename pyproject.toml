@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# The importable core (generation, parsing, metrics, tables, the verifier)
+# The importable core (generation, parsing, metrics)
 # needs none of these; the backends import them where they are used.
 hf = ["torch>=2.1", "transformers>=4.36"]
 vllm = ["anchorbench[hf]", "vllm>=0.6.0"]
