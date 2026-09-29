@@ -20,7 +20,7 @@ import json
 import logging
 from pathlib import Path
 
-from anchorbench.data.schema import ItemSpec
+from anchorbench.data.generate import render_variant_views
 from anchorbench.data.suites.external_uncertain import (
     K_LEVELS,
     _conditions_for_k,
@@ -52,27 +52,9 @@ CONDITIONS = _all_conditions()
 
 def build_uncertain_promptviews(core_dir: Path, out_dir: Path,
                                 max_items: int | None = None) -> Path:
-    out_dir.mkdir(parents=True, exist_ok=True)
-    specs_path = core_dir / "itemspecs.jsonl"
-    out_path = out_dir / "promptviews_uncertain.jsonl"
-    n_items = 0
-    n_views = 0
-    with open(specs_path) as fin, open(out_path, "w") as fout:
-        for line in fin:
-            d = json.loads(line)
-            spec = ItemSpec.from_dict(d)
-            if spec.suite != "external":
-                continue
-            n_items += 1
-            if max_items is not None and n_items > max_items:
-                break
-            for pv in render_external_uncertain(spec):
-                fout.write(json.dumps(pv.__dict__, ensure_ascii=False,
-                                       default=str) + "\n")
-                n_views += 1
-    log.info("[uncertain] Wrote %d promptviews from %d items to %s",
-             n_views, n_items, out_path)
-    return out_path
+    """Render the uncertain-evidence conditions for the committed External items."""
+    return render_variant_views(core_dir, out_dir / "promptviews_uncertain.jsonl", "external",
+                                render_external_uncertain, max_items=max_items)
 
 
 def main(argv: list[str] | None = None) -> None:

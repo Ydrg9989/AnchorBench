@@ -30,6 +30,7 @@ import argparse
 import json
 import logging
 import time
+from collections.abc import Callable
 from pathlib import Path
 
 from . import __version__
@@ -105,6 +106,38 @@ def render_all(specs: list[ItemSpec]) -> list[PromptView]:
             continue
         views.extend(renderer(spec))
     return views
+
+
+def render_variant_views(
+    core_dir: Path,
+    out_path: Path,
+    suite: str,
+    build: Callable[[ItemSpec], list[PromptView]],
+    max_items: int | None = None,
+) -> Path:
+    """Write the views ``build`` renders for each core itemspec of ``suite``.
+
+    The appendix experiments (realism, intensity, uncertain evidence) are new
+    conditions over the committed core items, not new items, so they render
+    from ``core_dir/itemspecs.jsonl`` and keep its item ids; that is what lets
+    their curves be compared with the core control run item by item.
+    ``max_items`` caps the number of items rendered, for smoke runs.
+    """
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    n_items = n_views = 0
+    with open(core_dir / "itemspecs.jsonl") as fin, open(out_path, "w") as fout:
+        for line in fin:
+            spec = ItemSpec.from_dict(json.loads(line))
+            if spec.suite != suite:
+                continue
+            if max_items is not None and n_items >= max_items:
+                break
+            n_items += 1
+            for pv in build(spec):
+                fout.write(json.dumps(pv.__dict__, ensure_ascii=False, default=str) + "\n")
+                n_views += 1
+    logger.info("[%s] wrote %d views of %d core items to %s", suite, n_views, n_items, out_path)
+    return out_path
 
 
 def generate_suite_dataset(

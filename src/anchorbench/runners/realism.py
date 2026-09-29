@@ -22,6 +22,7 @@ import logging
 from collections.abc import Callable
 from pathlib import Path
 
+from anchorbench.data.generate import render_variant_views
 from anchorbench.data.schema import ItemSpec, PromptView
 from anchorbench.data.suites import rag, tool
 from anchorbench.eval.evaluator import prepare_items, run_single_stage
@@ -66,19 +67,7 @@ SUITES: dict[str, Suite] = {
 def build_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
     """Render the realism conditions for every committed core item of ``suite``."""
     cfg = SUITES[suite]
-    out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"promptviews_{cfg.tag}.jsonl"
-    n = 0
-    with open(core_dir / "itemspecs.jsonl") as fin, open(out_path, "w") as fout:
-        for line in fin:
-            spec = ItemSpec.from_dict(json.loads(line))
-            if spec.suite != suite:
-                continue
-            for pv in cfg.build(spec):
-                fout.write(json.dumps(pv.__dict__, ensure_ascii=False, default=str) + "\n")
-                n += 1
-    log.info("[%s realism] Wrote %d promptviews to %s", suite, n, out_path)
-    return out_path
+    return render_variant_views(core_dir, out_dir / f"promptviews_{cfg.tag}.jsonl", suite, cfg.build)
 
 
 def realism_curve(records: list[dict], variants: tuple[str, ...]) -> dict:

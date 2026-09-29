@@ -34,6 +34,7 @@ import logging
 from collections.abc import Callable
 from pathlib import Path
 
+from anchorbench.data.generate import render_variant_views
 from anchorbench.data.schema import ItemSpec
 from anchorbench.data.suites._shared import INTENSITY_CONDITIONS
 from anchorbench.data.suites.external import (
@@ -118,23 +119,8 @@ SUITE_VIEW_BUILDER: dict[str, Callable[[ItemSpec], list]] = {
 
 def build_d1_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
     """Render the 4 new intensity conditions for every existing core itemspec."""
-    out_dir.mkdir(parents=True, exist_ok=True)
-    specs_path = core_dir / "itemspecs.jsonl"
-    out_path = out_dir / "promptviews_d1.jsonl"
-    builder = SUITE_VIEW_BUILDER[suite]
-    n = 0
-    with open(specs_path) as fin, open(out_path, "w") as fout:
-        for line in fin:
-            d = json.loads(line)
-            spec = ItemSpec.from_dict(d)
-            if spec.suite != suite:
-                continue
-            for pv in builder(spec):
-                fout.write(json.dumps(pv.__dict__, ensure_ascii=False,
-                                       default=str) + "\n")
-                n += 1
-    log.info("[%s] Wrote %d D1 promptviews to %s", suite, n, out_path)
-    return out_path
+    return render_variant_views(core_dir, out_dir / "promptviews_d1.jsonl", suite,
+                                SUITE_VIEW_BUILDER[suite])
 
 
 def _compute_intensity_curve(
