@@ -111,98 +111,49 @@ def parse_response(
     structured_raw: str | None = None,
     use_llm_fallback: bool = False,
     fallback_extractor: LLMFallbackExtractor | None = None,
-    clamp: bool = False,
 ) -> tuple[int | None, bool, str]:
-    """Orchestrate the multi-tier parsing cascade.
+    """Run the parsing cascade; return (answer, parsed_ok, parse_strategy).
 
-    Order: structured → xml_tag → final_answer → (incomplete guard) →
-    regex → last_number → llm_fallback.
-
-    Truncated outputs (e.g. max_tokens mid-sentence) skip regex/last_number
-    so stray numbers from scratch work are not accepted as answers.
-
-    Tool-call JSON outputs (model trying to call a tool instead of
-    answering) are rejected at the regex/last_number level so we
-    don't accidentally parse evidence values as answers.
-
-    When *clamp* is True, out-of-range integers are clamped to [0, 100]
-    instead of rejected.  The strategy name gets a ``_clamped`` suffix
-    when clamping actually changed the value.
-
-    Returns (answer, parsed_ok, parse_strategy).
+    Order: structured -> xml_tag -> final_answer -> [guards] -> regex ->
+    last_number -> llm_fallback. Two guards stop the cascade before the
+    permissive tiers: a declared answer that is out of range (the model did
+    answer, and the answer is invalid) and a response that looks truncated
+    (a stray number from scratch work must not become the answer). Tool-call
+    JSON is rejected inside the regex and last_number tiers. An out-of-range
+    value is never pulled into [0, 100]; it is a parse failure.
     """
+    fallback = fallback_extractor if use_llm_fallback else None
+
+    def give_up() -> tuple[int | None, bool, str]:
+        if fallback is not None:
+            answer, ok = fallback.try_extract(raw_text)
+            if ok:
+                return answer, True, "llm_fallback"
+        return None, False, "failed"
+
     if structured_raw is not None:
-        answer, ok = parse_structured(structured_raw, clamp=clamp)
+        answer, ok = parse_structured(structured_raw)
         if ok:
-            strategy = "structured"
-            if clamp:
-                strict, sok = parse_structured(structured_raw, clamp=False)
-                if not sok:
-                    strategy = "structured_clamped"
-            return answer, True, strategy
-
-    answer, ok = parse_xml_answer(raw_text, clamp=clamp)
+            return answer, True, "structured"
+    answer, ok = parse_xml_answer(raw_text)
     if ok:
-        strategy = "xml_tag"
-        if clamp:
-            strict, sok = parse_xml_answer(raw_text, clamp=False)
-            if not sok:
-                strategy = "xml_tag_clamped"
-        return answer, True, strategy
-
-    answer, ok = parse_final_answer(raw_text, clamp=clamp)
+        return answer, True, "xml_tag"
+    answer, ok = parse_final_answer(raw_text)
     if ok:
-        strategy = "final_answer"
-        if clamp:
-            strict, sok = parse_final_answer(raw_text, clamp=False)
-            if not sok:
-                strategy = "final_answer_clamped"
-        return answer, True, strategy
-
-    # If final_answer matched a phrase but the value was out of range,
-    # the model DID declare an answer — it's just invalid.  Don't let
-    # regex/last_number grab an intermediate CoT number instead.
+        return answer, True, "final_answer"
     if has_explicit_final_answer(raw_text):
         log.debug("Final-answer phrase found but value out of range; skipping regex/last_number")
-        if use_llm_fallback and fallback_extractor is not None:
-            answer, ok = fallback_extractor.try_extract(raw_text)
-            if ok:
-                return answer, True, "llm_fallback"
-        return None, False, "failed"
-
+        return give_up()
     if looks_incomplete_response(raw_text or ""):
         log.debug("Response looks truncated; skipping regex/last_number")
-        if use_llm_fallback and fallback_extractor is not None:
-            answer, ok = fallback_extractor.try_extract(raw_text)
-            if ok:
-                return answer, True, "llm_fallback"
-        return None, False, "failed"
-
-    answer, ok = parse_answer_int(raw_text, prompt_text, clamp=clamp)
+        return give_up()
+    answer, ok = parse_answer_int(raw_text, prompt_text)
     if ok:
-        strategy = "regex"
-        if clamp:
-            strict, sok = parse_answer_int(raw_text, prompt_text, clamp=False)
-            if not sok:
-                strategy = "regex_clamped"
-        return answer, True, strategy
-
-    answer, ok = parse_last_number(raw_text, clamp=clamp)
+        return answer, True, "regex"
+    answer, ok = parse_last_number(raw_text)
     if ok:
-        strategy = "last_number"
-        if clamp:
-            strict, sok = parse_last_number(raw_text, clamp=False)
-            if not sok:
-                strategy = "last_number_clamped"
-        return answer, True, strategy
-
-    if use_llm_fallback and fallback_extractor is not None:
-        answer, ok = fallback_extractor.try_extract(raw_text)
-        if ok:
-            log.debug("LLM fallback extracted %d", answer)
-            return answer, True, "llm_fallback"
-
-    return None, False, "failed"
+        return answer, True, "last_number"
+    return give_up()
 
 
 def build_record(

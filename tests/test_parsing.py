@@ -7,7 +7,6 @@ Includes regression tests derived from actual smoke-test failures
 
 from anchorbench.eval.evaluator import parse_response
 from anchorbench.eval.parsing import (
-    clamp_to_range,
     is_tool_call_output,
     parse_answer_int,
     parse_final_answer,
@@ -144,80 +143,27 @@ class TestParseResponse:
         assert strategy == "regex"
 
 
-class TestClampToRange:
-    def test_clamp_high(self):
-        assert clamp_to_range(150) == 100
+class TestOutOfRangeIsRejected:
+    """An integer outside [0, 100] is a parse failure at every tier; the
+    parser never pulls it into range."""
 
-    def test_clamp_low(self):
-        assert clamp_to_range(-10) == 0
+    def test_structured(self):
+        assert parse_structured('{"answer": 150}') == (None, False)
 
-    def test_in_range(self):
-        assert clamp_to_range(42) == 42
-
-    def test_boundaries(self):
-        assert clamp_to_range(0) == 0
-        assert clamp_to_range(100) == 100
-
-
-class TestClampedParsing:
-    """Verify clamp=True recovers out-of-range values instead of rejecting."""
-
-    def test_structured_clamp_high(self):
-        assert parse_structured('{"answer": 150}', clamp=True) == (100, True)
-
-    def test_structured_clamp_negative(self):
-        assert parse_structured('{"answer": -5}', clamp=True) == (0, True)
-
-    def test_structured_strict_unchanged(self):
-        assert parse_structured('{"answer": 150}', clamp=False) == (None, False)
-
-    def test_parse_answer_int_clamp_bare(self):
-        assert parse_answer_int("144", clamp=True) == (100, True)
-
-    def test_parse_answer_int_clamp_negative(self):
-        assert parse_answer_int("-20", clamp=True) == (0, True)
-
-    def test_parse_answer_int_strict_bare(self):
+    def test_bare_integer(self):
         assert parse_answer_int("144") == (None, False)
 
-    def test_xml_answer_clamp(self):
-        assert parse_xml_answer("<answer>130</answer>", clamp=True) == (100, True)
-
-    def test_xml_answer_strict(self):
+    def test_xml_tag(self):
         assert parse_xml_answer("<answer>130</answer>") == (None, False)
 
-    def test_last_number_clamp(self):
-        assert parse_last_number("The value is 186", clamp=True) == (100, True)
-
-    def test_last_number_strict(self):
+    def test_last_number(self):
         assert parse_last_number("The value is 186") == (None, False)
 
-    def test_final_answer_clamp(self):
-        assert parse_final_answer(
-            "The answer is 142", clamp=True,
-        ) == (100, True)
-
-    def test_final_answer_strict(self):
+    def test_final_answer(self):
         assert parse_final_answer("The answer is 142") == (None, False)
 
-class TestParseResponseClamped:
-    def test_clamp_produces_clamped_strategy(self):
-        answer, ok, strategy = parse_response("144", "prompt", clamp=True)
-        assert answer == 100
-        assert ok is True
-        assert strategy == "regex_clamped"
-
-    def test_clamp_in_range_normal_strategy(self):
-        answer, ok, strategy = parse_response("72", "prompt", clamp=True)
-        assert answer == 72
-        assert ok is True
-        assert strategy == "regex"
-
-    def test_clamp_false_still_rejects(self):
-        answer, ok, strategy = parse_response("144", "prompt", clamp=False)
-        assert answer is None
-        assert ok is False
-        assert strategy == "failed"
+    def test_cascade(self):
+        assert parse_response("144", "prompt") == (None, False, "failed")
 
 
 # ── Regression tests from smoke-experiment failures ──────────────────

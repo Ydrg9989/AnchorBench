@@ -20,19 +20,10 @@ import re
 log = logging.getLogger(__name__)
 
 
-def clamp_to_range(v: int, lo: int = 0, hi: int = 100) -> int:
-    """Clamp an integer to [lo, hi]."""
-    return max(lo, min(hi, v))
-
-
-def _range_check(
-    v: int, clamp: bool, lo: int = 0, hi: int = 100,
-) -> tuple[int | None, bool]:
-    """Return (value, True) if in range or clamp is enabled, else (None, False)."""
+def _range_check(v: int, lo: int = 0, hi: int = 100) -> tuple[int | None, bool]:
+    """Return (value, True) if v is in [lo, hi], else (None, False)."""
     if lo <= v <= hi:
         return v, True
-    if clamp:
-        return clamp_to_range(v, lo, hi), True
     return None, False
 
 
@@ -93,7 +84,7 @@ _EXTRACT_PROMPT = (
 )
 
 def parse_structured(
-    raw_text: str, *, clamp: bool = False,
+    raw_text: str,
 ) -> tuple[int | None, bool]:
     """Extract answer from a structured JSON response like {"answer": 72}.
 
@@ -107,21 +98,20 @@ def parse_structured(
         return None, False
     ans = obj.get("answer")
     if isinstance(ans, int):
-        return _range_check(ans, clamp)
+        return _range_check(ans)
     if isinstance(ans, float) and ans == int(ans):
-        return _range_check(int(ans), clamp)
+        return _range_check(int(ans))
     return None, False
 
 
 def parse_answer_int(
-    raw_text: str, prompt_text: str = "", *, clamp: bool = False,
+    raw_text: str, prompt_text: str = "",
 ) -> tuple[int | None, bool]:
     """Extract a single integer in [0, 100] from model output.
 
     Rejects tool-call JSON outputs to avoid picking up evidence/anchor
     values from structured data.  Uses echo-filtering against prompt_text
     to avoid counting anchor values.
-    When *clamp* is True, out-of-range bare integers are clamped to [0, 100].
     """
     if not raw_text:
         return None, False
@@ -132,14 +122,12 @@ def parse_answer_int(
 
     if re.fullmatch(r"-?\d+", text):
         v = int(text)
-        return _range_check(v, clamp)
+        return _range_check(v)
 
     all_ints = [int(m.group()) for m in _INT_PAT.finditer(text)]
     candidates = [c for c in all_ints if 0 <= c <= 100]
 
     if not candidates:
-        if clamp and all_ints:
-            return clamp_to_range(all_ints[-1]), True
         return None, False
 
     unique = list(dict.fromkeys(candidates))
@@ -170,7 +158,7 @@ def parse_answer_int(
 
 
 def parse_xml_answer(
-    raw_text: str, *, clamp: bool = False,
+    raw_text: str,
 ) -> tuple[int | None, bool]:
     """Extract answer from <answer>N</answer> tags."""
     if not raw_text:
@@ -182,7 +170,7 @@ def parse_xml_answer(
     try:
         val = float(val_str)
         rounded = round(val)
-        return _range_check(rounded, clamp)
+        return _range_check(rounded)
     except ValueError:
         pass
     return None, False
@@ -196,7 +184,7 @@ def is_tool_call_output(raw_text: str) -> bool:
 
 
 def parse_last_number(
-    raw_text: str, *, clamp: bool = False,
+    raw_text: str,
 ) -> tuple[int | None, bool]:
     """Last-number heuristic: prefer last line, then last number overall.
 
@@ -219,7 +207,7 @@ def parse_last_number(
             try:
                 val = float(m.group())
                 rounded = round(val)
-                result, ok = _range_check(rounded, clamp)
+                result, ok = _range_check(rounded)
                 if ok:
                     return result, True
             except ValueError:
@@ -233,14 +221,14 @@ def parse_last_number(
         try:
             val = float(m.group())
             rounded = round(val)
-            return _range_check(rounded, clamp)
+            return _range_check(rounded)
         except ValueError:
             continue
     return None, False
 
 
 def parse_final_answer(
-    raw_text: str, *, clamp: bool = False,
+    raw_text: str,
 ) -> tuple[int | None, bool]:
     """Extract answer via explicit final-answer patterns.
 
@@ -263,7 +251,7 @@ def parse_final_answer(
                 v = round(float(matches[-1].group(1)))
             except ValueError:
                 continue
-            result, ok = _range_check(v, clamp)
+            result, ok = _range_check(v)
             if ok:
                 return result, True
 
@@ -275,7 +263,7 @@ def parse_final_answer(
                 v = round(float(matches[-1].group(1)))
             except ValueError:
                 continue
-            result, ok = _range_check(v, clamp)
+            result, ok = _range_check(v)
             if ok:
                 return result, True
 
