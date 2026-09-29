@@ -53,14 +53,17 @@ _XML_ANSWER_PAT = re.compile(
 )
 
 # High-precision: safe on full document (avoid evidence lines like
-# "Focus group rating: 59" or "The maximum index is 27").
+# "Focus group rating: 59" or "The maximum index is 27"). "is" may be followed
+# by a colon ("the index is: 2188"): a declared answer must be recognised even
+# when it is out of range, or the cascade falls through to the regex tier and
+# returns an evidence value as the answer.
 _FINAL_ANSWER_STRICT = [
     re.compile(r"(?:final\s+answer|my\s+(?:final\s+)?(?:answer|estimate))\s*(?:is|:)\s*(\d{1,3})", re.IGNORECASE),
     re.compile(r"(?:the\s+answer\s+is|answer\s*:)\s*(\d{1,3})", re.IGNORECASE),
     re.compile(r"Answer:\s*\[?(\d{1,3}(?:\.\d+)?)\]?", re.IGNORECASE),
-    re.compile(r"(?:overall|estimated|composite)\s+\S+\s+(?:index|score|rating)\s+(?:is|=|:)\s*(?:approximately\s+|about\s+|around\s+)?(\d{1,3})", re.IGNORECASE),
+    re.compile(r"(?:overall|estimated|composite)\s+\S+\s+(?:index|score|rating)\s+(?:is\s*:?|=|:)\s*(?:approximately\s+|about\s+|around\s+)?(\d{1,3})", re.IGNORECASE),
     re.compile(
-        r"(?:overall\s+)?(?:willingness-to-pay|WTP)\s+index\s+(?:is|=|:)\s*(?:approximately\s+|about\s+|around\s+)?(\d{1,3})",
+        r"(?:overall\s+)?(?:willingness-to-pay|WTP)\s+index\s+(?:is\s*:?|=|:)\s*(?:approximately\s+|about\s+|around\s+)?(\d{1,3})",
         re.IGNORECASE,
     ),
     re.compile(r"\*\*(\d{1,3})\*\*\s*$", re.MULTILINE),
@@ -71,11 +74,11 @@ _FINAL_ANSWER_STRICT = [
 _FINAL_ANSWER_TAIL_PATS = [
     re.compile(
         r"(?<!maximum\s)(?<!minimum\s)(?<!average\s)"
-        r"\bindex\s+is\s+(?:approximately\s+|about\s+|around\s+)?(\d{1,3})\b",
+        r"\bindex\s+is\s*:?\s*(?:approximately\s+|about\s+|around\s+)?(\d{1,3})\b",
         re.IGNORECASE,
     ),
     re.compile(
-        r"(?:therefore|thus|hence|so|,)\s+(?:the\s+)?(?:overall\s+)?(?:willingness-to-pay\s+)?(?:index|estimate|rating|score)\s+(?:is|=|:)\s*(\d{1,3})\b",
+        r"(?:therefore|thus|hence|so|,)\s+(?:the\s+)?(?:overall\s+)?(?:willingness-to-pay\s+)?(?:index|estimate|rating|score)\s+(?:is\s*:?|=|:)\s*(\d{1,3})\b",
         re.IGNORECASE,
     ),
 ]

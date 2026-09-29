@@ -370,9 +370,8 @@ class TestVerboseCoTRegression:
         """When model's declared answer is out of range (2188), no
         intermediate calculation number should be returned as the answer."""
         answer, ok, strategy = parse_response(self.COT_WRONG_MULTIPLY, "")
-        if ok:
-            assert answer != 24, "Should not extract intermediate 24.2 → 24"
-            assert answer != 57, "Should not extract random evidence number"
+        assert ok is False, f"declared answer 2188 is out of range; got {answer}"
+        assert strategy == "failed"
 
     def test_out_of_range_sum_rejects(self):
         """190 is out of range; model said 'estimated WTP index is 190',
