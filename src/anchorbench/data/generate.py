@@ -46,7 +46,7 @@ from .itemspec_gen import (
 from .schema import ItemSpec, PromptView, write_jsonl
 from .suites import SUITE_RENDERERS
 from .suites.rag import build_full_corpus
-from .validators import validate_all
+from .validators import BASE_CONDITIONS, validate_all
 
 logger = logging.getLogger(__name__)
 
@@ -178,8 +178,7 @@ def generate_suite_dataset(
     n_items = len(all_specs)
     cond_per_item = len(all_views) // n_items if n_items else 0
 
-    core_conditions = {"control", "irrelevant_low", "irrelevant_high",
-                       "plausible_low", "plausible_high"}
+    core_conditions = BASE_CONDITIONS
     core_views = [v for v in all_views if v.condition in core_conditions]
     ablation_views = [v for v in all_views if v.condition not in core_conditions]
 

@@ -19,11 +19,9 @@ from collections import Counter
 from typing import Any
 
 from .schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
+from .suites._shared import CONDITIONS as _CONDITION_TABLE
 
-BASE_CONDITIONS = {
-    "control", "irrelevant_low", "irrelevant_high",
-    "plausible_low", "plausible_high",
-}
+BASE_CONDITIONS = {name for name, _, _ in _CONDITION_TABLE}
 
 EXTERNAL_CONDITIONS = BASE_CONDITIONS | {
     "placebo_low", "placebo_high",

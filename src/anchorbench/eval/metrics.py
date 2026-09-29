@@ -27,20 +27,12 @@ from __future__ import annotations
 
 import numpy as np
 
-CONDITIONS = [
-    "control",
-    "irrelevant_low",
-    "irrelevant_high",
-    "plausible_low",
-    "plausible_high",
-]
+from anchorbench.data.suites._shared import CONDITIONS as _CONDITION_TABLE
 
-EXTENDED_CONDITIONS = CONDITIONS + [
-    "placebo_low", "placebo_high",
-    "authority_low", "authority_high",
-    "neutral_low", "neutral_high",
-    "control_twostage",
-]
+# The five core conditions, in the renderers' order: control, then
+# irrelevant and plausible, each low and high. The table itself lives with
+# the renderers in data/suites/_shared.py.
+CONDITIONS: list[str] = [name for name, _, _ in _CONDITION_TABLE]
 
 EPSILON = 3.0
 

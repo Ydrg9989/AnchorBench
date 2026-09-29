@@ -24,7 +24,7 @@ import numpy as np
 from anchorbench import __version__
 
 from .backends import Backend
-from .metrics import compute_unified_metrics, print_summary
+from .metrics import CONDITIONS, compute_unified_metrics, print_summary
 from .parsing import (
     LLMFallbackExtractor,
     has_explicit_final_answer,
@@ -37,14 +37,6 @@ from .parsing import (
 )
 
 log = logging.getLogger(__name__)
-
-CONDITIONS = [
-    "control",
-    "irrelevant_low",
-    "irrelevant_high",
-    "plausible_low",
-    "plausible_high",
-]
 
 
 def _load_history_jsonl(path: Path) -> tuple[list[dict], set[tuple[str, str]]]:
