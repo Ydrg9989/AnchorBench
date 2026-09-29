@@ -123,3 +123,33 @@ def test_dose_response_is_checked_per_tier() -> None:
     assert "open-weight tier" in out, "dose check is not tier-aware"
     assert "API tier" in out, "API-tier dose claims are not being checked"
     assert "[FAIL]" not in out, f"dose-response cell failed:\n{out}"
+
+
+def test_a_ledger_row_that_no_longer_diverges_is_reported_stale(monkeypatch, capsys) -> None:
+    """The stale-ledger check compares section names; it used to compare
+    against spellings ("posn", "gs", "samp", "mit") that no check ever wrote,
+    so a stale row in those sections was never reported."""
+    from anchorbench.paper import verify
+
+    monkeypatch.setitem(verify.KNOWN_DIVERGENCES, ("pos_n", "a row that no longer diverges"), 0.01)
+    monkeypatch.setitem(verify.KNOWN_DIVERGENCES, ("sampling", "another one"), 0.01)
+    rc = verify.main([])
+    out = capsys.readouterr().out
+    assert "Stale ledger rows:  2" in out, out[-1500:]
+    assert rc != 0
+
+
+def test_a_nan_p_value_is_a_failed_check() -> None:
+    """Three cells give the signed-rank test fewer than six nonzero
+    differences, so p is NaN; NaN used to pass every comparison."""
+    from anchorbench.paper import verify
+
+    cells = [
+        {"model": m, "model_slug": m, "suite": "External", "uai_plaus": 0.3 + i / 10,
+         "uai_irr": 0.1, "disc_delta": 0.2 + i / 10, "acc10_control": 0.5 + i / 10}
+        for i, m in enumerate(("Qwen-1.5B", "Qwen-3B", "Qwen-7B"))
+    ]
+    mismatches: list = []
+    verify.verify_stats_inference(cells, mismatches)
+    nan_rows = [m for m in mismatches if m.label == "External p_BH" and m.data != m.data]
+    assert nan_rows, [str(m) for m in mismatches]

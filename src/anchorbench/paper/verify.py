@@ -225,6 +225,13 @@ PAPER_STATS_PEARSON = (-0.24, -0.43, -0.00)
 # swallow it is not. A claim listed here that starts *passing*, or that
 # fails by a different amount, is itself an error -- the ledger is then
 # stale and must be updated deliberately.
+# The section names the verify_* functions pass to check() and Mismatch(),
+# grouped by whether --quick runs them. A ledger row whose section ran and
+# that no longer diverges is stale; a row whose section did not run is
+# simply unchecked.
+QUICK_SECTIONS = frozenset({"main", "pathway", "pos_n", "amae", "dose", "dose_api", "intext"})
+FULL_SECTIONS = QUICK_SECTIONS | {"stats", "goldshift", "sampling", "mitigation"}
+
 KNOWN_DIVERGENCES: dict[tuple[str, str], float] = {
     # Empty by design. The four tables that used to diverge (D6) are now
     # input-ed from generated bodies via scripts/sync_paper_tables.py, so
@@ -378,8 +385,13 @@ def verify_stats_inference(all_data, mismatches):
             check("stats", f"{suite} CI hi", p_hi, row["hi"], tol, mismatches),
         ]
         # The paper prints "<0.01" rather than a value, so only check the
-        # printed p when the paper gives a number.
-        if p_p > 0:
+        # printed p when the paper gives a number. A NaN p (too few nonzero
+        # differences for the signed-rank test, or no scipy) is a failed
+        # check, not a passed one: NaN compares false against everything.
+        if np.isnan(row["p_bh"]):
+            mismatches.append(Mismatch("stats", f"{suite} p_BH", p_p, float("nan"), tol))
+            s.append("FAIL")
+        elif p_p > 0:
             s.append(check("stats", f"{suite} p_BH", p_p, row["p_bh"], tol, mismatches))
         elif row["p_bh"] >= 0.01:
             s.append(check("stats", f"{suite} p_BH<0.01", 0.0, row["p_bh"], 0.01, mismatches))
@@ -578,11 +590,11 @@ def main(argv: Iterable[str] | None = None) -> int:
     verify_anchored_mae(all_data, mismatches, unchecked)
     verify_dose(all_data, mismatches, args.strict)
     verify_intext(all_data, mismatches, args.strict)
-    ran_sections = {"main", "pathway", "posn", "amae", "dose", "intext"}
+    ran_sections = QUICK_SECTIONS
     if not args.quick:
         verify_stats_inference(all_data, mismatches)
         verify_extension_csvs(mismatches, args.strict)
-        ran_sections |= {"stats", "gs", "samp", "mit"}
+        ran_sections = FULL_SECTIONS
 
     new = [m for m in mismatches if not m.known]
     known = [m for m in mismatches if m.known]
