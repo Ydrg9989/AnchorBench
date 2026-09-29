@@ -53,21 +53,26 @@ def _build_cmd(cfg: DictConfig) -> list[str]:
 
 
 @hydra.main(version_base=None, config_path=str(CONF_DIR), config_name="config")
-def _hydra_main(cfg: DictConfig) -> int:
+def _hydra_main(cfg: DictConfig) -> None:
     log.info("Resolved config:\n%s", OmegaConf.to_yaml(cfg))
     cmd = _build_cmd(cfg)
     log.info("Launching: %s", " ".join(cmd))
     if cfg.get("dry_run"):
-        return 0
+        return
     _out_dir(cfg).mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
     if "gpu_ids" in cfg and cfg.gpu_ids is not None:
         env["CUDA_VISIBLE_DEVICES"] = str(cfg.gpu_ids)
-    return subprocess.run(cmd, env=env).returncode
+    rc = subprocess.run(cmd, env=env).returncode
+    if rc:
+        raise SystemExit(rc)
 
 
 def main() -> int:
-    return _hydra_main()
+    # hydra.main discards the task function's return value, so a failure is
+    # signalled by raising SystemExit inside _hydra_main.
+    _hydra_main()
+    return 0
 
 
 if __name__ == "__main__":

@@ -95,7 +95,7 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
 
 
 @hydra.main(version_base=None, config_path=str(CONF_DIR), config_name="config")
-def _hydra_main(cfg: DictConfig) -> int:
+def _hydra_main(cfg: DictConfig) -> None:
     log.info("Resolved experiment:\n%s", OmegaConf.to_yaml(cfg))
     cells = _resolve_cells(cfg)
     log.info("Plan: %d cells", len(cells))
@@ -120,11 +120,15 @@ def _hydra_main(cfg: DictConfig) -> int:
         if rc != 0:
             log.error("%s FAILED (rc=%d)", tag, rc)
             failures += 1
-    return 1 if failures else 0
+    if failures:
+        raise SystemExit(1)
 
 
 def main() -> int:
-    return _hydra_main()
+    # hydra.main discards the task function's return value, so a failure is
+    # signalled by raising SystemExit inside _hydra_main.
+    _hydra_main()
+    return 0
 
 
 if __name__ == "__main__":

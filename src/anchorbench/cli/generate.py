@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 
 
 @hydra.main(version_base=None, config_path=str(CONF_DIR), config_name="config")
-def _hydra_main(cfg: DictConfig) -> int:
+def _hydra_main(cfg: DictConfig) -> None:
     log.info("Resolved config:\n%s", OmegaConf.to_yaml(cfg))
     suite = cfg.data.suite
     out_dir = cfg.data.dataset_dir
@@ -38,11 +38,13 @@ def _hydra_main(cfg: DictConfig) -> int:
         out_dir=str(ROOT / out_dir),
     )
     log.info("Generated: %s", info)
-    return 0
 
 
 def main() -> int:
-    return _hydra_main()
+    # hydra.main discards the task function's return value, so a failure is
+    # signalled by raising SystemExit inside _hydra_main.
+    _hydra_main()
+    return 0
 
 
 if __name__ == "__main__":
