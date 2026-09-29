@@ -59,28 +59,44 @@ def discover_results(base_dir: Path) -> list[dict]:
     return rows
 
 
-def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
-    out_dir.mkdir(parents=True, exist_ok=True)
-    fig_dir.mkdir(parents=True, exist_ok=True)
+def _cell(rows: list[dict], suite: str, model: str, strategy: str) -> dict | None:
+    return next((r for r in rows if r["suite"] == suite and r["model"] == model
+                 and r["strategy"] == strategy), None)
 
-    # CSV
-    csv_path = out_dir / "mitigation_headroom_comparison.csv"
-    if rows:
-        keys = list(rows[0].keys())
-        with open(csv_path, "w", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
-            w.writeheader()
-            w.writerows(rows)
-    print(f"Wrote {csv_path} ({len(rows)} rows)")
 
-    # JSON
-    json_path = out_dir / "mitigation_headroom_comparison.json"
-    with open(json_path, "w") as f:
-        json.dump(rows, f, indent=2)
-    print(f"Wrote {json_path}")
+def strategy_deltas(rows: list[dict]) -> list[dict]:
+    """Per (suite, model, strategy): the change in Disc_delta and MAE_c against
+    that cell's baseline strategy, plus the verdict words the interpretation
+    prints. A cell with no baseline, or with an undefined metric, is left out
+    rather than counted as a change of zero."""
+    strategies = [s for s in STRATEGY_ORDER if any(r["strategy"] == s for r in rows)]
+    out = []
+    for suite in sorted({r["suite"] for r in rows}):
+        for model in sorted({r["model"] for r in rows}):
+            b = _cell(rows, suite, model, "baseline")
+            if b is None:
+                continue
+            for strat in strategies:
+                if strat == "baseline":
+                    continue
+                s = _cell(rows, suite, model, strat)
+                if s is None or s["disc_delta"] is None or b["disc_delta"] is None:
+                    continue
+                disc_d = s["disc_delta"] - b["disc_delta"]
+                mae_d = (s["mae_control"] or 0) - (b["mae_control"] or 0)
+                out.append({
+                    "suite": suite, "model": model, "strategy": strat,
+                    "disc_delta_change": disc_d, "mae_change": mae_d,
+                    "effect": ("reduces anchoring" if disc_d < -0.01 else
+                               "increases anchoring" if disc_d > 0.01 else "negligible change"),
+                    "accuracy_effect": ("hurts accuracy" if mae_d > 0.5 else
+                                        "improves accuracy" if mae_d < -0.5 else "neutral on accuracy"),
+                })
+    return out
 
-    # LaTeX
-    latex_path = out_dir / "mitigation_headroom_table.tex"
+
+def latex_table(rows: list[dict]) -> str:
+    """tab:mitigation_headroom: one row per (suite, model, strategy) in STRATEGY_ORDER."""
     lines = [
         r"\begin{table}[t]",
         r"\centering",
@@ -98,19 +114,15 @@ def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
         r"& \textbf{MAE}\textsubscript{ctrl} & \textbf{Parse} \\",
         r"\midrule",
     ]
-
-    suites = sorted(set(r["suite"] for r in rows))
-    models = sorted(set(r["model"] for r in rows))
-
+    suites = sorted({r["suite"] for r in rows})
+    models = sorted({r["model"] for r in rows})
     prev_suite = ""
     for suite in suites:
         for model in models:
             for strat in STRATEGY_ORDER:
-                r = [x for x in rows if x["suite"] == suite
-                     and x["model"] == model and x["strategy"] == strat]
-                if not r:
+                r = _cell(rows, suite, model, strat)
+                if r is None:
                     continue
-                r = r[0]
                 suite_label = suite if suite != prev_suite else ""
                 prev_suite = suite
                 lines.append(
@@ -120,83 +132,71 @@ def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
                 )
         if suite != suites[-1]:
             lines.append(r"\midrule")
-
     lines.extend([r"\bottomrule", r"\end{tabular}", r"\end{table}"])
-    latex_path.write_text("\n".join(lines))
-    print(f"Wrote {latex_path}")
+    return "\n".join(lines)
 
-    # Interpretation
-    interp_path = out_dir / "mitigation_headroom_interpretation.md"
+
+def interpretation_md(rows: list[dict]) -> str:
+    """The per-cell verdicts and the mean Disc_delta change per strategy."""
+    deltas = strategy_deltas(rows)
     ilines = ["# Mitigation Headroom Probe — Interpretation\n\n## Summary\n"]
-
-    strategies = [s for s in STRATEGY_ORDER if any(r["strategy"] == s for r in rows)]
-
-    for suite in suites:
+    for suite in sorted({r["suite"] for r in rows}):
         ilines.append(f"\n### {suite.capitalize()}\n")
-        for model in models:
+        for model in sorted({r["model"] for r in rows}):
             ilines.append(f"**{model}:**\n")
-            base = [r for r in rows if r["suite"] == suite
-                    and r["model"] == model and r["strategy"] == "baseline"]
-            if not base:
+            b = _cell(rows, suite, model, "baseline")
+            if b is None:
                 ilines.append("- No baseline data\n")
                 continue
-            b = base[0]
             ilines.append(f"- Baseline: Disc={fmt(b.get('disc_delta'), 3)}, "
                           f"MAE={fmt(b.get('mae_control'), 1)}, "
                           f"Parse={fmt(b.get('parse_rate'), 3)}\n")
-
-            for strat in strategies:
-                if strat == "baseline":
-                    continue
-                s = [r for r in rows if r["suite"] == suite
-                     and r["model"] == model and r["strategy"] == strat]
-                if not s:
-                    continue
-                s = s[0]
-                disc_b = b.get("disc_delta") or 0
-                disc_s = s.get("disc_delta") or 0
-                mae_b = b.get("mae_control") or 0
-                mae_s = s.get("mae_control") or 0
-                disc_d = disc_s - disc_b
-                mae_d = mae_s - mae_b
-
-                effect = "reduces anchoring" if disc_d < -0.01 else \
-                         "increases anchoring" if disc_d > 0.01 else "negligible change"
-                acc_eff = "hurts accuracy" if mae_d > 0.5 else \
-                          "improves accuracy" if mae_d < -0.5 else "neutral on accuracy"
-
-                ilines.append(f"- {strat}: Disc={fmt(s.get('disc_delta'), 3)} "
-                              f"(Δ={disc_d:+.3f}), "
+            for d in (d for d in deltas if d["suite"] == suite and d["model"] == model):
+                s = _cell(rows, suite, model, d["strategy"])
+                ilines.append(f"- {d['strategy']}: Disc={fmt(s.get('disc_delta'), 3)} "
+                              f"(Δ={d['disc_delta_change']:+.3f}), "
                               f"MAE={fmt(s.get('mae_control'), 1)} "
-                              f"(Δ={mae_d:+.1f}) → **{effect}**, {acc_eff}\n")
+                              f"(Δ={d['mae_change']:+.1f}) → **{d['effect']}**, {d['accuracy_effect']}\n")
 
     ilines.append("\n## Key Takeaways\n")
     total_disc = {}
-    for strat in strategies:
-        if strat == "baseline":
-            continue
-        deltas = []
-        for suite in suites:
-            for model in models:
-                base = [r for r in rows if r["suite"] == suite
-                        and r["model"] == model and r["strategy"] == "baseline"]
-                curr = [r for r in rows if r["suite"] == suite
-                        and r["model"] == model and r["strategy"] == strat]
-                if base and curr:
-                    deltas.append((curr[0].get("disc_delta") or 0) -
-                                  (base[0].get("disc_delta") or 0))
-        if deltas:
-            total_disc[strat] = float(np.mean(deltas))
-
+    for strat in [s for s in STRATEGY_ORDER if s != "baseline"]:
+        changes = [d["disc_delta_change"] for d in deltas if d["strategy"] == strat]
+        if changes:
+            total_disc[strat] = float(np.mean(changes))
     for strat, md in sorted(total_disc.items(), key=lambda x: x[1]):
         direction = "reduces" if md < 0 else "increases"
         ilines.append(f"- **{strat}**: mean Disc$_\\Delta$ change = {md:+.3f} "
                       f"({direction} anchoring on average)\n")
+    return "\n".join(ilines)
 
-    interp_path.write_text("\n".join(ilines))
+
+def write_outputs(rows: list[dict], out_dir: Path, fig_dir: Path):
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig_dir.mkdir(parents=True, exist_ok=True)
+
+    csv_path = out_dir / "mitigation_headroom_comparison.csv"
+    if rows:
+        keys = list(rows[0].keys())
+        with open(csv_path, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=keys, extrasaction="ignore")
+            w.writeheader()
+            w.writerows(rows)
+    print(f"Wrote {csv_path} ({len(rows)} rows)")
+
+    json_path = out_dir / "mitigation_headroom_comparison.json"
+    with open(json_path, "w") as f:
+        json.dump(rows, f, indent=2)
+    print(f"Wrote {json_path}")
+
+    latex_path = out_dir / "mitigation_headroom_table.tex"
+    latex_path.write_text(latex_table(rows))
+    print(f"Wrote {latex_path}")
+
+    interp_path = out_dir / "mitigation_headroom_interpretation.md"
+    interp_path.write_text(interpretation_md(rows))
     print(f"Wrote {interp_path}")
 
-    # Figure
     _make_figure(rows, fig_dir)
 
 
