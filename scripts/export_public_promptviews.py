@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -134,6 +135,21 @@ def main() -> int:
         else:
             dest.write_text(text)
             print(f"  wrote       {suite:20s} {len(rows)} rows -> {dest.relative_to(ROOT)}")
+
+    # The manifest that pins the released bytes, next to the files it covers.
+    manifest = args.out_dir / "CHECKSUMS.sha256"
+    lines = "".join(
+        f"{hashlib.sha256(p.read_bytes()).hexdigest()}  {p.name}\n"
+        for p in sorted(args.out_dir.glob("*.jsonl"))
+    )
+    if manifest.exists() and manifest.read_text() == lines:
+        print(f"  up to date  {manifest.name}")
+    elif args.check:
+        stale.append(manifest.name)
+        print(f"  STALE       {manifest.name}")
+    else:
+        manifest.write_text(lines)
+        print(f"  wrote       {manifest.name}")
 
     if args.check and stale:
         print(f"\n{len(stale)} export(s) stale. Run scripts/export_public_promptviews.py.",

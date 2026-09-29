@@ -35,7 +35,7 @@ if [[ "$SIZE" == "smoke" ]]; then
 fi
 
 DIRS=()
-for suite in external history icl icl_dist rag tool; do
+for suite in "${CORE_SUITES[@]}"; do
     dir="${BASE}/anchorbench_${suite}_${SIZE}"
     if [ -d "${dir}" ]; then
         DIRS+=("${dir}")

@@ -38,7 +38,7 @@ Each directory holds `itemspecs.jsonl` (ground truth), `promptviews_core.jsonl`
 ```bash
 bash scripts/generate_all.sh core 42        # all six core suites, into datasets/
 bash scripts/validate_all.sh core
-sha256sum -c anchorbench_core_checksums.sha256
+sha256sum -c datasets/anchorbench_core_checksums.sha256   # from the repo root
 ```
 
 `smoke` and `pilot` sizes write `anchorbench_<suite>_smoke/` and

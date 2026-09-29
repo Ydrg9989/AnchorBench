@@ -21,7 +21,7 @@ echo "============================================================"
 echo "  AnchorBench -- Generate all suites (size=${SIZE} seed=${SEED})"
 echo "============================================================"
 
-for suite in external history icl icl_dist rag tool; do
+for suite in "${CORE_SUITES[@]}"; do
     echo ""
     echo "--- Generating ${suite} ---"
     "${ANCHORBENCH[@]}" generate "data=${suite}" "+size=${SIZE}" "seed=${SEED}"

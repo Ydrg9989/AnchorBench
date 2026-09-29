@@ -235,6 +235,7 @@ python datasets/upload_hf.py                           # upload to Yiderigun/Anc
 
 Six files are released: the five core suites and `external_uncertain`
 (14,400 rows). `DATASET_CARD.md` becomes the Hub README, `VERSIONS.md` is
-uploaded beside it, and `datasets/hf_release/CHECKSUMS.sha256` pins the
-bytes. `datasets/hf_release/` is committed so a clean clone can verify the
-export against the source datasets.
+uploaded beside it, and `datasets/hf_release/CHECKSUMS.sha256`, written by
+the export script over the six files, pins the bytes. `datasets/hf_release/`
+is committed so a clean clone can verify the export against the source
+datasets (`scripts/export_public_promptviews.py --check`).

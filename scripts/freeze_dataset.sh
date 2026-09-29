@@ -13,13 +13,15 @@
 #   3. Freeze:    bash scripts/freeze_dataset.sh SIZE
 
 set -euo pipefail
+# shellcheck source=scripts/_env.sh
+source "$(dirname "$0")/_env.sh"   # CORE_SUITES
 
 SIZE="${1:-pilot}"
 BASE="datasets"
 ARCHIVE="${BASE}/anchorbench_frozen_${SIZE}.tar.gz"
 
 DIRS=()
-for suite in external history icl rag tool; do
+for suite in "${CORE_SUITES[@]}"; do
     dir="${BASE}/anchorbench_${suite}_${SIZE}"
     if [ -d "${dir}" ]; then
         DIRS+=("${dir}")
@@ -28,6 +30,11 @@ for suite in external history icl rag tool; do
         exit 1
     fi
 done
+# The uncertain-evidence re-render of External (Table 2) is released with the
+# core suites; it has no size suffix because it derives from the core items.
+if [ "${SIZE}" = "core" ] && [ -d "${BASE}/anchorbench_external_uncertain" ]; then
+    DIRS+=("${BASE}/anchorbench_external_uncertain")
+fi
 
 echo "============================================================"
 echo "  AnchorBench — Freeze dataset (size=${SIZE})"
