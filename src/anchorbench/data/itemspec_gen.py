@@ -293,7 +293,8 @@ def _generate_icl_demos(rng: random.Random, domain_id: str) -> list[dict[str, An
         theta_demo = rng.randint(35, 65)
         evidence = [{"label": lbl, "value": max(0, min(100, round(rng.gauss(theta_demo, 6))))}
                     for lbl in labels]
-        demos.append({"evidence": evidence, "answer": round(sum(e["value"] for e in evidence) / len(evidence))})
+        demos.append({"evidence": evidence,
+                      "answer": compute_gold_answer([e["value"] for e in evidence])})
     return demos
 
 
@@ -327,7 +328,7 @@ def _generate_icl_dist_demos(
             demos.append(
                 {
                     "evidence": evidence,
-                    "answer": round(sum(e["value"] for e in evidence) / len(evidence)),
+                    "answer": compute_gold_answer([e["value"] for e in evidence]),
                 }
             )
         return demos

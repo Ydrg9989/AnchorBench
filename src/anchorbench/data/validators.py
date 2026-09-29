@@ -14,10 +14,10 @@ Checks run by ``validate_all``:
 
 from __future__ import annotations
 
-import statistics
 from collections import Counter
 from typing import Any
 
+from .itemspec_gen import compute_gold_answer
 from .schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from .suites._shared import CONDITIONS as _CONDITION_TABLE
 
@@ -65,27 +65,6 @@ SUITE_CONDITIONS: dict[str, set[str]] = {
 _OFFSET_SUITES = {"external", "rag", "tool", "icl", "icl_dist"}
 
 
-def _compute_expected_gold(
-    visible: list[int],
-    scoring_function: str = "mean",
-    scoring_weights: list[float] | None = None,
-) -> int:
-    """Recompute expected gold answer to validate ItemSpec.y_star_evidence."""
-    if not visible:
-        return 0
-    if scoring_function == "mean":
-        return round(sum(visible) / len(visible))
-    if scoring_function == "weighted_mean":
-        if scoring_weights:
-            w = scoring_weights[:len(visible)]
-            total = sum(v * wi for v, wi in zip(visible, w))
-            return round(total / sum(w))
-        return round(sum(visible) / len(visible))
-    if scoring_function == "median":
-        return round(statistics.median(visible))
-    return round(sum(visible) / len(visible))
-
-
 # ── ItemSpec checks ──────────────────────────────────────────────────
 
 def _check_itemspec(spec: ItemSpec) -> list[str]:
@@ -130,7 +109,7 @@ def _check_itemspec(spec: ItemSpec) -> list[str]:
         if visible:
             scoring_fn = getattr(spec, "scoring_function", "mean")
             scoring_wts = getattr(spec, "scoring_weights", None)
-            expected = _compute_expected_gold(visible, scoring_fn, scoring_wts)
+            expected = compute_gold_answer(visible, scoring_fn, scoring_wts)
             if spec.y_star_evidence != expected:
                 errs.append(
                     f"{iid}: y_star_evidence={spec.y_star_evidence} != "
