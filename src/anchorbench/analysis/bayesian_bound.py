@@ -325,6 +325,30 @@ def _median(xs: list[float]) -> float | None:
     return 0.5 * (xs_sorted[n // 2 - 1] + xs_sorted[n // 2])
 
 
+def suite_summary(cells: list[CellBound], reference_w: float, n_evidence: int) -> dict:
+    """The per-suite numbers the report prints: mean UAI by relevance, the
+    median implied weight (point estimate and CI lower bound), how many cells
+    exceed the reference weight, exceed n, or sit entirely above the ceiling,
+    and the three largest implied weights."""
+    plaus_vals = [c.uai_plaus_observed for c in cells if c.uai_plaus_observed is not None]
+    irr_vals = [c.uai_irr_observed for c in cells if c.uai_irr_observed is not None]
+    w_vals = [c.w_implied_plaus for c in cells if c.w_implied_plaus is not None]
+    ci_lo_w = [c.w_implied_plaus_ci_lo for c in cells if c.w_implied_plaus_ci_lo is not None]
+    return {
+        "n_cells": len(cells),
+        "mean_uai_plaus": sum(plaus_vals) / len(plaus_vals) if plaus_vals else None,
+        "mean_uai_irr": sum(irr_vals) / len(irr_vals) if irr_vals else None,
+        "n_w": len(w_vals),
+        "median_w": _median(w_vals),
+        "median_w_ci_lo": _median(ci_lo_w) if ci_lo_w else None,
+        "n_above_reference": sum(1 for w in w_vals if w > reference_w),
+        "n_above_n": sum(1 for w in w_vals if w > n_evidence),
+        "n_above_ceiling_ci": sum(1 for c in cells if c.plaus_above_rational_ci),
+        "top": sorted((c for c in cells if c.w_implied_plaus is not None),
+                      key=lambda c: -(c.w_implied_plaus or 0))[:3],
+    }
+
+
 def write_markdown_report(
     bounds: list[CellBound],
     path: Path,
@@ -367,51 +391,35 @@ def write_markdown_report(
         if not cells:
             continue
         lines.append(f"### {suite}\n")
-        # Average across models
-        plaus_vals = [c.uai_plaus_observed for c in cells if c.uai_plaus_observed is not None]
-        irr_vals = [c.uai_irr_observed for c in cells if c.uai_irr_observed is not None]
-        w_vals = [c.w_implied_plaus for c in cells if c.w_implied_plaus is not None]
-        above = sum(1 for c in cells if c.plaus_above_rational_ci)
-        n_cells = len(cells)
-        if plaus_vals:
+        s = suite_summary(cells, reference_w, n_evidence)
+        if s["mean_uai_plaus"] is not None:
             lines.append(
-                f"- mean UAI_pls = {sum(plaus_vals)/len(plaus_vals):.3f}, "
-                f"mean UAI_irr = {sum(irr_vals)/len(irr_vals):.3f} "
-                f"({n_cells} models)\n"
+                f"- mean UAI_pls = {s['mean_uai_plaus']:.3f}, "
+                f"mean UAI_irr = {s['mean_uai_irr']:.3f} "
+                f"({s['n_cells']} models)\n"
             )
-        if w_vals:
-            med_w = _median(w_vals)
-            n_above_n = sum(1 for w in w_vals if w > n_evidence)
-            n_above_1 = sum(1 for w in w_vals if w > reference_w)
-            ci_lo_w = [c.w_implied_plaus_ci_lo for c in cells
-                       if c.w_implied_plaus_ci_lo is not None]
-            med_w_ci_lo = _median(ci_lo_w) if ci_lo_w else None
+        if s["n_w"]:
             lines.append(
-                f"- median implied w (plausible) = {med_w:.2f} "
+                f"- median implied w (plausible) = {s['median_w']:.2f} "
                 f"(reference w = {reference_w:g}); "
-                f"{n_above_1}/{len(w_vals)} cells exceed reference; "
-                f"{n_above_n}/{len(w_vals)} cells imply w > n = {n_evidence} "
+                f"{s['n_above_reference']}/{s['n_w']} cells exceed reference; "
+                f"{s['n_above_n']}/{s['n_w']} cells imply w > n = {n_evidence} "
                 f"(anchor weighted more than all visible evidence combined)\n"
             )
-            if med_w_ci_lo is not None:
+            if s["median_w_ci_lo"] is not None:
                 lines.append(
                     f"- median implied w using the 95% CI LOWER bound for "
-                    f"UAI_pls (conservative) = {med_w_ci_lo:.2f}\n"
+                    f"UAI_pls (conservative) = {s['median_w_ci_lo']:.2f}\n"
                 )
             lines.append(
-                f"- {above}/{n_cells} cells have UAI_pls 95% CI entirely above "
+                f"- {s['n_above_ceiling_ci']}/{s['n_cells']} cells have UAI_pls 95% CI entirely above "
                 f"the rational ceiling {ceiling:.3f} (i.e., the anchor effect "
                 f"is significantly above rational at p<0.05)\n"
             )
 
-        # Worst offenders
-        sorted_cells = sorted(
-            (c for c in cells if c.w_implied_plaus is not None),
-            key=lambda c: -(c.w_implied_plaus or 0),
-        )[:3]
-        if sorted_cells:
+        if s["top"]:
             lines.append("- top 3 implied weights:\n")
-            for c in sorted_cells:
+            for c in s["top"]:
                 lines.append(
                     f"  - {c.model}: UAI_pls={fmt(c.uai_plaus_observed,3)} "
                     f"=> w_imp={c.w_implied_plaus:.2f}\n"
