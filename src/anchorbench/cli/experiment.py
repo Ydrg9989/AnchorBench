@@ -98,6 +98,11 @@ def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]
 def _hydra_main(cfg: DictConfig) -> None:
     log.info("Resolved experiment:\n%s", OmegaConf.to_yaml(cfg))
     cells = _resolve_cells(cfg)
+    if not cells:
+        raise SystemExit(
+            "no cells to run: pass +experiment=<recipe>, or give models: (or "
+            "tiers:) and suites: on the command line"
+        )
     log.info("Plan: %d cells", len(cells))
     failures = 0
     decoding = OmegaConf.to_container(cfg.decoding, resolve=True)

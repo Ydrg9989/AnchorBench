@@ -73,6 +73,16 @@ def test_experiment_returns_zero_when_every_cell_succeeds(monkeypatch, tmp_path)
     assert experiment_cli.main() == 0
 
 
+def test_experiment_refuses_an_empty_plan(monkeypatch, tmp_path):
+    ran = []
+    monkeypatch.setattr(experiment_cli.subprocess, "run", _fake_run(lambda cmd: ran.append(cmd) or 0))
+    _argv(monkeypatch, tmp_path)          # no recipe, no models, no suites
+    with pytest.raises(SystemExit) as exc:
+        experiment_cli.main()
+    assert "no cells" in str(exc.value)
+    assert ran == []
+
+
 def test_tables_propagates_an_extension_analysis_failure(monkeypatch):
     def rc(cmd):
         return 5 if "anchorbench.analysis.gold_shift" in cmd else 0
