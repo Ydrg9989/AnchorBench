@@ -40,14 +40,10 @@ for suite in external history icl icl_dist rag tool; do
     if [ -d "${dir}" ]; then
         DIRS+=("${dir}")
     else
-        echo "WARNING: ${dir} not found, skipping."
+        echo "ERROR: ${dir} not found (generate it first: bash scripts/generate_all.sh ${SIZE})."
+        exit 1
     fi
 done
-
-if [ ${#DIRS[@]} -eq 0 ]; then
-    echo "ERROR: No dataset directories found for size=${SIZE}."
-    exit 1
-fi
 
 echo "============================================================"
 echo "  AnchorBench — Validate all suites (size=${SIZE})"
