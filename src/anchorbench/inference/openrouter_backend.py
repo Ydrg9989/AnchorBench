@@ -92,10 +92,13 @@ class OpenRouterBackend:
         for u in self.last_usage:
             self.usage["prompt_tokens"] += int(u.get("prompt_tokens", 0) or 0)
             self.usage["completion_tokens"] += int(u.get("completion_tokens", 0) or 0)
-        failed = sum(1 for r in results if r.get("status") != 200)
+        failed = sum(1 for r in results if r["status"] != 200)
         if failed:
             log.warning("%d/%d API requests failed for %s", failed, len(results), self.model_id)
-        return [r.get("raw_text", "") for r in results]
+        # A failed request is an ERROR answer, not an empty one: the record
+        # then says why it has no number instead of counting as a parse failure.
+        return [r["raw_text"] if r["status"] == 200 else f"ERROR: HTTP {r['status']}"
+                for r in results]
 
     # -- Backend interface -------------------------------------------------
 

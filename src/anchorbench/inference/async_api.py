@@ -33,6 +33,8 @@ class AsyncOpenRouterClient:
         base_wait: float = 1.0,
     ):
         self.api_key = api_key or os.getenv("OPENROUTER_API_KEY", "")
+        if not self.api_key:
+            raise ValueError("OPENROUTER_API_KEY is not set and no api_key was given")
         self.semaphore = asyncio.Semaphore(max_concurrent)
         self.max_retries = max_retries
         self.base_wait = base_wait

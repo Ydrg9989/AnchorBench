@@ -55,6 +55,25 @@ def test_tool_messages_are_refused_explicitly():
         OpenRouterBackend("openai/x", api_key="k").generate_batch_tool([[{"role": "user", "content": "x"}]])
 
 
+def test_failed_requests_become_error_answers(monkeypatch):
+    async def fake_query(self, model_id, messages_list, max_tokens=8, temperature=0.0):
+        return [
+            {"raw_text": "42", "usage": {}, "status": 200},
+            {"raw_text": "", "usage": {}, "status": 429},
+            {"raw_text": "", "usage": {}, "status": -1},
+        ]
+
+    monkeypatch.setattr(async_api.AsyncOpenRouterClient, "query_messages_batch", fake_query)
+    b = OpenRouterBackend("openai/x", api_key="k")
+    assert b.generate_batch(["a", "b", "c"]) == ["42", "ERROR: HTTP 429", "ERROR: HTTP -1"]
+
+
+def test_missing_api_key_is_refused_at_construction(monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    with pytest.raises(ValueError, match="OPENROUTER_API_KEY"):
+        async_api.AsyncOpenRouterClient()
+
+
 def test_empty_batch_makes_no_request(canned):
     b = OpenRouterBackend("openai/x", api_key="k")
     assert b.generate_batch([]) == [] and canned == [] and b.usage["requests"] == 0
