@@ -76,6 +76,12 @@ def build_cell_cmd(
     """
     suite = data["suite"]
     module = runner_module(model, data)
+    if decoding.get("temperature", 0.0) != 0.0 or decoding.get("n_samples", 1) != 1:
+        raise ValueError(
+            "no runner takes a temperature or a sample count: the sampling-"
+            "robustness sweep (Appendix Table 18) is `python -m "
+            "anchorbench.runners.sampling`, not a decoding profile"
+        )
 
     if is_api_model(model):
         # runners.api takes the suite *name* and resolves the dataset itself,

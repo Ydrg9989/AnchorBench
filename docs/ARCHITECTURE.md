@@ -92,7 +92,7 @@ conf/
 `-- experiment/               # named recipes for `anchorbench experiment +experiment=<name>`
     |-- paper_main            # 14 models x 5 suites, the frozen benchmark
     |-- paper_icl_dist, paper_history_matched, paper_tool_plaintext
-    |-- paper_sampling, paper_mitigation_headroom
+    |-- paper_mitigation_headroom
     `-- paper_run             # reproduction pin: expected outputs
 ```
 

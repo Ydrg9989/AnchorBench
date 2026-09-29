@@ -147,3 +147,16 @@ def test_paper_main_recipe_routes_every_cell_by_backend():
             assert not str(out_dir).endswith("api_benchmark")
     gemma_cells = [(m, d) for m, d, _, _ in cells if m["hf_id"].startswith("google/gemma")]
     assert len(gemma_cells) == 10 and all(not is_api_model(m) for m, _ in gemma_cells)
+
+
+def test_a_sampling_decoding_profile_is_refused(tmp_path):
+    """Only max_tokens reaches a runner; a profile that asks for sampling
+    used to launch a greedy run that looked like the sweep."""
+    qwen = dict(_models())["qwen_7b"]
+    with pytest.raises(ValueError, match="runners.sampling"):
+        build_cell_cmd(qwen, _data("external"), {"max_tokens": 512, "temperature": 0.7},
+                       tmp_path)
+    cfg = _compose("model=qwen_7b", "data=external", "decoding=sample_t07",
+                   f"out_dir={tmp_path}")
+    with pytest.raises(ValueError):
+        eval_cli._build_cmd(cfg)

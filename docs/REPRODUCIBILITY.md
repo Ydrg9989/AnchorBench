@@ -89,7 +89,7 @@ A named recipe (add `+dry_run=true` to print the cells without launching):
 | `paper_icl_dist` | ICL distribution-matching variant | Table 14 |
 | `paper_history_matched` | History with the two-stage control | Table 13 (re-run, see D5) |
 | `paper_tool_plaintext` | Tool suite forced to plaintext, 5 models | Table 15 (re-run, see D5) |
-| `paper_sampling` | temperature 0.7, top-p 0.9, 3 seeds | Table 18 |
+| `python -m anchorbench.runners.sampling --model_id <hf_id> --n_seeds 3` | temperature 0.7, 3 seeds; not a recipe, because no cell runner takes a temperature | Table 18 |
 | `paper_mitigation_headroom` | prompt-based mitigation strategies | Table 19 |
 
 ```bash

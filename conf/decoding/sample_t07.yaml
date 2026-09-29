@@ -1,7 +1,9 @@
-# Sampling-robustness profile (Appendix, Table 18): temperature 0.7, one sample
-# per seed for three seeds (runners/sampling.py, --n_seeds 3). top_p is the value
-# the paper states; the published runs did not apply it, because no backend takes
-# a top-p argument -- see docs/RECONCILIATION.md D10. Neither key is read by code.
+# The sampling-robustness settings (Appendix, Table 18): temperature 0.7, one
+# sample per seed for three seeds. Kept as documentation only: no cell runner
+# takes a temperature, so `anchorbench eval decoding=sample_t07` refuses to
+# run; the sweep is `python -m anchorbench.runners.sampling --n_seeds 3`.
+# top_p is the value the paper states; the published runs did not apply it
+# (docs/RECONCILIATION.md D10).
 name: sample_t07
 temperature: 0.7
 top_p: 0.9
