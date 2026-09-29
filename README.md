@@ -26,7 +26,7 @@ benchmark measures not just whether outputs shift but whether the shift is
 
 - 🎉 **AnchorBench** is accepted to **COLM 2026**!
 - 🚀 **(2026-08)** Code, benchmark data and the [Hugging Face dataset](https://huggingface.co/datasets/Yiderigun/AnchorBench) released.
-- 🧹 **(2026-09)** v2.1.0: eval routing fix, consolidated docs, CI, `experiments/` for the appendix launchers. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+- 🧹 **(2026-09)** v2.1.0: eval routing fix, consolidated docs, CI; then the code clean-up now on `main` (see the git history).
 
 ## 🤔 Why AnchorBench?
 
