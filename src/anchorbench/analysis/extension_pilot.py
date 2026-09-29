@@ -20,13 +20,14 @@ from pathlib import Path
 
 from anchorbench.analysis._io import fmt, safe_metrics, write_csv, write_json
 from anchorbench.eval.io import load_records
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_EXT_DIR = Path("results/rebuttal/extension_pilot")
-DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
-DEFAULT_MEDICAL_DIR = Path("results/rebuttal/medical")
-DEFAULT_OUT = Path("results/rebuttal/extension_pilot")
+DEFAULT_EXT_DIR = RESULTS_DIR / "rebuttal/extension_pilot"
+DEFAULT_BUSINESS_DIR = RESULTS_DIR / "full_benchmark"
+DEFAULT_MEDICAL_DIR = RESULTS_DIR / "rebuttal/medical"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/extension_pilot"
 
 SUITES = ("external", "history")
 

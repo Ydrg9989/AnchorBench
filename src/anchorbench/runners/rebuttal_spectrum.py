@@ -42,6 +42,7 @@ from anchorbench.eval.io import (
 )
 from anchorbench.eval.metrics import compute_extended_metrics
 from anchorbench.eval.runner_utils import build_backend
+from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -50,9 +51,9 @@ ABLATION_CONDITIONS = [
     "authority_low", "authority_high",
 ]
 
-DEFAULT_OUT = Path("results/rebuttal/spectrum")
-DEFAULT_DATASET = Path("datasets/anchorbench_external_core")
-DEFAULT_CORE_RESULTS = Path("results/full_benchmark/external")
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/spectrum"
+DEFAULT_DATASET = DATASETS_DIR / "anchorbench_external_core"
+DEFAULT_CORE_RESULTS = RESULTS_DIR / "full_benchmark/external"
 
 
 def main(argv: list[str] | None = None) -> None:

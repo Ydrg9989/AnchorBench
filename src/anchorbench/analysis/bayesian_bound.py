@@ -49,6 +49,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -484,14 +485,14 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument(
         "--unified", nargs="+", type=Path,
         default=[
-            Path("results/full_benchmark/unified_all_suites.json"),
-            Path("results/api_benchmark/unified_all_suites.json"),
+            RESULTS_DIR / "full_benchmark/unified_all_suites.json",
+            RESULTS_DIR / "api_benchmark/unified_all_suites.json",
         ],
         help="Unified summary JSON files to analyze (default: full + api benchmarks)",
     )
     p.add_argument(
         "--out_dir", type=Path,
-        default=Path("results/rebuttal/bayesian_bound"),
+        default=RESULTS_DIR / "rebuttal/bayesian_bound",
     )
     p.add_argument("--n_evidence", type=int, default=DEFAULT_N_EVIDENCE)
     p.add_argument("--reference_w", type=float, default=DEFAULT_REFERENCE_W)

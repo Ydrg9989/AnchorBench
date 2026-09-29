@@ -35,6 +35,7 @@ import numpy as np
 from anchorbench.analysis._io import write_csv
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 SUITES = ["external", "history", "icl", "rag", "tool"]
 ANCHORED_CONDITIONS = [
@@ -443,13 +444,13 @@ def main():
     p = argparse.ArgumentParser(description="Gold-referenced error decomposition")
     p.add_argument("--results_dirs", nargs="+", type=Path,
                    default=[
-                       Path("results/full_benchmark"),
-                       Path("results/api_benchmark"),
+                       RESULTS_DIR / "full_benchmark",
+                       RESULTS_DIR / "api_benchmark",
                    ])
     p.add_argument("--out_dir", type=Path,
-                   default=Path("results/revision/gold_shift_decomposition"))
+                   default=RESULTS_DIR / "revision/gold_shift_decomposition")
     p.add_argument("--fig_dir", type=Path,
-                   default=Path("figures/revision"))
+                   default=ROOT / "figures" / "revision")
     p.add_argument("--tolerance", type=float, default=0,
                    help="Tolerance for neutral classification (default: exact tie only)")
     args = p.parse_args()

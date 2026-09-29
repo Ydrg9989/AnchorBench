@@ -19,11 +19,12 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt, load_summary, mean_or_none, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_IN_DIR = Path("results/rebuttal/cot_extended")
-DEFAULT_OUT_DIR = Path("results/rebuttal/cot_reasoning_extended")
+DEFAULT_IN_DIR = RESULTS_DIR / "rebuttal/cot_extended"
+DEFAULT_OUT_DIR = RESULTS_DIR / "rebuttal/cot_reasoning_extended"
 
 SUITES = ("external", "rag", "history")
 STRATEGIES = ("baseline", "cot")

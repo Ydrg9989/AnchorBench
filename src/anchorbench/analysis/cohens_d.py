@@ -50,11 +50,12 @@ from pathlib import Path
 from anchorbench.analysis._io import fmt, write_csv, write_json
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import baseline_condition
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
-DEFAULT_OUT = Path("results/rebuttal/cohens_d")
+DEFAULT_BUSINESS_DIR = RESULTS_DIR / "full_benchmark"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/cohens_d"
 
 SUITES = ("external", "rag", "tool", "history")
 

@@ -32,7 +32,7 @@ from anchorbench.eval.evaluator import (
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews, suite_files
 from anchorbench.eval.runner_utils import PROMPT_SUFFIXES, build_backend
-from anchorbench.paths import ROOT
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Run mitigation baseline across suites")
     p.add_argument("--model_id", required=True)
     p.add_argument("--suites", nargs="+", default=list(SUITE_DATASETS), choices=list(SUITE_DATASETS))
-    p.add_argument("--out_dir", type=Path, default=Path("results/mitigation_ignore_anchor"))
+    p.add_argument("--out_dir", type=Path, default=RESULTS_DIR / "mitigation_ignore_anchor")
     p.add_argument("--max_items", type=int, default=None)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_tokens", type=int, default=512)

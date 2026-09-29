@@ -41,7 +41,7 @@ from anchorbench.eval.evaluator import (
 )
 from anchorbench.eval.io import load_itemspecs, load_promptviews, load_records, suite_files
 from anchorbench.eval.runner_utils import PROMPT_SUFFIXES, build_backend
-from anchorbench.paths import ROOT
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
@@ -89,7 +89,7 @@ def main(argv: list[str] | None = None) -> None:
                    choices=sorted(SUITE_DATASETS))
     p.add_argument("--strategies", nargs="+", default=list(PROMPT_SUFFIXES),
                    choices=list(PROMPT_SUFFIXES))
-    p.add_argument("--out_dir", type=Path, default=Path("results/revision/mitigation_headroom"))
+    p.add_argument("--out_dir", type=Path, default=RESULTS_DIR / "revision/mitigation_headroom")
     p.add_argument("--max_items", type=int, default=None)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_tokens", type=int, default=512)

@@ -28,7 +28,7 @@ from anchorbench.eval.constants import VARIANT_DATASETS
 from anchorbench.eval.evaluator import prepare_items, run_single_stage, write_and_summarize
 from anchorbench.eval.io import load_itemspecs, load_promptviews, suite_files
 from anchorbench.eval.runner_utils import build_backend
-from anchorbench.paths import ROOT
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
@@ -92,7 +92,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--model_id", required=True)
     p.add_argument("--suites", nargs="+", default=list(SUITE_DATASETS),
                    choices=list(SUITE_DATASETS))
-    p.add_argument("--out_dir", type=Path, default=Path("results/decoding_sampling_robustness"))
+    p.add_argument("--out_dir", type=Path, default=RESULTS_DIR / "decoding_sampling_robustness")
     p.add_argument("--max_items", type=int, default=None)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--max_tokens", type=int, default=512)

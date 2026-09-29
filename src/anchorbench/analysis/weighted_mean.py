@@ -19,12 +19,13 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt, load_summary, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_MEAN_DIR = Path("results/full_benchmark/external")
-DEFAULT_WMEAN_DIR = Path("results/rebuttal/weighted_mean/external")
-DEFAULT_OUT = Path("results/rebuttal/weighted_mean")
+DEFAULT_MEAN_DIR = RESULTS_DIR / "full_benchmark/external"
+DEFAULT_WMEAN_DIR = RESULTS_DIR / "rebuttal/weighted_mean/external"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/weighted_mean"
 
 
 def gather(mean_dir: Path, wmean_dir: Path) -> list[dict]:

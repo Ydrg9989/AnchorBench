@@ -20,7 +20,7 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_pct
-from anchorbench.paths import ROOT
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
@@ -207,7 +207,7 @@ def main(argv: list[str] | None = None) -> None:
                         datefmt="%H:%M:%S")
     p = argparse.ArgumentParser()
     p.add_argument("--out_dir", type=Path,
-                   default=Path("results/rebuttal/large_panel"))
+                   default=RESULTS_DIR / "rebuttal/large_panel")
     args = p.parse_args(argv)
 
     repo_root = ROOT

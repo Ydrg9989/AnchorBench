@@ -21,11 +21,12 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import load_summary, mean_or_none, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_IN = Path("results/rebuttal/spectrum")
-DEFAULT_OUT = Path("results/rebuttal/spectrum")
+DEFAULT_IN = RESULTS_DIR / "rebuttal/spectrum"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/spectrum"
 
 # Plausibility ordering used for x-axis of the curve figure.
 # Placebo and irrelevant are both "the anchor carries no relevant information"

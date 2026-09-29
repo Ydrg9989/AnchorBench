@@ -16,11 +16,12 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_latex, mean_or_none, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_IN = Path("results/rebuttal/task_spec/external")
-DEFAULT_OUT = Path("results/rebuttal/task_spec")
+DEFAULT_IN = RESULTS_DIR / "rebuttal/task_spec/external"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/task_spec"
 STRATEGIES = ("baseline", "rule", "judgment")
 STRAT_LABEL = {
     "baseline": "Baseline",

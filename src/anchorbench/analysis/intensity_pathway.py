@@ -16,17 +16,15 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_latex, mean_or_none, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
 SUITES = ("external", "rag", "history")
 SUITE_LABEL = {"external": "External", "rag": "RAG", "history": "History"}
-INPUT_ROOT = {
-    "external": Path("results/rebuttal/intensity"),
-    "rag":      Path("results/rebuttal/intensity_rag"),
-    "history":  Path("results/rebuttal/intensity_history"),
-}
-DEFAULT_OUT = Path("results/rebuttal/intensity_pathway")
+INPUT_SUBDIR = {"external": "intensity", "rag": "intensity_rag", "history": "intensity_history"}
+DEFAULT_REBUTTAL_ROOT = RESULTS_DIR / "rebuttal"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/intensity_pathway"
 
 INTENSITY_ORDER = ("plausible_mild", "plausible", "plausible_strong")
 INTENSITY_LABEL = {
@@ -36,11 +34,11 @@ INTENSITY_LABEL = {
 }
 
 
-def gather() -> list[dict]:
+def gather(rebuttal_root: Path = DEFAULT_REBUTTAL_ROOT) -> list[dict]:
     from anchorbench.eval.constants import MODEL_SHORT
     rows: list[dict] = []
     for suite in SUITES:
-        root = INPUT_ROOT[suite]
+        root = rebuttal_root / INPUT_SUBDIR[suite]
         if not root.exists():
             log.warning("Missing root for suite %s: %s", suite, root)
             continue
@@ -224,12 +222,14 @@ def main(argv: list[str] | None = None) -> None:
                         format="%(asctime)s %(levelname)s %(message)s",
                         datefmt="%H:%M:%S")
     p = argparse.ArgumentParser(description="Cross-pathway intensity analysis")
+    p.add_argument("--rebuttal_root", type=Path, default=DEFAULT_REBUTTAL_ROOT,
+                   help="holds intensity/, intensity_rag/ and intensity_history/")
     p.add_argument("--out_dir", type=Path, default=DEFAULT_OUT)
     args = p.parse_args(argv)
 
-    rows = gather()
+    rows = gather(args.rebuttal_root)
     if not rows:
-        raise SystemExit(f"no intensity_curve.json under {', '.join(str(p) for p in INPUT_ROOT.values())}")
+        raise SystemExit(f"no intensity_curve.json under {args.rebuttal_root}/{{{','.join(INPUT_SUBDIR.values())}}}")
     log.info("Gathered %d (suite,model) rows", len(rows))
     args.out_dir.mkdir(parents=True, exist_ok=True)
     write_csv(rows, args.out_dir / "intensity_pathway.csv")

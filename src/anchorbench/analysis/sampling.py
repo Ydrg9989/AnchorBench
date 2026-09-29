@@ -19,6 +19,7 @@ from anchorbench.analysis._io import fmt, write_csv
 from anchorbench.eval.constants import MODEL_SHORT
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.paths import RESULTS_DIR, ROOT
 
 SUITES = ["external", "rag", "icl_dist"]
 METRIC_KEYS = ["uai_irr", "uai_plaus", "disc_delta", "mae_control",
@@ -218,11 +219,11 @@ def make_figure(rows: list[dict], fig_dir: Path):
 def main():
     p = argparse.ArgumentParser(description="Sampling robustness figures & tables")
     p.add_argument("--samp_dir", type=Path,
-                   default=Path("results/decoding_sampling_robustness"))
+                   default=RESULTS_DIR / "decoding_sampling_robustness")
     p.add_argument("--out_dir", type=Path,
-                   default=Path("results/revision/sampling_robustness"))
+                   default=RESULTS_DIR / "revision/sampling_robustness")
     p.add_argument("--fig_dir", type=Path,
-                   default=Path("figures/revision"))
+                   default=ROOT / "figures" / "revision")
     args = p.parse_args()
 
     args.out_dir.mkdir(parents=True, exist_ok=True)

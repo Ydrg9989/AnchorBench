@@ -33,6 +33,7 @@ from anchorbench.eval.io import (
 )
 from anchorbench.eval.metrics import compute_unified_metrics
 from anchorbench.eval.runner_utils import build_backend
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -148,8 +149,8 @@ def main(argv: list[str] | None = None) -> None:
     suite, cfg = args.suite, SUITES[args.suite]
     core_dir = args.core_dir or Path(f"datasets/anchorbench_{suite}_core")
     dataset_dir = args.dataset_dir or Path(f"datasets/anchorbench_{suite}_{cfg.tag}")
-    core_results_dir = args.core_results_dir or Path(f"results/full_benchmark/{suite}")
-    out_root = args.out_dir or Path(f"results/rebuttal/{suite}_realism")
+    core_results_dir = args.core_results_dir or RESULTS_DIR / f"full_benchmark/{suite}"
+    out_root = args.out_dir or RESULTS_DIR / f"rebuttal/{suite}_realism"
     conditions = cfg.conditions()
 
     pv_path = dataset_dir / f"promptviews_{cfg.tag}.jsonl"

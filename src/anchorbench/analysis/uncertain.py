@@ -26,12 +26,13 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_latex, fmt_pct, write_csv, write_json
+from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_IN = Path("results/rebuttal/uncertain")
-DEFAULT_OUT = Path("results/rebuttal/uncertain")
-DEFAULT_CORE = Path("datasets/anchorbench_external_core")
+DEFAULT_IN = RESULTS_DIR / "rebuttal/uncertain"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/uncertain"
+DEFAULT_CORE = DATASETS_DIR / "anchorbench_external_core"
 
 K_LEVELS = (1, 2, 3)
 

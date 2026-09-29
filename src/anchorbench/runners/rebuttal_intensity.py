@@ -57,6 +57,7 @@ from anchorbench.eval.io import (
     write_records,
 )
 from anchorbench.eval.runner_utils import build_backend
+from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -71,24 +72,24 @@ NEW_CONDITIONS = [
 # control + standard-plausible into the combined intensity records).
 SUITE_CONFIG = {
     "external": {
-        "core_dir": Path("datasets/anchorbench_external_core"),
-        "dataset_dir": Path("datasets/anchorbench_external_d1"),
-        "out_dir": Path("results/rebuttal/intensity"),
-        "core_results_dir": Path("results/full_benchmark/external"),
+        "core_dir": DATASETS_DIR / "anchorbench_external_core",
+        "dataset_dir": DATASETS_DIR / "anchorbench_external_d1",
+        "out_dir": RESULTS_DIR / "rebuttal/intensity",
+        "core_results_dir": RESULTS_DIR / "full_benchmark/external",
         "baseline_cond": "control",
     },
     "rag": {
-        "core_dir": Path("datasets/anchorbench_rag_core"),
-        "dataset_dir": Path("datasets/anchorbench_rag_d1"),
-        "out_dir": Path("results/rebuttal/intensity_rag"),
-        "core_results_dir": Path("results/full_benchmark/rag"),
+        "core_dir": DATASETS_DIR / "anchorbench_rag_core",
+        "dataset_dir": DATASETS_DIR / "anchorbench_rag_d1",
+        "out_dir": RESULTS_DIR / "rebuttal/intensity_rag",
+        "core_results_dir": RESULTS_DIR / "full_benchmark/rag",
         "baseline_cond": "control",
     },
     "history": {
-        "core_dir": Path("datasets/anchorbench_history_core"),
-        "dataset_dir": Path("datasets/anchorbench_history_d1"),
-        "out_dir": Path("results/rebuttal/intensity_history"),
-        "core_results_dir": Path("results/full_benchmark/history"),
+        "core_dir": DATASETS_DIR / "anchorbench_history_core",
+        "dataset_dir": DATASETS_DIR / "anchorbench_history_d1",
+        "out_dir": RESULTS_DIR / "rebuttal/intensity_history",
+        "core_results_dir": RESULTS_DIR / "full_benchmark/history",
         "baseline_cond": "control_twostage",
     },
 }

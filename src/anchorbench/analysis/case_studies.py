@@ -34,12 +34,13 @@ from pathlib import Path
 
 from anchorbench.analysis._io import write_csv, write_json
 from anchorbench.eval.io import load_records
+from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
-DEFAULT_DATASET_DIR = Path("datasets/anchorbench_external_core")
-DEFAULT_OUT = Path("results/rebuttal/case_studies")
+DEFAULT_BUSINESS_DIR = RESULTS_DIR / "full_benchmark"
+DEFAULT_DATASET_DIR = DATASETS_DIR / "anchorbench_external_core"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/case_studies"
 
 PANEL_SLUGS = [
     "Qwen_Qwen2.5-7B-Instruct",

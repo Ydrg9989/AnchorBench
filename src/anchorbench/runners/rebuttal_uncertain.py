@@ -30,12 +30,13 @@ from anchorbench.eval.evaluator import prepare_items, run_single_stage
 from anchorbench.eval.io import load_itemspecs, load_promptviews
 from anchorbench.eval.metrics import compute_unified_metrics
 from anchorbench.eval.runner_utils import build_backend
+from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
-DEFAULT_CORE = Path("datasets/anchorbench_external_core")
-DEFAULT_DATASET = Path("datasets/anchorbench_external_uncertain")
-DEFAULT_OUT = Path("results/rebuttal/uncertain")
+DEFAULT_CORE = DATASETS_DIR / "anchorbench_external_core"
+DEFAULT_DATASET = DATASETS_DIR / "anchorbench_external_uncertain"
+DEFAULT_OUT = RESULTS_DIR / "rebuttal/uncertain"
 
 
 def _all_conditions() -> list[str]:

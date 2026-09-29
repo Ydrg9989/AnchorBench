@@ -20,6 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_latex, mean_or_none, write_csv, write_json
+from anchorbench.paths import RESULTS_DIR
 
 log = logging.getLogger(__name__)
 
@@ -229,7 +230,7 @@ def main(argv: list[str] | None = None) -> None:
                    help="default: same as --in_dir")
     args = p.parse_args(argv)
     suite, cfg = args.suite, SUITES[args.suite]
-    in_dir = args.in_dir or Path(f"results/rebuttal/{suite}_realism")
+    in_dir = args.in_dir or RESULTS_DIR / f"rebuttal/{suite}_realism"
     out_dir = args.out_dir or in_dir
 
     rows = gather(in_dir, cfg.tags)
