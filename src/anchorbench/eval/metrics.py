@@ -66,157 +66,156 @@ def group_by_item(records: list[dict]) -> dict[str, dict[str, dict]]:
     return items
 
 
+def item_uai(y_anchor: float, y_ctrl: float, anchor: float, epsilon: float = EPSILON) -> float | None:
+    """UAI for one item, Sec. 3.4: the fraction of the control-to-anchor gap
+    the anchored answer closes, (y_anchor - y_ctrl) / (a - y_ctrl).
+
+    None when |a - y_ctrl| < epsilon: the ratio is unstable there and the
+    paper excludes the item rather than smoothing the denominator.
+    """
+    denom = anchor - y_ctrl
+    if abs(denom) < epsilon:
+        return None
+    return (y_anchor - y_ctrl) / denom
+
+
+def toward_anchor(y_anchor: float, y_ctrl: float, anchor: float) -> int:
+    """TAR indicator, Sec. 3.4: 1 when the shift has the sign of the gap.
+    Defined for every item, including those UAI excludes."""
+    return 1 if (y_anchor - y_ctrl) * (anchor - y_ctrl) > 0 else 0
+
+
+def control_errors(items: dict[str, dict[str, dict]], baseline: str) -> list[float]:
+    """|y_ctrl - y*| per item with a parsed baseline answer and a gold value."""
+    errors = []
+    for conds in items.values():
+        ctrl = conds.get(baseline)
+        if ctrl is None:
+            continue
+        y, y_star = ctrl.get("answer_int"), ctrl.get("y_star_evidence")
+        if y is None or y_star is None:
+            continue
+        errors.append(abs(y - y_star))
+    return errors
+
+
+def control_accuracy(items: dict[str, dict[str, dict]], baseline: str) -> tuple[float | None, float | None]:
+    """(MAE_c, Acc_10) on the control answers, Eq. (accuracy): mean absolute
+    error and the share within 10 points of gold; None without any."""
+    errors = control_errors(items, baseline)
+    if not errors:
+        return None, None
+    return float(np.mean(errors)), sum(1 for e in errors if e <= 10) / len(errors)
+
+
+def anchor_effects(
+    items: dict[str, dict[str, dict]], baseline: str, epsilon: float,
+) -> tuple[dict[str, list[float]], dict[str, list[int]]]:
+    """Per-condition lists of item UAI (after the epsilon exclusion) and of
+    TAR indicators (every item), for the four core anchored conditions."""
+    uai: dict[str, list[float]] = {c: [] for c in CONDITIONS if c != "control"}
+    tar: dict[str, list[int]] = {c: [] for c in CONDITIONS if c != "control"}
+    for conds in items.values():
+        ctrl = conds.get(baseline)
+        if ctrl is None or ctrl.get("answer_int") is None:
+            continue
+        y_ctrl = ctrl["answer_int"]
+        for cond in CONDITIONS:
+            if cond == baseline:
+                continue
+            rec = conds.get(cond)
+            if rec is None or rec.get("answer_int") is None or rec.get("anchor_value") is None:
+                continue
+            y_anchor, a = rec["answer_int"], rec["anchor_value"]
+            tar[cond].append(toward_anchor(y_anchor, y_ctrl, a))
+            u = item_uai(y_anchor, y_ctrl, a, epsilon)
+            if u is not None:
+                uai[cond].append(u)
+    return uai, tar
+
+
+def history_adjustment(items: dict[str, dict[str, dict]]) -> tuple[list[float], list[float]]:
+    """History only: ACR = (s2 - s1) / (y* - s1) and RR = 1 - |s2 - y*| / |s1 - y*|
+    over the plausible conditions, per item with a Stage-1 answer at least one
+    point from gold."""
+    acr: list[float] = []
+    rr: list[float] = []
+    for conds in items.values():
+        for cond in ("plausible_low", "plausible_high"):
+            rec = conds.get(cond)
+            if rec is None:
+                continue
+            s1, s2, y_star = rec.get("stage1_answer"), rec.get("answer_int"), rec.get("y_star_evidence")
+            if s1 is None or s2 is None or y_star is None:
+                continue
+            if abs(y_star - s1) >= 1:
+                acr.append((s2 - s1) / (y_star - s1))
+            if abs(s1 - y_star) >= 1:
+                rr.append(1.0 - abs(s2 - y_star) / abs(s1 - y_star))
+    return acr, rr
+
+
+def _mean(values: list) -> float | None:
+    return float(np.mean(values)) if values else None
+
+
+def _r(v: float | None, d: int = 4) -> float | None:
+    return round(v, d) if v is not None else None
+
+
 def compute_unified_metrics(
     records: list[dict],
     epsilon: float = EPSILON,
     baseline_condition: str = "control",
 ) -> dict:
-    """Compute UAI, TAR, MAE, and optional History ACR/RR from result records.
+    """The per-cell metrics of Sec. 3.4 from one results.jsonl: parse rate,
+    MAE_c and Acc_10, UAI and TAR per condition and pooled per relevance,
+    Disc_delta, and for History ACR and RR.
 
-    ``baseline_condition`` names the condition used as the reference response for
-    MAE and for UAI denominators (e.g. ``control_twostage`` for matched-format
-    History evaluation).
+    ``baseline_condition`` is the control answer UAI and MAE are measured
+    against (``control_twostage`` for the matched-format History run).
     """
     n_total = len(records)
-    n_parsed = sum(
-        1 for r in records
-        if r.get("parsed_ok") and r.get("answer_int") is not None
-    )
-    parse_rate = n_parsed / n_total if n_total else 0.0
-
+    n_parsed = sum(1 for r in records if r.get("parsed_ok") and r.get("answer_int") is not None)
     items = group_by_item(records)
 
-    mae_control_vals = []
-    for _iid, conds in items.items():
-        ctrl = conds.get(baseline_condition)
-        if ctrl is None:
-            continue
-        y = ctrl.get("answer_int")
-        y_star = ctrl.get("y_star_evidence")
-        if y is None or y_star is None:
-            continue
-        mae_control_vals.append(abs(y - y_star))
-
-    mae_control = float(np.mean(mae_control_vals)) if mae_control_vals else None
-    acc10_control = (
-        sum(1 for e in mae_control_vals if e <= 10) / len(mae_control_vals)
-        if mae_control_vals
-        else None
-    )
-
-    uai_by_cond: dict[str, list[float]] = {
-        c: [] for c in CONDITIONS if c != "control"
-    }
-    tar_by_cond: dict[str, list[int]] = {
-        c: [] for c in CONDITIONS if c != "control"
-    }
-
-    for _iid, conds in items.items():
-        ctrl = conds.get(baseline_condition)
-        if ctrl is None:
-            continue
-        y_ctrl = ctrl.get("answer_int")
-        if y_ctrl is None:
-            continue
-
-        for cond in CONDITIONS:
-            if cond == baseline_condition:
-                continue
-            rec = conds.get(cond)
-            if rec is None:
-                continue
-            y_anchor = rec.get("answer_int")
-            a = rec.get("anchor_value")
-            if y_anchor is None or a is None:
-                continue
-
-            denom = a - y_ctrl
-            shift = y_anchor - y_ctrl
-
-            tar_by_cond[cond].append(1 if shift * denom > 0 else 0)
-
-            if abs(denom) < epsilon:
-                continue
-            uai_by_cond[cond].append(shift / denom)
-
-    def safe_mean(lst: list) -> float | None:
-        return float(np.mean(lst)) if lst else None
-
-    uai_irr_low = safe_mean(uai_by_cond["irrelevant_low"])
-    uai_irr_high = safe_mean(uai_by_cond["irrelevant_high"])
-    uai_plaus_low = safe_mean(uai_by_cond["plausible_low"])
-    uai_plaus_high = safe_mean(uai_by_cond["plausible_high"])
-
-    all_irr = uai_by_cond["irrelevant_low"] + uai_by_cond["irrelevant_high"]
-    all_plaus = uai_by_cond["plausible_low"] + uai_by_cond["plausible_high"]
-    uai_irr = safe_mean(all_irr)
-    uai_plaus = safe_mean(all_plaus)
-
-    tar_irr_low = safe_mean(tar_by_cond["irrelevant_low"])
-    tar_irr_high = safe_mean(tar_by_cond["irrelevant_high"])
-    tar_plaus_low = safe_mean(tar_by_cond["plausible_low"])
-    tar_plaus_high = safe_mean(tar_by_cond["plausible_high"])
-
-    all_tar_irr = tar_by_cond["irrelevant_low"] + tar_by_cond["irrelevant_high"]
-    all_tar_plaus = tar_by_cond["plausible_low"] + tar_by_cond["plausible_high"]
-    tar_irr = safe_mean(all_tar_irr)
-    tar_plaus = safe_mean(all_tar_plaus)
-
-    disc_delta = None
-    if uai_irr is not None and uai_plaus is not None:
-        disc_delta = uai_plaus - uai_irr
-
-    has_stage1 = any(r.get("stage1_answer") is not None for r in records)
-    acr_vals: list[float] = []
-    rr_vals: list[float] = []
-    if has_stage1:
-        for _iid, conds in items.items():
-            for cond in ("plausible_low", "plausible_high"):
-                rec = conds.get(cond)
-                if rec is None:
-                    continue
-                s1 = rec.get("stage1_answer")
-                s2 = rec.get("answer_int")
-                y_star = rec.get("y_star_evidence")
-                if s1 is None or s2 is None or y_star is None:
-                    continue
-                if abs(y_star - s1) >= 1:
-                    acr_vals.append((s2 - s1) / (y_star - s1))
-                if abs(s1 - y_star) >= 1:
-                    rr_vals.append(1.0 - abs(s2 - y_star) / abs(s1 - y_star))
-
-    def _r(v: float | None, d: int = 4) -> float | None:
-        return round(v, d) if v is not None else None
+    mae_control, acc10_control = control_accuracy(items, baseline_condition)
+    uai, tar = anchor_effects(items, baseline_condition, epsilon)
+    # Low and high are pooled within a relevance level: one UAI_irr and one
+    # UAI_pls per cell (Sec. 3.4, "Reporting pipeline").
+    all_irr = uai["irrelevant_low"] + uai["irrelevant_high"]
+    all_plaus = uai["plausible_low"] + uai["plausible_high"]
+    uai_irr, uai_plaus = _mean(all_irr), _mean(all_plaus)
 
     result = {
         "baseline_condition": baseline_condition,
         "n_items": len(items),
         "n_records": n_total,
-        "parse_rate": round(parse_rate, 4),
+        "parse_rate": round(n_parsed / n_total if n_total else 0.0, 4),
         "mae_control": _r(mae_control, 2),
         "acc10_control": _r(acc10_control),
-        "uai_irr_low": _r(uai_irr_low),
-        "uai_irr_high": _r(uai_irr_high),
-        "uai_plaus_low": _r(uai_plaus_low),
-        "uai_plaus_high": _r(uai_plaus_high),
+        "uai_irr_low": _r(_mean(uai["irrelevant_low"])),
+        "uai_irr_high": _r(_mean(uai["irrelevant_high"])),
+        "uai_plaus_low": _r(_mean(uai["plausible_low"])),
+        "uai_plaus_high": _r(_mean(uai["plausible_high"])),
         "uai_irr": _r(uai_irr),
         "uai_plaus": _r(uai_plaus),
-        "tar_irr_low": _r(tar_irr_low),
-        "tar_irr_high": _r(tar_irr_high),
-        "tar_plaus_low": _r(tar_plaus_low),
-        "tar_plaus_high": _r(tar_plaus_high),
-        "tar_irr": _r(tar_irr),
-        "tar_plaus": _r(tar_plaus),
-        "disc_delta": _r(disc_delta),
+        "tar_irr_low": _r(_mean(tar["irrelevant_low"])),
+        "tar_irr_high": _r(_mean(tar["irrelevant_high"])),
+        "tar_plaus_low": _r(_mean(tar["plausible_low"])),
+        "tar_plaus_high": _r(_mean(tar["plausible_high"])),
+        "tar_irr": _r(_mean(tar["irrelevant_low"] + tar["irrelevant_high"])),
+        "tar_plaus": _r(_mean(tar["plausible_low"] + tar["plausible_high"])),
+        "disc_delta": _r(uai_plaus - uai_irr) if uai_irr is not None and uai_plaus is not None else None,
         "epsilon": epsilon,
         "n_uai_irr": len(all_irr),
         "n_uai_plaus": len(all_plaus),
     }
 
-    if has_stage1:
-        result["acr_mean"] = _r(safe_mean(acr_vals)) if acr_vals else None
-        result["rr_mean"] = _r(safe_mean(rr_vals)) if rr_vals else None
-
+    if any(r.get("stage1_answer") is not None for r in records):
+        acr, rr = history_adjustment(items)
+        result["acr_mean"] = _r(_mean(acr))
+        result["rr_mean"] = _r(_mean(rr))
     return result
 
 
@@ -357,10 +356,9 @@ def _collect_item_uai_vectors(
             a = rec.get("anchor_value")
             if y_anchor is None or a is None:
                 continue
-            denom = a - y_ctrl
-            if abs(denom) < epsilon:
+            uai = item_uai(y_anchor, y_ctrl, a, epsilon)
+            if uai is None:
                 continue
-            uai = (y_anchor - y_ctrl) / denom
 
             key = (iid, cond.rsplit("_", 1)[-1])
             if "placebo" in cond:
@@ -390,6 +388,38 @@ def _parse_rate_by_condition(records: list[dict]) -> dict[str, dict[str, int]]:
     return by_cond
 
 
+def _ci_summary(values: list[float], digits: int = 4) -> dict[str, float]:
+    mean, lo, hi = bootstrap_ci(values)
+    return {"mean": round(mean, digits), "lo": round(lo, digits), "hi": round(hi, digits)}
+
+
+def _paired_tests(
+    vectors: dict[str, dict[tuple[str, str], float]], paired_keys: list[tuple[str, str]],
+) -> dict[str, float | None]:
+    """Two-sided Wilcoxon signed-rank p-values: plausible vs irrelevant on the
+    paired items, and each relevance group against zero; then
+    Benjamini-Hochberg over the tests that ran (Appendix app:stats)."""
+    p_values: dict[str, float | None] = {}
+    labels: list[str] = []
+
+    def record(label: str, p: float) -> None:
+        p_values[label] = round(p, 6) if not np.isnan(p) else None
+        labels.append(label)
+
+    if paired_keys:
+        record("p_plaus_vs_irr", paired_wilcoxon([vectors["plaus"][k] for k in paired_keys],
+                                                 [vectors["irr"][k] for k in paired_keys]))
+    for key in ("irr", "plaus", "placebo", "authority", "neutral"):
+        if vectors[key]:
+            vals = list(vectors[key].values())
+            record(f"p_{key}_vs_zero", paired_wilcoxon(vals, [0.0] * len(vals)))
+
+    valid = [k for k in labels if p_values[k] is not None]
+    for k, adj in zip(valid, bh_correction([p_values[k] for k in valid])):
+        p_values[f"{k}_bh"] = round(adj, 6)
+    return p_values
+
+
 def compute_extended_metrics(
     records: list[dict],
     epsilon: float = EPSILON,
@@ -412,22 +442,16 @@ def compute_extended_metrics(
     ci_results = {}
     for key in ("irr", "plaus", "placebo", "authority", "neutral"):
         if vectors[key]:
-            mean, lo, hi = bootstrap_ci(list(vectors[key].values()))
-            ci_results[f"uai_{key}_ci"] = {"mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4)}
+            ci_results[f"uai_{key}_ci"] = _ci_summary(list(vectors[key].values()))
             ci_results[f"n_uai_{key}"] = len(vectors[key])
         else:
             ci_results[f"uai_{key}_ci"] = None
             ci_results[f"n_uai_{key}"] = 0
 
     if base.get("mae_control") is not None:
-        mae_vals = []
-        for _iid, conds in items.items():
-            ctrl = conds.get(baseline_condition)
-            if ctrl and ctrl.get("answer_int") is not None and ctrl.get("y_star_evidence") is not None:
-                mae_vals.append(abs(ctrl["answer_int"] - ctrl["y_star_evidence"]))
+        mae_vals = control_errors(items, baseline_condition)
         if mae_vals:
-            mean, lo, hi = bootstrap_ci(mae_vals)
-            ci_results["mae_control_ci"] = {"mean": round(mean, 2), "lo": round(lo, 2), "hi": round(hi, 2)}
+            ci_results["mae_control_ci"] = _ci_summary(mae_vals, digits=2)
 
     # Pair on (item_id, direction). This used to slice both lists to the
     # shorter length in dict-iteration order, which is not a pairing at all:
@@ -437,36 +461,10 @@ def compute_extended_metrics(
     # number.
     paired_keys = sorted(vectors["plaus"].keys() & vectors["irr"].keys())
     if base.get("disc_delta") is not None and paired_keys:
-        disc_vals = [vectors["plaus"][k] - vectors["irr"][k] for k in paired_keys]
-        mean, lo, hi = bootstrap_ci(disc_vals)
-        ci_results["disc_delta_ci"] = {"mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4)}
+        ci_results["disc_delta_ci"] = _ci_summary(
+            [vectors["plaus"][k] - vectors["irr"][k] for k in paired_keys])
 
-    p_values = {}
-    test_labels = []
-
-    if paired_keys:
-        p = paired_wilcoxon([vectors["plaus"][k] for k in paired_keys],
-                            [vectors["irr"][k] for k in paired_keys])
-        p_values["p_plaus_vs_irr"] = round(p, 6) if not np.isnan(p) else None
-        test_labels.append("p_plaus_vs_irr")
-
-    for key in ("irr", "plaus", "placebo", "authority", "neutral"):
-        if vectors[key]:
-            vals = list(vectors[key].values())
-            p = paired_wilcoxon(vals, [0.0] * len(vals))
-            p_values[f"p_{key}_vs_zero"] = round(p, 6) if not np.isnan(p) else None
-            test_labels.append(f"p_{key}_vs_zero")
-
-    raw_ps = [p_values.get(k) for k in test_labels]
-    valid_ps = [p for p in raw_ps if p is not None and not np.isnan(p)]
-    if valid_ps:
-        adjusted = bh_correction(valid_ps)
-        adj_idx = 0
-        for k in test_labels:
-            if p_values.get(k) is not None and not np.isnan(p_values[k]):
-                p_values[f"{k}_bh"] = round(adjusted[adj_idx], 6)
-                adj_idx += 1
-
+    p_values = _paired_tests(vectors, paired_keys)
     parse_denom = _parse_rate_by_condition(records)
 
     has_twostage_ctrl = any(r.get("condition") == "control_twostage" for r in records)
@@ -477,11 +475,9 @@ def compute_extended_metrics(
         )
         for key in ("irr", "plaus"):
             if ts_vectors[key]:
-                mean, lo, hi = bootstrap_ci(list(ts_vectors[key].values()))
-                twostage_metrics[f"uai_{key}_ts"] = round(mean, 4)
-                twostage_metrics[f"uai_{key}_ts_ci"] = {
-                    "mean": round(mean, 4), "lo": round(lo, 4), "hi": round(hi, 4),
-                }
+                ci = _ci_summary(list(ts_vectors[key].values()))
+                twostage_metrics[f"uai_{key}_ts"] = ci["mean"]
+                twostage_metrics[f"uai_{key}_ts_ci"] = ci
 
     result = {**base, **ci_results, **p_values, **twostage_metrics}
     result["parse_by_condition"] = {
