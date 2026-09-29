@@ -101,6 +101,23 @@ def resolve_anchor_preamble(
     return pool[phrasing_idx % len(pool)].format(anchor=anchor_value)
 
 
+def render_demos(
+    demos: list[tuple[list[dict], int]], headers: list[str],
+) -> tuple[str, list[int], list[str]]:
+    """The few-shot block: one header, evidence and answer per demo.
+
+    Returns (demos_text, answers, evidence_strings) for the prompt and its
+    components.
+    """
+    blocks, answers, evidence_strs = [], [], []
+    for header, (demo_ev, demo_ans) in zip(headers, demos):
+        ev_str = format_evidence(demo_ev, show_missing=False)
+        blocks.append(f"{header}\n{ev_str}\nAnswer: {demo_ans}")
+        answers.append(demo_ans)
+        evidence_strs.append(ev_str)
+    return "\n\n".join(blocks), answers, evidence_strs
+
+
 def anchored_prompt(
     base_text: str,
     question: str,

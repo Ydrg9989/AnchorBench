@@ -12,15 +12,8 @@ Target task (scenario / evidence / question) is identical across conditions.
 
 from __future__ import annotations
 
-import hashlib
-import random
-from typing import Any
-
-from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
-from ._shared import CONDITIONS, format_evidence, resolve_templates
-
-N_DEMOS = 3
+from ._shared import CONDITIONS, format_evidence, render_demos, resolve_templates
 
 _INTROS_CONTROL = [
     "Below are examples of similar estimation tasks, followed by a new case.\n\n",
@@ -65,31 +58,12 @@ def _demos_tag_for_condition(condition: str) -> str:
     raise ValueError(f"unknown icl_dist condition: {condition!r}")
 
 
-def _fallback_demos(spec: ItemSpec, tag: str) -> list[dict[str, Any]]:
-    """Regenerate demos if tags missing (e.g. legacy spec); deterministic from item_id."""
-    stable = int(hashlib.sha256(spec.item_id.encode()).hexdigest()[:8], 16)
-    rng = random.Random(spec.seed * 10000 + stable % 10000)
-    labels = DOMAINS[spec.domain].evidence_labels[:3]
-    low, high = spec.anchors.get("low", 30), spec.anchors.get("high", 70)
-    center = {"icl_dist_demos_control": 50, "icl_dist_demos_low": low, "icl_dist_demos_high": high}[tag]
-    out = []
-    for _ in range(N_DEMOS):
-        spread = 6 if tag == "icl_dist_demos_control" else 5
-        theta_d = max(0, min(100, center + rng.randint(-spread, spread)))
-        ev = [
-            {"label": lbl, "value": max(0, min(100, round(rng.gauss(theta_d, 6))))}
-            for lbl in labels
-        ]
-        out.append({"evidence": ev, "answer": round(sum(e["value"] for e in ev) / len(ev))})
-    return out
-
-
 def _load_demos(spec: ItemSpec, condition: str) -> list[tuple[list[dict], int]]:
+    # The demo answers are the manipulation itself (Appendix app:icl-dist);
+    # itemspec_gen writes them, and a spec without the tag is not an
+    # ICL-dist item. The KeyError names the tag.
     tag = _demos_tag_for_condition(condition)
-    raw = spec.tags.get(tag)
-    if not raw:
-        raw = _fallback_demos(spec, tag)
-    return [(d["evidence"], d["answer"]) for d in raw]
+    return [(d["evidence"], d["answer"]) for d in spec.tags[tag]]
 
 
 def _build_prompt(
@@ -103,19 +77,8 @@ def _build_prompt(
     scenario, question, _, _ = resolve_templates(spec)
     target_evidence = format_evidence(spec.evidence_structured)
 
-    demo_blocks = []
-    demo_headers: list[str] = []
-    demo_answers_list: list[int] = []
-    demo_evidence_strs: list[str] = []
-    for di, (demo_ev, demo_ans) in enumerate(demos):
-        header = f"Example {di + 1}:"
-        ev_str = format_evidence(demo_ev, show_missing=False)
-        demo_blocks.append(f"{header}\n{ev_str}\nAnswer: {demo_ans}")
-        demo_headers.append(header)
-        demo_answers_list.append(demo_ans)
-        demo_evidence_strs.append(ev_str)
-
-    demos_text = "\n\n".join(demo_blocks)
+    demo_headers = [f"Example {di + 1}:" for di in range(len(demos))]
+    demos_text, demo_answers_list, demo_evidence_strs = render_demos(demos, demo_headers)
 
     prompt_text = (
         f"{intro}"

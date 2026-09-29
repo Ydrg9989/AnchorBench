@@ -12,14 +12,8 @@ identical except the demo header line.
 
 from __future__ import annotations
 
-import hashlib
-import random
-
-from ..domains import ALL_DOMAINS as DOMAINS
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
-from ._shared import ICL_CONDITIONS, format_evidence, resolve_templates
-
-N_DEMOS = 3
+from ._shared import ICL_CONDITIONS, format_evidence, render_demos, resolve_templates
 
 # ── Header templates per relevance type ──────────────────────────────
 
@@ -75,19 +69,11 @@ def _build_prompt(
     scenario, question, _, _ = resolve_templates(spec)
     target_evidence = format_evidence(spec.evidence_structured)
 
-    demo_blocks = []
-    demo_headers = []
-    demo_answers_list = []
-    demo_evidence_strs = []
-    for di, (demo_ev, demo_ans) in enumerate(demos):
-        header = _make_demo_header(di, relevance, anchor_value, spec.anchor_phrasing_idx)
-        ev_str = format_evidence(demo_ev, show_missing=False)
-        demo_blocks.append(f"{header}\n{ev_str}\nAnswer: {demo_ans}")
-        demo_headers.append(header)
-        demo_answers_list.append(demo_ans)
-        demo_evidence_strs.append(ev_str)
-
-    demos_text = "\n\n".join(demo_blocks)
+    demo_headers = [
+        _make_demo_header(di, relevance, anchor_value, spec.anchor_phrasing_idx)
+        for di in range(len(demos))
+    ]
+    demos_text, demo_answers_list, demo_evidence_strs = render_demos(demos, demo_headers)
 
     prompt_text = (
         f"Below are examples of similar estimation tasks, followed by a new case.\n\n"
@@ -123,19 +109,9 @@ def _build_prompt(
 
 def render_icl(spec: ItemSpec) -> list[PromptView]:
     """Render 7 conditions for an ICL item."""
-    icl_demos_tag = spec.tags.get("icl_demos")
-    if icl_demos_tag:
-        demos = [(d["evidence"], d["answer"]) for d in icl_demos_tag]
-    else:
-        stable_hash = int(hashlib.sha256(spec.item_id.encode()).hexdigest()[:8], 16)
-        rng = random.Random(spec.seed * 10000 + stable_hash % 10000)
-        labels = DOMAINS[spec.domain].evidence_labels[:3]
-        demos = []
-        for _ in range(N_DEMOS):
-            theta = rng.randint(35, 65)
-            ev = [{"label": lbl, "value": max(0, min(100, round(rng.gauss(theta, 6))))} for lbl in labels]
-            demos.append((ev, round(sum(e["value"] for e in ev) / len(ev))))
-
+    # The demos are part of the item (itemspec_gen writes them); a spec
+    # without them is not an ICL item, and the KeyError says which tag.
+    demos = [(d["evidence"], d["answer"]) for d in spec.tags["icl_demos"]]
     return [
         _build_prompt(spec, cond, rel, spec.anchors.get(d) if d else None, demos)
         for cond, rel, d in ICL_CONDITIONS
