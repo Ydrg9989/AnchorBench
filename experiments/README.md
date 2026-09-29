@@ -32,7 +32,7 @@ run the analysis modules when every `.done` flag is present.
 
 | Launcher | Runs | Writes to `results/rebuttal/` | Backs |
 |---|---|---|---|
-| `_b1_one_model.sh`, `_b1_api_model.sh`, `run_b1_cot_extended.sh`, `_chain_after_b1.sh` | `runners.rebuttal_cot`, `runners.api` | `cot_extended/` | `tab:cot_extended` |
+| `_b1_one_model.sh`, `_b1_api_model.sh`, `run_b1_cot_extended.sh`, `_chain_after_b1.sh` | `runners.mitigation_headroom`, `runners.api` | `cot_extended/` | `tab:cot_extended` |
 | `_b2_one_model.sh` | `runners.rebuttal_spectrum` | `spectrum/` | `tab:plausibility_spectrum` |
 | `_b3_one_model.sh` | `runners.external` on the weighted-mean split | `weighted_mean/` | `tab:weighted_mean` |
 | `_c1_one_model.sh` | `runners.{external,history}` on the medical pilot | `medical/` | `tab:extension_pilot` |
@@ -40,7 +40,7 @@ run the analysis modules when every `.done` flag is present.
 | `_d1_one_model.sh`, `run_p1_intensity_pathway.sh` | `runners.rebuttal_intensity` | `intensity/`, `intensity_rag/`, `intensity_history/` | `tab:intensity_pathway` |
 | `_p2_one_model.sh`, `run_p2_rag_realism.sh` | `runners.realism --suite rag` | `rag_realism/` | `tab:rag_realism` |
 | `_p3_one_model.sh`, `run_p3_tool_realism.sh` | `runners.realism --suite tool` | `tool_realism/` | `tab:tool_realism` |
-| `_p4_one_model.sh`, `run_p4_task_spec.sh` | `runners.rebuttal_cot` (rule vs. judgment prompts) | `task_spec/` | `tab:task_spec` |
+| `_p4_one_model.sh`, `run_p4_task_spec.sh` | `runners.mitigation_headroom` (rule vs. judgment prompts) | `task_spec/` | `tab:task_spec` |
 | `_p5_one_model.sh` | `runners.rebuttal_uncertain` | `uncertain/` | `tab:uncertain_k`, main-text Table 2 |
 | `_large_api_full.sh`, `_large_ow_all_suites.sh`, `api_smoke_large.sh` | `runners.api`, per-suite runners with tensor parallelism | `large_api/`, `large_ow/`, `large_api_smoke/` | `tab:large_panel_results` |
 | `_chain_p2_to_p5.sh`, `_wait_then_chain.sh`, `_wrap_up.sh`, `_wrap_up_p2p5.sh` | orchestration: sequence the per-model chains, poll `.done` flags, then run the analysis modules | `_chain_*` and `_wrap_up*` logs | — |

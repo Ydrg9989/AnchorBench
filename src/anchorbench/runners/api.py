@@ -33,7 +33,7 @@ from anchorbench.eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.io import load_itemspecs, load_promptviews, suite_files
 from anchorbench.eval.runner_utils import build_backend
 from anchorbench.paths import ROOT
 
@@ -51,12 +51,9 @@ def load_items(suite: str, max_items: int | None, seed: int,
     default History baseline) lives only there; ``prepare_items`` keeps just
     the requested conditions.
     """
-    ds = ROOT / SUITE_DATASETS[suite]
-    pv_file = ds / "promptviews.jsonl"
-    if not pv_file.exists():
-        pv_file = ds / "promptviews_core.jsonl"
+    pv_file, spec_file = suite_files(ROOT / SUITE_DATASETS[suite], prefer_full=True)
     views = load_promptviews(pv_file)
-    specs = load_itemspecs(ds / "itemspecs.jsonl")
+    specs = load_itemspecs(spec_file)
     return prepare_items(views, specs, max_items, seed, conditions=conditions)
 
 

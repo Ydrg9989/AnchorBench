@@ -33,7 +33,7 @@ echo "  out_dir:    $OUT_DIR" | tee -a "$LOG"
 echo "  log:        $LOG"
 
 bash scripts/run_with_env.sh \
-    python -m anchorbench.runners.rebuttal_cot \
+    python -m anchorbench.runners.mitigation_headroom \
         --model_id "$MODEL_ID" \
         --backend vllm \
         --tensor_parallel_size 1 \

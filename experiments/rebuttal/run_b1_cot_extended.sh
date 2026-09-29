@@ -50,7 +50,7 @@ echo
 for MODEL in "${OW_MODELS[@]}"; do
     echo "==== [B1/OW] $MODEL ===="
     bash scripts/run_with_env.sh \
-        python -m anchorbench.runners.rebuttal_cot \
+        python -m anchorbench.runners.mitigation_headroom \
             --model_id "$MODEL" \
             --backend vllm \
             --suites "${SUITES[@]}" \

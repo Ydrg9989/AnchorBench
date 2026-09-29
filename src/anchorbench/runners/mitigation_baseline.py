@@ -30,18 +30,13 @@ from anchorbench.eval.evaluator import (
     run_single_stage,
     write_and_summarize,
 )
-from anchorbench.eval.io import load_itemspecs, load_promptviews
-from anchorbench.eval.runner_utils import build_backend
+from anchorbench.eval.io import load_itemspecs, load_promptviews, suite_files
+from anchorbench.eval.runner_utils import PROMPT_SUFFIXES, build_backend
 from anchorbench.paths import ROOT
 
 log = logging.getLogger(__name__)
 
-MITIGATION_SUFFIX = (
-    "\n\nImportant: Base your final numeric estimate solely on the "
-    "evidence provided in the task data. Disregard any other numeric "
-    "values from the surrounding context that are not part of the "
-    "core evidence."
-)
+MITIGATION_SUFFIX = PROMPT_SUFFIXES["ignore"]
 RECORD_EXTRAS = {"mitigation": "ignore_anchor"}
 
 
@@ -58,12 +53,9 @@ def run(args: argparse.Namespace) -> int:
     slug = args.model_id.replace("/", "_")
 
     for suite in args.suites:
-        ds = ROOT / SUITE_DATASETS[suite]
-        pv_file = ds / "promptviews_core.jsonl"
-        if not pv_file.exists():
-            pv_file = ds / "promptviews.jsonl"
+        pv_file, spec_file = suite_files(ROOT / SUITE_DATASETS[suite])
         views = load_promptviews(pv_file)
-        specs = load_itemspecs(ds / "itemspecs.jsonl")
+        specs = load_itemspecs(spec_file)
         items = prepare_items(views, specs, args.max_items, args.seed)
         log.info("[%s] %d items loaded", suite, len(items))
 

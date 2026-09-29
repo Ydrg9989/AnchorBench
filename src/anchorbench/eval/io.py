@@ -26,6 +26,24 @@ def load_itemspecs(path: Path | str) -> dict[str, dict]:
     return specs
 
 
+def suite_files(dataset_dir: Path | str, *, prefer_full: bool = False) -> tuple[Path, Path]:
+    """(promptviews, itemspecs) paths of one dataset directory.
+
+    ``promptviews_core.jsonl`` holds the five core conditions; the full
+    ``promptviews.jsonl`` also holds the ablation ones, including History's
+    ``control_twostage``, so a run that needs those asks for ``prefer_full``.
+    Either file is accepted when the other is absent.
+    """
+    ds = Path(dataset_dir)
+    order = ("promptviews.jsonl", "promptviews_core.jsonl")
+    if not prefer_full:
+        order = order[::-1]
+    for name in order:
+        if (ds / name).exists():
+            return ds / name, ds / "itemspecs.jsonl"
+    raise FileNotFoundError(f"no promptviews file under {ds}")
+
+
 def load_records(path: Path | str) -> list[dict]:
     """The records of a results.jsonl. A malformed line is an error, not a skip:
     every table downstream would silently lose that record."""

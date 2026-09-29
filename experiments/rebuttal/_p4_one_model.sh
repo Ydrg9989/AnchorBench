@@ -18,7 +18,7 @@ echo "[$(date -Iseconds)] P4[task_spec] $MODEL_ID on GPU $DEVICES" | tee -a "$LO
 
 export CUDA_VISIBLE_DEVICES="$DEVICES"
 bash scripts/run_with_env.sh \
-    python -m anchorbench.runners.rebuttal_cot \
+    python -m anchorbench.runners.mitigation_headroom \
         --model_id "$MODEL_ID" \
         --backend vllm \
         --suites external \

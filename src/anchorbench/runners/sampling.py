@@ -26,7 +26,7 @@ from pathlib import Path
 from anchorbench.eval.constants import SUITE_DATASETS as _ALL
 from anchorbench.eval.constants import VARIANT_DATASETS
 from anchorbench.eval.evaluator import prepare_items, run_single_stage, write_and_summarize
-from anchorbench.eval.io import load_itemspecs, load_promptviews
+from anchorbench.eval.io import load_itemspecs, load_promptviews, suite_files
 from anchorbench.eval.runner_utils import build_backend
 from anchorbench.paths import ROOT
 
@@ -63,12 +63,9 @@ def run(args: argparse.Namespace) -> int:
     settings = [(0.0, 0)] + [(SAMPLING_TEMP, si) for si in range(args.n_seeds)]
 
     for suite in args.suites:
-        ds = ROOT / SUITE_DATASETS[suite]
-        pv_file = ds / "promptviews_core.jsonl"
-        if not pv_file.exists():
-            pv_file = ds / "promptviews.jsonl"
+        pv_file, spec_file = suite_files(ROOT / SUITE_DATASETS[suite])
         views = load_promptviews(pv_file)
-        specs = load_itemspecs(ds / "itemspecs.jsonl")
+        specs = load_itemspecs(spec_file)
         items = prepare_items(views, specs, args.max_items, args.seed)
         log.info("[%s] %d items loaded", suite, len(items))
 

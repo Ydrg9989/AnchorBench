@@ -116,6 +116,39 @@ def make_backend(args: argparse.Namespace) -> Backend:
     )
 
 
+# The instruction appended to every prompt of a mitigation or reasoning
+# probe (Appendix: mitigation headroom, CoT extension, task specification).
+# One home, so the runners that compare them are comparing the same text.
+PROMPT_SUFFIXES: dict[str, str] = {
+    "baseline": "",
+    "ignore": (
+        "\n\nImportant: Base your final numeric estimate solely on the "
+        "evidence provided in the task data. Disregard any other numeric "
+        "values from the surrounding context that are not part of the "
+        "core evidence."
+    ),
+    "self_check": (
+        "\n\nAfter producing your initial estimate, briefly check whether "
+        "any extraneous numbers in the context may have biased your answer. "
+        "If so, correct it. Then state your final numeric estimate."
+    ),
+    "cot": (
+        "\n\nThink step by step. List the relevant evidence, compute "
+        "your estimate from that evidence only, then provide your final "
+        "numeric answer on the last line."
+    ),
+    "rule": (
+        "\n\nYour estimate should be the unweighted arithmetic mean of "
+        "the visible ratings, rounded to the nearest integer."
+    ),
+    "judgment": (
+        "\n\nYour estimate should be a weighted average of the available "
+        "evidence, weighting each piece according to which sources you "
+        "find more or less credible."
+    ),
+}
+
+
 def build_suffix(args: argparse.Namespace) -> str:
     """Construct the prompt suffix from the request_* CLI flags."""
     suffix = ""
