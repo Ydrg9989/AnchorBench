@@ -187,15 +187,3 @@ def discover_results(
     return found
 
 
-def fmt(v: float | None, decimals: int = 2) -> str:
-    """Format a float for table display (``---`` if None)."""
-    if v is None:
-        return "---"
-    return f"{v:.{decimals}f}"
-
-
-def fmt_pct(v: float | None) -> str:
-    """Format a float as percentage for table display."""
-    if v is None:
-        return "---"
-    return f"{v * 100:.1f}%"

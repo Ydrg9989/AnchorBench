@@ -20,18 +20,19 @@ import json
 import sys
 from pathlib import Path
 
+from anchorbench.analysis._io import fmt
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import (
     compute_by_difficulty,
     compute_by_offset,
     compute_extended_metrics,
 )
-from anchorbench.eval.runner_utils import (
-    discover_results,
-    fmt,
-    fmt_pct,
-)
+from anchorbench.eval.runner_utils import discover_results
 from anchorbench.paths import RESULTS_DIR
+
+
+def _pct(v: float | None) -> str:
+    return "---" if v is None else f"{v * 100:.1f}%"
 
 
 def main() -> None:
@@ -105,13 +106,13 @@ def main() -> None:
                 f"{r['model']:<16} "
                 f"{r['n_records']:>5} "
                 f"{fmt(r['mae_control']):>6} "
-                f"{fmt_pct(r['acc10_control']):>8} "
+                f"{_pct(r['acc10_control']):>8} "
                 f"{fmt(r['uai_irr'], 3):>8} "
                 f"{fmt(r['uai_plaus'], 3):>8} "
                 f"{fmt(r['tar_irr'], 3):>8} "
                 f"{fmt(r['tar_plaus'], 3):>8} "
                 f"{fmt(r['disc_delta'], 3):>8} "
-                f"{fmt_pct(r['parse_rate']):>7}"
+                f"{_pct(r['parse_rate']):>7}"
             )
         print()
 
@@ -131,69 +132,12 @@ def main() -> None:
             f"{r['model']:<16} "
             f"{r['n_records']:>5} "
             f"{fmt(r['mae_control']):>6} "
-            f"{fmt_pct(r['acc10_control']):>8} "
+            f"{_pct(r['acc10_control']):>8} "
             f"{fmt(r['uai_irr'], 3):>8} "
             f"{fmt(r['uai_plaus'], 3):>8} "
             f"{fmt(r['disc_delta'], 3):>8} "
-            f"{fmt_pct(r['parse_rate']):>7}"
+            f"{_pct(r['parse_rate']):>7}"
         )
-
-    # LaTeX table with CIs and significance markers
-    print("\n" + "=" * 115)
-    print("  LaTeX table rows with CIs (copy-paste into paper)")
-    print("=" * 115)
-
-    def fmt_ci(r: dict, key: str, decimals: int = 2) -> str:
-        """Format a metric with CI: '0.42 [0.31, 0.53]'."""
-        val = r.get(key)
-        ci = r.get(f"{key}_ci")
-        if val is None:
-            return "---"
-        v = f"{val:.{decimals}f}"
-        if ci and ci.get("lo") is not None:
-            return f"{v} [{ci['lo']:.{decimals}f}, {ci['hi']:.{decimals}f}]"
-        return v
-
-    def sig_marker(r: dict, key: str) -> str:
-        """Return significance marker based on BH-corrected p-value."""
-        p = r.get(f"{key}_bh", r.get(key))
-        if p is None or (isinstance(p, float) and (p != p)):
-            return ""
-        if p < 0.001:
-            return "***"
-        if p < 0.01:
-            return "**"
-        if p < 0.05:
-            return "*"
-        return ""
-
-    for suite_name in ("External", "Icl", "Rag", "Tool", "History"):
-        rows = [r for r in all_results if r["suite"] == suite_name]
-        if not rows:
-            continue
-        rows.sort(key=lambda r: r["model"])
-        print(f"\n% --- {suite_name} suite ---")
-        for r in rows:
-            model = r["model"]
-            mae = fmt_ci(r, "mae_control")
-            acc = (
-                f"{r['acc10_control'] * 100:.1f}\\%"
-                if r["acc10_control"] is not None
-                else "---"
-            )
-            ui = fmt(r["uai_irr"], 2) + sig_marker(r, "p_irr_vs_zero")
-            up = fmt(r["uai_plaus"], 2) + sig_marker(r, "p_plaus_vs_zero")
-            ti = fmt(r["tar_irr"], 2)
-            tp = fmt(r["tar_plaus"], 2)
-            dd = fmt(r["disc_delta"], 2) + sig_marker(r, "p_plaus_vs_irr")
-            pr = (
-                f"{r['parse_rate'] * 100:.1f}\\%"
-                if r["parse_rate"] is not None
-                else "---"
-            )
-            print(
-                f"{model:<16} & {mae} & {acc} & {ui} & {up} & {ti} & {tp} & {dd} & {pr} \\\\"
-            )
 
     # Per-offset breakdown table
     print("\n" + "=" * 115)

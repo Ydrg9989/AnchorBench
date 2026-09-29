@@ -21,8 +21,6 @@ from anchorbench.eval.metrics import compute_unified_metrics
 from anchorbench.eval.runner_utils import (
     build_suffix,
     discover_results,
-    fmt,
-    fmt_pct,
     model_output_dir,
 )
 
@@ -206,14 +204,6 @@ class TestRunnerUtils:
             request_xml_answer = True
         s = build_suffix(Args())
         assert "<answer>" in s
-
-    def test_fmt(self):
-        assert fmt(None) == "---"
-        assert fmt(0.1234, 2) == "0.12"
-
-    def test_fmt_pct(self):
-        assert fmt_pct(None) == "---"
-        assert fmt_pct(0.956) == "95.6%"
 
     def test_model_output_dir(self, tmp_path: Path):
         class Args:
