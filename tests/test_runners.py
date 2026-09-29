@@ -16,7 +16,14 @@ import pytest
 from fakes import FakeBackend
 
 from anchorbench.inference import async_api
-from anchorbench.runners import api, icl_dist_api, mitigation_baseline, sampling, tool
+from anchorbench.runners import (
+    api,
+    icl_dist_api,
+    mitigation_baseline,
+    rebuttal_uncertain,
+    sampling,
+    tool,
+)
 
 
 @pytest.fixture
@@ -135,3 +142,25 @@ def test_tool_plaintext_decision(monkeypatch, model_id, flag, supports, expected
     monkeypatch.delenv("ANCHORBENCH_TOOL_PLAINTEXT", raising=False)
     args = argparse.Namespace(model_id=model_id, tool_plaintext=flag)
     assert tool.use_plaintext(args, FakeBackend(supports_tool_messages=supports)) is expected
+
+
+def test_uncertain_smoke_cap_leaves_the_committed_dataset_alone(monkeypatch, tmp_path):
+    """--max_items renders its own capped views under the results directory.
+    Until now it regenerated datasets/anchorbench_external_uncertain/
+    promptviews_uncertain.jsonl, the committed file behind Table 2, truncated."""
+    dataset_dir = tmp_path / "dataset"
+    dataset_dir.mkdir()
+    committed = dataset_dir / "promptviews_uncertain.jsonl"
+    committed.write_text("{\"sentinel\": true}\n")
+    monkeypatch.setattr(rebuttal_uncertain, "build_backend",
+                        lambda *a, **k: FakeBackend(model_id="fake/model"))
+    rebuttal_uncertain.main([
+        "--model_id", "fake/model", "--backend", "hf", "--max_items", "2",
+        "--out_dir", str(tmp_path / "out"), "--dataset_dir", str(dataset_dir),
+        "--core_dir", "datasets/anchorbench_external_core", "--max_tokens", "8",
+    ])
+    assert committed.read_text() == "{\"sentinel\": true}\n"
+    out = tmp_path / "out" / "fake_model"
+    assert (out / "smoke_dataset" / "promptviews_uncertain.jsonl").exists()
+    assert (out / "summary.json").exists()
+    assert sum(1 for _ in open(out / "results.jsonl")) == 2 * 15

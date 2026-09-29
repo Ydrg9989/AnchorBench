@@ -93,20 +93,26 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--max_model_len", type=int, default=4096)
     args = p.parse_args(argv)
 
-    pv_path = args.dataset_dir / "promptviews_uncertain.jsonl"
-    # Always regenerate when --max_items is set so smoke caps are honored.
-    if args.max_items is not None or not pv_path.exists():
-        build_uncertain_promptviews(args.core_dir, args.dataset_dir,
-                                    max_items=args.max_items)
+    model_slug = args.model_id.replace("/", "_")
+    out_dir = args.out_dir / model_slug
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    if args.max_items is not None:
+        # A capped smoke run renders its own views under its results directory;
+        # datasets/anchorbench_external_uncertain/ is the committed dataset
+        # behind Table 2 and must never be overwritten with a truncated file.
+        pv_path = build_uncertain_promptviews(args.core_dir, out_dir / "smoke_dataset",
+                                              max_items=args.max_items)
+    else:
+        pv_path = args.dataset_dir / "promptviews_uncertain.jsonl"
+        if not pv_path.exists():
+            build_uncertain_promptviews(args.core_dir, args.dataset_dir)
 
     items = prepare_items(load_promptviews(pv_path), load_itemspecs(args.core_dir / "itemspecs.jsonl"),
                           None, 0, conditions=CONDITIONS)
     log.info("Loaded %d items x %d conditions = %d prompts",
              len(items), len(CONDITIONS), len(items) * len(CONDITIONS))
 
-    model_slug = args.model_id.replace("/", "_")
-    out_dir = args.out_dir / model_slug
-    out_dir.mkdir(parents=True, exist_ok=True)
     backend = build_backend(
         args.backend, args.model_id,
         tensor_parallel_size=args.tensor_parallel_size,
