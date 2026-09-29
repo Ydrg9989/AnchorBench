@@ -62,12 +62,49 @@ class TestComputeUnifiedMetrics:
         assert m["n_records"] == 10
         assert m["parse_rate"] == 1.0
 
-        assert m["mae_control"] is not None
-        assert m["mae_control"] == round((abs(50 - 50) + abs(60 - 55)) / 2, 2)
+        # By hand, per item and condition: UAI = (y_anchor - y_ctrl) / (a - y_ctrl).
+        #   A (ctrl 50): irr_low  (55-50)/(30-50) = -0.25   irr_high (45-50)/(70-50) = -0.25
+        #                pls_low  (60-50)/(30-50) = -0.50   pls_high (40-50)/(70-50) = -0.50
+        #   B (ctrl 60): irr_low  (62-60)/(40-60) = -0.10   irr_high (58-60)/(80-60) = -0.10
+        #                pls_low  (55-60)/(40-60) = +0.25   pls_high (65-60)/(80-60) = +0.25
+        # TAR is 1 when the shift has the sign of the gap: only B's plausible pair.
+        assert m["mae_control"] == 2.5          # (|50-50| + |60-55|) / 2
+        assert m["acc10_control"] == 1.0
+        np.testing.assert_allclose(m["uai_irr_low"], -0.175)
+        np.testing.assert_allclose(m["uai_irr_high"], -0.175)
+        np.testing.assert_allclose(m["uai_plaus_low"], -0.125)
+        np.testing.assert_allclose(m["uai_plaus_high"], -0.125)
+        np.testing.assert_allclose(m["uai_irr"], -0.175)
+        np.testing.assert_allclose(m["uai_plaus"], -0.125)
+        np.testing.assert_allclose(m["disc_delta"], 0.05)
+        assert m["tar_irr"] == 0.0
+        assert m["tar_plaus"] == 0.5
+        assert m["n_uai_irr"] == 4 and m["n_uai_plaus"] == 4
 
-        assert m["uai_irr"] is not None
-        assert m["uai_plaus"] is not None
-        assert m["disc_delta"] is not None
+    def test_uai_is_zero_at_control_one_at_anchor_negative_away(self):
+        """The paper's limiting cases, one item each (Sec. 3.4)."""
+        def uai_for(answer: int) -> float:
+            m = compute_unified_metrics([
+                _make_record("A", "control", 50),
+                _make_record("A", "plausible_high", answer, anchor_value=70),
+            ])
+            return m["uai_plaus"]
+
+        assert uai_for(50) == 0.0     # no shift
+        assert uai_for(70) == 1.0     # full capitulation
+        assert uai_for(40) == -0.5    # moved away: (40-50)/(70-50)
+        assert uai_for(60) == 0.5     # half the gap closed
+
+    def test_uai_ignores_the_gold_answer(self):
+        """UAI is control-relative; the gold answer plays no part in it."""
+        def uai_for(y_star: int) -> float:
+            m = compute_unified_metrics([
+                _make_record("A", "control", 50, y_star=y_star),
+                _make_record("A", "plausible_high", 60, y_star=y_star, anchor_value=70),
+            ])
+            return m["uai_plaus"]
+
+        assert uai_for(50) == uai_for(90) == 0.5
 
     def test_parse_failures_excluded(self):
         records = [
@@ -123,8 +160,11 @@ class TestComputeUnifiedMetrics:
                          anchor_value=70, stage1_answer=70),
         ]
         m = compute_unified_metrics(records)
-        assert "acr_mean" in m
-        assert "rr_mean" in m
+        # Plausible conditions only. ACR = (s2 - s1) / (y* - s1), RR = 1 - |s2 - y*| / |s1 - y*|:
+        #   low:  s1 30, s2 45, y* 50 -> ACR 15/20 = 0.75, RR 1 - 5/20 = 0.75
+        #   high: s1 70, s2 55, y* 50 -> ACR -15/-20 = 0.75, RR 1 - 5/20 = 0.75
+        assert m["acr_mean"] == 0.75
+        assert m["rr_mean"] == 0.75
 
     def test_empty_records(self):
         m = compute_unified_metrics([])
@@ -157,6 +197,13 @@ class TestBootstrapCI:
         mean, lo, hi = bootstrap_ci(values)
         assert lo <= mean <= hi
 
+    def test_constant_sample_has_a_degenerate_interval(self):
+        assert bootstrap_ci([5.0, 5.0, 5.0]) == (5.0, 5.0, 5.0)
+
+    def test_interval_brackets_the_mean_of_a_two_point_sample(self):
+        mean, lo, hi = bootstrap_ci([0.0, 1.0], n_boot=4000, seed=1)
+        assert mean == 0.5 and lo == 0.0 and hi == 1.0
+
     def test_deterministic(self):
         values = [1.0, 2.0, 3.0]
         r1 = bootstrap_ci(values, seed=42)
@@ -175,19 +222,25 @@ class TestPairedWilcoxon:
         assert np.isnan(p)  # all differences are zero → not enough nonzero
 
     def test_different(self):
+        """Eight differences of one sign, no ties: the exact two-sided
+        signed-rank p-value is 2 / 2**8."""
         x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0]
         y = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0]
-        p = paired_wilcoxon(x, y)
-        assert 0.0 <= p <= 1.0
+        np.testing.assert_allclose(paired_wilcoxon(x, y), 2 / 256)
+
+    def test_zero_differences_are_dropped_before_the_size_check(self):
+        x = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+        y = [1.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0]   # six nonzero diffs
+        np.testing.assert_allclose(paired_wilcoxon(x, y), 2 / 64)
 
 
 class TestBHCorrection:
     def test_basic(self):
-        p_values = [0.01, 0.04, 0.03, 0.20]
-        adjusted = bh_correction(p_values)
-        assert len(adjusted) == 4
-        for a, p in zip(adjusted, p_values):
-            assert a >= p
+        """By hand: ranks 0.01 (1), 0.03 (2), 0.04 (3), 0.20 (4); adjusted from the
+        top: 0.20; min(0.20, 0.04*4/3) = 0.0533; min(0.0533, 0.03*4/2) = 0.0533;
+        min(0.0533, 0.01*4/1) = 0.04. Back in the original order:"""
+        adjusted = bh_correction([0.01, 0.04, 0.03, 0.20])
+        np.testing.assert_allclose(adjusted, [0.04, 0.05333333, 0.05333333, 0.20], rtol=1e-6)
 
     def test_empty(self):
         assert bh_correction([]) == []
