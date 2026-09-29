@@ -24,17 +24,24 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from anchorbench.cli.cells import build_cell_cmd
+from anchorbench.cli.cells import build_cell_cmd, is_api_model
 from anchorbench.paths import CONF_DIR, ROOT
 
 log = logging.getLogger(__name__)
 
 
 def _out_dir(cfg: DictConfig) -> Path:
-    # cfg.out_dir is relative, and hydra's version_base=None turns on
-    # job.chdir, so a bare Path() would resolve under outputs/hydra/<date>/
-    # <time>/ instead of results/. Anchor it on the repository root.
-    return ROOT / cfg.out_dir
+    """The --out_dir the runner expects, anchored on the repository root.
+
+    Every runner appends the model slug itself; the local runners are given
+    <root>/<suite>, the API runner takes suite names and is given <root>, so
+    both land at <root>/<suite>/<slug>/, the layout paper_main produced and
+    analysis.unified discovers.
+    """
+    root = ROOT / cfg.out_dir
+    if is_api_model(OmegaConf.to_container(cfg.model, resolve=True)):
+        return root
+    return root / cfg.data.suite
 
 
 def _build_cmd(cfg: DictConfig) -> list[str]:

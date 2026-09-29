@@ -10,7 +10,9 @@ seed: 42
 batch_size: 32
 
 results_root: results
-out_dir: ${results_root}/${experiment_name}/${data.suite}/${model.slug}
+# The run's root. Local runners write <out_dir>/<suite>/<slug>/, the API runner
+# <out_dir>/<suite>/<slug>/ as well, and analysis.unified discovers that layout.
+out_dir: ${results_root}/${experiment_name}
 experiment_name: scratch
 
 hydra:
