@@ -192,7 +192,7 @@ appendix extensions under `results/rebuttal/` and `results/revision/`.
 | # | Label | Generator | Output |
 |---|---|---|---|
 | Figure 3 | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `outputs/figures/fig4_dose_response.{pdf,png}` |
-| Table 1 | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results_revised.tex` |
+| Table 1 | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results.tex` (the `_revised` file next to it is an alternative layout with absolute UAI columns, not in the paper) |
 | Table 2 | `tab:uncertain-main` | `anchorbench.analysis.uncertain` | hand-condensed from `results/rebuttal/uncertain/` |
 
 Figures 1 and 2 are hand-drawn. Table 1 is generated but hand-styled: the

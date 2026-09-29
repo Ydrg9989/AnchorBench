@@ -5,6 +5,8 @@ Emits two tables from the existing ``unified_all_suites.json`` files:
 
 * ``tab_main_results.tex`` — Table 1 (14 models x 5 suites,
   Acc10 + Disc_delta), with bold per-suite maxima for both metrics.
+* ``tab_main_results_revised.tex`` — the same cells with absolute UAI
+  columns in place of Disc_delta; an alternative layout, not in the paper.
 
 Outputs are written to ``outputs/tables/`` by default.
 
