@@ -23,8 +23,8 @@ from __future__ import annotations
 from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec, PromptView
 from ._shared import (
     CONDITIONS,
+    anchored_prompt,
     format_evidence,
-    resolve_anchor_preamble,
     resolve_templates,
 )
 
@@ -72,27 +72,11 @@ def _build_prompt(
         "visible_indices": ",".join(str(i) for i in indices),
     }
 
-    anchor_string: str | None = None
-    anchor_span: list[int] | None = None
-
-    if relevance == "none" or anchor_value is None:
-        prompt_text = f"{base_text}{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-    else:
-        anchor_sentence = resolve_anchor_preamble(
-            dcfg, relevance, spec.anchor_phrasing_idx, anchor_value,
-        )
-        if anchor_sentence is None:
-            prompt_text = f"{base_text}{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-        else:
-            components["anchor_sentence"] = anchor_sentence
-            anchor_string = str(anchor_value)
-            prompt_text = (
-                f"{base_text}{anchor_sentence} "
-                f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
-            )
-            start = prompt_text.find(anchor_string, len(base_text))
-            if start >= 0:
-                anchor_span = [start, start + len(anchor_string)]
+    prompt_text, anchor_sentence, anchor_string, anchor_span = anchored_prompt(
+        base_text, question, dcfg, relevance, spec.anchor_phrasing_idx, anchor_value,
+    )
+    if anchor_sentence is not None:
+        components["anchor_sentence"] = anchor_sentence
 
     return PromptView(
         item_id=spec.item_id,

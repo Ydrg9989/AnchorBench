@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from ..domains import ALL_DOMAINS as DOMAINS
 from ..domains import DomainConfig
-from ..schema import ItemSpec
+from ..schema import ANSWER_FORMAT_INSTRUCTION, ItemSpec
 
 MISSING_VALUE_DISPLAY = "[data not available]"
 
@@ -90,13 +90,36 @@ def resolve_anchor_preamble(
     dcfg: DomainConfig,
     relevance: str,
     phrasing_idx: int,
+    anchor_value: int,
+) -> str:
+    """The anchor sentence for one relevance framing (Sec. 3.2).
+
+    Every domain declares a pool per framing; a missing pool is a config
+    error, not a control prompt in disguise, so it raises.
+    """
+    pool = dcfg.anchor_preambles[relevance]
+    return pool[phrasing_idx % len(pool)].format(anchor=anchor_value)
+
+
+def anchored_prompt(
+    base_text: str,
+    question: str,
+    dcfg: DomainConfig,
+    relevance: str,
+    phrasing_idx: int,
     anchor_value: int | None,
-) -> str | None:
-    """Select and format the anchor preamble for a given relevance type."""
+) -> tuple[str, str | None, str | None, list[int] | None]:
+    """Finish a prompt: the question and answer instruction after ``base_text``,
+    with the anchor sentence inserted before the question in an anchored
+    condition. Returns (prompt_text, anchor_sentence, anchor_string,
+    anchor_span); the last three are None for the control.
+    """
+    tail = f"{question}\n{ANSWER_FORMAT_INSTRUCTION}"
     if relevance == "none" or anchor_value is None:
-        return None
-    preamble_pool = dcfg.anchor_preambles.get(relevance, [])
-    if not preamble_pool:
-        return None
-    preamble_template = preamble_pool[phrasing_idx % len(preamble_pool)]
-    return preamble_template.format(anchor=anchor_value)
+        return f"{base_text}{tail}", None, None, None
+    sentence = resolve_anchor_preamble(dcfg, relevance, phrasing_idx, anchor_value)
+    anchor_string = str(anchor_value)
+    prompt_text = f"{base_text}{sentence} {tail}"
+    start = prompt_text.find(anchor_string, len(base_text))
+    span = [start, start + len(anchor_string)] if start >= 0 else None
+    return prompt_text, sentence, anchor_string, span
