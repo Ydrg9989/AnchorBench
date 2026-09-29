@@ -15,7 +15,7 @@ import json
 import logging
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt_latex, write_csv, write_json
+from anchorbench.analysis._io import fmt_latex, mean_or_none, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -104,12 +104,7 @@ def write_latex(rows: list[dict], path: Path) -> None:
     def _mean_by_suite(intensity_key: str) -> dict[str, float | None]:
         out: dict[str, float | None] = {}
         for suite in SUITES:
-            vs = [
-                by_model[m].get(suite, {}).get(intensity_key)
-                for m in by_model
-            ]
-            vs = [v for v in vs if v is not None]
-            out[suite] = (sum(vs) / len(vs)) if vs else None
+            out[suite] = mean_or_none(by_model[m].get(suite, {}).get(intensity_key) for m in by_model)
         return out
 
     mm = _mean_by_suite("uai_mild")
@@ -203,9 +198,7 @@ def write_markdown(rows: list[dict], path: Path) -> None:
             continue
 
         def _mean(key: str, bs=bs) -> float | None:
-            vs = [r[key] for r in bs
-                  if r.get(key) is not None and isinstance(r[key], (int, float))]
-            return (sum(vs) / len(vs)) if vs else None
+            return mean_or_none(r.get(key) for r in bs)
 
         mm, ms, mg = _mean("uai_mild"), _mean("uai_standard"), _mean("uai_strong")
         delta = (mg - mm) if (mg is not None and mm is not None) else None

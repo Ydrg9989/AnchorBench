@@ -41,8 +41,8 @@ APPENDIX_MODULES = (
     "anchorbench.analysis.weighted_mean",
     "anchorbench.analysis.cot_reasoning_extended",
     "anchorbench.analysis.task_spec",
-    "anchorbench.analysis.rag_realism",
-    "anchorbench.analysis.tool_realism",
+    ("anchorbench.analysis.realism", "--suite", "rag"),
+    ("anchorbench.analysis.realism", "--suite", "tool"),
     "anchorbench.analysis.large_panel",
     "anchorbench.analysis.case_studies",
     "anchorbench.analysis.cohens_d",
@@ -81,7 +81,7 @@ def main() -> int:
                   "(scripts/make_result_bundles.sh).", file=sys.stderr)
             return 1
         for mod in APPENDIX_MODULES:
-            cmd = ["-m", mod]
+            cmd = ["-m", *((mod,) if isinstance(mod, str) else mod)]
             if args.dry_run:
                 print(sys.executable, *cmd)
             else:

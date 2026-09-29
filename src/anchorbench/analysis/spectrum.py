@@ -20,7 +20,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from anchorbench.analysis._io import load_summary, write_csv, write_json
+from anchorbench.analysis._io import load_summary, mean_or_none, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -191,9 +191,7 @@ def write_markdown(rows: list[dict], path: Path) -> None:
     rows_sorted = sorted(rows, key=lambda r: r["model"])
 
     def _mean(key: str) -> float | None:
-        vals = [r[key] for r in rows
-                if r.get(key) is not None and isinstance(r[key], (int, float))]
-        return sum(vals) / len(vals) if vals else None
+        return mean_or_none(r.get(key) for r in rows)
 
     lines = [
         "# Plausibility spectrum\n\n",

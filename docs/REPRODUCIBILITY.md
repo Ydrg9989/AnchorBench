@@ -248,8 +248,8 @@ committed, so the tables are in git even when the generations are not, and
 | 7 | `tab:weighted_mean` | `analysis.weighted_mean` | `rebuttal/weighted_mean/` | `_b3_one_model.sh` |
 | 8 | `tab:cot_extended` | `analysis.cot_reasoning_extended` | `rebuttal/cot_extended/` | `_b1_*.sh`, `_chain_after_b1.sh` |
 | 9 | `tab:task_spec` | `analysis.task_spec` | `rebuttal/task_spec/` | `_p4_one_model.sh` |
-| 10 | `tab:rag_realism` | `analysis.rag_realism` | `rebuttal/rag_realism/` | `run_p2_rag_realism.sh` |
-| 11 | `tab:tool_realism` | `analysis.tool_realism` | `rebuttal/tool_realism/` | `run_p3_tool_realism.sh` |
+| 10 | `tab:rag_realism` | `analysis.realism --suite rag` | `rebuttal/rag_realism/` | `run_p2_rag_realism.sh` |
+| 11 | `tab:tool_realism` | `analysis.realism --suite tool` | `rebuttal/tool_realism/` | `run_p3_tool_realism.sh` |
 | 12 | `tab:large_panel_results` | `analysis.large_panel` | `rebuttal/large_{api,ow}/` | `_large_api_full.sh`, `_large_ow_all_suites.sh` |
 | 13 | `tab:case_studies` | `analysis.case_studies` | `full_benchmark/external/` | — |
 

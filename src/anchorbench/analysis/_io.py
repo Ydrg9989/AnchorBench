@@ -36,6 +36,13 @@ def fmt(v: float | None, prec: int = 2, dash: str = DASH, *, signed: bool = Fals
     return f"{v:+.{prec}f}" if signed else f"{v:.{prec}f}"
 
 
+def mean_or_none(values) -> float | None:
+    """Mean of the numeric entries; None when there are none (a cell that
+    no model filled prints as a dash, never as 0)."""
+    vs = [v for v in values if isinstance(v, (int, float)) and not isinstance(v, bool)]
+    return sum(vs) / len(vs) if vs else None
+
+
 def fmt_latex(v: float | None, prec: int = 2, dash: str = DASH) -> str:
     """Fixed-point number with a LaTeX minus sign (``$-$0.12``)."""
     if v is None:

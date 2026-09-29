@@ -14,10 +14,10 @@ echo "[$(date -Iseconds)] P1 cross-pathway intensity analyzer"
 PYTHONPATH=src python -m anchorbench.analysis.intensity_pathway
 
 echo "[$(date -Iseconds)] P2 RAG realism analyzer"
-PYTHONPATH=src python -m anchorbench.analysis.rag_realism
+PYTHONPATH=src python -m anchorbench.analysis.realism --suite rag
 
 echo "[$(date -Iseconds)] P3 Tool realism analyzer"
-PYTHONPATH=src python -m anchorbench.analysis.tool_realism
+PYTHONPATH=src python -m anchorbench.analysis.realism --suite tool
 
 echo "[$(date -Iseconds)] P4 task-spec analyzer"
 PYTHONPATH=src python -m anchorbench.analysis.task_spec

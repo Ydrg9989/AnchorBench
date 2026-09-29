@@ -51,7 +51,7 @@ src/anchorbench/
 |   |-- gold_shift.py, sampling.py, mitigation.py         # Appendix Tables 16, 18, 19
 |   |-- bayesian_bound.py, spectrum.py, uncertain.py, intensity_pathway.py,
 |   |   extension_pilot.py, weighted_mean.py, cot_reasoning_extended.py,
-|   |   task_spec.py, rag_realism.py, tool_realism.py, large_panel.py,
+|   |   task_spec.py, realism.py, large_panel.py,
 |   |   case_studies.py, cohens_d.py                       # the 13 \input-ed appendix tables
 |   `-- api_cost_estimate.py           # a cost projection; not a paper table
 |-- paper/                      # figures, LaTeX tables and the claim verifier

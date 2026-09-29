@@ -15,7 +15,7 @@ import json
 import logging
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt_latex, write_csv, write_json
+from anchorbench.analysis._io import fmt_latex, mean_or_none, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -80,9 +80,7 @@ def write_latex(rows: list[dict], path: Path) -> None:
         lines.append("  " + " & ".join(cells) + r" \\")
 
     def _col_mean(key: str) -> float | None:
-        vs = [r.get(key) for r in rows]
-        vs = [v for v in vs if v is not None and isinstance(v, (int, float))]
-        return (sum(vs) / len(vs)) if vs else None
+        return mean_or_none(r.get(key) for r in rows)
 
     mean_cells = ["Mean"]
     for metric in ("uai_pls", "uai_irr"):
@@ -143,9 +141,7 @@ def write_markdown(rows: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
     def _col_mean(key: str) -> float | None:
-        vs = [r.get(key) for r in rows]
-        vs = [v for v in vs if v is not None and isinstance(v, (int, float))]
-        return (sum(vs) / len(vs)) if vs else None
+        return mean_or_none(r.get(key) for r in rows)
 
     lines = [
         "# Task-specification ablation\n\n",

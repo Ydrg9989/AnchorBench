@@ -18,7 +18,7 @@ import argparse
 import logging
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt, load_summary, write_csv, write_json
+from anchorbench.analysis._io import fmt, load_summary, mean_or_none, write_csv, write_json
 
 log = logging.getLogger(__name__)
 
@@ -133,9 +133,7 @@ def write_markdown(rows: list[dict], path: Path) -> None:
         by_suite[r["suite"]].append(r)
 
     def _mean(rs: list[dict], key: str) -> float | None:
-        vals = [r[key] for r in rs
-                if r.get(key) is not None and isinstance(r[key], (int, float))]
-        return sum(vals) / len(vals) if vals else None
+        return mean_or_none(r.get(key) for r in rs)
 
     lines = [
         "# Reasoning-allowed CoT extension\n\n",
