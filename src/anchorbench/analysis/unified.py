@@ -36,6 +36,40 @@ def _pct(v: float | None) -> str:
     return "---" if v is None else f"{v * 100:.1f}%"
 
 
+def unified_rows(runs: list[tuple[str, str, str, Path]], epsilon: float) -> list[tuple[Path, dict]]:
+    """One metrics row per discovered run, in discovery order: the extended
+    metrics of Sec. 3.4 plus the by-offset and by-difficulty breakdowns,
+    tagged with the capitalised suite name and the model's short name.
+    Returns (results path, row) pairs; an empty results file is an error."""
+    rows = []
+    for suite, slug, short, path in runs:
+        records = load_records(path)
+        if not records:
+            raise ValueError(f"empty results file: {path}")
+        bc = baseline_condition(records)
+        metrics = compute_extended_metrics(records, epsilon=epsilon, baseline_condition=bc)
+        metrics["suite"] = suite.capitalize()
+        metrics["model"] = short
+        metrics["model_slug"] = slug
+        metrics["n_records"] = len(records)
+        metrics["by_offset"] = compute_by_offset(records, epsilon=epsilon, baseline_condition=bc)
+        metrics["by_difficulty"] = compute_by_difficulty(records, epsilon=epsilon, baseline_condition=bc)
+        rows.append((path, metrics))
+    return rows
+
+
+def write_unified(rows: list[tuple[Path, dict]], results_dir: Path) -> Path:
+    """unified_summary.json next to each results.jsonl, and the one
+    unified_all_suites.json every paper table reads, under results_dir."""
+    for path, metrics in rows:
+        with open(path.parent / "unified_summary.json", "w") as f:
+            json.dump(metrics, f, indent=2, default=str)
+    out = results_dir / "unified_all_suites.json"
+    with open(out, "w") as f:
+        json.dump([m for _, m in rows], f, indent=2, default=str)
+    return out
+
+
 def main() -> None:
     p = argparse.ArgumentParser(
         description="Recompute unified metrics from existing results",
@@ -58,28 +92,9 @@ def main() -> None:
         print(f"  {suite:<10} {short:<16} {path}")
     print()
 
-    all_results = []
-    for suite, slug, short, path in runs:
-        records = load_records(path)
-        if not records:
-            print(f"  WARNING: empty {path}")
-            continue
-
-        bc = baseline_condition(records)
-        metrics = compute_extended_metrics(records, epsilon=args.epsilon, baseline_condition=bc)
-        metrics["suite"] = suite.capitalize()
-        metrics["model"] = short
-        metrics["model_slug"] = slug
-        metrics["n_records"] = len(records)
-
-        metrics["by_offset"] = compute_by_offset(records, epsilon=args.epsilon, baseline_condition=bc)
-        metrics["by_difficulty"] = compute_by_difficulty(records, epsilon=args.epsilon, baseline_condition=bc)
-
-        all_results.append(metrics)
-
-        out_path = path.parent / "unified_summary.json"
-        with open(out_path, "w") as f:
-            json.dump(metrics, f, indent=2, default=str)
+    rows = unified_rows(runs, args.epsilon)
+    all_results = [m for _, m in rows]
+    out_all = write_unified(rows, args.results_dir)
 
     # Per-suite tables
     for suite_name in ("External", "Icl", "Rag", "Tool", "History"):
@@ -152,12 +167,7 @@ def main() -> None:
                 f"{fmt(m.get('tar_irr'), 3):>8} {fmt(m.get('tar_plaus'), 3):>8} {m.get('n_items', 0):>5}"
             )
 
-    # Write master JSON
-    out = args.results_dir / "unified_all_suites.json"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with open(out, "w") as f:
-        json.dump(all_results, f, indent=2, default=str)
-    print(f"\n  Master JSON written to {out}")
+    print(f"\n  Master JSON written to {out_all}")
 
 
 if __name__ == "__main__":
