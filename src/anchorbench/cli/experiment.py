@@ -24,19 +24,13 @@ from omegaconf import DictConfig, OmegaConf
 
 from anchorbench.cli.cells import build_cell_cmd, is_api_model
 from anchorbench.paths import CONF_DIR, ROOT
+from anchorbench.registry import load_model, read_conf
 
 log = logging.getLogger(__name__)
 
 
-
-def _load_yaml(rel: str) -> dict:
-    import yaml
-    with open(CONF_DIR / rel) as f:
-        return yaml.safe_load(f) or {}
-
-
 def _resolve_model(name: str) -> dict:
-    return _load_yaml(f"model/{name}.yaml")
+    return load_model(name).config
 
 
 def _resolve_data(name: str, cfg: DictConfig | None = None) -> dict:
@@ -52,11 +46,11 @@ def _resolve_data(name: str, cfg: DictConfig | None = None) -> dict:
         composed = cfg.get("data")
         if composed is not None and composed.get("suite") == name:
             return OmegaConf.to_container(composed, resolve=True)
-    return _load_yaml(f"data/{name}.yaml")
+    return read_conf(f"data/{name}.yaml")
 
 
 def _resolve_tier(name: str) -> dict:
-    return _load_yaml(f"tier/{name}.yaml")
+    return read_conf(f"tier/{name}.yaml")
 
 
 def _resolve_cells(cfg: DictConfig) -> list[tuple[dict, dict, str | None, Path]]:

@@ -22,9 +22,8 @@ from typing import Any
 
 from anchorbench.eval.constants import API_MODEL_IDS
 from anchorbench.paths import ROOT
+from anchorbench.registry import API_BACKENDS
 
-# Backends that mean "call a hosted endpoint" rather than "load weights here".
-API_BACKENDS = frozenset({"openrouter", "api"})
 API_RUNNER = "anchorbench.runners.api"
 
 

@@ -79,6 +79,11 @@ def _read(path: Path) -> dict[str, Any]:
         return yaml.safe_load(fh) or {}
 
 
+def read_conf(rel: str) -> dict[str, Any]:
+    """The raw mapping of one file under conf/, e.g. ``read_conf("tier/api.yaml")``."""
+    return _read(CONF_DIR / rel)
+
+
 @cache
 def load_model(key: str) -> Model:
     cfg = _read(CONF_DIR / "model" / f"{key}.yaml")
