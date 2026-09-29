@@ -1,6 +1,4 @@
-name: large
-description: Large model (13B), 1 GPU, serial
-tensor_parallel: 1
+# Large model (13B), 1 GPU, serial
 gpu_ids: [0]
 models:
   - olmo_13b

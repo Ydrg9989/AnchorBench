@@ -10,8 +10,6 @@ from __future__ import annotations
 
 import sys
 
-SUBCOMMANDS = ("eval", "experiment", "tables", "generate", "add-model", "verify")
-
 
 def _print_help() -> int:
     print(

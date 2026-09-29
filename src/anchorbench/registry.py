@@ -47,10 +47,6 @@ class Model:
     latex: str | None = None
     config: dict[str, Any] = field(default_factory=dict, compare=False, repr=False)
 
-    @property
-    def is_api(self) -> bool:
-        return self.backend.lower() in API_BACKENDS
-
 
 @dataclass(frozen=True)
 class Suite:
@@ -143,10 +139,6 @@ def suites() -> tuple[Suite, ...]:
 
 def variants() -> tuple[Suite, ...]:
     return tuple(load_suite(k) for k in _panel().get("variants", []))
-
-
-def suite(key: str) -> Suite:
-    return load_suite(key)
 
 
 def model_by_slug(slug: str) -> Model | None:

@@ -5,4 +5,3 @@ defaults:
   - paper_main
 
 experiment_name: paper_run
-seeds: [42]

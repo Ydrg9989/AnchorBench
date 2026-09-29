@@ -8,8 +8,6 @@ every importer of this module sees it.
 
 from __future__ import annotations
 
-from typing import Any
-
 from anchorbench import registry
 
 # -- Suite dataset paths (relative to repo root) -------------------
@@ -31,14 +29,3 @@ OW_MODEL_IDS: list[str] = [m.hf_id for m in registry.open_weight_models()]
 # -- Result discovery order (pinned; see registry.RESULTS_DISCOVERY_ORDER) --
 
 SUITES = registry.RESULTS_DISCOVERY_ORDER
-
-# -- Defaults ------------------------------------------------------
-
-DEFAULTS: dict[str, Any] = {
-    "seed": 42,
-    "epsilon": 3.0,
-    "max_tokens": 512,
-    "batch_size": 32,
-    "promptviews_file": "promptviews_core.jsonl",
-    "itemspecs_file": "itemspecs.jsonl",
-}

@@ -42,7 +42,7 @@ plt.rcParams["pdf.fonttype"] = 42
 plt.rcParams["ps.fonttype"] = 42
 
 # Suites with designer-controlled offsets; History and Tool are excluded (Figure 3 caption).
-SUITES = [(k, registry.suite(k).label) for k in ("external", "rag", "icl")]
+SUITES = [(k, registry.load_suite(k).label) for k in ("external", "rag", "icl")]
 OFFSETS = [15, 25, 40]
 
 

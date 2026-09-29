@@ -91,7 +91,6 @@ A named recipe (add `+dry_run=true` to print the cells without launching):
 | `paper_tool_plaintext` | Tool suite forced to plaintext, 5 models | Table 15 (re-run, see D5) |
 | `paper_sampling` | temperature 0.7, top-p 0.9, 3 seeds | Table 18 |
 | `paper_mitigation_headroom` | prompt-based mitigation strategies | Table 19 |
-| `paper_gold_shift` | inputs for the error decomposition | Table 16 |
 
 ```bash
 anchorbench experiment +experiment=paper_main

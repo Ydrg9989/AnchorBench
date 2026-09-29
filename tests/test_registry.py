@@ -50,8 +50,8 @@ def test_panel_is_the_published_fourteen_in_table_order():
     assert [m.short for m in registry.api_models()] == API_ORDER
     assert [m.slug for m in registry.models()] == OW_SLUGS + API_SLUGS
     assert [m.hf_id for m in registry.models()] == OW_IDS + API_IDS
-    assert all(not m.is_api for m in registry.open_weight_models())
-    assert all(m.is_api for m in registry.api_models())
+    assert all(m.backend == "vllm" for m in registry.open_weight_models())
+    assert all(m.backend == "openrouter" for m in registry.api_models())
 
 
 def test_every_model_config_loads_and_slugs_are_unique():

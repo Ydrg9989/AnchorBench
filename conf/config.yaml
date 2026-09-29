@@ -7,8 +7,6 @@ defaults:
   - _self_
 
 seed: 42
-epsilon: 3.0
-max_tokens: 512
 batch_size: 32
 
 results_root: results

@@ -73,7 +73,6 @@ def main() -> int:
             f"slug: {slug}\n"
             f"short: {short}\n"
             f"backend: openrouter\n"
-            f"api_concurrency: 8\n"
         ) + meta
     else:
         body = (
