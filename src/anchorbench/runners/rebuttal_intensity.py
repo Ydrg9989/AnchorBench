@@ -46,10 +46,17 @@ from anchorbench.data.suites.rag import (
     build_intensity_promptviews as _rag_intensity_views,
 )
 from anchorbench.eval.evaluator import (
+    prepare_items,
     run_history_two_stage,
     run_single_stage,
 )
-from anchorbench.eval.io import load_records
+from anchorbench.eval.io import (
+    load_itemspecs,
+    load_promptviews,
+    splice_core_records,
+    write_records,
+)
+from anchorbench.eval.runner_utils import build_backend
 
 log = logging.getLogger(__name__)
 
@@ -127,98 +134,6 @@ def build_d1_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
                 n += 1
     log.info("[%s] Wrote %d D1 promptviews to %s", suite, n, out_path)
     return out_path
-
-
-def _build_items(suite: str, promptviews_path: Path, specs_path: Path) -> list[dict]:
-    from collections import defaultdict
-    views_by_item: dict[str, dict[str, dict]] = defaultdict(dict)
-    with open(promptviews_path) as f:
-        for line in f:
-            pv = json.loads(line)
-            views_by_item[pv["item_id"]][pv["condition"]] = pv
-    specs = {}
-    with open(specs_path) as f:
-        for line in f:
-            d = json.loads(line)
-            specs[d["item_id"]] = d
-
-    items: list[dict] = []
-    cond_set = set(NEW_CONDITIONS)
-    for iid, conds in views_by_item.items():
-        if not cond_set.issubset(conds.keys()):
-            continue
-        spec = specs.get(iid, {})
-        item = {
-            "item_id": iid,
-            "suite": suite,
-            "domain": spec.get("domain"),
-            "difficulty": spec.get("difficulty", "standard"),
-            "y_star_evidence": spec.get(
-                "y_star_evidence", spec.get("y_star")
-            ),
-            "y_star_theta": spec.get("y_star_theta"),
-            "anchors": spec.get("anchors", {}),
-            "spec": spec,
-        }
-        for c in cond_set:
-            item[c] = conds[c]
-        items.append(item)
-    return items
-
-
-def _run_inference(suite: str, args, items: list[dict], out_path: Path) -> list[dict]:
-    from anchorbench.eval.backends import HFBackend, VLLMBackend
-    if args.backend == "vllm":
-        backend = VLLMBackend(
-            args.model_id,
-            tensor_parallel_size=args.tensor_parallel_size,
-            gpu_memory_utilization=args.gpu_memory_utilization,
-            max_model_len=args.max_model_len,
-            dtype="bfloat16", trust_remote_code=True,
-        )
-    else:
-        backend = HFBackend(args.model_id, device="auto", dtype="bfloat16")
-
-    if suite == "history":
-        return run_history_two_stage(
-            backend, items, out_path,
-            conditions=NEW_CONDITIONS,
-            max_tokens=args.max_tokens,
-        )
-    return run_single_stage(
-        backend, items, out_path,
-        conditions=NEW_CONDITIONS,
-        max_tokens=args.max_tokens,
-        batch_size=args.batch_size,
-    )
-
-
-def _combine_with_core(
-    suite: str,
-    new_records: list[dict],
-    model_slug: str,
-    core_results_dir: Path,
-    combined_path: Path,
-) -> list[dict]:
-    core_path = core_results_dir / model_slug / "results.jsonl"
-    if not core_path.exists():
-        log.warning("[%s] Core results not found at %s; combined will only "
-                    "include NEW conditions", suite, core_path)
-        core = []
-    else:
-        core = load_records(str(core_path))
-    keep = {SUITE_CONFIG[suite]["baseline_cond"], "control",
-            "plausible_low", "plausible_high"}
-    core_subset = [r for r in core if r.get("condition") in keep]
-    all_recs = list(core_subset) + list(new_records)
-    combined_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(combined_path, "w", encoding="utf-8") as fh:
-        for r in all_recs:
-            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-    log.info("[%s] Wrote combined %d records (%d core_subset + %d new) to %s",
-             suite, len(all_recs), len(core_subset), len(new_records),
-             combined_path)
-    return all_recs
 
 
 def _compute_intensity_curve(
@@ -313,7 +228,8 @@ def main(argv: list[str] | None = None) -> None:
                  args.suite, core_dir)
         build_d1_promptviews(args.suite, core_dir, d1_dataset_dir)
 
-    items = _build_items(args.suite, pv_path, core_dir / "itemspecs.jsonl")
+    items = prepare_items(load_promptviews(pv_path), load_itemspecs(core_dir / "itemspecs.jsonl"),
+                          None, 0, conditions=NEW_CONDITIONS)
     log.info("[%s] Loaded %d items x %d NEW conditions = %d prompts",
              args.suite, len(items), len(NEW_CONDITIONS),
              len(items) * len(NEW_CONDITIONS))
@@ -322,15 +238,28 @@ def main(argv: list[str] | None = None) -> None:
     out_dir = out_dir_base / model_slug
     out_dir.mkdir(parents=True, exist_ok=True)
     new_path = out_dir / "results_d1.jsonl"
-    new_records = _run_inference(args.suite, args, items, new_path)
-    log.info("[%s] D1 inference complete: %d records",
-             args.suite, len(new_records))
-
-    combined_path = out_dir / "results_combined.jsonl"
-    all_recs = _combine_with_core(
-        args.suite, new_records, model_slug,
-        core_results_dir, combined_path,
+    backend = build_backend(
+        args.backend, args.model_id,
+        tensor_parallel_size=args.tensor_parallel_size,
+        gpu_memory_utilization=args.gpu_memory_utilization,
+        max_model_len=args.max_model_len,
     )
+    if args.suite == "history":
+        new_records = run_history_two_stage(
+            backend, items, new_path, conditions=NEW_CONDITIONS, max_tokens=args.max_tokens,
+        )
+    else:
+        new_records = run_single_stage(
+            backend, items, new_path, conditions=NEW_CONDITIONS,
+            max_tokens=args.max_tokens, batch_size=args.batch_size,
+        )
+    log.info("[%s] D1 inference complete: %d records", args.suite, len(new_records))
+
+    all_recs = splice_core_records(
+        new_records, core_results_dir / model_slug / "results.jsonl",
+        keep={baseline_cond, "control", "plausible_low", "plausible_high"},
+    )
+    write_records(all_recs, out_dir / "results_combined.jsonl")
 
     from anchorbench.eval.metrics import compute_unified_metrics
     metrics = compute_unified_metrics(all_recs, baseline_condition=baseline_cond)

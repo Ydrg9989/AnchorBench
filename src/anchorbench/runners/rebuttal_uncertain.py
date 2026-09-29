@@ -26,8 +26,10 @@ from anchorbench.data.suites.external_uncertain import (
     _conditions_for_k,
     render_external_uncertain,
 )
-from anchorbench.eval.evaluator import run_single_stage
+from anchorbench.eval.evaluator import prepare_items, run_single_stage
+from anchorbench.eval.io import load_itemspecs, load_promptviews
 from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.eval.runner_utils import build_backend
 
 log = logging.getLogger(__name__)
 
@@ -72,61 +74,6 @@ def build_uncertain_promptviews(core_dir: Path, out_dir: Path,
     return out_path
 
 
-def _build_items(promptviews_path: Path, specs_path: Path) -> list[dict]:
-    from collections import defaultdict
-    views_by_item: dict[str, dict[str, dict]] = defaultdict(dict)
-    with open(promptviews_path) as f:
-        for line in f:
-            pv = json.loads(line)
-            views_by_item[pv["item_id"]][pv["condition"]] = pv
-    specs = {}
-    with open(specs_path) as f:
-        for line in f:
-            d = json.loads(line)
-            specs[d["item_id"]] = d
-    items = []
-    cond_set = set(CONDITIONS)
-    for iid, conds in views_by_item.items():
-        if not cond_set.issubset(conds.keys()):
-            continue
-        spec = specs.get(iid, {})
-        item = {
-            "item_id": iid, "suite": "external_uncertain",
-            "domain": spec.get("domain"),
-            "difficulty": spec.get("difficulty", "standard"),
-            "y_star_evidence": spec.get(
-                "y_star_evidence", spec.get("y_star")
-            ),
-            "y_star_theta": spec.get("y_star_theta"),
-            "anchors": spec.get("anchors", {}),
-            "spec": spec,
-        }
-        for c in cond_set:
-            item[c] = conds[c]
-        items.append(item)
-    return items
-
-
-def _run_inference(args, items: list[dict], out_path: Path) -> list[dict]:
-    from anchorbench.eval.backends import HFBackend, VLLMBackend
-    if args.backend == "vllm":
-        backend = VLLMBackend(
-            args.model_id,
-            tensor_parallel_size=args.tensor_parallel_size,
-            gpu_memory_utilization=args.gpu_memory_utilization,
-            max_model_len=args.max_model_len,
-            dtype="bfloat16", trust_remote_code=True,
-        )
-    else:
-        backend = HFBackend(args.model_id, device="auto", dtype="bfloat16")
-    return run_single_stage(
-        backend, items, out_path,
-        conditions=CONDITIONS,
-        max_tokens=args.max_tokens,
-        batch_size=args.batch_size,
-    )
-
-
 def main(argv: list[str] | None = None) -> None:
     logging.basicConfig(level=logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s",
@@ -152,15 +99,24 @@ def main(argv: list[str] | None = None) -> None:
         build_uncertain_promptviews(args.core_dir, args.dataset_dir,
                                     max_items=args.max_items)
 
-    items = _build_items(pv_path, args.core_dir / "itemspecs.jsonl")
+    items = prepare_items(load_promptviews(pv_path), load_itemspecs(args.core_dir / "itemspecs.jsonl"),
+                          None, 0, conditions=CONDITIONS)
     log.info("Loaded %d items x %d conditions = %d prompts",
              len(items), len(CONDITIONS), len(items) * len(CONDITIONS))
 
     model_slug = args.model_id.replace("/", "_")
     out_dir = args.out_dir / model_slug
     out_dir.mkdir(parents=True, exist_ok=True)
-    res_path = out_dir / "results.jsonl"
-    records = _run_inference(args, items, res_path)
+    backend = build_backend(
+        args.backend, args.model_id,
+        tensor_parallel_size=args.tensor_parallel_size,
+        gpu_memory_utilization=args.gpu_memory_utilization,
+        max_model_len=args.max_model_len,
+    )
+    records = run_single_stage(
+        backend, items, out_dir / "results.jsonl", conditions=CONDITIONS,
+        max_tokens=args.max_tokens, batch_size=args.batch_size,
+    )
 
     # Compute one summary per k-level so the standard metrics machinery works.
     # The per-k records share the same baseline (uncertain_p{k}_control).

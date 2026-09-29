@@ -29,19 +29,19 @@ For API models, set ``--backend openrouter`` and ``OPENROUTER_API_KEY``.
 from __future__ import annotations
 
 import argparse
-import asyncio
 import json
 import logging
-import os
 from pathlib import Path
 
-from anchorbench.eval.evaluator import (
-    build_record,
-    parse_response,
-    run_single_stage,
+from anchorbench.eval.evaluator import prepare_items, run_single_stage
+from anchorbench.eval.io import (
+    load_itemspecs,
+    load_promptviews,
+    splice_core_records,
+    write_records,
 )
-from anchorbench.eval.io import load_itemspecs, load_promptviews, load_records
 from anchorbench.eval.metrics import compute_extended_metrics
+from anchorbench.eval.runner_utils import build_backend
 
 log = logging.getLogger(__name__)
 
@@ -53,124 +53,6 @@ ABLATION_CONDITIONS = [
 DEFAULT_OUT = Path("results/rebuttal/spectrum")
 DEFAULT_DATASET = Path("datasets/anchorbench_external_core")
 DEFAULT_CORE_RESULTS = Path("results/full_benchmark/external")
-
-
-def _build_items(views: dict, specs: dict) -> list[dict]:
-    """Build items from ablation promptviews (subset of conditions)."""
-    items: list[dict] = []
-    cond_set = set(ABLATION_CONDITIONS)
-    for item_id, cond_views in views.items():
-        if not cond_set.issubset(cond_views.keys()):
-            continue
-        spec = specs.get(item_id, {})
-        item: dict = {
-            "item_id": item_id,
-            "suite": cond_views[next(iter(cond_set))]["suite"],
-            "domain": cond_views[next(iter(cond_set))]["domain"],
-            "difficulty": spec.get("difficulty", "standard"),
-            "y_star_evidence": spec.get(
-                "y_star_evidence", spec.get("y_star")
-            ),
-            "y_star_theta": spec.get("y_star_theta"),
-            "anchors": spec.get("anchors", {}),
-            "spec": spec,
-        }
-        for c in cond_set:
-            item[c] = cond_views[c]
-        items.append(item)
-    return items
-
-
-def _run_open_weight(args, items: list[dict], out_path: Path) -> list[dict]:
-    from anchorbench.eval.backends import HFBackend, VLLMBackend
-    log.info("Loading model %s (%s)...", args.model_id, args.backend)
-    if args.backend == "vllm":
-        backend = VLLMBackend(
-            args.model_id,
-            tensor_parallel_size=args.tensor_parallel_size,
-            gpu_memory_utilization=args.gpu_memory_utilization,
-            max_model_len=args.max_model_len,
-            dtype="bfloat16", trust_remote_code=True,
-        )
-    else:
-        backend = HFBackend(args.model_id, device="auto", dtype="bfloat16")
-
-    return run_single_stage(
-        backend, items, out_path,
-        conditions=ABLATION_CONDITIONS,
-        max_tokens=args.max_tokens,
-        batch_size=args.batch_size,
-    )
-
-
-def _run_api(args, items: list[dict], out_path: Path) -> list[dict]:
-    """OpenRouter API path mirroring runners.api.run_suite_api."""
-    from anchorbench.inference.async_api import AsyncOpenRouterClient
-
-    api_key = os.getenv("OPENROUTER_API_KEY", "")
-    if not api_key:
-        log.error("OPENROUTER_API_KEY not set")
-        raise SystemExit(2)
-
-    async def go():
-        client = AsyncOpenRouterClient(
-            api_key=api_key, max_concurrent=args.max_concurrent,
-        )
-        task_list = [(i, c, item[c]) for i, item in enumerate(items)
-                     for c in ABLATION_CONDITIONS]
-        prompts = [pv.get("prompt_text", "") for _, _, pv in task_list]
-        results = await client.query_batch(
-            args.model_id, prompts,
-            max_tokens=args.max_tokens, temperature=0.0,
-        )
-        records: list[dict] = []
-        with open(out_path, "w", encoding="utf-8") as fh:
-            for (i, cond, pv), api_result in zip(task_list, results):
-                raw = api_result.get("raw_text", "")
-                prompt_text = pv.get("prompt_text", "")
-                answer, parsed_ok, strategy = parse_response(raw, prompt_text)
-                rec = build_record(
-                    args.model_id, items[i], cond, pv,
-                    answer, parsed_ok, strategy, raw,
-                )
-                rec["api_usage"] = api_result.get("usage", {})
-                records.append(rec)
-                fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
-        await client.close()
-        return records
-
-    return asyncio.run(go())
-
-
-def _combine_with_core(
-    new_records: list[dict],
-    model_slug: str,
-    core_results_dir: Path,
-    combined_path: Path,
-) -> list[dict]:
-    """Concatenate the new ablation records with the existing core results
-    (control + irrelevant + plausible) so extended metrics can be computed.
-    """
-    core_path = core_results_dir / model_slug / "results.jsonl"
-    if not core_path.exists():
-        log.warning(
-            "Core results not found at %s; combined results will only "
-            "contain placebo/authority", core_path,
-        )
-        core = []
-    else:
-        core = load_records(str(core_path))
-
-    all_recs = list(core) + list(new_records)
-    combined_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(combined_path, "w", encoding="utf-8") as fh:
-        for r in all_recs:
-            fh.write(json.dumps(r, ensure_ascii=False) + "\n")
-    log.info(
-        "Wrote combined %d records (%d core + %d new) to %s",
-        len(all_recs), len(core), len(new_records), combined_path,
-    )
-    return all_recs
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -199,14 +81,8 @@ def main(argv: list[str] | None = None) -> None:
 
     pv_path = args.dataset_dir / "promptviews_ablation.jsonl"
     spec_path = args.dataset_dir / "itemspecs.jsonl"
-    views = load_promptviews(pv_path)
-    specs = load_itemspecs(spec_path)
-    items = _build_items(views, specs)
-    if args.max_items and args.max_items < len(items):
-        import numpy as np
-        rng = np.random.RandomState(args.seed)
-        idx = rng.permutation(len(items))[:args.max_items]
-        items = [items[i] for i in idx]
+    items = prepare_items(load_promptviews(pv_path), load_itemspecs(spec_path),
+                          args.max_items, args.seed, conditions=ABLATION_CONDITIONS)
     log.info("Loaded %d items x %d ablation conditions = %d prompts",
              len(items), len(ABLATION_CONDITIONS),
              len(items) * len(ABLATION_CONDITIONS))
@@ -216,17 +92,23 @@ def main(argv: list[str] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     abl_path = out_dir / "results_ablation.jsonl"
 
-    if args.backend == "openrouter":
-        new_records = _run_api(args, items, abl_path)
-    else:
-        new_records = _run_open_weight(args, items, abl_path)
-
+    backend = build_backend(
+        args.backend, args.model_id,
+        tensor_parallel_size=args.tensor_parallel_size,
+        gpu_memory_utilization=args.gpu_memory_utilization,
+        max_model_len=args.max_model_len,
+        max_concurrent=args.max_concurrent,
+    )
+    new_records = run_single_stage(
+        backend, items, abl_path, conditions=ABLATION_CONDITIONS,
+        max_tokens=args.max_tokens, batch_size=args.batch_size,
+    )
     log.info("Inference complete: %d records", len(new_records))
 
-    combined_path = out_dir / "results_extended.jsonl"
-    all_recs = _combine_with_core(
-        new_records, model_slug, args.core_results_dir, combined_path,
+    all_recs = splice_core_records(
+        new_records, args.core_results_dir / model_slug / "results.jsonl",
     )
+    write_records(all_recs, out_dir / "results_extended.jsonl")
 
     metrics = compute_extended_metrics(all_recs, baseline_condition="control")
     summary_path = out_dir / "summary_extended.json"
