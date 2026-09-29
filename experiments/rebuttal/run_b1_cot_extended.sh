@@ -134,8 +134,8 @@ print(f'Wrote {out_dir}/rebuttal_cot_comparison.json with {len(rows)} rows')
 # -- Run analyzer ------------------------------------------------------------
 echo "==== [B1] Running CoT analyzer ===="
 bash scripts/run_with_env.sh \
-    python -m anchorbench.analysis.cot_reasoning \
-        --input "$OUT_DIR/rebuttal_cot_comparison.json" \
+    python -m anchorbench.analysis.cot_reasoning_extended \
+        --in_dir "$OUT_DIR" \
         --out_dir results/rebuttal/cot_reasoning_extended
 
 echo

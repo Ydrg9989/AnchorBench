@@ -50,7 +50,7 @@ PYTHONPATH=src bash scripts/run_with_env.sh \
 PYTHONPATH=src bash scripts/run_with_env.sh \
     python -m anchorbench.analysis.weighted_mean 2>&1 | tee -a "$LOG"
 PYTHONPATH=src bash scripts/run_with_env.sh \
-    python -m anchorbench.analysis.medical_pilot 2>&1 | tee -a "$LOG"
+    python -m anchorbench.analysis.extension_pilot 2>&1 | tee -a "$LOG"
 PYTHONPATH=src bash scripts/run_with_env.sh \
     : # (rebuttal_deliverables removed: it only assembled the review-cycle bundle)
 set -e

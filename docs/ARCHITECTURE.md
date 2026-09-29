@@ -53,8 +53,7 @@ src/anchorbench/
 |   |   extension_pilot.py, weighted_mean.py, cot_reasoning_extended.py,
 |   |   task_spec.py, rag_realism.py, tool_realism.py, large_panel.py,
 |   |   case_studies.py, cohens_d.py                       # the 13 \input-ed appendix tables
-|   `-- api_cost_estimate.py, cot_reasoning.py, intensity.py, medical_pilot.py
-|                                   # superseded; kept because experiments/rebuttal/ calls them
+|   `-- api_cost_estimate.py           # a cost projection; not a paper table
 |-- paper/                      # figures, LaTeX tables and the claim verifier
 |   |-- _common.py                  # paths, model order, LaTeX macros, formatting helpers
 |   |-- fig4_dose_response.py, fig5_acc_vs_disc.py

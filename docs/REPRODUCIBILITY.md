@@ -262,15 +262,13 @@ the thirteen were hand-edited from `\begin{table}` to `\begin{table*}` to span
 both columns, so a regenerated file differs from the paper copy in that one
 token.
 
-Four analysis modules are superseded and produce nothing the camera-ready
-uses. They stay because committed launchers call them:
-
-| Module | Superseded by | Called from |
-|---|---|---|
-| `analysis/intensity.py` | `intensity_pathway.py` | `_wrap_up_p2p5.sh` |
-| `analysis/api_cost_estimate.py` | — (a cost projection) | `api_smoke_large.sh` |
-| `analysis/cot_reasoning.py` | `cot_reasoning_extended.py` | `run_b1_cot_extended.sh` |
-| `analysis/medical_pilot.py` | `extension_pilot.py` | `_wrap_up.sh` |
+One analysis module produces nothing the camera-ready uses:
+`analysis/api_cost_estimate.py`, a cost projection called from
+`api_smoke_large.sh`. The three modules that earlier drafts superseded
+(`intensity.py`, `cot_reasoning.py`, `medical_pilot.py`) are gone; their
+committed outputs under `results/rebuttal/{intensity,cot_reasoning,medical}/`
+stay as provenance, and `intensity_pathway.py`, `cot_reasoning_extended.py`
+and `extension_pilot.py` are the generators of the tables the paper uses.
 
 ### Not reproducible from the release
 
