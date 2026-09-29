@@ -283,7 +283,7 @@ divergence between the paper, the committed artifacts and the current code.
 | Add a suite | `src/anchorbench/data/suites/` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
 | Add a metric | `src/anchorbench/eval/metrics.py` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
 | Add an experiment | `conf/experiment/*.yaml` | [ARCHITECTURE.md](docs/ARCHITECTURE.md#extending) |
-| Register a model in one shot | `anchorbench add-model openai/gpt-5o` | — |
+| Register a model in one shot | `anchorbench add-model openai/gpt-5o --backend openrouter` | — |
 
 ## 📁 Repository structure
 

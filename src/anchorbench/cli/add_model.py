@@ -1,13 +1,15 @@
 """`anchorbench add-model` subcommand.
 
 Appends a new model config to ``conf/model/<slug>.yaml`` and prints a
-smoke-test command. Detects API vs open-weight models from the model
-identifier prefix.
+smoke-test command. The backend is declared, never inferred from the
+identifier: ``google/gemma-*`` is an open-weight model and
+``google/gemini-*`` a hosted one, so a prefix rule mis-routes one of them
+(see cli/cells.py and tests/test_model_routing.py).
 
 Usage::
 
-    anchorbench add-model openai/gpt-5o
     anchorbench add-model meta-llama/Llama-4-8B-Instruct --short Llama-4-8B
+    anchorbench add-model openai/gpt-5o --backend openrouter
 """
 
 from __future__ import annotations
@@ -20,7 +22,7 @@ from anchorbench.paths import CONF_DIR
 
 CONF_MODEL_DIR = CONF_DIR / "model"
 
-API_PREFIXES = ("openai/", "anthropic/", "google/", "x-ai/", "mistralai/", "meta/")
+BACKENDS = ("vllm", "hf", "openrouter")
 
 
 def _slugify_filename(model_id: str) -> str:
@@ -40,10 +42,12 @@ def main() -> int:
                    help="Display name (default: last path segment).")
     p.add_argument("--name", default=None,
                    help="Long name (default: same as --short).")
+    p.add_argument("--backend", choices=BACKENDS, default="vllm",
+                   help="Where the model runs: vllm or hf load weights locally, "
+                        "openrouter calls the hosted API (default: vllm).")
     args = p.parse_args()
 
     model_id = args.model_id
-    is_api = any(model_id.startswith(pre) for pre in API_PREFIXES)
     slug = model_id.replace("/", "_")
     fname = _slugify_filename(model_id)
     short = args.short or _short_default(model_id)
@@ -62,7 +66,7 @@ def main() -> int:
         f"family: {family}\n"
         f"latex: '{short}'\n"
     )
-    if is_api:
+    if args.backend == "openrouter":
         body = (
             f"name: {name}\n"
             f"hf_id: {model_id}\n"
@@ -77,7 +81,7 @@ def main() -> int:
             f"hf_id: {model_id}\n"
             f"slug: {slug}\n"
             f"short: {short}\n"
-            f"backend: vllm\n"
+            f"backend: {args.backend}\n"
             f"tensor_parallel_size: 1\n"
             f"gpu_memory_utilization: 0.9\n"
             f"max_model_len: 4096\n"

@@ -231,8 +231,10 @@ and the by-offset and by-difficulty breakdowns used in the appendix.
    anchorbench add-model my-org/my-model-7b        # writes conf/model/my_model_7b.yaml
    ```
 
-   For an OpenRouter model set `backend: openrouter`; the helper does this
-   for the known provider prefixes. Local models use `backend: vllm` (or `hf`).
+   For an OpenRouter model pass `--backend openrouter` (or set
+   `backend: openrouter` by hand). Local models use `backend: vllm` (or `hf`).
+   The helper never guesses from the identifier: `google/gemma-*` is local and
+   `google/gemini-*` is hosted.
 
 2. Fill in the table metadata in that file (`family`, `family_latex`,
    `params` for open-weight models, `latex`), add the key to
