@@ -26,6 +26,7 @@ import logging
 from pathlib import Path
 
 from anchorbench.analysis._io import fmt_latex, fmt_pct, write_csv, write_json
+from anchorbench.eval.metrics import item_uai
 from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
 log = logging.getLogger(__name__)
@@ -116,12 +117,9 @@ def gather(in_dir: Path, core_dir: Path) -> dict:
                     anchor = rec.get("anchor_value")
                     if ai is None or anchor is None:
                         continue
-                    denom = abs(anchor - ctrl_int)
-                    if denom < 1e-6:
+                    uai = item_uai(float(ai), float(ctrl_int), anchor)
+                    if uai is None:
                         continue
-                    uai = (float(ai) - ctrl_int) / denom * (
-                        1 if anchor > ctrl_int else -1
-                    )
                     bucket.append(uai)
 
             per_k[k] = {

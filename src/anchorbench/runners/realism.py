@@ -32,7 +32,7 @@ from anchorbench.eval.io import (
     splice_core_records,
     write_records,
 )
-from anchorbench.eval.metrics import compute_unified_metrics
+from anchorbench.eval.metrics import compute_unified_metrics, item_uai
 from anchorbench.eval.runner_utils import add_backend_args, make_backend
 from anchorbench.paths import RESULTS_DIR
 
@@ -72,10 +72,9 @@ def build_promptviews(suite: str, core_dir: Path, out_dir: Path) -> Path:
 
 def realism_curve(records: list[dict], variants: tuple[str, ...]) -> dict:
     """Mean UAI per (relevance, variant) over the spliced records, with the
-    published conditions as the ``baseline`` variant.
-
-    NOTE: excludes only |a - y_ctrl| < 1e-6, not the paper's epsilon = 3; the
-    committed appendix tables were produced this way (see the review ledger).
+    published conditions as the ``baseline`` variant. UAI is the paper's
+    (metrics.item_uai, epsilon = 3); see RECONCILIATION D11 for the curves
+    the rebuttal was computed with.
     """
     ctrl: dict[str, float] = {}
     for r in records:
@@ -90,10 +89,9 @@ def realism_curve(records: list[dict], variants: tuple[str, ...]) -> dict:
         cond, ai, y_ctrl, anchor = r["condition"], r["answer_int"], ctrl.get(r["item_id"]), r["anchor_value"]
         if ai is None or y_ctrl is None or anchor is None:
             continue
-        denom = abs(anchor - y_ctrl)
-        if denom < 1e-6:
+        uai = item_uai(float(ai), y_ctrl, anchor)
+        if uai is None:
             continue
-        uai = (float(ai) - y_ctrl) / denom * (1 if anchor > y_ctrl else -1)
         rel = next((x for x in ("plausible", "irrelevant") if cond.startswith(f"{x}_")), None)
         if rel is None:
             continue

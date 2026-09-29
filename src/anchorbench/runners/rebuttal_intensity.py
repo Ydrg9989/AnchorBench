@@ -57,7 +57,7 @@ from anchorbench.eval.io import (
     splice_core_records,
     write_records,
 )
-from anchorbench.eval.metrics import baseline_condition, compute_unified_metrics
+from anchorbench.eval.metrics import baseline_condition, compute_unified_metrics, item_uai
 from anchorbench.eval.runner_utils import add_backend_args, make_backend
 from anchorbench.paths import DATASETS_DIR, RESULTS_DIR
 
@@ -145,7 +145,8 @@ def scoring_baseline(all_recs: list[dict], prefer: str) -> str:
 def _compute_intensity_curve(
     all_recs: list[dict], baseline_cond: str,
 ) -> dict:
-    """Per-intensity mean UAI vs the per-item ``baseline_cond`` answer."""
+    """Per-intensity mean UAI (the paper's, epsilon = 3) vs the per-item
+    ``baseline_cond`` answer."""
     def _collect(cond: str) -> dict[str, float]:
         out: dict[str, float] = {}
         for r in all_recs:
@@ -175,10 +176,9 @@ def _compute_intensity_curve(
         anchor = r.get("anchor_value")
         if ai is None or ctrl is None or anchor is None:
             continue
-        denom = abs(anchor - ctrl)
-        if denom < 1e-6:
+        uai = item_uai(float(ai), ctrl, anchor)
+        if uai is None:
             continue
-        uai = (float(ai) - ctrl) / denom * (1 if anchor > ctrl else -1)
         by_cond[cond].append(uai)
 
     intensity: dict[str, float | None] = {}
