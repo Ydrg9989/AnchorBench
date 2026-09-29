@@ -45,7 +45,6 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--llm_fallback", action="store_true")
     parser.add_argument("--fallback_model", type=str, default=None)
     parser.add_argument("--fallback_device", type=str, default="auto")
-    parser.add_argument("--structured", action="store_true")
 
     parser.add_argument(
         "--backend", type=str, choices=list(BACKENDS), default="hf",

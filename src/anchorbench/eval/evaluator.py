@@ -2,7 +2,7 @@
 
 Shared logic extracted from the five suite runners:
   - prepare_items: build item list from promptviews + itemspecs
-  - parse_response: 3-tier parsing cascade (structured → regex → LLM fallback)
+  - parse_response: the parsing cascade (see anchorbench.eval.parsing)
   - build_record: construct standard result dict
   - run_single_stage: one batched round trip for External, ICL, RAG, Tool,
     and every hosted-API run (any :class:`Backend`)

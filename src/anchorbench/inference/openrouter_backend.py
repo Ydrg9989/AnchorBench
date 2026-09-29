@@ -43,7 +43,6 @@ def _run_sync(coro: Coroutine[Any, Any, Any]) -> Any:
 class OpenRouterBackend:
     """Synchronous ``Backend`` over the async OpenRouter client."""
 
-    supports_structured: bool = False
     # OpenRouter models receive the plaintext rendering of the Tool suite,
     # which is what the paper's API tier was evaluated on.
     supports_tool_messages: bool = False
@@ -106,17 +105,6 @@ class OpenRouterBackend:
     def _user(prompt: str) -> list[dict[str, str]]:
         return [{"role": "user", "content": prompt}]
 
-    def generate(
-        self, prompt: str, *, max_tokens: int = 512,
-        temperature: float = 0.0, structured: bool = False,
-    ) -> str:
-        return self._complete([self._user(prompt)], max_tokens, temperature)[0]
-
-    def generate_chat(
-        self, messages: list[dict], *, max_tokens: int = 512, temperature: float = 0.0,
-    ) -> str:
-        return self._complete([messages], max_tokens, temperature)[0]
-
     def generate_batch(
         self, prompts: list[str], *, max_tokens: int = 512,
         temperature: float = 0.0, batch_size: int = 16,
@@ -139,5 +127,3 @@ class OpenRouterBackend:
             "(supports_tool_messages is False, and runners.tool honours it)."
         )
 
-    def generate_for_extraction(self, raw_output: str, extraction_prompt: str) -> str:
-        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)

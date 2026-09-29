@@ -37,7 +37,7 @@ def test_generate_batch_preserves_order_and_accumulates_usage(canned):
     assert out == ["echo:a", "echo:b", "echo:c"]
     assert b.last_usage == [{"prompt_tokens": 10, "completion_tokens": 2}] * 3
     assert b.usage == {"requests": 3, "prompt_tokens": 30, "completion_tokens": 6}
-    b.generate("d")
+    b.generate_batch(["d"])
     assert b.usage["requests"] == 4
 
 
@@ -45,7 +45,7 @@ def test_chat_methods_send_the_messages_unchanged(canned):
     b = OpenRouterBackend("openai/x", api_key="k")
     convo = [{"role": "user", "content": "s1"}, {"role": "assistant", "content": "30"},
              {"role": "user", "content": "s2"}]
-    assert b.generate_chat(convo) == "echo:s2"
+    assert b.generate_chat_batch([convo]) == ["echo:s2"]
     assert canned[-1] == convo
     assert b.generate_chat_batch([convo, convo]) == ["echo:s2", "echo:s2"]
 

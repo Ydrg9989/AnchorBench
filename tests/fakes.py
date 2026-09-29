@@ -29,8 +29,6 @@ class FakeBackend:
     OpenRouter adapter does.
     """
 
-    supports_structured = False
-
     def __init__(
         self,
         policy: Policy | None = None,
@@ -67,14 +65,6 @@ class FakeBackend:
 
     # -- Backend interface -------------------------------------------------
 
-    def generate(self, prompt: str, *, max_tokens: int = 512,
-                 temperature: float = 0.0, structured: bool = False) -> str:
-        return self._reply([prompt], "generate")[0]
-
-    def generate_chat(self, messages: list[dict], *, max_tokens: int = 512,
-                      temperature: float = 0.0) -> str:
-        return self._reply([self._last_user(messages)], "generate_chat")[0]
-
     def generate_batch(self, prompts: list[str], *, max_tokens: int = 512,
                        temperature: float = 0.0, batch_size: int = 16) -> list[str]:
         return self._reply(list(prompts), "generate_batch")
@@ -90,5 +80,3 @@ class FakeBackend:
             raise NotImplementedError("this fake does not take tool messages")
         return self._reply([self._last_user(m) for m in messages_list], "generate_batch_tool")
 
-    def generate_for_extraction(self, raw_output: str, extraction_prompt: str) -> str:
-        return self._reply([extraction_prompt], "generate_for_extraction")[0]

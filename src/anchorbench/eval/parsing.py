@@ -2,7 +2,8 @@
 
 The cascade that orders them is ``evaluator.parse_response``:
 
-    structured (JSON, only with --structured) -> xml_tag -> final_answer
+    structured (JSON handed in as structured_raw; no runner produces it)
+    -> xml_tag -> final_answer
     -> [a declared but out-of-range answer, or a truncated response, stops here]
     -> regex (parse_answer_int) -> last_number -> llm_fallback
 

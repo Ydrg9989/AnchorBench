@@ -139,8 +139,8 @@ runner argument set.
 ## Evaluation internals
 
 **Backends and the loop.** `eval.backends.Backend` is the protocol every
-model speaks: `generate`, `generate_chat`, `generate_batch`,
-`generate_chat_batch`, `generate_batch_tool` and a `supports_tool_messages`
+model speaks: `generate_batch`, `generate_chat_batch`, `generate_batch_tool`
+and a `supports_tool_messages`
 flag. `HFBackend` and `VLLMBackend` load weights locally;
 `inference.openrouter_backend.OpenRouterBackend` puts the hosted API behind
 the same interface, so `evaluator.run_single_stage` and

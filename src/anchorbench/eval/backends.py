@@ -25,27 +25,15 @@ class Backend(Protocol):
     :class:`anchorbench.inference.openrouter_backend.OpenRouterBackend` all
     satisfy it, as does the ``FakeBackend`` the tests use. ``batch_size`` is
     a hint for backends that batch locally; hosted backends may ignore it.
+    The loops only ever send batches, so there is no single-prompt method.
     """
 
     model_id: str
 
     @property
-    def supports_structured(self) -> bool: ...
-
-    @property
     def supports_tool_messages(self) -> bool:
         """Whether native tool-call messages can be sent (else use plaintext)."""
         ...
-
-    def generate(
-        self, prompt: str, *, max_tokens: int = 512,
-        temperature: float = 0.0, structured: bool = False,
-    ) -> str: ...
-
-    def generate_chat(
-        self, messages: list[dict], *, max_tokens: int = 512,
-        temperature: float = 0.0,
-    ) -> str: ...
 
     def generate_batch(
         self, prompts: list[str], *, max_tokens: int = 512,
@@ -61,11 +49,6 @@ class Backend(Protocol):
         self, messages_list: list[list[dict]], tools: list[dict] | None = None,
         max_tokens: int = 64, temperature: float = 0.0, batch_size: int = 16,
     ) -> list[str]: ...
-
-    def generate_for_extraction(
-        self, raw_output: str, extraction_prompt: str,
-    ) -> str: ...
-
 
 class HFBackend:
     """Local HuggingFace model backend."""
@@ -99,62 +82,6 @@ class HFBackend:
         self.model.eval()
         self._torch = torch
         log.info("Loaded HF model %s on %s", model_id, self.model.device)
-
-        self._outlines_available = False
-        try:
-            import outlines  # noqa: F401
-            self._outlines_available = True
-        except ImportError:
-            pass
-
-    @property
-    def supports_structured(self) -> bool:
-        return self._outlines_available
-
-    def _encode_and_generate(
-        self, text: str, max_tokens: int, temperature: float,
-    ) -> str:
-        enc = self.tokenizer(
-            text, return_tensors="pt", add_special_tokens=False,
-        )
-        enc = {k: v.to(self.model.device) for k, v in enc.items()}
-        prompt_len = enc["input_ids"].shape[1]
-
-        gen_kwargs: dict[str, Any] = {
-            "max_new_tokens": max_tokens,
-            "do_sample": temperature > 0,
-        }
-        if temperature > 0:
-            gen_kwargs["temperature"] = temperature
-            gen_kwargs["top_p"] = 1.0
-
-        with self._torch.no_grad():
-            out = self.model.generate(
-                **enc, **gen_kwargs,
-                pad_token_id=self.tokenizer.eos_token_id,
-            )
-        return self.tokenizer.decode(
-            out[0, prompt_len:], skip_special_tokens=True,
-        )
-
-    def generate(
-        self, prompt: str, *, max_tokens: int = 512,
-        temperature: float = 0.0, structured: bool = False,
-    ) -> str:
-        messages = [{"role": "user", "content": prompt}]
-        text = self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True,
-        )
-        return self._encode_and_generate(text, max_tokens, temperature)
-
-    def generate_chat(
-        self, messages: list[dict], *, max_tokens: int = 512,
-        temperature: float = 0.0,
-    ) -> str:
-        text = self.tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True,
-        )
-        return self._encode_and_generate(text, max_tokens, temperature)
 
     @property
     def supports_tool_messages(self) -> bool:
@@ -228,12 +155,6 @@ class HFBackend:
         texts = [self._template(m, tools=tools) for m in messages_list]
         return self._generate_texts(texts, max_tokens, temperature, batch_size)
 
-    def generate_for_extraction(
-        self, raw_output: str, extraction_prompt: str,
-    ) -> str:
-        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
-
-
 class VLLMBackend:
     """vLLM backend for high-throughput inference with full GPU utilization.
 
@@ -288,10 +209,6 @@ class VLLMBackend:
         )
 
     @property
-    def supports_structured(self) -> bool:
-        return False
-
-    @property
     def supports_tool_messages(self) -> bool:
         return True
 
@@ -307,26 +224,6 @@ class VLLMBackend:
         return self._tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
         )
-
-    def generate(
-        self, prompt: str, *, max_tokens: int = 512,
-        temperature: float = 0.0, structured: bool = False,
-    ) -> str:
-        text = self._prompt_for_user(prompt)
-        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
-        outputs = self._llm.generate([text], sampling)
-        return outputs[0].outputs[0].text
-
-    def generate_chat(
-        self, messages: list[dict], *, max_tokens: int = 512,
-        temperature: float = 0.0,
-    ) -> str:
-        text = self._tokenizer.apply_chat_template(
-            messages, tokenize=False, add_generation_prompt=True,
-        )
-        sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
-        outputs = self._llm.generate([text], sampling)
-        return outputs[0].outputs[0].text
 
     def generate_batch(
         self, prompts: list[str], *, max_tokens: int = 512,
@@ -374,10 +271,4 @@ class VLLMBackend:
         sampling = self._sampling(max_tokens=max_tokens, temperature=temperature)
         outputs = self._llm.generate(texts, sampling)
         return [o.outputs[0].text for o in outputs]
-
-    def generate_for_extraction(
-        self, raw_output: str, extraction_prompt: str,
-    ) -> str:
-        return self.generate(extraction_prompt, max_tokens=16, temperature=0.0)
-
 
