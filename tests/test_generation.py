@@ -310,3 +310,40 @@ class TestValidatorIntegration:
 
     def test_tool_validation(self, tool_specs):
         self._validate_suite(tool_specs)
+
+    # Every check has a failing case: corrupt one field of valid data and
+    # look for the exact message, so a validator that never fires is caught.
+
+    def _views(self, specs):
+        return [v for spec in specs for v in SUITE_RENDERERS[spec.suite](spec)]
+
+    def test_wrong_gold_is_reported(self, external_specs):
+        views = self._views(external_specs)
+        external_specs[0].y_star_evidence += 1
+        errors = validate_all(external_specs, views)
+        assert any("y_star_evidence=" in e and "expected(mean)=" in e for e in errors), errors
+
+    def test_missing_control_is_reported(self, external_specs):
+        views = [v for v in self._views(external_specs)
+                 if not (v.item_id == external_specs[0].item_id and v.condition == "control")]
+        errors = validate_all(external_specs, views)
+        assert f"{external_specs[0].item_id}: missing control condition" in errors
+
+    def test_duplicate_item_is_reported(self, external_specs):
+        views = self._views(external_specs)
+        errors = validate_all(external_specs + external_specs[:1], views)
+        assert f"{external_specs[0].item_id}: duplicate ItemSpec (2 copies)" in errors
+
+    def test_evidence_that_differs_from_control_is_reported(self, external_specs):
+        views = self._views(external_specs)
+        target = next(v for v in views if v.condition == "plausible_low")
+        target.prompt_components["evidence"] += " (edited)"
+        errors = validate_all(external_specs, views)
+        assert f"{target.item_id}: plausible_low 'evidence' differs from control" in errors
+
+    def test_framings_with_different_anchors_are_reported(self, external_specs):
+        views = self._views(external_specs)
+        target = next(v for v in views if v.condition == "plausible_high")
+        target.anchor_value += 1
+        errors = validate_all(external_specs, views)
+        assert any("irrelevant_high anchor" in e and "!= plausible_high anchor" in e for e in errors), errors

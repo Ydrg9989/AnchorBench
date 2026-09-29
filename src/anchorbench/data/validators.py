@@ -282,6 +282,18 @@ def _check_pairing(views: list[PromptView]) -> list[str]:
                 if conds[cname].prompt_components.get(key, "") != ctrl.prompt_components.get(key, ""):
                     errs.append(f"{iid}: {cname} '{key}' differs from control")
 
+        # The design's defining invariant (Sec. 3.2): the irrelevant and the
+        # plausible framing of one direction carry the same number. History's
+        # anchor is the model's own Stage-1 answer, so it has none at render time.
+        if suite != "history":
+            for d in ("low", "high"):
+                a_irr = conds[f"irrelevant_{d}"].anchor_value
+                a_pls = conds[f"plausible_{d}"].anchor_value
+                if a_irr != a_pls:
+                    errs.append(
+                        f"{iid}: irrelevant_{d} anchor {a_irr} != plausible_{d} anchor {a_pls}"
+                    )
+
         if suite == "icl_dist":
             for a, b in (("plausible_low", "irrelevant_low"), ("plausible_high", "irrelevant_high")):
                 pa, pb = conds.get(a), conds.get(b)
