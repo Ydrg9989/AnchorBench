@@ -64,10 +64,13 @@ def prepare_items(
         if not cond_set.issubset(cond_views.keys()):
             continue
         spec = specs.get(item_id, {})
+        # Every view of an item shares suite and domain; the appendix
+        # experiments evaluate condition sets without a control view.
+        first = cond_views[min(cond_set)]
         item: dict[str, Any] = {
             "item_id": item_id,
-            "suite": cond_views["control"]["suite"],
-            "domain": cond_views["control"]["domain"],
+            "suite": first["suite"],
+            "domain": first["domain"],
             "difficulty": spec.get("difficulty", "standard"),
             "y_star_evidence": spec.get(
                 "y_star_evidence", spec.get("y_star")

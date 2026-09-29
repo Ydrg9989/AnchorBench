@@ -38,8 +38,8 @@ run the analysis modules when every `.done` flag is present.
 | `_c1_one_model.sh` | `runners.{external,history}` on the medical pilot | `medical/` | `tab:extension_pilot` |
 | `_extension_pilot_one_model.sh`, `run_extension_pilot.sh` | `runners.{external,history}` on the other-domain pilot | `extension_pilot/` | `tab:extension_pilot` |
 | `_d1_one_model.sh`, `run_p1_intensity_pathway.sh` | `runners.rebuttal_intensity` | `intensity/`, `intensity_rag/`, `intensity_history/` | `tab:intensity_pathway` |
-| `_p2_one_model.sh`, `run_p2_rag_realism.sh` | `runners.rebuttal_rag_realism` | `rag_realism/` | `tab:rag_realism` |
-| `_p3_one_model.sh`, `run_p3_tool_realism.sh` | `runners.rebuttal_tool_realism` | `tool_realism/` | `tab:tool_realism` |
+| `_p2_one_model.sh`, `run_p2_rag_realism.sh` | `runners.realism --suite rag` | `rag_realism/` | `tab:rag_realism` |
+| `_p3_one_model.sh`, `run_p3_tool_realism.sh` | `runners.realism --suite tool` | `tool_realism/` | `tab:tool_realism` |
 | `_p4_one_model.sh`, `run_p4_task_spec.sh` | `runners.rebuttal_cot` (rule vs. judgment prompts) | `task_spec/` | `tab:task_spec` |
 | `_p5_one_model.sh` | `runners.rebuttal_uncertain` | `uncertain/` | `tab:uncertain_k`, main-text Table 2 |
 | `_large_api_full.sh`, `_large_ow_all_suites.sh`, `api_smoke_large.sh` | `runners.api`, per-suite runners with tensor parallelism | `large_api/`, `large_ow/`, `large_api_smoke/` | `tab:large_panel_results` |

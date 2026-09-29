@@ -17,7 +17,7 @@ echo "[$(date -Iseconds)] P3[tool_realism] starting $MODEL_ID on GPU $DEVICES" |
 
 export CUDA_VISIBLE_DEVICES="$DEVICES"
 bash scripts/run_with_env.sh \
-    python -m anchorbench.runners.rebuttal_tool_realism \
+    python -m anchorbench.runners.realism --suite tool \
         --model_id "$MODEL_ID" \
         --out_dir "$OUT_DIR" \
         --backend vllm \
