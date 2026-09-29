@@ -40,11 +40,15 @@ from anchorbench.eval.constants import (
 )
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import (
+    EPSILON,
+    baseline_condition,
     bh_correction,
     bootstrap_ci,
     compute_unified_metrics,
     group_by_item,
+    item_uai,
     paired_wilcoxon,
+    pearson_bootstrap_ci,
 )
 
 from ._common import (
@@ -219,97 +223,96 @@ def _fmt_p(p: float | None) -> str:
     return f"{p:.2f}"
 
 
+def suite_contrasts(unified: list[dict]) -> tuple[list[tuple], list[float]]:
+    """Per suite: mean and bootstrap CI of UAI_pls - UAI_irr over the cells
+    that carry both, and the two-sided Wilcoxon p-value, BH-adjusted across
+    suites. Cells are paired within themselves; a cell missing either metric
+    is left out rather than shifting the pairing."""
+    suite_rows = []
+    pvals: list[float] = []
+    for suite in ("External", "History", "Icl", "Rag", "Tool"):
+        pairs = [(r["uai_plaus"], r["uai_irr"]) for r in unified
+                 if r.get("suite") == suite
+                 and r.get("uai_plaus") is not None and r.get("uai_irr") is not None]
+        if len(pairs) < 2:
+            continue
+        pls = np.array([p for p, _ in pairs])
+        irr = np.array([i for _, i in pairs])
+        mean, lo, hi = bootstrap_ci((pls - irr).tolist())
+        p = paired_wilcoxon(pls, irr)
+        suite_rows.append((suite, mean, lo, hi, p))
+        pvals.append(p)
+    valid = [(i, p) for i, p in enumerate(pvals) if p is not None and not np.isnan(p)]
+    bh_full = list(pvals)
+    if valid:
+        for (idx, _), a in zip(valid, bh_correction([p for _, p in valid])):
+            bh_full[idx] = a
+    return suite_rows, bh_full
+
+
+def disc_range_ci(unified: list[dict], n_boot: int = 2000, seed: int = 42) -> tuple[float, float, float]:
+    """Range of the suite-mean Disc_delta over the open-weight panel, with a
+    bootstrap over models (each model's five cells resampled together)."""
+    ow_models_set = set(OW_MODELS_ORDER)
+    suite_means: dict[str, float] = {}
+    for suite in ("External", "History", "Icl", "Rag", "Tool"):
+        ow_cells = [r["disc_delta"] for r in unified
+                    if r.get("suite") == suite
+                    and r["model"] in ow_models_set
+                    and r.get("disc_delta") is not None]
+        if ow_cells:
+            suite_means[suite] = float(np.mean(ow_cells))
+    suite_means_arr = np.array(list(suite_means.values()))
+    if len(suite_means_arr) <= 1:
+        return float("nan"), float("nan"), float("nan")
+    rng_mean = float(suite_means_arr.max() - suite_means_arr.min())
+    rs = np.random.RandomState(seed)
+    ow_models = sorted({r["model"] for r in unified if r["model"] in ow_models_set})
+    # Resample models with replacement. This used to filter with
+    # `r["model"] in sample_models`, a membership test, so a model drawn
+    # three times contributed once -- a random subset retaining each model
+    # with probability 1-(1-1/n)^n ~ 0.65, not a bootstrap. It understated
+    # the interval ([0.23, 0.57] against [0.20, 0.60] here) because it
+    # never produced the heavily-reweighted draws a bootstrap relies on.
+    # Indexing the per-cell values keeps repeats, which is the point.
+    disc_by_cell = {
+        (r["model"], r.get("suite")): r["disc_delta"]
+        for r in unified
+        if r["model"] in ow_models_set and r.get("disc_delta") is not None
+    }
+    rng_boots = []
+    for _ in range(n_boot):
+        idx = rs.randint(0, len(ow_models), size=len(ow_models))
+        boot_models = [ow_models[i] for i in idx]
+        sm: dict[str, float] = {}
+        for s in ("External", "History", "Icl", "Rag", "Tool"):
+            vals = [disc_by_cell[(m, s)] for m in boot_models if (m, s) in disc_by_cell]
+            if vals:
+                sm[s] = float(np.mean(vals))
+        if len(sm) > 1:
+            arr = np.array(list(sm.values()))
+            rng_boots.append(float(arr.max() - arr.min()))
+    if not rng_boots:
+        return rng_mean, float("nan"), float("nan")
+    return rng_mean, float(np.percentile(rng_boots, 2.5)), float(np.percentile(rng_boots, 97.5))
+
+
+def acc_disc_pearson(unified: list[dict]) -> tuple[float, float, float]:
+    """Pearson r(Acc_10, Disc_delta) over every cell that has both, with CI."""
+    pts = [(r["acc10_control"], r["disc_delta"]) for r in unified
+           if r.get("acc10_control") is not None and r.get("disc_delta") is not None]
+    return pearson_bootstrap_ci(np.array([p[0] for p in pts]), np.array([p[1] for p in pts]))
+
+
 def stats_inference_values(unified: list[dict]) -> dict:
     """The numbers behind tab:stats_inference, before any LaTeX formatting.
 
     Split out so paper.verify checks the same values the table prints,
     instead of a second implementation that could drift from it.
     """
-    suite_rows = []
-    pvals_for_bh: list[float] = []
-    for suite in ("External", "History", "Icl", "Rag", "Tool"):
-        cells = [r for r in unified if r.get("suite") == suite]
-        pls_arr = np.array([r["uai_plaus"] for r in cells
-                            if r.get("uai_plaus") is not None])
-        irr_arr = np.array([r["uai_irr"] for r in cells
-                            if r.get("uai_irr") is not None])
-        n = min(len(pls_arr), len(irr_arr))
-        if n < 2:
-            continue
-        diffs = (pls_arr[:n] - irr_arr[:n]).tolist()
-        mean, lo, hi = bootstrap_ci(diffs)
-        p = paired_wilcoxon(pls_arr[:n], irr_arr[:n])
-        suite_rows.append((suite, mean, lo, hi, p))
-        pvals_for_bh.append(p)
-    valid = [(i, p) for i, p in enumerate(pvals_for_bh)
-             if p is not None and not np.isnan(p)]
-    bh_full = list(pvals_for_bh)
-    if valid:
-        adj = bh_correction([p for _, p in valid])
-        for (idx, _), a in zip(valid, adj):
-            bh_full[idx] = a
-
-    suite_means: dict[str, float] = {}
-    for suite in ("External", "History", "Icl", "Rag", "Tool"):
-        ow_cells = [r["disc_delta"] for r in unified
-                    if r.get("suite") == suite
-                    and r["model"] in OW_MODELS_ORDER
-                    and r.get("disc_delta") is not None]
-        if ow_cells:
-            suite_means[suite] = float(np.mean(ow_cells))
-    suite_means_arr = np.array(list(suite_means.values()))
-    if len(suite_means_arr) > 1:
-        rng_mean = float(suite_means_arr.max() - suite_means_arr.min())
-        rng_boots = []
-        rs = np.random.RandomState(42)
-        ow_models_set = set(OW_MODELS_ORDER)
-        ow_models = sorted({r["model"] for r in unified if r["model"] in ow_models_set})
-        # Resample models with replacement. This used to filter with
-        # `r["model"] in sample_models`, a membership test, so a model drawn
-        # three times contributed once -- a random subset retaining each model
-        # with probability 1-(1-1/n)^n ~ 0.65, not a bootstrap. It understated
-        # the interval ([0.23, 0.57] against [0.20, 0.60] here) because it
-        # never produced the heavily-reweighted draws a bootstrap relies on.
-        # Indexing the per-cell values keeps repeats, which is the point.
-        disc_by_cell = {
-            (r["model"], r.get("suite")): r["disc_delta"]
-            for r in unified
-            if r["model"] in ow_models_set and r.get("disc_delta") is not None
-        }
-        for _ in range(2000):
-            idx = rs.randint(0, len(ow_models), size=len(ow_models))
-            boot_models = [ow_models[i] for i in idx]
-            sm: dict[str, float] = {}
-            for s in ("External", "History", "Icl", "Rag", "Tool"):
-                vals = [disc_by_cell[(m, s)] for m in boot_models if (m, s) in disc_by_cell]
-                if vals:
-                    sm[s] = float(np.mean(vals))
-            if len(sm) > 1:
-                arr = np.array(list(sm.values()))
-                rng_boots.append(float(arr.max() - arr.min()))
-        if rng_boots:
-            rng_lo = float(np.percentile(rng_boots, 2.5))
-            rng_hi = float(np.percentile(rng_boots, 97.5))
-        else:
-            rng_lo = rng_hi = float("nan")
-    else:
-        rng_mean = float("nan")
-        rng_lo = rng_hi = float("nan")
-
-    pts = [(r.get("acc10_control"), r.get("disc_delta"))
-           for r in unified
-           if r.get("acc10_control") is not None
-           and r.get("disc_delta") is not None]
-    xs = np.array([p[0] for p in pts])
-    ys = np.array([p[1] for p in pts])
-    r_pearson = float(np.corrcoef(xs, ys)[0, 1])
-    rs2 = np.random.RandomState(42)
-    boots = []
-    for _ in range(2000):
-        idx = rs2.randint(0, len(pts), size=len(pts))
-        boots.append(float(np.corrcoef(xs[idx], ys[idx])[0, 1]))
-    r_lo, r_hi = float(np.percentile(boots, 2.5)), float(np.percentile(boots, 97.5))
-
+    suite_rows, bh_full = suite_contrasts(unified)
+    rng_mean, rng_lo, rng_hi = disc_range_ci(unified)
+    r_pearson, r_lo, r_hi = acc_disc_pearson(unified)
     return {
         "suites": {
             suite: {"mean": m, "lo": lo, "hi": hi, "p_bh": p_adj}
@@ -379,18 +382,9 @@ def collect_pooled_uai(records_root: Path, baseline: str = "control",
     suites = suites or ["external", "history", "icl", "rag", "tool"]
     pooled: dict[str, list[float]] = {"irr": [], "plaus": []}
     for suite in suites:
-        suite_dir = records_root / suite
-        if not suite_dir.is_dir():
-            continue
-        for model_dir in sorted(suite_dir.iterdir()):
-            if not model_dir.is_dir():
-                continue
-            rpath = model_dir / "results.jsonl"
-            if not rpath.exists():
-                continue
+        for _short, _slug, rpath in discover_jsonl(records_root, suite):
             recs = load_records(str(rpath))
-            conds = {r.get("condition") for r in recs}
-            bc = "control_twostage" if "control_twostage" in conds and "control" not in conds else "control"
+            bc = baseline_condition(recs)
             items = group_by_item(recs)
             for _iid, by_cond in items.items():
                 ctrl = by_cond.get(bc)
@@ -408,10 +402,9 @@ def collect_pooled_uai(records_root: Path, baseline: str = "control",
                     a = rec.get("anchor_value")
                     if y_a is None or a is None:
                         continue
-                    denom = a - y_ctrl
-                    if abs(denom) < 3.0:
+                    uai = item_uai(y_a, y_ctrl, a, EPSILON)
+                    if uai is None:
                         continue
-                    uai = (y_a - y_ctrl) / denom
                     if "irrelevant" in cond:
                         pooled["irr"].append(uai)
                     else:
@@ -485,20 +478,11 @@ def compute_delta_mae_by_suite(records_dirs: list[Path]) -> dict[str, dict[str, 
     out: dict[str, dict[str, list[float]]] = {}
     for base in records_dirs:
         for suite in ("external", "history", "icl", "rag", "tool"):
-            suite_dir = base / suite
-            if not suite_dir.is_dir():
-                continue
-            for model_dir in sorted(suite_dir.iterdir()):
-                if not model_dir.is_dir():
-                    continue
-                rpath = model_dir / "results.jsonl"
-                if not rpath.exists():
-                    continue
+            for _short, _slug, rpath in discover_jsonl(base, suite):
                 recs = load_records(str(rpath))
                 if not recs:
                     continue
-                conds = {r.get("condition") for r in recs}
-                bc = "control_twostage" if "control_twostage" in conds and "control" not in conds else "control"
+                bc = baseline_condition(recs)
                 items = group_by_item(recs)
                 mae_ctrl: list[float] = []
                 mae_irr: list[float] = []
@@ -619,13 +603,9 @@ def build_history_matched(history_root: Path) -> str:
             continue
         m_std = compute_unified_metrics(recs, baseline_condition="control")
         m_ts = compute_unified_metrics(recs, baseline_condition="control_twostage")
-        rows.append((
-            model,
-            m_std.get("mae_control") or float("nan"),
-            m_ts.get("mae_control") or float("nan"),
-            m_std.get("disc_delta") or float("nan"),
-            m_ts.get("disc_delta") or float("nan"),
-        ))
+        # None (no cell) prints as a dash; a true 0.0 must stay 0.00.
+        rows.append((model, *(v if v is not None else float("nan") for v in (
+            m_std["mae_control"], m_ts["mae_control"], m_std["disc_delta"], m_ts["disc_delta"]))))
 
     lines: list[str] = []
     lines.append("% Auto-generated by anchorbench.paper.tables_appendix")
@@ -883,15 +863,7 @@ def build_boundary(records_dirs: list[Path]) -> str:
     excl_uai: dict[int, list[float]] = {15: [], 25: [], 40: []}
     for base in records_dirs:
         for suite in suites:
-            suite_dir = base / suite
-            if not suite_dir.is_dir():
-                continue
-            for model_dir in sorted(suite_dir.iterdir()):
-                if not model_dir.is_dir():
-                    continue
-                rpath = model_dir / "results.jsonl"
-                if not rpath.exists():
-                    continue
+            for _short, _slug, rpath in discover_jsonl(base, suite):
                 recs = load_records(str(rpath))
                 items = group_by_item(recs)
                 for iid, by_cond in items.items():
@@ -909,10 +881,9 @@ def build_boundary(records_dirs: list[Path]) -> str:
                         a = rec.get("anchor_value")
                         if y_a is None or a is None:
                             continue
-                        denom = a - y_c
-                        if abs(denom) < 3.0:
+                        uai = item_uai(y_a, y_c, a, EPSILON)
+                        if uai is None:
                             continue
-                        uai = (y_a - y_c) / denom
                         offset = None
                         anchors = rec.get("anchors")
                         if isinstance(anchors, dict):

@@ -27,6 +27,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from anchorbench import registry
+from anchorbench.eval.metrics import pearson_bootstrap_ci
 
 from ._common import (
     API_MODELS_ORDER,
@@ -74,20 +75,6 @@ def collect_points(unified: list[dict], api_set: set[str]) -> list[dict]:
             "is_api": r["model"] in api_set,
         })
     return pts
-
-
-def pearson_with_bootstrap_ci(
-    x: np.ndarray, y: np.ndarray, n_boot: int = 2000, seed: int = 42,
-) -> tuple[float, float, float]:
-    rng = np.random.RandomState(seed)
-    n = len(x)
-    r = float(np.corrcoef(x, y)[0, 1])
-    rs = np.empty(n_boot)
-    for i in range(n_boot):
-        idx = rng.randint(0, n, size=n)
-        rs[i] = np.corrcoef(x[idx], y[idx])[0, 1]
-    lo, hi = float(np.percentile(rs, 2.5)), float(np.percentile(rs, 97.5))
-    return r, lo, hi
 
 
 def plot(points: list[dict], out_pdf: Path, r: float, lo: float, hi: float) -> None:
@@ -170,7 +157,7 @@ def main() -> None:
 
     x = np.array([p["acc"] for p in pts])
     y = np.array([p["disc"] for p in pts])
-    r, lo, hi = pearson_with_bootstrap_ci(x, y)
+    r, lo, hi = pearson_bootstrap_ci(x, y)
     print(f"Pearson r(Acc10, Disc_delta) = {r:.3f}  95% CI [{lo:.3f}, {hi:.3f}]")
 
     plot(pts, args.out_pdf, r, lo, hi)

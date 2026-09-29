@@ -277,6 +277,22 @@ def bootstrap_ci(
     return float(arr.mean()), lo, hi
 
 
+def pearson_bootstrap_ci(
+    x: np.ndarray, y: np.ndarray, n_boot: int = 2000, seed: int = 42,
+) -> tuple[float, float, float]:
+    """Pearson r with a percentile bootstrap CI over paired observations
+    (Sec. 5, accuracy vs discrimination; one cell is one observation)."""
+    x, y = np.asarray(x, dtype=float), np.asarray(y, dtype=float)
+    rng = np.random.RandomState(seed)
+    n = len(x)
+    r = float(np.corrcoef(x, y)[0, 1])
+    rs = np.empty(n_boot)
+    for i in range(n_boot):
+        idx = rng.randint(0, n, size=n)
+        rs[i] = np.corrcoef(x[idx], y[idx])[0, 1]
+    return r, float(np.percentile(rs, 2.5)), float(np.percentile(rs, 97.5))
+
+
 def paired_wilcoxon(
     x: list[float] | np.ndarray,
     y: list[float] | np.ndarray,
