@@ -98,7 +98,7 @@ Some suites also emit ablation conditions into `promptviews_ablation.jsonl`:
 | `promptviews_core.jsonl` | the five core conditions (what the runners read by default) |
 | `promptviews_ablation.jsonl` | the ablation conditions, where the suite has any |
 | `promptviews.jsonl` | core and ablation together |
-| `manifest.json` | package `version`, `suite`, `generator_version` (git hash), `seed`, `size`, `scoring_function`, `llm_enhanced`, `timestamp`, per-condition counts, file paths |
+| `manifest.json` | package `version`, `suite`, `generator_version` (git hash), `seed`, `size`, `scoring_function`, `timestamp`, per-condition counts, file paths |
 
 ### Determinism
 
@@ -160,7 +160,7 @@ and JSONL helpers.
 | `evidence_structured` | list[dict] | five entries: `value`, `value_raw`, `label`, `index`, `missing` |
 | `tags` | dict | `split`, `difficulty`, ICL demonstrations |
 | `rag`, `tool`, `history` | dict or null | suite-specific payload |
-| `scenario_text` | str or null | LLM-written scenario when `llm_enhance` was used |
+| `scenario_text` | str or null | Always null in the released data; a renderer uses it in place of the template scenario when set |
 | `render_version`, `generator_version`, `seed` | str, str, int | provenance |
 
 ### PromptView

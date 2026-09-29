@@ -26,7 +26,6 @@ dependencies = [
     "matplotlib>=3.7",
     "pandas>=2.0",
     "pyyaml>=6.0",
-    "requests>=2.31",
     "tqdm>=4.65",
     "torch>=2.1",
     "transformers>=4.36",

@@ -19,7 +19,6 @@ src/anchorbench/
 |   |-- generate.py                 # generate_suite_dataset(): specs -> views -> files -> validate
 |   |-- validate.py                 # CLI: python -m anchorbench.data.validate --data_dir ...
 |   |-- validators.py               # deterministic dataset checks
-|   |-- llm_enhance.py, openrouter_client.py   # optional LLM-written scenario text
 |   `-- suites/                     # ItemSpec -> list[PromptView] renderers
 |       |-- _shared.py                  # anchor sentences, condition tables
 |       |-- external.py, history.py, icl.py, icl_dist.py, rag.py, tool.py

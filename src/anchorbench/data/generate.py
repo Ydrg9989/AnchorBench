@@ -112,9 +112,6 @@ def generate_suite_dataset(
     size: str = "pilot",
     seed: int = 42,
     out_dir: str | None = None,
-    llm_enhance: bool = False,
-    concurrency: int = 8,
-    max_retries: int = 5,
     domains: list[str] | None = None,
     n_per_cell: int | None = None,
     scoring_function: str = "mean",
@@ -128,7 +125,6 @@ def generate_suite_dataset(
         size: "smoke" | "pilot" | "core".
         seed: Master random seed.
         out_dir: Output directory (auto-generated if None).
-        llm_enhance: Generate unique scenario text via OpenRouter.
         scoring_function: Gold answer aggregation ("mean", "weighted_mean", "median").
         difficulties: Override difficulty levels (default: ["easy", "hard"]).
         validate: Run deterministic validators after generation.
@@ -171,20 +167,6 @@ def generate_suite_dataset(
     )
 
     all_specs = _ITEMSPEC_GENERATORS[suite](**gen_kwargs)
-
-    llm_calls = 0
-    if llm_enhance:
-        from .llm_enhance import enhance_scenarios
-        cache_path = str(out / "artifacts" / "scenarios_cache.jsonl")
-        artifact_dir = str(out / "artifacts" / "openrouter_calls")
-        llm_calls = enhance_scenarios(
-            all_specs,
-            concurrency=concurrency,
-            max_retries=max_retries,
-            cache_path=cache_path,
-            artifact_dir=artifact_dir,
-        )
-
     all_views = render_all(all_specs)
 
     # Write outputs
@@ -217,8 +199,6 @@ def generate_suite_dataset(
         "seed": seed,
         "size": size,
         "scoring_function": scoring_function,
-        "llm_enhanced": llm_enhance,
-        "llm_calls_made": llm_calls,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "counts": {
             "itemspecs": n_items,
@@ -291,12 +271,6 @@ def main() -> None:
     parser.add_argument("--difficulties", nargs="+",
                         choices=["easy", "medium", "hard"], default=None,
                         help="Difficulty levels (default: easy hard)")
-    parser.add_argument("--llm_enhance", action="store_true",
-                        help="Generate unique scenario text via OpenRouter")
-    parser.add_argument("--concurrency", type=int, default=8,
-                        help="Max parallel API requests (default: 8)")
-    parser.add_argument("--max_retries", type=int, default=5,
-                        help="Max retries per request (default: 5)")
     parser.add_argument("--n_per_cell", type=int, default=None,
                         help="Override items per cell")
     parser.add_argument(
@@ -310,11 +284,10 @@ def main() -> None:
                         help="Skip deterministic validation")
     args = parser.parse_args()
 
-    mode = "LLM-enhanced" if args.llm_enhance else "deterministic"
     sf = args.scoring_function
     logger.info(
-        "Generating AnchorBench %s (%s, seed=%d, scoring=%s, mode=%s)...",
-        args.suite, args.size, args.seed, sf, mode,
+        "Generating AnchorBench %s (%s, seed=%d, scoring=%s)...",
+        args.suite, args.size, args.seed, sf,
     )
 
     domains_arg = args.domains
@@ -335,9 +308,6 @@ def main() -> None:
         size=args.size,
         seed=args.seed,
         out_dir=args.out_dir,
-        llm_enhance=args.llm_enhance,
-        concurrency=args.concurrency,
-        max_retries=args.max_retries,
         n_per_cell=args.n_per_cell,
         scoring_function=sf,
         difficulties=args.difficulties,
