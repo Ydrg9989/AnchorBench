@@ -18,7 +18,8 @@ import logging
 from collections import defaultdict
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt, load_records, safe_metrics, write_csv, write_json
+from anchorbench.analysis._io import fmt, safe_metrics, write_csv, write_json
+from anchorbench.eval.io import load_records
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +29,11 @@ DEFAULT_MEDICAL_DIR = Path("results/rebuttal/medical")
 DEFAULT_OUT = Path("results/rebuttal/extension_pilot")
 
 SUITES = ("external", "history")
+
+
+def _records_or_empty(path: Path) -> list[dict]:
+    """A model that did not run in one of the compared trees contributes no rows."""
+    return load_records(path) if path.exists() else []
 
 
 def gather(
@@ -50,12 +56,12 @@ def gather(
             if not slug_dir.is_dir():
                 continue
             slug = slug_dir.name
-            ext_records = load_records(slug_dir / "results.jsonl")
+            ext_records = _records_or_empty(slug_dir / "results.jsonl")
             if not ext_records:
                 continue
-            bus_records = load_records(bus_suite / slug / "results.jsonl")
+            bus_records = _records_or_empty(bus_suite / slug / "results.jsonl")
             med_records = (
-                load_records(med_suite / slug / "results.jsonl")
+                _records_or_empty(med_suite / slug / "results.jsonl")
                 if med_suite is not None else []
             )
             ext = safe_metrics(ext_records, baseline)

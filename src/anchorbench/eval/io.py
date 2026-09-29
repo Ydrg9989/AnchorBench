@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 
 
@@ -28,18 +27,16 @@ def load_itemspecs(path: Path | str) -> dict[str, dict]:
 
 
 def load_records(path: Path | str) -> list[dict]:
-    """Load JSONL records, skipping malformed lines."""
+    """The records of a results.jsonl. A malformed line is an error, not a skip:
+    every table downstream would silently lose that record."""
     records = []
     with open(path) as f:
-        for i, line in enumerate(f):
+        for i, line in enumerate(f, 1):
             line = line.strip()
             if not line:
                 continue
             try:
                 records.append(json.loads(line))
-            except json.JSONDecodeError:
-                print(
-                    f"  WARNING: skipping malformed line {i + 1} in {path}",
-                    file=sys.stderr,
-                )
+            except json.JSONDecodeError as e:
+                raise ValueError(f"{path}:{i}: malformed JSON ({e.msg})") from None
     return records

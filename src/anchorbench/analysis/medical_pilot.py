@@ -14,7 +14,8 @@ import logging
 from collections import defaultdict
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt, load_records, safe_metrics, write_csv, write_json
+from anchorbench.analysis._io import fmt, safe_metrics, write_csv, write_json
+from anchorbench.eval.io import load_records
 
 log = logging.getLogger(__name__)
 
@@ -23,6 +24,11 @@ DEFAULT_BUSINESS_DIR = Path("results/full_benchmark")
 DEFAULT_OUT = Path("results/rebuttal/medical")
 
 SUITES = ("external", "history")
+
+
+def _records_or_empty(path: Path) -> list[dict]:
+    """A model that did not run in one of the compared trees contributes no rows."""
+    return load_records(path) if path.exists() else []
 
 
 def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
@@ -39,8 +45,8 @@ def gather(medical_dir: Path, business_dir: Path) -> list[dict]:
             if not slug_dir.is_dir():
                 continue
             slug = slug_dir.name
-            med_records = load_records(slug_dir / "results.jsonl")
-            bus_records = load_records(bus_suite / slug / "results.jsonl")
+            med_records = _records_or_empty(slug_dir / "results.jsonl")
+            bus_records = _records_or_empty(bus_suite / slug / "results.jsonl")
             if not med_records:
                 log.warning("Skipping %s/%s: no medical records", suite, slug)
                 continue

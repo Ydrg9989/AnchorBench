@@ -47,7 +47,8 @@ import statistics
 from collections import defaultdict
 from pathlib import Path
 
-from anchorbench.analysis._io import fmt, load_records, write_csv, write_json
+from anchorbench.analysis._io import fmt, write_csv, write_json
+from anchorbench.eval.io import load_records
 
 log = logging.getLogger(__name__)
 

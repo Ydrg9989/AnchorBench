@@ -32,7 +32,8 @@ import math
 from collections import defaultdict
 from pathlib import Path
 
-from anchorbench.analysis._io import load_records, write_csv, write_json
+from anchorbench.analysis._io import write_csv, write_json
+from anchorbench.eval.io import load_records
 
 log = logging.getLogger(__name__)
 
@@ -174,7 +175,7 @@ def gather(
     out: list[dict] = []
     for slug in PANEL_SLUGS:
         res_path = business_dir / SUITE / slug / "results.jsonl"
-        records = load_records(res_path)
+        records = load_records(res_path) if res_path.exists() else []
         if not records:
             log.warning("No records for %s; skipping", slug)
             continue

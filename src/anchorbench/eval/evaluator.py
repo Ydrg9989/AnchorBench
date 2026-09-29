@@ -24,6 +24,7 @@ import numpy as np
 from anchorbench import __version__
 
 from .backends import Backend
+from .io import load_records
 from .metrics import CONDITIONS, compute_unified_metrics, print_summary
 from .parsing import (
     LLMFallbackExtractor,
@@ -43,17 +44,8 @@ def _load_history_jsonl(path: Path) -> tuple[list[dict], set[tuple[str, str]]]:
     """Read existing results.jsonl; return records and (item_id, condition) keys."""
     if not path.is_file():
         return [], set()
-    records: list[dict] = []
-    keys: set[tuple[str, str]] = set()
-    with open(path, encoding="utf-8") as fh:
-        for line in fh:
-            line = line.strip()
-            if not line:
-                continue
-            rec = json.loads(line)
-            records.append(rec)
-            keys.add((rec["item_id"], rec["condition"]))
-    return records, keys
+    records = load_records(path)
+    return records, {(r["item_id"], r["condition"]) for r in records}
 
 
 def prepare_items(

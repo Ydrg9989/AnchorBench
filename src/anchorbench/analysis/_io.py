@@ -86,14 +86,6 @@ def write_csv(
     log.info("Wrote %s (%d rows)", path, len(rows))
 
 
-def load_records(path: Path) -> list[dict]:
-    """Records of a ``results.jsonl``; an empty list when the file is absent."""
-    if not path.exists():
-        return []
-    with open(path) as f:
-        return [json.loads(line) for line in f if line.strip()]
-
-
 def load_summary(path: Path) -> dict | None:
     """A ``summary.json``, or None when the file is absent."""
     if not path.exists():
