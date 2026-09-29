@@ -1,17 +1,14 @@
-"""Answer parsing strategies for AnchorBench evaluation.
+"""The tiers of the answer parser.
 
-Tier 1 — Structured JSON:  parse_structured(raw_json)
-Tier 2 — Deterministic regex: parse_answer_int(raw_text, prompt_text)
-Tier 3 — LLM self-extraction: LLMFallbackExtractor.try_extract(raw_text)
+The cascade that orders them is ``evaluator.parse_response``:
 
-Additional strategies for comparison:
-  - XML tag extraction: parse_xml_answer(raw_text)
-  - Last number heuristic: parse_last_number(raw_text)
-  - Final-answer patterns: parse_final_answer(raw_text)
+    structured (JSON, only with --structured) -> xml_tag -> final_answer
+    -> [a declared but out-of-range answer, or a truncated response, stops here]
+    -> regex (parse_answer_int) -> last_number -> llm_fallback
 
-Every result records which tier succeeded via parse_strategy:
-  "structured" | "regex" | "xml_tag" | "last_number" | "final_answer"
-  | "llm_fallback" | "failed"
+Every record stores the tier that succeeded as ``parse_strategy``:
+"structured" | "xml_tag" | "final_answer" | "regex" | "last_number"
+| "llm_fallback" | "failed". A failed parse is counted, never defaulted.
 """
 
 from __future__ import annotations
@@ -86,8 +83,6 @@ _FINAL_ANSWER_TAIL_PATS = [
 _FINAL_ANSWER_TAIL_CHARS = 520
 
 # Union for has_explicit_final_answer (out-of-range guard)
-_FINAL_ANSWER_PATS = _FINAL_ANSWER_STRICT + _FINAL_ANSWER_TAIL_PATS
-
 # Detect model outputs that are tool calls (JSON with "name" field) rather than answers
 _TOOL_CALL_PAT = re.compile(r'^\s*\{["\s]*name["\s]*:', re.IGNORECASE)
 
@@ -96,23 +91,6 @@ _EXTRACT_PROMPT = (
     "Return ONLY the integer on its own line. If no clear answer, return NONE.\n\n"
     "Text: {completion}\n\nAnswer:"
 )
-
-ANSWER_SCHEMA = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "estimate",
-        "strict": True,
-        "schema": {
-            "type": "object",
-            "properties": {
-                "answer": {"type": "integer"},
-            },
-            "required": ["answer"],
-            "additionalProperties": False,
-        },
-    },
-}
-
 
 def parse_structured(
     raw_text: str, *, clamp: bool = False,
@@ -359,37 +337,6 @@ def looks_incomplete_response(raw_text: str) -> bool:
     return False
 
 
-def parse_cot_answer(
-    raw_text: str, *, clamp: bool = False,
-) -> tuple[int | None, bool]:
-    """Extract the final answer integer in [0,100] from a CoT response.
-
-    Rejects tool-call JSON outputs.  Prefers the last line's single
-    in-range integer, then falls back to the last in-range integer
-    anywhere in the text.
-    """
-    if not raw_text:
-        return None, False
-    if is_tool_call_output(raw_text):
-        return None, False
-    lines = [ln.strip() for ln in raw_text.strip().split("\n") if ln.strip()]
-    if lines:
-        last_line = lines[-1]
-        last_ints = [int(m.group()) for m in _INT_PAT.finditer(last_line)]
-        last_valid = [i for i in last_ints if 0 <= i <= 100]
-        if len(last_valid) == 1:
-            return last_valid[0], True
-        if clamp and last_ints:
-            return clamp_to_range(last_ints[-1]), True
-    all_ints = [int(m.group()) for m in _INT_PAT.finditer(raw_text)]
-    valid = [i for i in all_ints if 0 <= i <= 100]
-    if valid:
-        return valid[-1], True
-    if clamp and all_ints:
-        return clamp_to_range(all_ints[-1]), True
-    return None, False
-
-
 class LLMFallbackExtractor:
     """Uses an HF model to extract the final integer answer from raw text."""
 
@@ -459,76 +406,3 @@ XML_TAG_INSTRUCTION = (
     "XML tags exactly like this: <answer>42</answer>"
 )
 
-STRATEGIES = ("xml_tag", "final_answer", "regex", "last_number", "llm_fallback")
-
-
-def apply_strategy(
-    raw_text: str,
-    prompt_text: str,
-    strategy: str,
-    fallback: LLMFallbackExtractor | None = None,
-    *,
-    clamp: bool = False,
-) -> tuple[int | None, bool]:
-    """Apply a single named parsing strategy."""
-    if strategy == "regex":
-        return parse_answer_int(raw_text, prompt_text, clamp=clamp)
-    if strategy == "xml_tag":
-        return parse_xml_answer(raw_text, clamp=clamp)
-    if strategy == "last_number":
-        return parse_last_number(raw_text, clamp=clamp)
-    if strategy == "final_answer":
-        return parse_final_answer(raw_text, clamp=clamp)
-    if strategy == "llm_fallback":
-        if fallback is None:
-            return None, False
-        return fallback.try_extract(raw_text)
-    return None, False
-
-
-def parse_with_fallback(
-    raw: str,
-    prompt_text: str,
-    is_cot: bool,
-    fallback: LLMFallbackExtractor | None,
-    *,
-    clamp: bool = False,
-) -> tuple[int | None, bool, str]:
-    """Parse answer with optional LLM fallback. Returns (answer, ok, strategy).
-
-    Uses the same precision ordering as ``parse_response``:
-    xml_tag → final_answer → regex/cot → last_number → llm_fallback.
-    """
-    answer, ok = parse_xml_answer(raw, clamp=clamp)
-    if ok:
-        return answer, True, "xml_tag"
-
-    answer, ok = parse_final_answer(raw, clamp=clamp)
-    if ok:
-        return answer, True, "final_answer"
-
-    if looks_incomplete_response(raw or ""):
-        if fallback and raw and raw.strip():
-            answer, ok = fallback.try_extract(raw)
-            if ok:
-                return answer, True, "llm_fallback"
-        return None, False, "failed"
-
-    if is_cot:
-        answer, ok = parse_cot_answer(raw, clamp=clamp)
-    else:
-        answer, ok = parse_answer_int(raw, prompt_text, clamp=clamp)
-    if ok:
-        return answer, True, "regex"
-
-    answer, ok = parse_last_number(raw, clamp=clamp)
-    if ok:
-        return answer, True, "last_number"
-
-    if fallback and raw and raw.strip():
-        answer, ok = fallback.try_extract(raw)
-        if ok:
-            log.debug("LLM fallback extracted %d from: %.80s", answer, raw)
-            return answer, True, "llm_fallback"
-
-    return None, False, "failed"

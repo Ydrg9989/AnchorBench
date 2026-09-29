@@ -10,11 +10,9 @@ from anchorbench.eval.parsing import (
     clamp_to_range,
     is_tool_call_output,
     parse_answer_int,
-    parse_cot_answer,
     parse_final_answer,
     parse_last_number,
     parse_structured,
-    parse_with_fallback,
     parse_xml_answer,
 )
 
@@ -104,36 +102,6 @@ class TestParseAnswerInt:
 
     def test_ambiguous_multiple(self):
         assert parse_answer_int("30 or 50 or 70") == (None, False)
-
-
-class TestParseCotAnswer:
-    def test_single_last_line(self):
-        text = "Step 1: analyze...\nStep 2: estimate...\n55"
-        assert parse_cot_answer(text) == (55, True)
-
-    def test_last_valid_in_text(self):
-        text = "First 30, then revised to 45, final answer 60."
-        assert parse_cot_answer(text) == (60, True)
-
-    def test_empty(self):
-        assert parse_cot_answer("") == (None, False)
-
-    def test_no_valid(self):
-        assert parse_cot_answer("No numbers here") == (None, False)
-
-
-class TestParseWithFallback:
-    def test_regex_succeeds(self):
-        answer, ok, strategy = parse_with_fallback("42", "", False, None)
-        assert answer == 42
-        assert ok is True
-        assert strategy == "regex"
-
-    def test_regex_fails_no_fallback(self):
-        answer, ok, strategy = parse_with_fallback("unclear", "", False, None)
-        assert answer is None
-        assert ok is False
-        assert strategy == "failed"
 
 
 class TestParseResponse:
@@ -232,13 +200,6 @@ class TestClampedParsing:
     def test_final_answer_strict(self):
         assert parse_final_answer("The answer is 142") == (None, False)
 
-    def test_cot_answer_clamp(self):
-        assert parse_cot_answer("Answer: 472", clamp=True) == (100, True)
-
-    def test_cot_answer_strict(self):
-        assert parse_cot_answer("Answer: 472") == (None, False)
-
-
 class TestParseResponseClamped:
     def test_clamp_produces_clamped_strategy(self):
         answer, ok, strategy = parse_response("144", "prompt", clamp=True)
@@ -309,10 +270,6 @@ class TestToolCallDetection:
 
     def test_parse_last_number_rejects_tool_call(self):
         answer, ok = parse_last_number(self.TOOL_CALL_SIMPLE)
-        assert ok is False
-
-    def test_parse_cot_rejects_tool_call(self):
-        answer, ok = parse_cot_answer(self.TOOL_CALL_SIMPLE)
         assert ok is False
 
     def test_parse_response_rejects_tool_call(self):
@@ -508,25 +465,3 @@ class TestTruncatedLlamaICLRegression:
         assert answer is None
 
 
-class TestParseWithFallbackCascade:
-    """parse_with_fallback should use the same ordering as parse_response."""
-
-    def test_xml_beats_regex(self):
-        text = "30 or 50\n<answer>42</answer>"
-        answer, ok, strategy = parse_with_fallback(text, "", False, None)
-        assert ok is True
-        assert answer == 42
-        assert strategy == "xml_tag"
-
-    def test_final_answer_beats_regex(self):
-        text = "Step 1: 30\nStep 2: 50\nMy final answer is 65"
-        answer, ok, strategy = parse_with_fallback(text, "", False, None)
-        assert ok is True
-        assert answer == 65
-        assert strategy == "final_answer"
-
-    def test_tool_call_rejected(self):
-        text = '{"name": "get_evidence_summary", "parameters": {"ratings": "[55]"}}'
-        answer, ok, strategy = parse_with_fallback(text, "", False, None)
-        assert ok is False
-        assert strategy == "failed"
