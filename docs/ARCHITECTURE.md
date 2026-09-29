@@ -147,9 +147,12 @@ flag. `HFBackend` and `VLLMBackend` load weights locally;
 the same interface, so `evaluator.run_single_stage` and
 `evaluator.run_history_two_stage` are the only evaluation loops in the
 package and every runner, local or hosted, calls them. Both loops make one
-batched round trip per stage, copy per-request token usage into
-`api_usage` when the backend reports it, and record `ERROR: ...` rows
-instead of aborting when a backend call fails. `tests/fakes.py` provides a
+batched round trip per stage and copy per-request token usage into
+`api_usage` when the backend reports it. A request the hosted API fails is
+recorded as an `ERROR: HTTP <status>` answer; an exception from the backend
+itself (authentication, out-of-memory, a bug) propagates and no results file
+is written, so a cell is never left looking complete with no model output
+in it. `tests/fakes.py` provides a
 `FakeBackend` at the same seam, which is how the loops and the runners are
 tested end to end without a model.
 

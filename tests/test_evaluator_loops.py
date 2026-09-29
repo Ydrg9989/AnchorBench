@@ -81,11 +81,11 @@ def test_single_stage_then_summary(smoke_items, tmp_path):
     assert metrics["parse_rate"] == 1.0 and metrics["n_items"] == len(items)
 
 
-def test_single_stage_records_backend_failure_instead_of_crashing(smoke_items, tmp_path):
+def test_single_stage_raises_on_backend_failure_and_writes_nothing(smoke_items, tmp_path):
     items = smoke_items["external"][:3]
-    records = run_single_stage(FakeBackend(fail=True), items, tmp_path / "r.jsonl")
-    assert len(records) == 15
-    assert all(not r["parsed_ok"] and r["raw_text"].startswith("ERROR:") for r in records)
+    with pytest.raises(RuntimeError, match="fake backend failure"):
+        run_single_stage(FakeBackend(fail=True), items, tmp_path / "r.jsonl")
+    assert not (tmp_path / "r.jsonl").exists()
 
 
 def test_single_stage_copies_backend_usage_and_extras(smoke_items, tmp_path):

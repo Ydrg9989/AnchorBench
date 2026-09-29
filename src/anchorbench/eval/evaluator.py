@@ -245,22 +245,19 @@ def _tasks(items: list[dict], conds: list[str]) -> list[Task]:
     return [(i, cond, item[cond]) for i, item in enumerate(items) for cond in conds]
 
 
-def _generate_or_error(generate: Callable[[], list[str]], n: int, label: str) -> list[str]:
-    """Run one backend call; on failure record the error in every slot.
+def _generate(generate: Callable[[], list[str]], n: int, label: str) -> list[str]:
+    """Run one backend call and check that it answered every prompt.
 
-    A backend exception used to abort a batched run halfway through while
-    the sequential path recorded ``ERROR: ...`` per prompt. Every prompt now
-    gets a record either way, and a failed call is loud in the summary
-    because the parse rate collapses.
+    A backend exception is not caught here. The OpenRouter adapter already
+    turns each failed request into an ``ERROR: ...`` answer, so what reaches
+    this point is an authentication failure, an out-of-memory or a
+    programming error, and a results file written from that would look
+    complete while holding no model output (parse rate 0, every metric
+    null, and the API runner would then skip the cell as finished).
     """
-    try:
-        out = generate()
-    except Exception as e:  # noqa: BLE001 -- any backend failure is recorded, not raised
-        log.error("%s: backend call failed (%s); recording ERROR for %d prompts", label, e, n)
-        return [f"ERROR: {e}"] * n
+    out = generate()
     if len(out) != n:
-        log.error("%s: backend returned %d outputs for %d prompts", label, len(out), n)
-        return [f"ERROR: backend returned {len(out)} outputs for {n} prompts"] * n
+        raise RuntimeError(f"{label}: backend returned {len(out)} outputs for {n} prompts")
     return out
 
 
@@ -341,7 +338,7 @@ def run_single_stage(
             )
 
     log.info("%s: %d prompts (batch_size=%d)", label, len(tasks), batch_size)
-    raws = _generate_or_error(generate, len(tasks), label)
+    raws = _generate(generate, len(tasks), label)
     usage = _usage_for(backend, len(tasks))
 
     records: list[dict] = []
@@ -451,7 +448,7 @@ def run_history_two_stage(
     # -- control: one turn -------------------------------------------------
     ctrl_prompts = [pv["prompt_text"] + prompt_suffix for _, _, pv in control]
     log.info("%s: %d control prompts", label, len(ctrl_prompts))
-    ctrl_raws = _generate_or_error(lambda: gen_batch(ctrl_prompts), len(control), label) if control else []
+    ctrl_raws = _generate(lambda: gen_batch(ctrl_prompts), len(control), label) if control else []
     ctrl_usage = _usage_for(backend, len(control)) if control else None
 
     # -- stage 1 -------------------------------------------------------------
@@ -459,7 +456,7 @@ def run_history_two_stage(
     s2_msgs = [pv["prompt_components"]["stage2_user_message"] for _, _, pv in two_stage]
     s1_prompts = [m + prompt_suffix for m in s1_msgs]
     log.info("%s: %d two-stage items, stage 1", label, len(two_stage))
-    s1_raws = _generate_or_error(lambda: gen_batch(s1_prompts), len(two_stage), label) if two_stage else []
+    s1_raws = _generate(lambda: gen_batch(s1_prompts), len(two_stage), label) if two_stage else []
     s1_usage = _usage_for(backend, len(two_stage)) if two_stage else None
     s1_answers = [
         parse_response(raw, prompt, use_llm_fallback=use_llm_fallback,
@@ -496,7 +493,7 @@ def run_history_two_stage(
             return gen_batch(flat)
 
     log.info("%s: stage 2 (%s)", label, chat_format)
-    s2_raws = _generate_or_error(gen_stage2, len(two_stage), label) if two_stage else []
+    s2_raws = _generate(gen_stage2, len(two_stage), label) if two_stage else []
     s2_usage = _usage_for(backend, len(two_stage)) if two_stage else None
 
     # -- records, in items x conditions order --------------------------------
