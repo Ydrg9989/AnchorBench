@@ -23,6 +23,7 @@ from pathlib import Path
 from anchorbench.analysis._io import fmt
 from anchorbench.eval.io import load_records
 from anchorbench.eval.metrics import (
+    baseline_condition,
     compute_by_difficulty,
     compute_by_offset,
     compute_extended_metrics,
@@ -64,12 +65,7 @@ def main() -> None:
             print(f"  WARNING: empty {path}")
             continue
 
-        conds_present = {r.get("condition") for r in records}
-        if "control_twostage" in conds_present and "control" not in conds_present:
-            bc = "control_twostage"
-        else:
-            bc = "control"
-
+        bc = baseline_condition(records)
         metrics = compute_extended_metrics(records, epsilon=args.epsilon, baseline_condition=bc)
         metrics["suite"] = suite.capitalize()
         metrics["model"] = short

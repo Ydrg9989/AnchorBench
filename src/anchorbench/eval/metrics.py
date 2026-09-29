@@ -37,6 +37,21 @@ CONDITIONS: list[str] = [name for name, _, _ in _CONDITION_TABLE]
 EPSILON = 3.0
 
 
+def baseline_condition(records: list[dict], prefer: str = "control") -> str:
+    """The control condition to score against: ``prefer`` when the records
+    carry it, else the other control condition (``control`` /
+    ``control_twostage``) when they carry that one, else ``prefer``.
+
+    History runs before the matched-format re-run carry only ``control``;
+    the re-run carries ``control_twostage`` as well (ledger D8).
+    """
+    present = {r["condition"] for r in records}
+    if prefer in present:
+        return prefer
+    other = "control_twostage" if prefer == "control" else "control"
+    return other if other in present else prefer
+
+
 def group_by_item(records: list[dict]) -> dict[str, dict[str, dict]]:
     """Group records by item_id -> condition -> record."""
     items: dict[str, dict[str, dict]] = {}

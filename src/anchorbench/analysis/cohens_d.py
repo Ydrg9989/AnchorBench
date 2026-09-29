@@ -49,6 +49,7 @@ from pathlib import Path
 
 from anchorbench.analysis._io import fmt, write_csv, write_json
 from anchorbench.eval.io import load_records
+from anchorbench.eval.metrics import baseline_condition
 
 log = logging.getLogger(__name__)
 
@@ -180,13 +181,6 @@ def _cohens_d_pooled(
     }
 
 
-def _detect_baseline(records: list[dict]) -> str:
-    present = {r.get("condition") for r in records}
-    if "control_twostage" in present:
-        return "control_twostage"
-    return "control"
-
-
 def _detect_conditions(
     records: list[dict],
 ) -> tuple[list[str], list[str], list[str], list[str]]:
@@ -213,7 +207,7 @@ def gather(business_dir: Path) -> list[dict]:
             records = load_records(res_path)
             if not records:
                 continue
-            baseline = _detect_baseline(records)
+            baseline = baseline_condition(records, prefer="control_twostage")
             by_item = _group_by_item(records)
             pls, irr, pls_hi, pls_lo = _detect_conditions(records)
             d_pls = _cohens_d_pooled(by_item, pls, baseline)
