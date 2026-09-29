@@ -188,8 +188,7 @@ def run_analysis(results_dirs: list[Path], tolerance: float,
                 per_model_suite.append(shares)
 
     if not all_item_rows:
-        print("WARNING: No item-level data found. Check results_dirs.")
-        return
+        raise SystemExit("no item-level data found; check --results_dirs")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     fig_dir.mkdir(parents=True, exist_ok=True)

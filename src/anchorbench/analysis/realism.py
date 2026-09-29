@@ -233,6 +233,8 @@ def main(argv: list[str] | None = None) -> None:
     out_dir = args.out_dir or in_dir
 
     rows = gather(in_dir, cfg.tags)
+    if not rows:
+        raise SystemExit(f"no realism_curve.json under {in_dir}")
     log.info("Gathered %d rows", len(rows))
     out_dir.mkdir(parents=True, exist_ok=True)
     write_csv(rows, out_dir / f"{suite}_realism.csv")

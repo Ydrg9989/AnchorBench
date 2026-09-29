@@ -196,6 +196,8 @@ def main(argv: list[str] | None = None) -> None:
     args = p.parse_args(argv)
 
     rows = gather(args.in_dir)
+    if not rows:
+        raise SystemExit(f"no <model>/<strategy>/summary.json under {args.in_dir}")
     log.info("Gathered %d rows", len(rows))
     args.out_dir.mkdir(parents=True, exist_ok=True)
     write_csv(rows, args.out_dir / "task_spec.csv")

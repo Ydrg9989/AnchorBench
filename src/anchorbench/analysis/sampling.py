@@ -229,8 +229,7 @@ def main():
 
     rows = load_all_results(args.samp_dir)
     if not rows:
-        print("ERROR: No sampling robustness results found.")
-        return
+        raise SystemExit(f"no sampling robustness results under {args.samp_dir}")
 
     build_summary_table(rows, args.out_dir)
     make_figure(rows, args.fig_dir)

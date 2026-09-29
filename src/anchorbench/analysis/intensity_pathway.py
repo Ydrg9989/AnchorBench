@@ -228,6 +228,8 @@ def main(argv: list[str] | None = None) -> None:
     args = p.parse_args(argv)
 
     rows = gather()
+    if not rows:
+        raise SystemExit(f"no intensity_curve.json under {', '.join(str(p) for p in INPUT_ROOT.values())}")
     log.info("Gathered %d (suite,model) rows", len(rows))
     args.out_dir.mkdir(parents=True, exist_ok=True)
     write_csv(rows, args.out_dir / "intensity_pathway.csv")

@@ -307,6 +307,8 @@ def main(argv: list[str] | None = None) -> None:
     args = p.parse_args(argv)
 
     out = gather(args.in_dir, args.core_dir)
+    if not out["rows"]:
+        raise SystemExit(f"no <model>/results.jsonl under {args.in_dir}")
     log.info("Gathered %d models", len(out["rows"]))
     args.out_dir.mkdir(parents=True, exist_ok=True)
     write_csv(_flatten_rows(out), args.out_dir / "uncertain.csv")

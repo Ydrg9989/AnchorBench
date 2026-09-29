@@ -292,8 +292,7 @@ def main():
 
     rows = discover_results(base)
     if not rows:
-        print("ERROR: No mitigation headroom results found.")
-        return
+        raise SystemExit(f"no mitigation headroom results under {base}")
 
     write_outputs(rows, out_dir, fig_dir)
 
