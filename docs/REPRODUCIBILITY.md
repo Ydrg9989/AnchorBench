@@ -193,7 +193,7 @@ appendix extensions under `results/rebuttal/` and `results/revision/`.
 |---|---|---|---|
 | Figure 3 | `fig:dose-response` | `anchorbench.paper.fig4_dose_response` | `outputs/figures/fig4_dose_response.{pdf,png}` |
 | Table 1 | `tab:main_results` | `anchorbench.paper.tables_main` | `outputs/tables/tab_main_results.tex` (the `_revised` file next to it is an alternative layout with absolute UAI columns, not in the paper) |
-| Table 2 | `tab:uncertain-main` | `anchorbench.analysis.uncertain` | hand-condensed from `results/rebuttal/uncertain/` |
+| Table 2 | `tab:uai-pathway` | `anchorbench.paper.tables_appendix` | hand-condensed from `tab_uai_summary.tex` and `tab_stats_inference.tex`; `anchorbench verify --quick` checks its cells |
 
 Figures 1 and 2 are hand-drawn. Table 1 is generated but hand-styled: the
 numbers match the generated file cell for cell, while the bolding, the model
@@ -229,15 +229,16 @@ repository, and the scripts that synced and compared against it went with it.
 | Table 18 | `tab:sampling_robustness` | `anchorbench.analysis.sampling` |
 | Table 19 | `tab:mitigation_headroom` | `anchorbench.analysis.mitigation` |
 
-### Appendix tables `\input`-ed by the paper
+### Rebuttal tables (generated; not in the camera-ready PDF)
 
-Thirteen tables are read by the paper straight from generated `.tex` files.
+Thirteen tables were generated for the rebuttal and dropped from the
+camera-ready for the page limit; they are kept as provenance.
 `anchorbench tables --appendix` runs the modules below in order; it needs the
 `rebuttal` tarball extracted into `results/rebuttal/`. The `.tex` outputs are
 committed, so the tables are in git even when the generations are not, and
 `tests/test_golden_artifacts.py` pins their hashes.
 
-| # | Paper table | Generator module | Reads | Launcher (`git show pre-refactor-2026-09-29:experiments/rebuttal/<name>`) |
+| # | Label | Generator module | Reads | Launcher (`git show pre-refactor-2026-09-29:experiments/rebuttal/<name>`) |
 |---|---|---|---|---|
 | 1 | `tab:implied_weight` | `analysis.bayesian_bound` | `full_benchmark`, `api_benchmark` | — |
 | 2 | `tab:excess_uai` | `analysis.bayesian_bound` | same run | — |

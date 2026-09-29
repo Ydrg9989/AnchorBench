@@ -9,8 +9,8 @@ Varies two tool-realism axes:
 
 | Relevance | Baseline | Elicited | Noisy |
 |---|---:|---:|---:|
-| Plausible | 0.25 | 0.23 | 0.25 |
-| Irrelevant | 0.20 | 0.19 | 0.21 |
+| Plausible | 0.24 | 0.21 | 0.23 |
+| Irrelevant | 0.14 | 0.20 | 0.18 |
 
 ## Interpretation
 

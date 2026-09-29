@@ -6,8 +6,8 @@ The RAG suite varies document rank (1 vs 5), adds plausible distractors, and opt
 
 | Relevance | Base (rank 2) | Rank 1 | Rank 5 + 2 distract. | Rank 5 + distract. + scores |
 |---|---:|---:|---:|---:|
-| Plausible | 0.08 | 0.10 | 0.13 | 0.03 |
-| Irrelevant | 0.02 | 0.01 | 0.03 | 0.02 |
+| Plausible | 0.09 | 0.13 | 0.11 | 0.06 |
+| Irrelevant | 0.01 | 0.03 | 0.03 | 0.02 |
 
 ## Interpretation
 

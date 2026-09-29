@@ -12,9 +12,9 @@ Same 3-point source-credibility scale (mild / standard / strong) applied to thre
 
 | Pathway | Mild | Standard | Strong | Δ(strong-mild) |
 |---|---:|---:|---:|---:|
-| External | 0.25 | 0.32 | 0.40 | 0.15 |
-| RAG | 0.05 | 0.08 | 0.18 | 0.14 |
-| History | 0.47 | 0.31 | 0.90 | 0.43 |
+| External | 0.25 | 0.30 | 0.44 | 0.19 |
+| RAG | 0.05 | 0.09 | 0.16 | 0.11 |
+| History | 0.50 | 0.36 | 0.95 | 0.45 |
 
 ## Interpretation
 

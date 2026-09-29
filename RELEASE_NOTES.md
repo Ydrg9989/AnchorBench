@@ -35,11 +35,13 @@ generator). The metrics layer is pinned by a new clean-clone golden
   without an itemspec is an error, not gold `None` with a made-up
   difficulty.
 - The History intensity runner scores its summary and its curve against
-  the same control condition. The committed
-  `results/rebuttal/intensity_history/*/summary_combined.json` files were
-  written by the old code and carry all-None metrics next to curves
-  computed against `control`; the curves (the only input to Table 17) are
-  unaffected.
+  the same control condition; the committed
+  `results/rebuttal/intensity_history/*/summary_combined.json` files are
+  regenerated against `control` (they carried all-None metrics).
+- The realism, intensity and uncertain-evidence analyses compute UAI with
+  the paper's epsilon = 3 exclusion instead of 1e-6; their rebuttal tables
+  (not in the camera-ready PDF) are regenerated from the raw records and
+  the change is recorded as RECONCILIATION D11.
 
 ### Changed
 

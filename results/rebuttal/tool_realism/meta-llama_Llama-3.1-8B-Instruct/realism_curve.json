@@ -1,14 +1,14 @@
 {
-  "plausible__baseline": 0.6199379058095188,
-  "plausible__baseline_n": 643,
-  "plausible__elicited": 0.5444966242569302,
-  "plausible__elicited_n": 692,
-  "plausible__noisy": 0.577328550890167,
-  "plausible__noisy_n": 688,
-  "irrelevant__baseline": 0.449616830153136,
-  "irrelevant__baseline_n": 693,
-  "irrelevant__elicited": 0.4023153831665107,
-  "irrelevant__elicited_n": 687,
-  "irrelevant__noisy": 0.4542330419244485,
-  "irrelevant__noisy_n": 694
+  "plausible__baseline": 0.4781073713494015,
+  "plausible__baseline_n": 634,
+  "plausible__elicited": 0.4637707683076183,
+  "plausible__elicited_n": 682,
+  "plausible__noisy": 0.49071097789444673,
+  "plausible__noisy_n": 678,
+  "irrelevant__baseline": 0.30685865782741323,
+  "irrelevant__baseline_n": 683,
+  "irrelevant__elicited": 0.3646834095057501,
+  "irrelevant__elicited_n": 677,
+  "irrelevant__noisy": 0.41774522089995214,
+  "irrelevant__noisy_n": 684
 }

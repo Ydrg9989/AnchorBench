@@ -12,10 +12,10 @@ Tests whether anchoring requires genuine judgment under uncertainty; the publish
 
 | Model | k=1 | k=2 | k=3 |
 |---|---:|---:|---:|
-| Gemma-4B | 0.21 | 0.20 | 0.25 |
-| Llama-8B | 0.68 | 0.36 | 0.50 |
-| OLMo-13B | 0.48 | 0.34 | 0.29 |
-| Qwen-7B | 0.53 | 0.34 | 0.36 |
+| Gemma-4B | 0.30 | 0.25 | 0.21 |
+| Llama-8B | 0.65 | 0.47 | 0.47 |
+| OLMo-13B | 0.43 | 0.31 | 0.25 |
+| Qwen-7B | 0.46 | 0.40 | 0.32 |
 
 ## Interpretation
 

@@ -27,6 +27,7 @@ needed · **RESOLVED** fixed, with the resolution recorded.
 | [D8](#d8) | API-tier History cells are scored against the two-stage control | ACCEPTED | no — the four API History values are near zero either way |
 | [D9](#d9) | API-tier History Stage 2 was one quoted message, not a chat | ACCEPTED | no — recorded; new runs use the chat rendering |
 | [D10](#d10) | Sampled decoding never applied top-p 0.9 | ACCEPTED | no — the check ran with more noise than described, not less |
+| [D11](#d11) | Three rebuttal analyses computed UAI with a 1e-6 exclusion instead of epsilon = 3 | RESOLVED | no — the affected tables are rebuttal-only; regenerated with the paper's UAI |
 
 `verify.py::KNOWN_DIVERGENCES` is **empty**, and all three verify modes
 report zero mismatches. D8 to D10 are interpretation notes on frozen cells,
@@ -669,4 +670,63 @@ Re-measure:
 ```bash
 grep -n "top_p" src/anchorbench/runners/sampling.py src/anchorbench/eval/backends.py \
     src/anchorbench/inference/*.py
+```
+
+## D11 — Three rebuttal analyses computed UAI with a 1e-6 exclusion instead of epsilon = 3
+
+| | |
+|---|---|
+| **Status** | **RESOLVED** — code fixed, rebuttal artifacts regenerated (decision of 2026-09-29: "use the same as in the paper") |
+| **Affects** | `results/rebuttal/{rag_realism,tool_realism}/*_realism_table.tex`, `results/rebuttal/intensity_pathway/intensity_pathway_table.tex`, `results/rebuttal/uncertain/uncertain_table.tex` and the curve/CSV/JSON files behind them. None of these tables is in the camera-ready PDF (16 appendix tables, none of these labels); they went to the reviewers in the rebuttal. |
+| **Severity** | The tables were labelled UAI but not the paper's UAI; single cells moved by up to 0.15 |
+
+### What happens
+
+`runners.realism.realism_curve`, `runners.rebuttal_intensity._compute_intensity_curve`
+and `analysis.uncertain.gather` each computed the per-item ratio inline and
+skipped only `|a - y_ctrl| < 1e-6`. Sec. 3.4 excludes `|a - y_ctrl| < 3`
+(`metrics.EPSILON`), because a 1- or 2-point gap turns an ordinary shift into
+a ratio of 10 or more. The same runs wrote `summary_combined.json` through
+`compute_unified_metrics` with epsilon 3, so one run carried two UAIs.
+
+### Measured outcome
+
+Recomputed from the raw records (`results_combined.jsonl`, `results.jsonl`;
+not committed, in the `rebuttal` tarball) with each threshold. The 1e-6
+recomputation reproduces every committed file byte for byte, so the raw
+records are the ones behind the artifacts. In the realism and intensity curves 8 to 22 items per cell leave each
+mean at epsilon 3 (History intensity: 40 to 100).
+
+| table | cell | 1e-6 (was) | epsilon 3 (now) |
+|---|---|---|---|
+| tool_realism | Llama-8B plausible, published conditions | 0.620 | 0.478 |
+| tool_realism | Gemma-4B irrelevant, published conditions | 0.306 | 0.176 |
+| rag_realism | OLMo-13B plausible, rank-5 + distractor | 0.039 | 0.102 |
+| intensity_pathway | Gemma-4B External, strong anchor | 0.403 | 0.535 |
+| intensity_pathway | Qwen-7B History, standard anchor | 0.239 | 0.374 |
+| uncertain_k | Qwen-7B k=1 UAI_irr | 0.219 | 0.072 |
+| uncertain_k | Gemma-4B k=2 UAI_irr | -0.125 | 0.010 |
+
+The qualitative readings survive (plausible above irrelevant; the dose
+response rises from mild to strong; UAI_irr falls with k), but individual
+cells and some orderings between models change.
+
+### Disposition
+
+The three functions call `metrics.item_uai`; `tests/test_appendix_uai.py`
+pins the exclusion on a two-item fixture. The curve, CSV, JSON, `.tex` and
+interpretation files under the four directories were regenerated from the
+raw records and `tests/golden/rebuttal_tables.sha256` re-pinned. The
+History intensity `summary_combined.json` files, which the old runner
+scored against a condition the records lacked (all-None metrics), were
+regenerated against `control` in the same pass. The superseded
+`analysis.intensity` outputs at the top of `results/rebuttal/intensity/`
+(generator removed on this branch; `intensity_pathway` replaced it) carried
+the 1e-6 values and were deleted rather than left stale.
+
+Re-measure:
+
+```bash
+python -m pytest tests/test_appendix_uai.py tests/test_golden_artifacts.py
+grep -rn "1e-6" src/anchorbench/runners src/anchorbench/analysis   # nothing
 ```
